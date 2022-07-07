@@ -22,6 +22,7 @@ Before submitting a bug:
  * Search for similar, existing tickets
  * Is this a security issue? Please follow our separate reporting guidelines below.
  * Is this a issue with the core framework or cms? Modules have their own issue trackers (see [http://addons.silverstripe.org/](http://addons.silverstripe.org/))
+ * Note that [documentation issues](https://github.com/silverstripe/developer-docs/issues) are tracked in the "developer-docs" repository.
  * Try to reproduce your issue on a [clean installation](/getting_started/composer#using-development-versions), maybe the bug has already been fixed on an unreleased branch?
  * The bugtracker is not the place to discuss enhancements, please use the forums or mailinglist.
    Only log enhancement tickets if they gather a large interest in the community
