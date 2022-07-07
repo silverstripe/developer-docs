@@ -1,0 +1,23 @@
+{
+    "name": "silverstripe/developer-docs",
+    "description": "Developer documentation for the Silverstripe framework and CMS. Added to packagist for release purposes.",
+    "homepage": "https://silverstripe.org",
+    "license": "CC-BY-3.0",
+    "keywords": [
+        "silverstripe",
+        "framework",
+        "cms",
+        "developer",
+        "documentation"
+    ],
+    "authors": [
+        {
+            "name": "SilverStripe",
+            "homepage": "http://silverstripe.com"
+        },
+        {
+            "name": "The SilverStripe Community",
+            "homepage": "http://silverstripe.org"
+        }
+    ]
+}
