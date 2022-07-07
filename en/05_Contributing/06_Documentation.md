@@ -11,46 +11,47 @@ Documentation for a software project is a continuing, collaborative effort. We e
 Modifying documentation requires basic knowledge of [PHPDoc](http://en.wikipedia.org/wiki/PHPDoc) and 
 [Markdown](http://daringfireball.net/projects/markdown/) as well as a GitHub user account.
 
+[info]
+Note that there are two sources of documentation, depending on the intended audience. You can see where each of those lives in the [repositories](#repositories) section below.
+[/info]
+
 ## Editing online
 
-The easiest way of editing any documentation is by clicking the "Edit this page" button at the bottom of the 
-page you want to edit. Alternatively, locate the appropriate .md file in the 
-[github.com/silverstripe/silverstripe-framework](https://github.com/silverstripe/silverstripe-framework/tree/master/docs/) repository and press the "edit" button. **You will need a free GitHub account to do this**. 
+The easiest way of editing any documentation is by clicking the "Edit on GitHub" button at the bottom of the
+page you want to edit. Alternatively, locate the appropriate .md file in the
+[silverstripe/developer-docs](https://github.com/silverstripe/developer-docs/) repository and press the "edit" button. **You will need a free GitHub account to do this**.
 
 
  * After editing the documentation, describe your changes in the "commit summary" and "extended description" fields below then press "Commit Changes".
  * After committing you changes, you will see a form to submit a Pull Request: "[pull requests](http://help.github.com/pull-requests/)". You should be able to adjust the version to which your documentation changes apply before submitting the form. Any changes submitted in a pull request will be sent to the core committers for approval.
 
 [warning]
-You should make your changes in the lowest branch they apply to. For instance, if you fix a spelling issue that you found in the 3.2 documentation, submit your fix to that branch in Github and it'll be copied to the master (4.0) version of the documentation automatically. *Don't submit multiple pull requests*.
+You should make your changes in the lowest major branch they apply to. For instance, if you fix a spelling issue that you found in the CMS 3 documentation, submit your fix to the `3` branch in Github and it'll be copied to the most recent major version of the documentation automatically. *Don't submit multiple pull requests for the same change*.
 [/warning]
 
 ## Editing on your computer
 
 If you prefer to edit content on your local machine, you can "[fork](http://help.github.com/forking/)" the 
-[github.com/silverstripe/silverstripe-framework](http://github.com/silverstripe/silverstripe-framework) and 
-[github.com/silverstripe/silverstripe-cms](http://github.com/silverstripe/silverstripe-cms) repositories, make changes locally, and then send us a "[pull request](http://help.github.com/pull-requests/)" to incorporate your changes. If you have previously downloaded SilverStripe or a module, chances are that you already have these repositories on your machine.
-
-The documentation is kept alongside the source code in the `docs/` subfolder of any SilverStripe module, framework or CMS folder.
+[silverstripe/developer-docs](http://github.com/silverstripe/developer-docs) repository, make changes locally, and then [send us a pull request](http://help.github.com/pull-requests/) to incorporate your changes.
 
 [warning]
-If you submit a new feature or an API change, we strongly recommend that your patch includes updates to the necessary documentation. This helps prevent our documentation from getting out of date.
+If you submit a new feature or an API change, we strongly recommend and request that you include a PR to update the necessary documentation. This helps prevent our documentation from getting out of date.
 [/warning]
 
 ## Repositories
 
-*  End-user help: [userhelp.silverstripe.org](http://github.com/silverstripe/userhelp.silverstripe.org)
-*  Developer guides: [docs.silverstripe.org](http://github.com/silverstripe/doc.silverstripe.org)
-*  Developer API documentation: [api.silverstripe.org](http://github.com/silverstripe/api.silverstripe.org)
+* End-user help: [silverstripe/silverstripe-userhelp-content](https://github.com/silverstripe/silverstripe-userhelp-content/)
+* Developer guides: [silverstripe/developer-docs](http://github.com/silverstripe/developer-docs/)
+* Website code for user and developer docs: [silverstripe/doc.silverstripe.org](https://github.com/silverstripe/doc.silverstripe.org)
+* Developer API documentation: [silverstripe/api.silverstripe.org](http://github.com/silverstripe/api.silverstripe.org)
 
 ## Source control
 
-In order to balance editorial control with effective collaboration, we keep documentation alongside the module source code, e.g. in `framework/docs/`, or as code comments within PHP code. Contributing documentation is the same process as providing any other patch (see [Contributing code](code)).
+Contributing documentation is the same process as providing any other patch (see [Contributing code](code)).
 
-Documentation should always be provided for the earliest stable release it applies to
-(we're merging up these changes to newer versions periodically).
-One exception are docs in `docs/en/contributing/`, which should always be changed on `master` since 
-its contents are general advice and don't apply to any particular release.  
+If you are fixing incorrect or incomplete information for the current major version, you should create a PR that targets the branch for the latest stable release (e.g. `4.11`).
+
+If you are adding documentation for functionality that has not yet been released, you should target the most recent _major_ branch (e.g. `4`)
 
 ## What to write
 
