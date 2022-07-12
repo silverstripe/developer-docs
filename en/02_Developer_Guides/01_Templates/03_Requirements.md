@@ -240,6 +240,9 @@ You can also use any of the below options in order to tweak this behaviour:
    other systems, it is usually necessary to distinguish combined files from other assets.
  * `Requirements_Backend.combine_in_dev` - By default combined files will not be combined except in test
    or live environments. Turning this on will allow for pre-combining of files in development mode.
+ * `Requirements_Backend.resolve_relative_css_refs` - Enables rewriting of relative paths to image/font assets
+   to accommodate the fact that the combined CSS is placed in a totally different folder than the source css 
+   files. Turn this off if you see some unexpected results.
 
 In some cases it may be necessary to create a new storage backend for combined files, if the default location
 is not appropriate. Normally a single backend is used for all site assets, so a number of objects must be
@@ -256,6 +259,7 @@ SilverStripe\View\Requirements_Backend:
   combine_in_dev: true
   combine_hash_querystring: true
   default_combined_files_folder: 'combined'
+  resolve_relative_css_refs: true
 SilverStripe\Core\Injector\Injector:
   # Create adapter that points to the custom directory root
   SilverStripe\Assets\Flysystem\PublicAdapter.custom-adapter:
