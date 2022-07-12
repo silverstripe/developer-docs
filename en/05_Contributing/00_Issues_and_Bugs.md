@@ -20,7 +20,7 @@ Before submitting a bug:
  * Is this a security issue? Please follow our separate reporting guidelines below.
  * Which modules does this issue belong to? Each one has its own issue tracker.
    If you are unsure, [create an issue](https://github.com/silverstripe/silverstripe-framework/issues/new) on the the "framework" repository.
-   Note that [documentation issues](https://github.com/silverstripe/silverstripe-framework/issues) are tracked in "framework" as well. 
+ * Note that [documentation issues](https://github.com/silverstripe/developer-docs/issues) are tracked in the "developer-docs" repository.
  * Try to reproduce your issue on a [clean installation](/getting_started/composer#using-development-versions), maybe the bug has already been fixed on an unreleased branch?
  * The bugtracker is not the place to discuss enhancements, please use 
    the ["feature ideas" forum category](https://forum.silverstripe.org/c/feature-ideas) and our [community channels](https://www.silverstripe.org/community).
