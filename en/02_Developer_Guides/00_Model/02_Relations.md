@@ -277,6 +277,28 @@ $supporters = $team->Supporters();
 // returns a 'ManyManyList' instance.
 ```
 
+You can add objects to the relation simply by calling `add()` on the list:
+
+```php
+$team = Team::get()->byId(1);
+$supporter = Supporter::get()->first();
+$team->Supporters()->add($supporter);
+```
+
+You can also set the extra fields data either while adding the item, or after the fact:
+
+```php
+$team = Team::get()->byId(1);
+// Add extra fields data while adding the item to the list
+$supporter = Supporter::get()->first();
+$team->Supporters()->add($supporter, ['Ranking' => 1]);
+
+// Add extra fields data after the item is already in the list
+$supporter2 = Supporter::get()->find('ID:not', $supporter->ID);
+$team->Supporters()->add($supporter2);
+$team->Supporters()->setExtraData($supporter2->ID, ['Ranking' => 2]);
+```
+
 ### Automatic many_many table
 
 If you specify only a single class as the other side of the many-many relationship, then a
