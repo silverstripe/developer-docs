@@ -76,7 +76,6 @@ for more details.
 The core team is then responsible for reviewing patches and deciding if they will make it into core.  If
 there are any problems they will follow up with you, so please ensure they have a way to contact you!
 
-
 ### Picking the right version
 
 The Silverstripe CMS project follows the [Semantic Versioning](http://semver.org) (SemVer) specification for releases. 
