@@ -26,7 +26,7 @@ page you want to edit. Alternatively, locate the appropriate .md file in the
  * After committing you changes, you will see a form to submit a Pull Request: "[pull requests](http://help.github.com/pull-requests/)". You should be able to adjust the version to which your documentation changes apply before submitting the form. Any changes submitted in a pull request will be sent to the core committers for approval.
 
 [warning]
-You should make your changes in the lowest major branch they apply to. For instance, if you fix a spelling issue that you found in the CMS 3 documentation, submit your fix to the `3` branch in Github and it'll be copied to the most recent major version of the documentation automatically. *Don't submit multiple pull requests for the same change*.
+You should make your changes in the lowest major branch they apply to. For instance, if you fix a spelling issue that you found in the CMS 4 documentation, submit your fix to the `4` branch in Github and it'll be copied to the most recent major version of the documentation automatically. *Don't submit multiple pull requests for the same change*.
 [/warning]
 
 ## Editing on your computer
@@ -49,9 +49,9 @@ If you submit a new feature or an API change, we strongly recommend and request 
 
 Contributing documentation is the same process as providing any other patch (see [Contributing code](code)).
 
-If you are fixing incorrect or incomplete information for the current major version, you should create a PR that targets the branch for the latest stable release (e.g. `4.11`).
+If you are fixing incorrect or incomplete information for the current major version, you should create a PR that targets the branch for the latest stable release (e.g. `5.1`).
 
-If you are adding documentation for functionality that has not yet been released, you should target the most recent _major_ branch (e.g. `4`)
+If you are adding documentation for functionality that has not yet been released, you should target the most recent _major_ branch (e.g. `5`)
 
 ## What to write
 

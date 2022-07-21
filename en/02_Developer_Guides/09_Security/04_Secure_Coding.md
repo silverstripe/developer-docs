@@ -710,7 +710,7 @@ following in your .htaccess to ensure this behaviour is activated.
 </IfModule>
 ```
 
-As of Silverstripe CMS 4, this behaviour is on by default, and the environment variable is no longer required. For correct operation, it is necessary to always set `SS_TRUSTED_PROXY_IPS` if using a proxy.
+This behaviour is on by default; the environment variable is not required. For correct operation, it is necessary to always set `SS_TRUSTED_PROXY_IPS` if using a proxy.
 
 ## Secure Sessions, Cookies and TLS (HTTPS)
 

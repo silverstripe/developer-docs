@@ -12,7 +12,7 @@ Creating and sending email in Silverstripe CMS is done through the [Email](api:S
 
 Silverstripe CMS provides an API over the top of the [SwiftMailer](http://swiftmailer.org/) PHP library which comes with an extensive list of "transports" for sending mail via different services. 
 
-For legacy reasons, Silverstripe CMS 4 defaults to using the built-in PHP `mail()` command via a deprecated class `Swift_MailTransport`. However, using this layer is less secure and is strongly discouraged.
+For legacy reasons, Silverstripe CMS defaults to using the built-in PHP `mail()` command via a deprecated class `Swift_MailTransport`. However, using this layer is less secure and is strongly discouraged.
 
 It's highly recommended you upgrade to a more robust transport for additional security. The Sendmail transport is the most common one. The `sendmail` binary is widely available across most Linux/Unix servers.
 

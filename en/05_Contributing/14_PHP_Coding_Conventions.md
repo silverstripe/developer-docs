@@ -16,7 +16,7 @@ If you are unsure about a specific standard, imitate existing SilverStripe code.
 
 ## PSR-2
 
-Starting with SilverStripe 4.x, our goal is [PSR-2 Coding Standards](http://www.php-fig.org/psr/psr-2/) compliance.
+Our goal is [PSR-2 Coding Standards](http://www.php-fig.org/psr/psr-2/) compliance.
 Since this affects existing APIs, some details like method casing will be iterated on in the next releases.
 For example, many static methods will need to be changed from lower underscore to lower camel casing. 
  
