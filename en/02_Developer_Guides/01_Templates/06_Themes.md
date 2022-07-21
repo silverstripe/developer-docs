@@ -75,7 +75,7 @@ A `theme` within Silverstripe CMS is simply a collection of templates and other 
 
 ![themes:basicfiles.gif](../../_images/basicfiles.gif)
 
-Silverstripe CMS 4 has support for cascading themes, which will allow users to define multiple themes for a project. This means you can have a template defined in any theme, and have it continue to look back through the list of themes until a match is found.
+Silverstripe CMS has support for cascading themes, which will allow users to define multiple themes for a project. This means you can have a template defined in any theme, and have it continue to look back through the list of themes until a match is found.
 
 To define extra themes simply add extra entries to the `SilverStripe\View\SSViewer.themes` configuration array. You will probably always want to ensure that you include `'$default'` in your list of themes to ensure that the base templates are used when required.
 

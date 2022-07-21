@@ -58,18 +58,6 @@ for details.
 > and you are welcome to raise new feature ideas on the [Silverstripe forum](https://forum.silverstripe.org/c/feature-ideas)
 > instead.
 
-### Closing a CMS 3 issue
-
-**Explainer:** We immediately close issues that only affect CMS 3 (or CMS 3 versions of supported modules) unless they
-are found to have a critical impact, as this version is in limited support and will reach end-of-life in the near
-future.
-
-> Unfortunately [Silverstripe CMS 3 entered limited support in June 2018](https://www.silverstripe.org/blog/update-on-silverstripe-5-x/).
-> This means we'll only be fixing critical bugs and security issues for CMS 3 going forward.
->
-> See the [Silverstripe CMS Roadmap](https://www.silverstripe.org/software/roadmap/) for more information on our support
-> commitments.
-
 ### Complex enhancement/new feature that doesn't fit core
 
 **Explainer:** We generally try to avoid major additions to the core codebase, as they increase the maintenance burden
