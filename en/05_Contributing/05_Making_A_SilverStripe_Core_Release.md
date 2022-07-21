@@ -276,9 +276,8 @@ Check all tickets assigned to that milestone are either closed or reassigned to 
 Use the [list of all issues across modules](https://www.silverstripe.org/community/contributing-to-silverstripe/github-all-core-issues)
 as a starting point, and add a `milestone:"your-milestone"` filter.
 
-Merge up from other older [supported release branches](release-process#supported-versions) (e.g. merge `4.0`->`4.1`, `4.1`->`4.2`, `4.2`->`4`, `4`->`master`).
-Some core modules use major version `1` for their CMS 4 release line - this can
-be considered interchangeable with `4`.
+Merge up from other older [supported release branches](release-process#supported-versions) (e.g. merge `5.0`->`5.1`, `5.1`->`5.2`, `5.2`->`5`, `5`->`6`).
+Some core modules use different major versions for the current major CMS release line - this can be considered interchangeable.
 
 This is the part of the release that prepares and tests everything locally, but
 doe not make any upstream changes (so it's safe to run without worrying about
@@ -290,9 +289,9 @@ Invoked by running `cow release` in the format as below:
 
 E.g.
 
-`cow release 4.0.1 -vvv`
+`cow release 5.0.1 -vvv`
 
-* `<version>` The recipe version that is to be released. E.g. `4.1.4` or `4.3.0-rc1`
+* `<version>` The recipe version that is to be released. E.g. `5.1.4` or `5.3.0-rc1`
 * `<recipe>` Optional: the recipe that is being released (default: "silverstripe/installer")
 
 This command has these options (note that `--repository` option is critical for security releases):
@@ -382,8 +381,8 @@ We keep core modules in lockstep at the minor level - that is, we can release
 patches (e.g. 4.5.x) for individual modules, but when we perform a minor release
 (4.x.0), we ship that version of every core module. To this end, the Composer
 dependencies of each module need to be manually adjusted when we perform a minor
-release - for example, the `cms` module version `4.6.0` must include a minimum
-requirement of `framework` `^4.6`. This ensures that language level requirements
+release - for example, the `cms` module version `5.6.0` must include a minimum
+requirement of `framework` `^5.6`. This ensures that language level requirements
 (e.g. minimum PHP versions) can be safely centralised in the framework module
 for surrounding core modules to inherit. In short, ensure you commit updates to
 the Composer requirements of every core module after each minor branch is
@@ -392,8 +391,7 @@ created, and before you ship the release.
 #### Testing the release
 
 Once the release task has completed, it may be ideal to manually test the site out
-by running it locally (e.g. `http://localhost/release-3.3.4`) to do some smoke-testing
-and make sure that there are no obvious issues missed.
+by running it locally to do some smoke-testing and make sure that there are no obvious issues missed.
 
 Since `cow` will only run the unit test suite, you'll need to check
 the build status of Behat end-to-end tests manually on travis-ci.org.
@@ -423,7 +421,7 @@ in the release plan.
 
 Example on how to publish the installer:
 
-`cow release:publish 4.0.1 silverstripe/installer`
+`cow release:publish 5.0.1 silverstripe/installer`
 
 Options:
 
@@ -484,9 +482,9 @@ minor version will require a new branch option to be made available on each site
 
 Further manual work on major or minor releases:
 
- * Check that `Deprecation::notification_version('4.0.0');` in framework/_config.php points to
-the right major version. This should match the major version of the current release. E.g. all versions of 4.x
-should be set to `4.0.0`.
+ * Check that `Deprecation::notification_version('5.0.0');` in framework/_config.php points to
+the right major version. This should match the major version of the current release. E.g. all versions of 5.x
+should be set to `5.0.0`.
  * Update the [userhelp.silverstripe.org](userhelp.silverstripe.org) version link in `LeftAndMain.help_links`
 
 *Updating markdown files*

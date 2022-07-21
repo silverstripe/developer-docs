@@ -14,7 +14,7 @@ This object is used by the Silverstripe CMS ORM internally.
 
 Dealing with low-level SQL is not encouraged, since the ORM provides
 powerful abstraction APIs (see [datamodel](/developer_guides/model/data_model_and_orm)). 
-Starting with Silverstripe CMS 3, records in collections are lazy loaded,
+Records in collections are lazy loaded,
 and these collections have the ability to run efficient SQL
 such as counts or returning a single column.
 

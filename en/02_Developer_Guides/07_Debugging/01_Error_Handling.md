@@ -12,6 +12,11 @@ configurations: one for development environments, and another for test or live e
 environments, Silverstripe CMS will deal harshly with any warnings or errors: a full call-stack is shown and execution
 stops for anything, giving you early warning of a potential issue to handle.
 
+[info]
+There are a range of monolog handlers available, both in the core package and in add-ons. See the
+[Monolog documentation](https://github.com/Seldaek/monolog/blob/master/doc/01-usage.md) for more information.
+[/info]
+
 ## Raising errors and logging diagnostic information.
 
 For general purpose logging, you can use the Logger directly. The Logger is a PSR-3 compatible LoggerInterface and
@@ -326,13 +331,6 @@ SilverStripe\Dev\Backtrace:
 You should include any functions or methods here which have arguments that may be sensitive. If you are the author of a
 module that other developers may use, it is best practice to include this configuration in the module. Developers should
 not be expected to scan every Silverstripe module they use and add those declarations in their project configuration.
-
-## Differences from Silverstripe CMS 3
-
-In Silverstripe CMS 3, logging was based on the Zend Log module. Customisations were added using `SS_Log::add_writer()`.
-This function no longer works, and any Zend Log writers will need to be replaced with Monolog handlers. Fortunately,
-a range of handlers are available, both in the core package and in add-ons. See the
-[Monolog documentation](https://github.com/Seldaek/monolog/blob/master/doc/01-usage.md) for more information.
 
 ## Related Lessons
 * [Advanced environment configuration](https://www.silverstripe.org/learn/lessons/v4/advanced-environment-configuration-1)
