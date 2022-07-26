@@ -159,7 +159,36 @@ use SilverStripe\ORM\Filters\EndsWithFilter;
 
 class MyDataObject extends DataObject
 {
-    private static string $general_search_field_name = EndsWithFilter::class;
+    private static string $general_search_field_filter = EndsWithFilter::class;
+}
+```
+
+[warning]
+You may get unexpected results using some filters if you don't disable splitting the query into terms - for example if you use an [ExactMatchFilter](api:SilverStripe\ORM\Filters\ExactMatchFilter), each term in the query _must_ exactly match the value in at least one field to get a match. If you disable splitting terms, the whole query must exactly match a field value instead.
+[/warning]
+
+#### Splitting search queries into individual terms
+
+By default the general search field will split your search query on spaces into individual terms, and search across your searchable field for each term. At least one field must match each term to get a match.
+
+For example: with the search query "farm house" at least one field must have a match for the word "farm", and at least one field must have a match for the word "house". There does _not_ need to be a field which matches the full phrase "farm house".
+
+You can disable this behaviour by setting `DataObject.general_search_split_terms` to false. This would mean that for the example above a `DataObject` would need a field that matches "farm house" to be included in the results. Simply matching "farm" or "house" alone would not be sufficient.
+
+Like the general search field name, you can set this either globally or per class:
+
+**Globally disable splitting terms via yaml config**
+```yml
+SilverStripe\ORM\DataObject:
+  general_search_split_terms: false
+```
+
+**Disable splitting terms via yaml _or_ php config**
+```php
+use SilverStripe\ORM\DataObject;
+class MyDataObject extends DataObject
+{
+    private static bool $general_search_split_terms = false;
 }
 ```
 
