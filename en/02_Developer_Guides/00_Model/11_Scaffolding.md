@@ -192,6 +192,50 @@ class MyDataObject extends DataObject
 }
 ```
 
+#### Use a specific single field
+
+If you disable the global general search functionality, the general seach field will revert to searching against the _first
+field_ in your `searchableFields` list.
+
+As an example, let's look at a definition like this:
+
+```php
+private static $searchable_fields = [
+    'Name',
+    'JobTitle',
+];
+```
+
+That `Name` comes first in that list is actually quite a good thing. The user will likely want the
+single search input to target the `Name` field rather something with a more predictable value,
+like `JobTitle`.
+
+By contrast, let's look at this definition:
+
+```php
+private static $searchable_fields = [
+    'Price',
+    'Description',
+    'Title',
+];
+```
+
+It's unlikely that the user will want to search on `Price`. A better candidate would be `Title` or `Description`. Rather than reorder the array, which may be counter-intuitive, you can use the `general_search_field` configuration property.
+
+```php
+private static $general_search_field = 'Title';
+```
+
+##### Customise the field per `GridField`
+
+You can customise the search field for a specific `GridField` by calling `setSearchField()` on its `GridFieldFilterHeader` component instance.
+
+```php
+$myGrid->getConfig()->getComponentByType(GridFieldFilterHeader::class)->setSearchField('Title');
+```
+
+This is useful if you have disabled the global general search functionality, if you have [customised the SearchContext](/developer_guides/search/searchcontext), or if you (for whatever reason) want to use a single specific search field for this `GridField`.
+
 ### Specify a form field or search filter
 
 Searchable fields will appear in the search interface with a default form field (usually a [TextField](api:SilverStripe\Forms\TextField)) and a 
