@@ -206,7 +206,7 @@ class makes a guess at how those fields should be searched, e.g. showing a check
 `$db` definition.
 
 To remove, add or modify searchable fields, define a new [DataObject::$searchable_fields](api:SilverStripe\ORM\DataObject::$searchable_fields) static on your model
-class (see [SearchContext](../search/searchcontext) docs for details).
+class (see [Searchable Fields](/developer_guides/model/scaffolding#searchable-fields) and [SearchContext](../search/searchcontext) docs for details).
 
 **app/src/Product.php**
 
@@ -233,6 +233,7 @@ class Product extends DataObject
 The results are shown in a tabular listing, powered by the [GridField](../forms/field_types/gridfield), more specifically
 the [GridFieldDataColumns](api:SilverStripe\Forms\GridField\GridFieldDataColumns) component. This component looks for a [DataObject::$summary_fields](api:SilverStripe\ORM\DataObject::$summary_fields) static on your
 model class, where you can add or remove columns. To change the title, use [DataObject::$field_labels](api:SilverStripe\ORM\DataObject::$field_labels).
+See [Summary Fields](/developer_guides/model/scaffolding#summary-fields) and [Field labels](/developer_guides/model/scaffolding#field-labels) for details.
 
 **app/src/Product.php**
 
