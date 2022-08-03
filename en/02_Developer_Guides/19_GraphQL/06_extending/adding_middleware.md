@@ -69,7 +69,7 @@ class LoggingMiddleware implements QueryMiddleware
             ));
         
         // Hand off execution to the next middleware
-        return $next($params);
+        return $next($schema, $query, $context, $vars);
     }
 }
 ```
