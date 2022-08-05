@@ -7,12 +7,6 @@ summary: A look at how permissions work for DataObject queries and mutations
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## `DataObject` operation permissions
 
 Any of the operations that come pre-configured for DataObjects are secured by the appropriate permissions

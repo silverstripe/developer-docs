@@ -7,12 +7,6 @@ summary: A guide on how DataObjects with the Versioned extension behave in Graph
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## Versioned content
 
 For the most part, if your `DataObject` has the `Versioned` extension applied, there is nothing you need to do

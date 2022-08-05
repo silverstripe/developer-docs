@@ -7,12 +7,6 @@ summary: In this tutorial, we add a simple plugin for string fields
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## Writing a simple plugin
 
 For this example, we want all `String` fields to have a `truncate` argument that will limit the length of the string

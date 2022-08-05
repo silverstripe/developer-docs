@@ -6,12 +6,6 @@ summary: Add a custom query for any type of data
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## Building a custom query
 
 We've defined the shape of our data, now we need a way to access it. For this,

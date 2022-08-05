@@ -7,12 +7,6 @@ summary: Ensure requests are GET or POST
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## Strict HTTP Method Checking
 
 According to GraphQL best practices, mutations should be done over `POST`, while queries have the option

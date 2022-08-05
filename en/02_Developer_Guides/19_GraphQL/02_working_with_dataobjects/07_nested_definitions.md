@@ -6,12 +6,6 @@ summary: Define dependent types inline with a parent type
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## Nested type definitions
 
 For readability and ergonomics, you can take advantage of nested type definitions. Let's imagine

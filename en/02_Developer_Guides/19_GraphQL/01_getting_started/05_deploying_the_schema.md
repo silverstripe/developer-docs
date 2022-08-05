@@ -8,12 +8,6 @@ icon: rocket
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## Deploying the schema
 
 One way or another, you must get the `.graphql-generated/` and `public/_graphql/` folders into your test and production environments for Silverstripe CMS (and your own custom queries) to work as expected. There are many ways to do so. The options below are listed in order of complexity.

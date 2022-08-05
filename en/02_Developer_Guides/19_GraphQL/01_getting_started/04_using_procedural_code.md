@@ -8,12 +8,6 @@ icon: tools
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## Building a schema with procedural code
 
 Sometimes you need access to dynamic information to populate your schema. For instance, you

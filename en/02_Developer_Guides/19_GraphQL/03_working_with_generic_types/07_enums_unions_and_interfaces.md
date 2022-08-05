@@ -6,12 +6,6 @@ summary: Add some non-object types to your schema
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## Enums, unions, and interfaces
 
 In more complex schemas, you may want to define types that aren't simply a list of fields, or
