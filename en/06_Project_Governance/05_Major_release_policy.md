@@ -8,15 +8,15 @@ icon: comments
 
 ## Scope of the policy
 
-This policy applies to all commercially supported modules.
+This policy applies to all [Silverstripe CMS commercially supported modules](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/).
 
-Community modules are not covered by this policy. Modules under the `silverstripe` vendor name that are not commercially supported are updated on a best effort basis.
+Community modules are not covered by this policy. Modules in the `silverstripe` github organisation that are not commercially supported are updated on a best effort basis.
 
-## General approach to Major releases
+## General approach to major releases
 
-Silverstripe CMS aims to deliver regular major releases at predefined intervals with a clear support timeline. The key objectives of this policy is to allow Silverstripe CMS project owners to plan major upgrades ahead of time
+Silverstripe CMS aims to deliver regular major releases at predefined intervals with a clear support timeline. The key objective of this policy is to allow Silverstripe CMS project owners to plan major upgrades ahead of time.
 
-The main function of major releases is to ship *breaking changes* that can not be shipped in a minor releases. These changes are primarily aimed at making sure the major releases can be supported for the full duration of its lifecycle.
+The main function of major releases is to ship *breaking changes* that can not be shipped in minor releases. These changes are primarily aimed at making sure the major releases can be supported for the full duration of its lifecycle.
 
 The lifecycle for a Silverstripe CMS major release line is:
 - pre-release (undefined duration)
@@ -24,10 +24,10 @@ The lifecycle for a Silverstripe CMS major release line is:
 - bug and security fixes (1 year)
 - security fixes only (1 year).
 
-The primary focus of major releases is to:
+Most of the changes shipped in a major release will:
 - upgrade third party dependencies
-- remove and clean up deprecated APIs
-- implement architectural changes that can not reasonably be introduced in a minor.
+- remove deprecated APIs and clean up ambiguous APIs
+- implement architectural changes that can not reasonably be introduced in a minor release.
 
 At launch, major releases may contain new features not present in the previous major release line. However, this is a secondary concern. New features will usually ship in minor releases.
 
@@ -35,7 +35,7 @@ At launch, major releases may contain new features not present in the previous m
 
 Major releases are not backward compatible. Most projects will require at least some development work to upgrade to a new major release.
 
-Silverstripe CMS provides a clear upgrade path to new major releases. This includes clear documentation on what breaking changes have been made to each area of Silverstripe CMS.
+Silverstripe CMS provides a [clear upgrade path](/upgrading) to new major releases. This includes clear documentation on what breaking changes have been made to each area of Silverstripe CMS.
 
 ## Major release lifecycle
 
@@ -43,13 +43,13 @@ A Silverstripe CMS major release line follows a predefined life cycle. New Silve
 
 ### Pre-release
 
-A Silverstripe CMS stable major release is preceded by beta period of at least three month. 
+A Silverstripe CMS stable major release is preceded by a beta period of at least three months.
 
 The purpose of the beta period is to:
 
 - allow early adopters to plan their upgrade
 - identify bugs in the major release
-- help community module add support for the new major early on.
+- help community modules add support for the new major release early on.
 
 Once a new major enters the beta period, it should be compatible with the dependencies intended to ship in the stable release. Substantial breaking changes should be avoided post-beta.
 
@@ -61,75 +61,83 @@ New major releases of Silverstripe CMS are tagged between April and June of odd 
 
 ### Active development
 
-Once a major release is stable, it enters a period of active development. A major release in active development:
-- Will receive regular minor releases that ships new feature and API in a backward compatible way.
-- Will receive regular patches for low impact bugs and low severity security issues.
+Once a major release is stable, it enters a period of active development. A major release in active development receives:
+- regular minor releases that ships new feature and API in a backward compatible way
+- regular patches for bugs at all impact levels
+- security patches for all vulnerabilities.
 
-A major releases line will stay in "active development" of approximatively two years. "Active development" for a major release line ends when the follow up major release is tagged stable.
+A major releases line stays in *active development* for approximatively two years. *Active development* for a major release line ends when the next major release is tagged stable.
 
-Only one major release line is in "active development" at once.
+Only one major release line is in *active development* at any given time.
 
 ### Bug and security fixes
 
-A Silverstripe CMS major release line enters the "bug and security fixes" phase once the follow major release is tagged stable.
+A Silverstripe CMS major release line enters the *bug and security fixes* phase once the follow major release is tagged stable.
 
-Release lines in the "bug and security fixes" phase will receive:
-- patches for low impact bugs
-- patches for low low severity security issues. 
+A major release line in the *bug and security fixes* phase receives:
+- regular patches for bugs at all impact levels
+- security patches for all vulnerabilities.
 
-Release lines in the "bug and security fixes" phase will not receive:
-- new feature or new APIs
+A major release line in the *bug and security fixes* phase does **not** receive:
+- new feature
+- new APIs
 - new minor releases.
 
-A major release line stays in the "bug and security fixes" phase for 1 year.
+A major release line stays in the *bug and security fixes* phase for 1 year.
+
 ### Security fixes only
 
-At the end of "Bug and security fixes" phase, a Silverstripe CMS major release line transition to the "security fixes only" phase.
+At the end of *bug and security fixes* phase, a Silverstripe CMS major release line transitions to the *security fixes only* phase.
 
-In the "security fixes only" phase, a Silverstripe CMS major release line will only receive patches for high impact security issues defined has having a CVSS of 7.0 or above.
+In the *security fixes only* phase, a Silverstripe CMS major release line only receives patches for high impact security issues defined has having a CVSS of 7.0 or above.
 
 ### End-of-life
 
-A Silverstripe CMS major release line will be end-of-life once its follow up major release line exit active development.
+A Silverstripe CMS major release line reaches *end-of-life* once the next major release line exits active development.
 
-End-of-life major release do not receive any security fixes or bug fixes. 
+End-of-life major releases do not receive updates of any kind including security fixes or bug fixes.
 
 ## PHP Support commitments
 
-Silverstripe CMS major releases tracks PHP releases. 
+Silverstripe CMS major releases track PHP releases. 
 
-The Silverstripe CMS release cycle is built around the assumptions that:
+The Silverstripe CMS release cycle is built around these assumptions.
+
 - New PHP releases are shipped at the end of November on an annual basis.
-- PHP releases are in full support for two years with 1 year of limited support. 
+- PHP releases are in full support for two years with a year of limited support. 
 
-At launch, a Silverstripe CMS major release support all PHP version in full support. PHP versions in limited support are not supported at launch by new Silverstripe CMS majors.
+At launch, a Silverstripe CMS major release supports all PHP versions in full support. PHP versions in limited support are not supported at launch by new Silverstripe CMS major release.
 
-Following the initial release of a Silverstripe CMS major, we will aim to add forward compatibility for the next PHP release. e.g.: Silverstripe CMS 5 at launch will support PHP 8.1 and PHP 8.2. Will aim to add support for an eventual PHP 8.3 release to CMS 5.
+Following the initial release of a Silverstripe CMS major release, the development team aims to add forward compatibility for the next PHP release. e.g.: Silverstripe CMS 5 at launch will support PHP 8.1 and PHP 8.2. CMS 5 should receive official support for an eventual PHP 8.3 in early 2024.
 
-We try our best not to drop support for older PHP releases within Silverstripe CMS major release line even if those PHP release reach end-of-life.
+Support for end-of-life PHP releases is not dropped within a Silverstripe CMS major release line, unless it's necessary to address vulnerabilities or high impact bugs.
+
+Major releases lines not in active development do not receive official support for later PHP releases.
 
 ## Dependency management
 
-At launch new Silverstripe CMS majors aim to have all PHP and JS dependencies on their latest stable version. For dependencies offering a *Long Term Support* version, the latest LTS of that dependency will be preferred.
+At launch, Silverstripe CMS major releases aim to have all PHP and JavaScript dependencies on their latest stable versions. For dependencies offering a *Long Term Support* version, the latest LTS of that dependency is preferred.
 
-The Silverstripe CMS development team will define a list of "fixed dependencies" for each Silverstripe CMS major release line. *Fixed dependencies* will not changed for the lifetime of a Silverstripe CMS major release line.
+A list of *fixed dependencies* for each Silverstripe CMS major release line is explicitly defined by the development team. *Fixed dependencies* do not change for the lifetime of a Silverstripe CMS major release line.
 
-Support for newer major releases of fixed dependencies will not be retroactively added to Silverstripe CMS major release line, even if the currently used version is end-of-life. The only exception is if the upgrade is necessary to fix a high impact bug or security vulnerability. We’ll only support 1 major release line of each fixed dependency.
+Support for newer major releases of fixed dependencies is not added to Silverstripe CMS major release line, even if the currently used version is end-of-life. The only exception is if the upgrade is necessary to fix a high impact bug or security vulnerability. A Silverstripe CMS major release line only support one major version of each fixed dependency.
 
-Non-fixed dependencies may be upgraded to new major releases or swap out altogether within a Silverstripe CMS release line.
+Non-fixed dependencies may be upgraded to new major releases or swapped out altogether within a Silverstripe CMS release line.
 
 ### Symfony support commitments
 
-Symfony is a collection of common PHP libraries Silverstripe CMS uses. At launch, Silverstripe CMS majors will track the latest stable major of Symfony dependencies. A Silverstripe CMS major release line will not add support for later Symfony major release.
+Symfony is a collection of common PHP libraries Silverstripe CMS uses. At launch, Silverstripe CMS major releases track the latest stable major version of Symfony dependencies. A Silverstripe CMS major release line does not add support for later Symfony major versions.
 
 ## Commercially supported module
 
 Commercially supported modules are reviewed with each new major release. At launch, the list of commercially supported modules for that release line is explicitly defined.
 
-New modules maybe added to the list of commercially for that major release line during its lifespan. We aimed not to withdraw support for modules for the duration of that major release life span.
+New modules may be added to the commercially supported modules list during a Silverstripe CMS major release line's lifespan. Modules are not withdrawn from the commercially supported modules list for a Silverstripe CMS major releases line unless external factors make it impractical to continue support. e.g. The module requires a discontinued third party service to work as intended.
 
-Modules that are supported for one major release line may not be supported for follow up release line.
+Modules that are supported for one major release line may not be supported for follow up release lines.
 
-## Expected Major releases timeline
+## Expected Silverstripe CMS major release timeline
+
+This timeline is provided as an indication only.
 
 (Put a pretty Graphic here)
