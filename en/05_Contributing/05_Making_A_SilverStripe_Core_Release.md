@@ -91,7 +91,7 @@ SS_BASE_URL="http://localhost/"
 ```
 
 You will also need to be assigned the following permissions. Contact one of the SilverStripe staff from
-the [core committers](core_committers), who will assist with setting up your credentials.
+the [core committers](/project_governance/core_committers), who will assist with setting up your credentials.
 
 * Write permissions on the [silverstripe](https://github.com/silverstripe) organisation.
 * Admin permissions on [transifex](https://www.transifex.com/silverstripe/).

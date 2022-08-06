@@ -90,8 +90,7 @@ You will need to choose the branch for your pull request accordingly.
 
 As we follow SemVer, we name the branches in repositories accordingly
 (using BNF rules defined by [semver.org](https://semver.org/#backusnaur-form-grammar-for-valid-semver-versions)):
- - `"master"` branch contains the next major and yet unreleased version
- - `<positive digit>` branches contain released major versions and all changes for yet unreleased minor versions
+ - `<positive digit>` branches contain major versions and all changes for yet unreleased minor versions
  - `<positive digit> "." <digits>` branches contain released minor versions and all changes for yet to be released patch versions
 
 
@@ -112,9 +111,16 @@ Other entities might be considered to be included or excluded from the public AP
 
 Any updates to third party dependencies in composer.json should aim to target the default branch for a minor release if possible. Targeting a patch release branch is acceptable if updating dependencies is required to fix a bug.
 
+API from third party dependencies may indirectly be incorporated into Silverstripe CMS's API if:
+- they are define as a parameter type for a supported method
+- they are define as a return type for a supported method
+- they are extended by a Silverstripe CMS class.
+
+When defining a return type or a parameter type, it is preferable to use a more generic interface rather than a specific class. Third party dependencies that are used for internal purposes and are not explicitly exposed via the Silverstripe CMS public API are not covered by SemVer and maybe substituted without notice.
+
 ### The Pull Request Process
 
-Once your pull request is issued, it's not the end of the road. A [core committer](/contributing/core_committers/) will most likely have some questions for you and may ask you to make some changes depending on discussions you have.
+Once your pull request is issued, it's not the end of the road. A [core committer](/project_governance/core_committers/) will most likely have some questions for you and may ask you to make some changes depending on discussions you have.
 If you've been naughty and not adhered to the [coding conventions](coding_conventions), 
 expect a few requests to make changes so your code is in-line.
 
@@ -148,8 +154,8 @@ The current GitHub labels are grouped into five sections:
 | type/docs | A docs change |
 | type/userhelp | A userhelp documentation change |
 | affects/* | Issue has been observed on a specific CMS release line |
-| rfc/draft | [RFC](request_for_comment) under discussion |
-| rfc/accepted | [RFC](request_for_comment) where agreement has been reached |
+| rfc/draft | [RFC](/project_governance/request_for_comment) under discussion |
+| rfc/accepted | [RFC](/project_governance/request_for_comment) where agreement has been reached |
 
 ### Quickfire Do's and Don't's
 

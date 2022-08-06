@@ -300,13 +300,13 @@ table may be of use:
 
 | Silverstripe CMS Version | PHP Version | More information |
 | -------------------- | ----------- | ---------------- |
-| 3.0 - 3.5            | 5.3 - 5.6   | |
-| 3.6                  | 5.3 - 7.1   | |
-| 3.7                  | 5.3 - 7.4   | [changelog](https://docs.silverstripe.org/en/3/changelogs/3.7.4/) |
-| 4.0 - 4.4            | 5.6+        | |
-| 4.5 - 4.9            | 7.1+        | [blog post](https://www.silverstripe.org/blog/our-plan-for-ending-php-5-6-support-in-silverstripe-4/) |
+| 5.0 +                | 8.1+        | Unreleased            |
+| 4.11 +               | 7.4 - 8.1   | [changelog](/Changelogs/4.11.0#phpeol) |
 | 4.10                 | 7.3+        | [changelog](/Changelogs/4.10.0#phpeol/) |
-| 4.11 +               | 7.4+        | [changelog](/Changelogs/4.11.0#phpeol) |
+| 4.5 - 4.9            | 7.1+        | [blog post](https://www.silverstripe.org/blog/our-plan-for-ending-php-5-6-support-in-silverstripe-4/)      |
+| 4.0 - 4.4            | 5.6+        |                       |
+
+From Silverstripe CMS 5 onwards, the [Silverstripe CMS major release policy](/project_governance/major_release_policy#php-support-commitments) guides which PHP versions are supported by which Silverstripe CMS release.
 
 ## CMS browser requirements
 

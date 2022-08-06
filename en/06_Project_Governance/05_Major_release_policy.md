@@ -1,7 +1,7 @@
 ---
 title: Major Release Policy
 summary: Outline the major release lifecycle and support commitment for Silverstripe CMS
-icon: comments
+icon: code-branch
 ---
 
 # Major Release Policy
@@ -97,7 +97,7 @@ A Silverstripe CMS major release line reaches *end-of-life* once the next major 
 
 End-of-life major releases do not receive updates of any kind including security fixes or bug fixes.
 
-## PHP Support commitments
+## PHP support commitments
 
 Silverstripe CMS major releases track PHP releases. 
 
