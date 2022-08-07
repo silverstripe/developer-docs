@@ -254,7 +254,7 @@ It can be used within templates to generate anchors or other CSS classes.
 <!-- returns <div id="section-offices"> -->
 ```
 
-##  ClassName
+## ClassName
 
 Returns the class of the current object in [scope](syntax#scope) such as `Page` or `HomePage`. The `$ClassName` can be
 handy for a number of uses. A common use case is to add to your `<body>` tag to influence CSS styles and JavaScript
