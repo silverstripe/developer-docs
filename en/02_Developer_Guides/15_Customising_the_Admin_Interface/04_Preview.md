@@ -29,12 +29,12 @@ current _LeftAndMain_-derived class (e.g. `LeftAndMain_SilverStripeNavigator`).
 ## PHP
 For a DataObject to be previewed using the preview panel there are a few prerequisites:
 
-- The class must implement the [Previewable](api:SilverStripe\Admin\Previewable) interface
+- The class must implement the `CMSPreviewable` interface
 - At least one preview state must be enabled for the class
 - There must be some valid URL to use inside the preview panel
 
-### Previewable
-The `Previewable` interface has three methods: `PreviewLink`, `CMSEditLink`, and
+### CMSPreviewable
+The `CMSPreviewable` interface has three methods: `PreviewLink`, `CMSEditLink`, and
 `getMimeType`.
 
 #### PreviewLink
@@ -103,15 +103,15 @@ For this example we will take the `Product` and `MyAdmin` classes from the
 [ModelAdmin documentation](./modeladmin).
 
 #### The DataObject implementation
-As mentioned above, your `Product` class must implement the `Previewable` interface.
+As mentioned above, your `Product` class must implement the `CMSPreviewable` interface.
 It also needs at least one preview state enabled. This example assumes we aren't using
 the `Versioned` extension.
 
 ```php
-use SilverStripe\Admin\Previewable;
+use SilverStripe\ORM\CMSPreviewable;
 use SilverStripe\ORM\DataObject;
 
-class Product extends DataObject implements Previewable
+class Product extends DataObject implements CMSPreviewable
 {
     private static $show_unversioned_preview_link = true;
 
@@ -307,15 +307,15 @@ class ProductPage extends Page
 ```
 
 #### The DataObject Implementation
-Make sure the Versioned `Product` class implements `Previewable` and enables
+Make sure the Versioned `Product` class implements `CMSPreviewable` and enables
 the draft and published preview states.
 
 ```php
-use SilverStripe\Admin\Previewable;
+use SilverStripe\ORM\CMSPreviewable;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
 
-class Product extends DataObject implements Previewable
+class Product extends DataObject implements CMSPreviewable
 {
     private static $show_stage_link = true;
     private static $show_live_link = true;
@@ -381,7 +381,7 @@ public function PreviewLink($action = null)
 ```
 
 The CMSEditLink doesn't matter so much for this implementation. It is required
-by the `Previewable` interface so some implementation must be provided, but
+by the `CMSPreviewable` interface so some implementation must be provided, but
 you can safely return `null` or an empty string with no repercussions in this
 situation.
 

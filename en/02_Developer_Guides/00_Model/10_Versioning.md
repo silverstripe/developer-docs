@@ -1300,7 +1300,7 @@ public function getCMSFields()
 ### Previewable DataObjects
 
 The history viewer will automatically detect and render a side-by-side preview panel for DataObjects that implement
-[Previewable](api:SilverStripe\Admin\Previewable). Please note that if you are adding this functionality, you
+[CMSPreviewable](api:SilverStripe\ORM\CMSPreviewable). Please note that if you are adding this functionality, you
 will also need to expose the `AbsoluteLink` field in your GraphQL read scaffolding, and add it to the fields in
 `readOneMyVersionedObjectQuery`.
 
