@@ -20,7 +20,7 @@ Before requiring static asset files in PHP code or in a template, those assets n
 
 ### Configuring your project "exposed" folders
 
-Exposed assets are made available in your web root in a dedicated "resources" directory. Prior to Silverstripe CMS 4.4, the name of this directory was hardcoded to `resources`. In Silverstripe CMS 4.4 and above, the name of the resources directory can be configured by defining the `extra.resources-dir` key in your `composer.json`. Silverstripe CMS projects created from `silverstripe/installer` 4.4 and above will automatically be configured to use `_resources` as their resource directory.
+Exposed assets are made available in your web root in a dedicated "_resources" directory. The name of the resources directory can be configured by defining the `extra.resources-dir` key in your `composer.json` file.
 
 Each folder that needs to be exposed must be entered under the `extra.expose` key in your `composer.json` file. Module developers should use a path relative to the root of their module (don't include the "vendor/package-developer/package-name" path).
 
@@ -29,12 +29,9 @@ This is a sample Silverstripe CMS project `composer.json` file configured to exp
 ```json
 {
     "name": "app/myproject",
-    "type": "silverstripe-project",
-    "require": {
-        "silverstripe/recipe-cms": "4.4.x-dev"
-    },
+    ...
     "extra": {
-        "resources-dir": "_resources",
+        "resources-dir": "_my-custom-resources-dir",
         "expose": [
             "app/client/dist",
             "app/images"
@@ -45,7 +42,7 @@ This is a sample Silverstripe CMS project `composer.json` file configured to exp
 
 Files contained inside the `app/client/dist` and `app/images` will be made publicly available under the `_resources` directory.
 
-Silverstripe CMS projects should not track the "resources" directory in their source control system.
+Silverstripe CMS projects should not track the "_resources" directory in their source control system.
 
 ### Exposing assets in the web root {#exposing-assets-webroot}
 
@@ -54,7 +51,7 @@ This Composer plugin automatically tries to expose assets from your project and 
 
 Developers can explicitly expose static assets by calling `composer vendor-expose`. This is necessary after updating your `resources-dir` or `expose` configuration in your `composer.json` file.
 
-`composer vendor-expose` accepts an optional `method` argument (e.g.: `composer vendor-expose auto`). This controls how the files are exposed in the "resources" directory:
+`composer vendor-expose` accepts an optional `method` argument (e.g.: `composer vendor-expose auto`). This controls how the files are exposed in the "_resources" directory:
 * `none` disables all symlink / copy
 * `copy` copies the exposed files
 * `symlink` create symbolic links to the exposed folder
@@ -76,7 +73,7 @@ Requirements::javascript('themes/simple/javascript/script.js');
 Requirements::javascript('silverstripe/admin:client/dist/js/bundle.js');
 ```
 
-When rendered in HTML code, these URLs will be rewritten to their matching path inside the "resources" directory.
+When rendered in HTML code, these URLs will be rewritten to their matching path inside the "_resources" directory.
 
 ## Template Requirements API
 
