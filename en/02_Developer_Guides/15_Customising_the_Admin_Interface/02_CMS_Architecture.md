@@ -64,7 +64,7 @@ The pattern library can be used to preview React components without including th
 
 ### Viewing the latest pattern library
 
-The easiest way to access the pattern library is to view it online. The pattern library for the latest Silverstripe CMS 4 development branch is automatically built and deployed. Note that this may include new components that are not yet available in a stable release.
+The easiest way to access the pattern library is to view it online. The pattern library for the latest Silverstripe CMS development branch is automatically built and deployed. Note that this may include new components that are not yet available in a stable release.
 
 [Browse the Silverstripe CMS pattern library online](https://silverstripe.github.io/silverstripe-pattern-lib/).
 

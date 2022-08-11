@@ -7,12 +7,6 @@ summary: Learn how inheritance is handled in DataObject types
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## `DataObject` inheritance
 
 The inheritance pattern used in the ORM is a tricky thing to navigate in a GraphQL API, mostly owing

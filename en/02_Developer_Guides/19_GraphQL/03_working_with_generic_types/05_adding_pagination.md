@@ -6,12 +6,6 @@ summary: Add the pagination plugin to a generic query
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## Adding pagination
 
 So far in this section we've created a simple generic query for a `Country` type called `readCountries` that takes a

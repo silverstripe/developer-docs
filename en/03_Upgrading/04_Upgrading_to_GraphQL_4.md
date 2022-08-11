@@ -1,30 +1,28 @@
 ---
-title: Upgrading to GraphQL 4
-summary: Upgrade your Silverstripe CMS project to use graphQL version 4
+title: Upgrading to GraphQL 5
+summary: Upgrade from graphQL version 3 to version 5
 ---
 
 # Upgrading to GraphQL 4
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+Silverstripe CMS 4 had dual-support for `silverstripe/graphql` versions 3 _and_ 4. In CMS 5 only version 5 is supported.
+If your project is using version 3.x of this module, you will likely need to go through some level of refactoring code to
+swap to the latest version. If you were using 4.x, you can just check the generic [Upgrading to Silverstripe CMS 5](upgrading_your_project) docs.
 
 The 4.0 release of `silverstripe/graphql` underwent a massive set of changes representing an
 entire rewrite of the module. This was done as part of a year-long plan to improve performance. While
 there is no specific upgrade path, there are some key things to look out for and general guidelines on how
-to adapt your code from the 3.x release to 4.x.
+to adapt your code from the 3.x release to 5.x.
 
 Note that this document is aimed towards developers who have a custom graphql schema. If you are updating from graphql
-3 to 4 but do not have a custom schema, you should familiarise yourself with the
+3 to 5 but do not have a custom schema, you should familiarise yourself with the
 [building the schema](/developer_guides/graphql/getting_started/building_the_schema) documentation, but you do not need to read this document.
 
 In this section, we'll cover each of these upgrade issues in order of impact.
 
 ## GraphQL schemas require a build step
 
-The most critical change moving from 3.x to 4.x affects the developer experience.
+The most critical change moving from 3.x to 5.x affects the developer experience.
 The key to improving performance in GraphQL requests was eliminating the overhead of generating the schema at
 runtime. This didn't scale. As the GraphQL schema grew, API response latency increased.
 
@@ -237,7 +235,7 @@ in these classes. For more information on working with procedural code, read the
 ## Goodbye scaffolding, hello models
 
 In `silverstripe/graphql` 3.x, a massive footprint of the codebase was dedicated to a `DataObject`-specific API
-called "scaffolding" that was used to generate types, queries, fields, and more from the ORM. In 4.x, that
+called "scaffolding" that was used to generate types, queries, fields, and more from the ORM. In 5.x, that
 approach has been replaced with a concept called **model types**.
 
 A model type is just a type that is backed by a class that has awareness of its schema (like a `DataObject`!).
@@ -251,7 +249,7 @@ At a high-level, it needs to answer questions like:
 
 ### Upgrading
 
-The 4.x release ships with a model type implementation specifically for DataObjects, which you can use
+The 5.x release ships with a model type implementation specifically for DataObjects, which you can use
 a lot like the old scaffolding API. It's largely the same syntax, but a lot easier to read.
 
 **before**
@@ -344,7 +342,7 @@ query readPages {
 To avoid naming collisions, the 3.x release of the module used a pretty aggressive approach to ensuring
 uniqueness when converting a `DataObject` class name to a GraphQL type name, which was `<vendorName><shortName>`.
 
-In the 4.x release, the typename is just the `shortName` by default, which is based on the assumption that
+In the 5.x release, the typename is just the `shortName` by default, which is based on the assumption that
 most of what you'll be exposing is in your own app code, so collisions aren't that likely.
 
 ### Upgrading
@@ -368,7 +366,7 @@ docs.
 ## The `Connection` class has been replaced with plugins
 
 In the 3.x release, you could wrap a query in the `Connection` class to add pagination features.
-In 4.x, these features are provided via the new [plugin system](extending/plugins).
+In 5.x, these features are provided via the new [plugin system](extending/plugins).
 
 The good news is that all `DataObject` queries are paginated by default, and you shouldn't have to worry about
 this. But if you are writing a custom query and want it paginated, check out the section on
@@ -403,7 +401,7 @@ on how it works you can [read the permissions documentation](/developer_guides/g
 
 ## Enums are first-class citizens
 
-In the 3.x release, there was no clear path to creating enum types, but in 4.x, they have a prime spot in the
+In the 3.x release, there was no clear path to creating enum types, but in 5.x, they have a prime spot in the
 configuration layer.
 
 **before**

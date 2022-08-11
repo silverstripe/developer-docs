@@ -7,12 +7,6 @@ summary: Creating a type that doesn't map to a DataObject
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## Creating a generic type
 
 Let's create a simple type that will work with the inbuilt features of Silverstripe CMS.

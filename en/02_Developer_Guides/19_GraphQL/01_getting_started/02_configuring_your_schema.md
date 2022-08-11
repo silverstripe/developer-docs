@@ -8,12 +8,6 @@ icon: code
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## Configuring your schema
 
 GraphQL is a strongly-typed API layer, so having a schema behind it is essential. Simply put:

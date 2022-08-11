@@ -6,12 +6,6 @@ summary: In this tutorial, we'll create a plugin that affects models, queries, a
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## Writing a complex plugin
 
 For this example, we'll imagine that a lot of our DataObjects are geocoded, and this is ostensibly some kind of

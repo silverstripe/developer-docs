@@ -218,7 +218,7 @@ bitwise `|` operator.
 ## Configuration YAML Syntax and Rules
 
 [alert]
-As of Silverstripe 4, YAML files can no longer be placed any deeper than 2 directories deep. As this was an unintended bug, this change will only affect you if you nest your modules deeper than the top level of your project.
+YAML files can no longer be placed any deeper than 2 directories deep. This will only affect you if you nest your modules deeper than the top level of your project.
 [/alert]
 
 Each module can have a directory immediately underneath the main module directory called `_config/`. Inside this 

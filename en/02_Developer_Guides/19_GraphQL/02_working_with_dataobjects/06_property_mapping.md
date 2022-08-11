@@ -7,12 +7,6 @@ summary: Learn how to customise field names, use dot syntax, and use aggregate f
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## Property mapping and dot syntax
 
 For the most part, field names are inferred through the `DataObject` model, but its API affords developers full

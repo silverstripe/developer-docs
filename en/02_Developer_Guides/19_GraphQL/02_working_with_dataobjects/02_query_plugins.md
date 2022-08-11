@@ -7,12 +7,6 @@ summary: Learn about some of the useful goodies that come pre-packaged with Data
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## `DataObject` query plugins
 
 This module has a [plugin system](../plugins) that affords extensibility to queries, mutations,

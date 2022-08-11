@@ -6,12 +6,6 @@ summary: Protect destructive actions from cross-site request forgery
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
-
 ## CSRF tokens (required for mutations)
 
 Even if your GraphQL endpoints are behind authentication, it is still possible for unauthorised
