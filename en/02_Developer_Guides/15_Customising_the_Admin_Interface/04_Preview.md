@@ -142,9 +142,16 @@ Note that if you had set up this model to [act like a page](https://www.silverst
 you could simply `return $this->Link($action)`. In that case the new action would not need
 to be added to your `ModelAdmin`.
 
+[warning]
+Note: The `if (!$this->isInDB())` check below is important! Without this, the preview panel will redirect you to a 404 page when creating a new object.
+[/warning]
+
 ```php
 public function PreviewLink($action = null)
 {
+    if (!$this->isInDB()) {
+        return null;
+    }
     $admin = MyAdmin::singleton();
     return Controller::join_links(
         $admin->Link(str_replace('\\', '-', $this->ClassName)),
@@ -359,6 +366,9 @@ page's frontend URL.
 ```php
 public function PreviewLink($action = null)
 {
+    if (!$this->isInDB()) {
+        return null;
+    }
     // Let the page know it's being previewed from a DataObject edit form (see Page::MetaTags())
     $action = $action . '?DataObjectPreview=' . mt_rand();
     // Scroll the preview straight to where the object sits on the page.
