@@ -51,7 +51,7 @@ edit form for the page the link leads to can be loaded. Unless your `DataObject`
 this will likely not apply, but as this method is mandatory and public we may as well
 set it up correctly.
 
-If your object belongs to [a custom ModelAdmin](./01_ModelAdmin.md), the edit URL for the
+If your object belongs to [a custom ModelAdmin](./modeladmin), the edit URL for the
 object is predictable enough to construct and return from this method as you'll see below.
 The format for that situation is always the same, with increasing complexity if you're
 nesting `GridField`s. For the below examples it is assumed you aren't using nested
@@ -100,7 +100,7 @@ private static $show_unversioned_preview_link = true;
 
 ### Enabling preview for DataObjects in a ModelAdmin
 For this example we will take the `Product` and `MyAdmin` classes from the
-[ModelAdmin documentation](./01_ModelAdmin.md).
+[ModelAdmin documentation](./modeladmin).
 
 #### The DataObject implementation
 As mentioned above, your `Product` class must implement the `CMSPreviewable` interface.
@@ -172,7 +172,7 @@ public function CMSEditLink()
 ```
 
 Let's assume when you display this object on the front end you're just looping through a
-list of items and indirectly calling `forTemplate` using the [`$Me` template variable](../01_Templates/01_Syntax.md#me).
+list of items and indirectly calling `forTemplate` using the [`$Me` template variable](../templates/syntax#me).
 This method will be used by the `cmsPreview` action in the `MyAdmin` class to tell the
 CMS what to display in the preview panel.
 
