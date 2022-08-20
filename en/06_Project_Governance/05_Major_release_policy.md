@@ -62,11 +62,11 @@ New major releases of Silverstripe CMS are tagged between April and June of odd 
 ### Active development
 
 Once a major release is stable, it enters a period of active development. A major release in active development receives:
-- regular minor releases that ships new feature and API in a backward compatible way
+- regular minor releases that ship new features and API in a backward compatible way
 - regular patches for bugs at all impact levels
 - security patches for all vulnerabilities.
 
-A major releases line stays in *active development* for approximatively two years. *Active development* for a major release line ends when the next major release is tagged stable.
+A major release line stays in *active development* for approximately two years. *Active development* for a major release line ends when the next major release is tagged stable.
 
 Only one major release line is in *active development* at any given time.
 
@@ -101,18 +101,18 @@ End-of-life major releases do not receive updates of any kind including security
 
 Silverstripe CMS major releases track PHP releases. 
 
-The Silverstripe CMS release cycle is built around these assumptions.
+The Silverstripe CMS release cycle is built around these assumptions:
 
-- New PHP releases are shipped at the end of November on an annual basis.
-- PHP releases are in full support for two years with a year of limited support. 
+- new PHP releases are shipped at the end of November on an annual basis
+- PHP releases are in full support for two years with one year of limited support. 
 
-At launch, a Silverstripe CMS major release supports all PHP versions in full support. PHP versions in limited support are not supported at launch by new Silverstripe CMS major release.
+At launch, a Silverstripe CMS major release supports all PHP versions in full support. PHP versions in limited support are not supported at launch by new Silverstripe CMS major releases.
 
-Following the initial release of a Silverstripe CMS major release, the development team aims to add forward compatibility for the next PHP release. e.g.: Silverstripe CMS 5 at launch will support PHP 8.1 and PHP 8.2. CMS 5 should receive official support for an eventual PHP 8.3 in early 2024.
+Following the initial launch of a Silverstripe CMS major release, the development team aims to add forward compatibility for the next PHP release. e.g.: Silverstripe CMS 5 at launch will support PHP 8.1 and PHP 8.2. CMS 5 should receive official support for an eventual PHP 8.3 in early 2024.
 
 Support for end-of-life PHP releases is not dropped within a Silverstripe CMS major release line, unless it's necessary to address vulnerabilities or high impact bugs.
 
-Major releases lines not in active development do not receive official support for later PHP releases.
+Major release lines not in active development do not receive official support for later PHP releases.
 
 ## Dependency management
 
@@ -120,7 +120,7 @@ At launch, Silverstripe CMS major releases aim to have all PHP and JavaScript de
 
 A list of *fixed dependencies* for each Silverstripe CMS major release line is explicitly defined by the development team. *Fixed dependencies* do not change for the lifetime of a Silverstripe CMS major release line.
 
-Support for newer major releases of fixed dependencies is not added to Silverstripe CMS major release line, even if the currently used version is end-of-life. The only exception is if the upgrade is necessary to fix a high impact bug or security vulnerability. A Silverstripe CMS major release line only support one major version of each fixed dependency.
+Support for newer major releases of fixed dependencies is not added to Silverstripe CMS major release line, even if the currently used version is end-of-life. The only exception is if the upgrade is necessary to fix a high impact bug or security vulnerability. A Silverstripe CMS major release line only supports one major version of each fixed dependency.
 
 Non-fixed dependencies may be upgraded to new major releases or swapped out altogether within a Silverstripe CMS release line.
 
@@ -140,4 +140,4 @@ Modules that are supported for one major release line may not be supported for f
 
 This timeline is provided as an indication only.
 
-(Put a pretty Graphic here)
+![Timeline of planned Silverstripe CMS major releases](../../_images/major_release_timeline.jpg)

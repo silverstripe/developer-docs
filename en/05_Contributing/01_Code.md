@@ -112,8 +112,8 @@ Other entities might be considered to be included or excluded from the public AP
 Any updates to third party dependencies in composer.json should aim to target the default branch for a minor release if possible. Targeting a patch release branch is acceptable if updating dependencies is required to fix a bug.
 
 API from third party dependencies may indirectly be incorporated into Silverstripe CMS's API if:
-- they are define as a parameter type for a supported method
-- they are define as a return type for a supported method
+- they are defined as a parameter type for a supported method
+- they are defined as a return type for a supported method
 - they are extended by a Silverstripe CMS class.
 
 When defining a return type or a parameter type, it is preferable to use a more generic interface rather than a specific class. Third party dependencies that are used for internal purposes and are not explicitly exposed via the Silverstripe CMS public API are not covered by SemVer and maybe substituted without notice.

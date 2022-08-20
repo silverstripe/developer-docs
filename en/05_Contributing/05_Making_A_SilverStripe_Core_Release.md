@@ -487,7 +487,7 @@ Further manual work on major or minor releases:
  * Check that `Deprecation::notification_version('4.0.0');` in framework/_config.php points to
 the right major version. This should match the major version of the current release. E.g. all versions of 4.x
 should be set to `4.0.0`.
- * Update the [userhelp.silverstripe.org](userhelp.silverstripe.org) version link in `LeftAndMain.help_links`
+ * Update the [userhelp.silverstripe.org](https://userhelp.silverstripe.org) version link in `LeftAndMain.help_links`
 
 *Updating markdown files*
 
@@ -517,7 +517,7 @@ will need to be regularly updated.
 * Ensure that [docs.silverstripe.org](http://docs.silverstripe.org) has the
   updated documentation and the changelog link in your announcement works.
 * Announce the release on the ["Releases" forum](https://forum.silverstripe.org/c/releases).
-  Needs to happen on every minor release for previous releases, see [supported versions](https://docs.silverstripe.org/en/4/contributing/release_process/#supported-versions)
+  Needs to happen on every minor release for previous releases, see [supported versions](release_process/#supported-versions)
 * Announce any new EOLs for minor versions on the ["Releases" forum](https://forum.silverstripe.org/c/releases).
 * Update the [roadmap](https://www.silverstripe.org/roadmap) with new dates for EOL versions ([CMS edit link](https://www.silverstripe.org/admin/pages/edit/EditForm/3103/field/TableComponentItems/item/670/edit))
 * Update the [Slack](https://www.silverstripe.org/community/slack-signup/) topic to include the new release version.
@@ -532,7 +532,7 @@ will need to be regularly updated.
 
 * [Release Process](release_process)
 * [Translation Process](translation_process)
-* [Core committers](core_committers)
+* [Core committers](/project_governance/core_committers)
 
 If at any time a release runs into an unsolveable problem contact the
 core committers on the [discussion group](https://groups.google.com/forum/#!forum/silverstripe-committers)
