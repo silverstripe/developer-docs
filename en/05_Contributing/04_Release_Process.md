@@ -125,14 +125,14 @@ commitment for any new APIs introduced in that minor release.
 At any point in time, the core development team will support a set of releases to varying levels:
 
 * The status of major releases is determined by the [roadmap](http://silverstripe.org/roadmap)
-* Minor releases of major releases in "active development" or "full support" are released roughly every three months, and their End-of-Life (EOL) is announced at least six months in advance
+* Minor releases of major releases in "active development" or in the "bug and security fixes" phase are released roughly every three months, and their End-of-Life (EOL) is announced at least six months in advance
 * The latest minor release is supported as long as the underlying major release
 * API changes and major new features are applied to the master branch, to be included in the next major release
 * New APIs can be applied to the current minor release of major releases in "active development", but should usually be marked as "internal" APIs until they're considered stable
 * Enhancements are applied to the next minor release of major releases in "active development"
-* Non-critical bugfixes and all security fixes are applied to all supported minor releases of major releases in "active development" or "full support"
-* Critical bugfixes and [critical security fixes](#severity-rating) are applied to the all minor releases of major releases in "active development", "full support" or "limited support"
-* [Non-critical security fixes](#severity-rating) are backported to releases in "limited support" on a best effort basis
+* Non-critical bugfixes and all security fixes are applied to all supported minor releases of major releases in "active development" or in the "bug and security fixes" phase
+* Critical bugfixes and [critical security fixes](#severity-rating) are applied to the all minor releases of major releases in "active development", "bug and security fixes" or "security fixes only"
+* [Non-critical security fixes](#severity-rating) are backported to releases in the "security fixes only" phase on a best effort basis
 * Any patches applied to older minor releases are merged up regularly to newer minor releases (in the same major release)
 * Any patches applied to older major releases are merged up regularly to newer major releases
 
