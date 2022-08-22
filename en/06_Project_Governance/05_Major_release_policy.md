@@ -140,4 +140,4 @@ Modules that are supported for one major release line may not be supported for f
 
 This timeline is provided as an indication only.
 
-![Timeline of planned Silverstripe CMS major releases](../../_images/major_release_timeline.jpg)
+![Timeline of planned Silverstripe CMS major releases](../_images/major_release_timeline.jpg)
