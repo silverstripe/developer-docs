@@ -75,3 +75,7 @@ summary: Upgrade your project to Silverstripe CMS 5.
 - Removed deprecated method `SilverStripe\Versioned\Versioned::onAfterRevertToLive()`
 - Removed deprecated method `SilverStripe\Versioned\Versioned::onAfterRollback()`
 - Removed deprecated method `SilverStripe\Versioned\Versioned::publish()`
+
+### silverstripe/versioned-admin
+
+- Removed deprecated class `SilverStripe\VersionedAdmin\Controllers\HistoryControllerFactory`
