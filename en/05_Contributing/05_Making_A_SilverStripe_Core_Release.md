@@ -91,7 +91,7 @@ SS_BASE_URL="http://localhost/"
 ```
 
 You will also need to be assigned the following permissions. Contact one of the SilverStripe staff from
-the [core committers](core_committers), who will assist with setting up your credentials.
+the [core committers](/project_governance/core_committers), who will assist with setting up your credentials.
 
 * Write permissions on the [silverstripe](https://github.com/silverstripe) organisation.
 * Admin permissions on [transifex](https://www.transifex.com/silverstripe/).
@@ -349,7 +349,7 @@ Further manual work on major or minor releases:
  * Check that `Deprecation::notification_version('4.0.0');` in framework/_config.php points to
 the right major version. This should match the major version of the current release. E.g. all versions of 4.x
 should be set to `4.0.0`.
- * Update the [userhelp.silverstripe.org](userhelp.silverstripe.org) version link in `LeftAndMain.help_links`
+ * Update the [userhelp.silverstripe.org](https://userhelp.silverstripe.org) version link in `LeftAndMain.help_links`
 
 *Updating markdown files*
 
@@ -394,7 +394,7 @@ will need to be regularly updated.
 
 * [Release Process](release_process)
 * [Translation Process](translation_process)
-* [Core committers](core_committers)
+* [Core committers](/project_governance/core_committers)
 
 If at any time a release runs into an unsolveable problem contact the
 core committers on the [discussion group](https://groups.google.com/forum/#!forum/silverstripe-committers)
