@@ -63,7 +63,7 @@ class LoggingMiddleware implements QueryMiddleware
             ));
         
         // Hand off execution to the next middleware
-        return $next($params);
+        return $next($schema, $query, $context, $vars);
     }
 }
 ```
@@ -71,6 +71,7 @@ class LoggingMiddleware implements QueryMiddleware
 Now we can register the middleware with our query handler:
 
 ```yaml
+SilverStripe\Core\Injector\Injector:
   SilverStripe\GraphQL\QueryHandler\QueryHandlerInterface.default:
     class: SilverStripe\GraphQL\QueryHandler\QueryHandler
     properties:

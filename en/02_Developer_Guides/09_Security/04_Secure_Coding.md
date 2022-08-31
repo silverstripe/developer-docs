@@ -8,7 +8,7 @@ icon: user-secret
 ## Introduction
 
 This page details notes on how to ensure that we develop secure Silverstripe CMS applications. 
-See our "[Release Process](/contributing/release_process#security-releases) on how to report security issues.
+See [Reporting Security Issues](/contributing/issues_and_bugs#reporting-security-issues) on how to report potential vulnerabilities.
 
 ## SQL Injection
 

@@ -14,7 +14,7 @@ The default output of a [SearchContext](api:SilverStripe\ORM\Search\SearchContex
 [DataObject](api:SilverStripe\ORM\DataObject) instance.
 
 [notice]
-[SearchContext](api:SilverStripe\ORM\Search\SearchContext) is mainly used by [ModelAdmin](/developer_guides/customising_the_admin_interface/modeladmin).
+[SearchContext](api:SilverStripe\ORM\Search\SearchContext) is mainly used by [ModelAdmin](/developer_guides/customising_the_admin_interface/modeladmin), as it powers the [`DataObject::$searchable_fields` configuration](/developer_guides/model/scaffolding#searchable-fields).
 [/notice]
 
 ## Usage
@@ -87,8 +87,12 @@ In case you need multiple contexts, consider name-spacing your request parameter
 the `$fields` constructor parameter.
 [/notice]
 
-### Generating a search form from the context
+### Customising the general search field
 
+On tabular views like the GridFields and ModalAdmins, the search context is rendered as a search bar
+with advanced options. To customise this field, see the [Scaffolding documentation](../model/scaffolding#general-search-field).
+
+### Generating a search form from the context
 
 ```php
 use SilverStripe\Forms\Form;
@@ -178,7 +182,6 @@ The change is in **$results = $this->getResults($data);**, because you are using
 Another thing you cant forget is to check the name of the singleton you are using in your project. the example uses
 **MyDataObject**, you need to change it for the one you are using
 
-
 ### The Pagination Template
 
 to show the results of your custom search you need at least this content in your template, notice that
@@ -230,7 +233,6 @@ Results.PaginationSummary(4) defines how many pages the search will show in the 
 
 See [SearchFilter](api:SilverStripe\ORM\Filters\SearchFilter) API Documentation
 
-
 ## Related Documentation
 
 * [ModelAdmin](/developer_guides/customising_the_admin_interface/modeladmin)
@@ -239,4 +241,3 @@ See [SearchFilter](api:SilverStripe\ORM\Filters\SearchFilter) API Documentation
 
 * [SearchContext](api:SilverStripe\ORM\Search\SearchContext)
 * [DataObject](api:SilverStripe\ORM\DataObject)
-

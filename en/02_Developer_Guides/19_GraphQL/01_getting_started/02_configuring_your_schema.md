@@ -52,6 +52,8 @@ SilverStripe\GraphQL\Schema\Schema:
         # your queries here
       mutations:
         # your mutations here
+      enums:
+        # your enums here
 ```
 
 ### Avoid config flushes
@@ -117,6 +119,8 @@ queries:
   # your queries here
 mutations:
   # your mutations here
+enums:
+  # your enums here
 ```
 
 #### Namespacing your schema files
@@ -155,6 +159,11 @@ will not work).
 # my models here
 ```
 
+**app/_graphql/enums.yml**
+```yaml
+# my enums here
+```
+
 **app/_graphql/bulkLoad.yml**
 ```yaml
 # my bulk loader directives here
@@ -185,6 +194,11 @@ for each of your types, e.g. `app/_graphql/types/my-first-type.yml`.
 **app/_graphql/models/models.yml**
 ```yaml
 # my models here
+```
+
+**app/_graphql/enums/enums.yml**
+```yaml
+# my enums here
 ```
 
 **app/_graphql/bulkLoad/bulkLoad.yml**

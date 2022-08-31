@@ -1,6 +1,6 @@
 # Silverstripe Developer Documentation
 
-The developer documentation ina modified Markdown format, as published on [docs.silverstripe.org](https://docs.silverstripe.org) ([source](https://github.com/silverstripe/doc.silverstripe.org)).
+The developer documentation in a modified Markdown format, as published on [docs.silverstripe.org](https://docs.silverstripe.org) ([source](https://github.com/silverstripe/doc.silverstripe.org)).
 
 ## License
 
