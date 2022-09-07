@@ -9,12 +9,12 @@ icon: tachometer-alt
 
 The framework uses caches to store infrequently changing values.
 By default, the storage mechanism chooses the most performant adapter available
-(PHP7 opcache, APC, or filesystem). Other cache backends can be configured.
+(PHP opcache, APC, or filesystem). Other cache backends can be configured.
 
 The most common caches are manifests of various resources: 
 
  * PHP class locations ([ClassManifest](api:SilverStripe\Core\Manifest\ClassManifest))
- * Configuration settings from YAML files ([ConfigManifest](api:ConfigManifest))
+ * Configuration settings from YAML files ([CachedConfigCollection](api:SilverStripe\Config\Collections\CachedConfigCollection))
  * Language files ([i18n](api:SilverStripe\i18n\i18n))
 
 Flushing the various manifests is performed through a GET
@@ -34,8 +34,9 @@ For long-lived server instances, this can become a capacity issue over time - se
 
 We are using the [PSR-16](http://www.php-fig.org/psr/psr-16/) standard ("SimpleCache")
 for caching, through the [symfony/cache](https://symfony.com/doc/current/components/cache.html) library.
+
 Note that this library describes usage of [PSR-6](http://www.php-fig.org/psr/psr-6/) by default,
-but also exposes caches following the PSR-16 interface. 
+though Silverstripe wraps these in a PSR-16 interface using the [Psr16Cache](https://github.com/symfony/cache/blob/6.1/Psr16Cache.php) class.
 
 Cache objects are configured via YAML
 and Silverstripe CMS's [dependency injection](/developer_guides/extending/injector) system. 
@@ -72,8 +73,8 @@ Caches are namespaced, which might allow granular clearing of a particular cache
 In our example, the namespace is "myCache", expressed in the service name as
 `Psr\SimpleCache\CacheInterface.myCache`. We recommend the `::class` short-hand to compose the full service name.
  
-Clearing caches by namespace is dependent on the used adapter: While the `FilesystemCache` adapter clears only the namespaced cache,
-a `MemcachedCache` adapter will clear all caches regardless of namespace, since the underlying memcached
+Clearing caches by namespace is dependent on the used adapter: While the `FilesystemAdapter` clears only the namespaced cache,
+a `MemcachedAdapter` adapter will clear all caches regardless of namespace, since the underlying memcached
 service doesn't support this. See "Invalidation" for alternative strategies.
 
 
@@ -175,7 +176,7 @@ $cache = Injector::inst()->get(CacheInterface::class . '.myCache');
 
 // Automatically changes when any group is edited
 $cacheKey = implode(['groupNames', $member->ID, Group::get()->max('LastEdited')]);
-$cache->set($cacheKey, $member->Groups()->column('Title'));        
+$cache->set($cacheKey, $member->Groups()->column('Title'));
 ```
 
 If `?flush=1` is requested in the URL, this will trigger a call to `flush()` on
@@ -187,14 +188,14 @@ interface. Use this interface to trigger `clear()` on your caches.
 Silverstripe CMS tries to identify the most performant cache available on your system
 through the [DefaultCacheFactory](api:SilverStripe\Core\Cache\DefaultCacheFactory) implementation:
 
- * `PhpFilesCache` (PHP 5.6 or PHP 7 with [opcache](http://php.net/manual/en/book.opcache.php) enabled).
+ * `PhpFilesAdapter` (PHP with [opcache](http://php.net/manual/en/book.opcache.php) enabled).
      This cache has relatively low [memory defaults](http://php.net/manual/en/opcache.configuration.php#ini.opcache.memory-consumption).
      We recommend increasing it for large applications, or enabling the
      [file_cache fallback](http://php.net/manual/en/opcache.configuration.php#ini.opcache.file-cache)
- * `ApcuCache` (requires APC) with a `FilesystemCache` fallback (for larger cache volumes)
- * `FilesystemCache` if none of the above is available
+ * `ApcuAdapter` (requires APC) with a `FilesystemAdapter` fallback (for larger cache volumes)
+ * `FilesystemAdapter` if none of the above is available
  
-The library supports various [cache adapters](https://github.com/symfony/cache/tree/5.x/Adapter)
+The library supports various [cache adapters](https://github.com/symfony/cache/tree/6.1/Adapter)
 which can provide better performance, particularly in multi-server environments with shared caches like Memcached.
 
 Since we're using dependency injection to create caches, 
@@ -255,11 +256,11 @@ with the `disable-container` argument.
 ```yaml
 SilverStripe\Core\Injector\Injector:
   Psr\SimpleCache\CacheInterface.myapp:
-    factory: SilverStripe\Core\Cache\CacheFactory     
+    factory: SilverStripe\Core\Cache\CacheFactory
     constructor:
       namespace: "MyInsensitiveData"
       disable-container: true 
-``` 
+```
 
 ## Additional Caches
 
@@ -267,7 +268,4 @@ Unfortunately not all caches are configurable via cache adapters.
 
  * [SSViewer](api:SilverStripe\View\SSViewer) writes compiled templates as PHP files to the filesystem
    (in order to achieve opcode caching on `include()` calls)
- * [ConfigManifest](api:SilverStripe\Core\Manifest\ConfigManifest) is hardcoded to use `FilesystemCache`
- * [ClassManifest](api:SilverStripe\Core\Manifest\ClassManifest) and [ThemeManifest](api:SilverStripe\View\ThemeManifest)
-   are using a custom `ManifestCache`
  * [i18n](api:SilverStripe\i18n\i18n) uses `Symfony\Component\Config\ConfigCacheFactoryInterface` (filesystem-based)
