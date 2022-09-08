@@ -86,17 +86,29 @@ $Foo.Bar
 
 These variables will call a method / field on the object and insert the returned value as a string into the template.
 
-*  `$Foo` will call `$obj->Foo()` (or the field `$obj->Foo`)
-*  `$Foo(param)` will call `$obj->Foo("param")`
-*  `$Foo.Bar` will call `$obj->Foo()->Bar()` 
+* `$Foo` will call `$obj->Foo()` (or the field `$obj->Foo`)
+* `$Foo("param")` will call `$obj->Foo("param")`
+* `$Foo.Bar` will call `$obj->Foo()->Bar()`
 
-If a variable returns a string, that string will be inserted into the template. If the variable returns an object, then
-the system will attempt to render the object through its `forTemplate()` method. If the `forTemplate()` method has not 
-been defined, the system will return an error.
+[info]
+Arguments passed into methods can be any non-array literal type (not just strings), e.g:
+
+* `$Foo(1)` will pass `1` as an int
+* `$Foo(0.5)` will pass `0.5` as a float
+* `$Foo(true)` will pass `true` as a boolean
+* `$Foo(null)` will pass `null` as a null primitive
+* `$Foo("param")`, `$Foo('param')`, and `$Foo(param)` will all pass `'param'` as a string. It is recommended that you always use quotes when passing a string for clarity
+[/info]
 
 [notice]
-If you wish to pass parameters to getter functions, you must use the full method name, e.g. $getThing('param'). Also, parameters must be literals, and cannot be other template variables (`$getThing($variable)` will not work)
+If you wish to pass parameters to getter functions, you must use the full method name. e.g. `$Thing` will call `getThing()`, but to pass a parameter you must use `$getThing('param')`.
+
+Also, parameters must be literals, and cannot be other template variables (`$getThing($variable)` will not work)
 [/notice]
+
+If a variable returns a string, that string will be inserted into the template. If the variable returns an object, then
+the system will attempt to render the object through its `forTemplate()` method. If the `forTemplate()` method has not
+been defined, the system will return an error.
 
 [note]
 For more detail around how variables are inserted and formatted into a template see 
@@ -498,15 +510,16 @@ Given the following structure, it will output the text.
 	Page 'Child 2' is a child of 'MyPage'
 ```
 [notice]
-Additional selectors implicitly change the scope so you need to put additional `$Up` to get what you expect.
+Each `<% loop %>` or `<% with %>` block results in a change of scope, regardless of how the objects are traversed in the opening statement. See the example below:
 [/notice]
 
 ```ss
-<h1>Children of '$Title'</h1>
-<% loop $Children.Sort('Title').First %>
-    <%-- We have two additional selectors in the loop expression so... --%> 
-    <p>Page '$Title' is a child of '$Up.Up.Up.Title'</p>
-<% end_loop %>
+{$Title} <%-- Page title --%>
+<% with $Members.First.Organisation %>
+    {$Title} <%-- Organisation title --%>
+    {$Up.Title} <%-- Page title --%>
+    {$Up.Members.First.Name} <%-- Member name --%>
+<% end_with %>
 ```
 
 #### Top
