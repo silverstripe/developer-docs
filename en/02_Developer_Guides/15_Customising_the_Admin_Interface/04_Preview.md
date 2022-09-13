@@ -62,6 +62,36 @@ string, as it won't be used. You can choose to return a valid edit link, but bec
 complexity of the way these links are generated it would be difficult to do so in a general,
 reusable way.
 
+[hint]
+As of Silverstripe CMS 4.12.0, you can
+[use CMSEditLinkExtension](/developer_guides/model/data_model_and_orm/managing_records#getting-an-edit-link).
+
+```php
+namespace MyProject\Model;
+
+use MyProject\Admin\MyModelAdmin;
+use SilverStripe\Admin\CMSEditLinkExtension;
+use SilverStripe\ORM\CMSPreviewable;
+use SilverStripe\ORM\DataObject;
+
+class MyParentModel extends DataObject implements CMSPreviewable
+{
+    private static string $cms_edit_owner = MyModelAdmin::class;
+
+    private static $extensions = [
+        CMSEditLinkExtension::class,
+    ];
+
+    public function CMSEditLink()
+    {
+        // Get the value returned by the extension
+        return $this->extend('CMSEditLink')[0];
+    }
+}
+```
+
+[/hint]
+
 #### getMimeType
 In ~90% of cases will be 'text/html', but note it is also possible to display (for example)
 an inline PDF document in the preview panel.
@@ -189,14 +219,14 @@ prior to 4.12.0, you'll have to pass that into `Link()` instead.
 The `CMSEditLink()` method is also very easy to implement, because the edit link used by
 `ModelAdmin` is predictable.
 
-From Silverstripe CMS 4.12.0 onwards you can simply call `getEditLinkForManagedDataObject()` on a
+From Silverstripe CMS 4.12.0 onwards you can simply call `getCMSEditLinkForManagedDataObject()` on a
 singleton of the `ModelAdmin` subclass:
 
 ```php
 public function CMSEditLink()
 {
     $admin = MyAdmin::singleton();
-    return $admin->getEditLinkForManagedDataObject($this);
+    return $admin->getCMSEditLinkForManagedDataObject($this);
 }
 ```
 

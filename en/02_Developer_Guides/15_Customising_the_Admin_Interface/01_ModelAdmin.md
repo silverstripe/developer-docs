@@ -151,7 +151,7 @@ if ($admin->isManagedModel(Product::class)) {
     // Get the link to the tab holding the record's gridfield
     $tabLink = $admin->getLinkForModelClass(Product::class);
     // Get the link to edit the record itself
-    $editLink = $admin->getEditLinkForManagedDataObject($someProduct);
+    $editLink = $admin->getCMSEditLinkForManagedDataObject($someProduct);
 }
 // Get the link for a specific tab in the model admin
 $tabLink = $admin->getLinkForModelTab('product-category');
@@ -169,6 +169,8 @@ If you want `getLinkForModelClass()` to return the link for a specific tab, you 
 [getModelTabForModelClass()](api:SilverStripe\Admin\ModelAdmin::getModelTabForModelClass()) method
 for your `ModelAdmin` subclass.
 [/hint]
+
+You can also use the new [CMSEditLinkExtension](api:SilverStripe\Admin\CMSEditLinkExtension) to provide a `CMSEditLink()` method on the record - see [Managing Records](../model/managing_records#getting-an-edit-link).
 
 ## Permissions
 
@@ -311,14 +313,14 @@ class MyAdmin extends ModelAdmin
         return $list;
     }
 
-    public function getEditLinkForManagedDataObject(DataObject $obj): string
+    public function getCMSEditLinkForManagedDataObject(DataObject $obj): string
     {
         if (!$obj->Price) {
             // We don't manage models without a price here, so we can't provide an edit link for them.
             return '';
         }
         // This method is only available from 4.12.0 onwards
-        return parent::getEditLinkForManagedDataObject($obj);
+        return parent::getCMSEditLinkForManagedDataObject($obj);
     }
 }
 ```
