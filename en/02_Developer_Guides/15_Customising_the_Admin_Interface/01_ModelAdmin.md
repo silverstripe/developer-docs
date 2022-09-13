@@ -141,6 +141,35 @@ class MyAdmin extends ModelAdmin
 
 ```
 
+### Edit links for records
+
+As of Silverstripe CMS 4.12.0 it is trivial to get links to the edit form for managed records.
+
+```php
+$admin = MyAdmin::singleton();
+if ($admin->isManagedModel(Product::class)) {
+    // Get the link to the tab holding the record's gridfield
+    $tabLink = $admin->getLinkForModelClass(Product::class);
+    // Get the link to edit the record itself
+    $editLink = $admin->getEditLinkForManagedDataObject($someProduct);
+}
+// Get the link for a specific tab in the model admin
+$tabLink = $admin->getLinkForModelTab('product-category');
+```
+
+[info]
+The [getLinkForModelClass()](api:SilverStripe\Admin\ModelAdmin::getLinkForModelClass()) method returns a link
+for the first tab defined for that class. If you have multiple tabs for a given class (as in the example above)
+it is better to use [getLinkForModelTab()](api:SilverStripe\Admin\ModelAdmin::getLinkForModelTab()) which will
+give you a link for the specific tab you pass in.
+[/info]
+
+[hint]
+If you want `getLinkForModelClass()` to return the link for a specific tab, you can override the
+[getModelTabForModelClass()](api:SilverStripe\Admin\ModelAdmin::getModelTabForModelClass()) method
+for your `ModelAdmin` subclass.
+[/hint]
+
 ## Permissions
 
 Each new `ModelAdmin` subclass creates its' own [permission code](../security), for the example above this would be
@@ -185,6 +214,7 @@ class Category extends DataObject
     }
 }
 ```
+
 ## Custom ModelAdmin CSS menu icons using built in icon font
 
 An extended ModelAdmin class supports adding a custom menu icon to the CMS.
@@ -279,6 +309,16 @@ class MyAdmin extends ModelAdmin
         }
 
         return $list;
+    }
+
+    public function getEditLinkForManagedDataObject(DataObject $obj): string
+    {
+        if (!$obj->Price) {
+            // We don't manage models without a price here, so we can't provide an edit link for them.
+            return '';
+        }
+        // This method is only available from 4.12.0 onwards
+        return parent::getEditLinkForManagedDataObject($obj);
     }
 }
 ```
