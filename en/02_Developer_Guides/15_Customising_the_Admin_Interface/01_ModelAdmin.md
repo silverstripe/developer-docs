@@ -143,11 +143,11 @@ class MyAdmin extends ModelAdmin
 
 ### Edit links for records
 
-As of Silverstripe CMS 4.12.0 it is trivial to get links to the edit form for managed records.
+It is trivial to get links to the edit form for managed records.
 
 ```php
 $admin = MyAdmin::singleton();
-if ($admin->isManagedModel(Product::class)) {
+if (MyAdmin::isManagedModel(Product::class)) {
     // Get the link to the tab holding the record's gridfield
     $tabLink = $admin->getLinkForModelClass(Product::class);
     // Get the link to edit the record itself
@@ -317,7 +317,6 @@ class MyAdmin extends ModelAdmin
             // We don't manage models without a price here, so we can't provide an edit link for them.
             return '';
         }
-        // This method is only available from 4.12.0 onwards
         return parent::getEditLinkForManagedDataObject($obj);
     }
 }
@@ -507,7 +506,7 @@ class MyAdmin extends ModelAdmin
 
         // $gridFieldName is generated from the ModelClass, eg if the Class 'Product'
         // is managed by this ModelAdmin, the GridField for it will also be named 'Product'
-        $gridFieldName = $this->sanitiseClassName($this->modelClass);
+        $gridFieldName = static::sanitiseClassName($this->modelClass);
         $gridField = $form->Fields()->fieldByName($gridFieldName);
 
         // modify the list view.
