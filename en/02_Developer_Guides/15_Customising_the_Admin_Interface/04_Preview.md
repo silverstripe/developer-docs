@@ -29,7 +29,7 @@ current _LeftAndMain_-derived class (e.g. `LeftAndMain_SilverStripeNavigator`).
 ## PHP
 For a DataObject to be previewed using the preview panel there are a few prerequisites:
 
-- The class must implement the `CMSPreviewable` interface
+- The class must implement (or [have an extension](/developer_guides/extending/extensions/) which implements) the [CMSPreviewable](api:SilverStripe\ORM\CMSPreviewable) interface
 - At least one preview state must be enabled for the class
 - There must be some valid URL to use inside the preview panel
 
@@ -178,6 +178,11 @@ public function CMSEditLink()
 }
 ```
 
+[hint]
+Remember, if you're implementing this [in an extension](/developer_guides/extending/extensions/), you'll
+need to replace any `$this->` with `$this->owner->` to get the values from the actual record.
+[/hint]
+
 Let's assume when you display this object on the front end you're just looping through a
 list of items and indirectly calling `forTemplate` using the [`$Me` template variable](../templates/syntax#me).
 This method will be used by the `cmsPreview` action in the `MyAdmin` class to tell the
@@ -243,6 +248,13 @@ class MyAdmin extends ModelAdmin
     }
 }
 ```
+
+[hint]
+If the `ModelAdmin` you want to do this on is in some vendor module, you can apply
+this action in an extension as well! Just remember to use the public methods where
+protected properties are used above (e.g. `$this->urlParams['ID']` would become
+`$this->owner->getUrlParams()['ID']`).
+[/hint]
 
 ### Enabling preview for DataObjects which belong to a page
 If the `DataObject` you want to preview belongs to a specific page, for example
