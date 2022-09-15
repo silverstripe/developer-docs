@@ -15,7 +15,7 @@ As of Silverstripe CMS 4, these changelogs track **recipe** versions (`silverstr
 
 ---
 
-[CHILDREN Only="rc,beta" includeFolders]
+[CHILDREN Only="rc,beta,alpha" includeFolders]
 
 ---
 
