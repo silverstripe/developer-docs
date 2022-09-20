@@ -146,6 +146,26 @@ to be added to your `ModelAdmin`.
 Note: The `if (!$this->isInDB())` check below is important! Without this, the preview panel will redirect you to a 404 page when creating a new object.
 [/warning]
 
+From Silverstripe CMS 4.12.0 onwards `ModelAdmin` provides methods for generating a link
+for the correct model:
+
+```php
+public function PreviewLink($action = null)
+{
+    if (!$this->isInDB()) {
+        return null;
+    }
+    $admin = MyAdmin::singleton();
+    return Controller::join_links(
+        $admin->getLinkForModelClass(static::class),
+        'cmsPreview',
+        $this->ID
+    );
+}
+```
+
+For earlier versions you'll have to sanitise the class name yourself:
+
 ```php
 public function PreviewLink($action = null)
 {
@@ -161,8 +181,27 @@ public function PreviewLink($action = null)
 }
 ```
 
-The `CMSEditLink` is also very easy to build, because the edit link used by `ModelAdmin`s
-is predictable.
+[notice]
+If the `ModelAdmin` uses a tab name other than the class name and you're using a version
+prior to 4.12.0, you'll have to pass that into `Link()` instead.
+[/notice]
+
+The `CMSEditLink()` method is also very easy to implement, because the edit link used by
+`ModelAdmin` is predictable.
+
+From Silverstripe CMS 4.12.0 onwards you can simply call `getEditLinkForManagedDataObject()` on a
+singleton of the `ModelAdmin` subclass:
+
+```php
+public function CMSEditLink()
+{
+    $admin = MyAdmin::singleton();
+    return $admin->getEditLinkForManagedDataObject($this);
+}
+```
+
+For earlier versions you'll have to create the link yourself:
+
 ```php
 public function CMSEditLink()
 {
