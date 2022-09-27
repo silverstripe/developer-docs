@@ -7,7 +7,7 @@ icon: file-code
 # Rich-text editing (WYSIWYG)
 
 Editing and formatting content is the bread and butter of every content management system, which is why Silverstripe CMS 
-has a tight integration with our preferred editor library, [TinyMCE](http://tinymce.com).
+has a tight integration with our preferred editor library, [TinyMCE](https://www.tiny.cloud/docs/tinymce/6/).
 
 On top of the base functionality, we use our own insertion dialogs to ensure you can effectively select and upload 
 files. In addition to the markup managed by TinyMCE, we use [shortcodes](/developer_guides/extending/shortcodes) to store 
@@ -107,13 +107,12 @@ transparently generate the relevant underlying TinyMCE code.
 ```php
 use SilverStripe\Forms\HTMLEditor\HtmlEditorConfig;
 
-HtmlEditorConfig::get('cms')->enablePlugins('media');
+HtmlEditorConfig::get('cms')->enablePlugins('emoticons');
 ```
 
 [notice]
-This utilities the TinyMCE's `PluginManager::load` function under the hood (check the 
-[TinyMCE documentation on plugin loading](http://www.tinymce.com/wiki.php/API3:method.tinymce.AddOnManager.load) for 
-details).
+This utilities the TinyMCE's [external_plugins](https://www.tiny.cloud/docs/tinymce/6/editor-important-options/#external_plugins)
+option under the hood.
 [/notice]
 
 Plugins and advanced themes can provide additional buttons that can be added (or removed) through the
@@ -134,35 +133,48 @@ HtmlEditorConfig::get('cms')->removeButtons('tablecontrols', 'blockquote', 'hr')
 ```
 
 [notice]
-Internally [HtmlEditorConfig](api:SilverStripe\Forms\HTMLEditor\HtmlEditorConfig) uses the TinyMCE's `theme_advanced_buttons` option to configure these. See the 
-[TinyMCE documentation of this option](http://www.tinymce.com/wiki.php/Configuration:theme_advanced_buttons_1_n)
+Internally [HtmlEditorConfig](api:SilverStripe\Forms\HTMLEditor\HtmlEditorConfig) uses the TinyMCE's `toolbar` option to configure these. See the 
+[TinyMCE documentation of this option](https://www.tiny.cloud/docs/tinymce/6/toolbar-configuration-options/#toolbar)
 for more details.
 [/notice]
 
 ### Setting options
 
-TinyMCE behaviour can be affected through its [configuration options](http://www.tinymce.com/wiki.php/Configuration).
+TinyMCE behaviour can be affected through its [configuration options](https://www.tiny.cloud/docs/tinymce/6/basic-setup).
 These options will be passed straight to the editor.
 
 One example of the usage of this capability is to redefine the TinyMCE's [whitelist of HTML
-tags](http://www.tinymce.com/wiki.php/Configuration:extended_valid_elements) - the tags that will not be stripped
+tags](https://www.tiny.cloud/docs/tinymce/6/content-filtering/#extended_valid_elements) - the tags that will not be stripped
 from the HTML source by the editor.
 
 **app/_config.php**
 
 ```php
-// Add start and type attributes for <ol>, add <object> and <embed> with all attributes.
+// Add start and type attributes for <ol>, add <embed> with all attributes.
 HtmlEditorConfig::get('cms')->setOption(
     'extended_valid_elements',
-    'img[class|src|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|usemap],' .
-    'iframe[src|name|width|height|title|align|allowfullscreen|frameborder|marginwidth|marginheight|scrolling],' .
-    'object[classid|codebase|width|height|data|type],' .
+    'img[class|src|alt|title|hspace|vspace|width|height|align|name|usemap|data*],' .
+    'iframe[src|name|width|height|align|frameborder|marginwidth|marginheight|scrolling],' .
+    'object[width|height|data|type],' .
     'embed[src|type|pluginspage|width|height|autoplay],' .
     'param[name|value],' .
     'map[class|name|id],' .
     'area[shape|coords|href|target|alt],' .
     'ol[start|type]'
 );
+```
+
+Note that the `setOption()` _overrides_ any existing value for that option. If you only want to change some small part
+of the existing option value, you can call `getOption()`, modify the returned value, and then pass the result to `setOption()`.
+
+```php
+// Add start and type attributes for <ol>, add <embed> with all attributes - without redeclaring everything else
+$editor = HtmlEditorConfig::get('cms');
+$validElements = $editor->getOption('extended_valid_elements') . ',' .
+    'embed[src|type|pluginspage|width|height|autoplay],' .
+    'ol[start|type]';
+$validElements = str_replace('iframe[', 'iframe[data-*|');
+$editor->setOption( 'extended_valid_elements', $validElements);
 ```
 
 [notice]
@@ -181,7 +193,7 @@ You can enable them through [HtmlEditorConfig::enablePlugins()](api:SilverStripe
 HtmlEditorConfig::get('cms')->enablePlugins(['myplugin' => '../../../app/javascript/myplugin/editor_plugin.js']);
 ```
 
-You can learn how to [create a plugin](http://www.tinymce.com/wiki.php/Creating_a_plugin) from the TinyMCE documentation.
+You can learn how to [create a plugin](https://www.tiny.cloud/docs/tinymce/6/creating-a-plugin/) from the TinyMCE documentation.
 
 ## Image and media insertion
 
@@ -236,9 +248,6 @@ HtmlEditorConfig::get('cms')->setOption('image_size_presets', [
     ]
 ]);
 ```
-
-
-
 
 ## oEmbed: Embedding media through external services
 
@@ -317,17 +326,16 @@ point to localhost to protect your site from cross site request forgery.
 ### Doctypes
 
 Since TinyMCE generates markup, it needs to know which doctype your documents will be rendered in. You can set this 
-through the [element_format](http://www.tinymce.com/wiki.php/Configuration:element_format) configuration variable. It 
-defaults to the stricter 'xhtml' setting, for example rendering self closing tags like `<br/>` instead of `<br>`.
+through the [element_format](https://www.tiny.cloud/docs/tinymce/6/content-filtering/#element_format) configuration variable.
 
-In case you want to adhere to HTML4 instead, use the following configuration:
-
+In case you want to adhere to the stricter xhtml format (for example rendering self closing tags like `<br/>` instead of `<br>`),
+use the following configuration:
 
 ```php
-HtmlEditorConfig::get('cms')->setOption('element_format', 'html');
+HtmlEditorConfig::get('cms')->setOption('element_format', 'xhtml');
 ```
 
-By default, TinyMCE and Silverstripe CMS will generate valid HTML5 markup, but it will strip out HTML5 tags like 
+By default, TinyMCE and Silverstripe CMS will generate valid HTML5 markup, but it will strip out many HTML5 tags like 
 `<article>` or `<figure>`. If you plan to use those, add them to the 
 [valid_elements](http://www.tinymce.com/wiki.php/Configuration:valid_elements) configuration setting.
 
