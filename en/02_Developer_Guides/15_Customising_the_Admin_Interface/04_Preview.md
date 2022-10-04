@@ -62,6 +62,37 @@ string, as it won't be used. You can choose to return a valid edit link, but bec
 complexity of the way these links are generated it would be difficult to do so in a general,
 reusable way.
 
+[hint]
+The easiest way to implement `CMSEditLink()` is by
+[using CMSEditLinkExtension](/developer_guides/model/data_model_and_orm/managing_records#getting-an-edit-link).
+But for completeness, the other examples below show alternative implementations.
+
+```php
+namespace MyProject\Model;
+
+use MyProject\Admin\MyModelAdmin;
+use SilverStripe\Admin\CMSEditLinkExtension;
+use SilverStripe\ORM\CMSPreviewable;
+use SilverStripe\ORM\DataObject;
+
+class MyParentModel extends DataObject implements CMSPreviewable
+{
+    private static string $cms_edit_owner = MyModelAdmin::class;
+
+    private static $extensions = [
+        CMSEditLinkExtension::class,
+    ];
+
+    public function CMSEditLink()
+    {
+        // Get the value returned by the extension
+        return $this->extend('CMSEditLink')[0];
+    }
+}
+```
+
+[/hint]
+
 #### getMimeType
 In ~90% of cases will be 'text/html', but note it is also possible to display (for example)
 an inline PDF document in the preview panel.
@@ -146,8 +177,7 @@ to be added to your `ModelAdmin`.
 Note: The `if (!$this->isInDB())` check below is important! Without this, the preview panel will redirect you to a 404 page when creating a new object.
 [/warning]
 
-From Silverstripe CMS 4.12.0 onwards `ModelAdmin` provides methods for generating a link
-for the correct model:
+`ModelAdmin` provides methods for generating a link for the correct model:
 
 ```php
 public function PreviewLink($action = null)
@@ -164,56 +194,17 @@ public function PreviewLink($action = null)
 }
 ```
 
-For earlier versions you'll have to sanitise the class name yourself:
-
-```php
-public function PreviewLink($action = null)
-{
-    if (!$this->isInDB()) {
-        return null;
-    }
-    $admin = MyAdmin::singleton();
-    return Controller::join_links(
-        $admin->Link(str_replace('\\', '-', $this->ClassName)),
-        'cmsPreview',
-        $this->ID
-    );
-}
-```
-
-[notice]
-If the `ModelAdmin` uses a tab name other than the class name and you're using a version
-prior to 4.12.0, you'll have to pass that into `Link()` instead.
-[/notice]
-
 The `CMSEditLink()` method is also very easy to implement, because the edit link used by
 `ModelAdmin` is predictable.
 
-From Silverstripe CMS 4.12.0 onwards you can simply call `getEditLinkForManagedDataObject()` on a
-singleton of the `ModelAdmin` subclass:
+If you aren't using [CMSEditLinkExtension](/developer_guides/model/data_model_and_orm/managing_records#getting-an-edit-link),
+you can simply call `getCMSEditLinkForManagedDataObject()` on a singleton of the `ModelAdmin` subclass:
 
 ```php
 public function CMSEditLink()
 {
     $admin = MyAdmin::singleton();
-    return $admin->getEditLinkForManagedDataObject($this);
-}
-```
-
-For earlier versions you'll have to create the link yourself:
-
-```php
-public function CMSEditLink()
-{
-    $admin = MyAdmin::singleton();
-    $sanitisedClassname = str_replace('\\', '-', $this->ClassName);
-    return Controller::join_links(
-        $admin->Link($sanitisedClassname),
-        'EditForm/field/',
-        $sanitisedClassname,
-        'item',
-        $this->ID
-    );
+    return $admin->getCMSEditLinkForManagedDataObject($this);
 }
 ```
 

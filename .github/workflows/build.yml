@@ -1,9 +1,11 @@
 name: Build Docs
 on:
+  workflow_dispatch:
   push:
     branches:
       - '3'
       - '4.11'
+      - '5'
 jobs:
   build:
     name: build-docs
