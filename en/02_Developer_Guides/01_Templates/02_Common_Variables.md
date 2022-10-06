@@ -254,7 +254,7 @@ It can be used within templates to generate anchors or other CSS classes.
 <!-- returns <div id="section-offices"> -->
 ```
 
-##  ClassName
+## ClassName
 
 Returns the class of the current object in [scope](syntax#scope) such as `Page` or `HomePage`. The `$ClassName` can be
 handy for a number of uses. A common use case is to add to your `<body>` tag to influence CSS styles and JavaScript
@@ -394,6 +394,18 @@ To customise the markup that `$Breadcrumbs` generates, copy `templates/Breadcrum
  from the `silverstripe/cms` module to your theme (e.g.: `themes/you-theme/templates/BreadcrumbsTemplate.ss`).
  Modify the newly copied template and flush your Silverstripe CMS cache.
 [/info]
+
+## SilverStripeNavigator
+
+The [SilverStripeNavigator](api:SilverStripe\Admin\Navigator\SilverStripeNavigator) can be used on the front end for any page using a [ContentController](api:SilverStripe\CMS\Controllers\ContentController). It provides useful functionality for content authors such as showing whether the page being viewed is in published or draft mode, giving links to swap viewing modes, and a link to the CMS edit form for that page.
+
+[warning]
+It's recommended to only display this for logged on users who have access to the CMS.
+[/warning]
+
+```ss
+<% if $HasPerm('CMS_ACCESS') %>$SilverStripeNavigator<% end_if %>
+```
 
 ## Forms
 

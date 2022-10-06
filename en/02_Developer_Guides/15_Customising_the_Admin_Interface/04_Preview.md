@@ -21,7 +21,7 @@ states necessary for rendering within the entwine properties. It provides
 function calls for transitioning between these states and has the ability to
 update the appearance of the option selectors.
 
-In terms of backend support, it relies on `SilverStripeNavigator` to be rendered
+In terms of backend support, it relies on [SilverStripeNavigator](api:SilverStripe\Admin\Navigator\SilverStripeNavigator) to be rendered
 into the form. _LeftAndMain_ will automatically take care of generating it as long
 as the `*_SilverStripeNavigator` template is found - first segment has to match the
 current _LeftAndMain_-derived class (e.g. `LeftAndMain_SilverStripeNavigator`).
@@ -518,7 +518,7 @@ from the `SilverStripeNavigator`. You can invoke the state change by calling:
 $('.cms-preview').entwine('.ss.preview').changeState('StageLink');
 ```
 
-Note the state names come from `SilverStripeNavigatorItems` class names - thus
+Note the state names come from [SilverStripeNavigatorItem](api:SilverStripe\Admin\Navigator\SilverStripeNagivatorItem) class names - thus
 the _Link_ in their names. This call will also redraw the state selector to fit
 with the internal state. See `AllowedStates` in `.cms-preview` entwine for the
 list of supported states.
