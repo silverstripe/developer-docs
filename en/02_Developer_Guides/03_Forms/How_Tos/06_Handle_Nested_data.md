@@ -207,7 +207,7 @@ rather than relying on form field logic.
 
 Example: Create one or more new teams for existing player
 
-```
+```php
 <?php
 
 use SilverStripe\Control\Controller;
