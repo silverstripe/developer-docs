@@ -411,7 +411,9 @@ class MyController
     if(!$results) return new HTTPResponse("Not found", 404);
 
     // Use HTTPResponse to pass custom status messages
-    $this->getResponse()->setStatusCode(200, "Found " . $results->Count() . " elements");
+    $this->getResponse()
+      ->setStatusCode(200)
+      ->addHeader('X-Status', "Found " . $results->Count() . " elements");
 
     // render all results with a custom template
     $vd = new ViewableData();
