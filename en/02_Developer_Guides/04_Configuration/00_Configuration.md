@@ -184,7 +184,7 @@ the result will be the higher priority false-ish value.
 
 The locations that configuration values are taken from in highest -> lowest priority order are:
 
-- Runtime modifications, ie: any values set via a call to `Config::inst()->update()`
+- Runtime modifications, ie: any values set via a call to `Config::inst()->merge()`
 - The configuration values taken from the YAML files in `_config/` directories (internally sorted in before / after 
 order, where the item that is latest is highest priority)
 - Any static set on the class named the same as the name of the property
