@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - '3'
-      - '4.11'
+      - '4.12'
 jobs:
   build:
     name: build-docs
