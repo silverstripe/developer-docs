@@ -70,6 +70,16 @@ class Page extends SiteTree
 }
 ```
 
+[warning]
+Note that the `$arguments` parameter potentially contains any arbitrary key/value pairs the user has chosen to include.
+It is strongly recommended that you don't directly convert this array into a list of attributes for your final HTML markup
+as that could lead to XSS vulnerabilities in your project.
+
+If you want to use the `$arguments` parameter as a list of attributes for your final HTML markup, it is strongly recommended that you
+pass the array through a filter of allowed arguments using [array_filter()](https://www.php.net/manual/en/function.array-filter.php)
+or similar.
+[/warning]
+
 These parameters are passed to the `MyShortCodeMethod` callback:
 
  - Any parameters attached to the shortcode as an associative array (keys are lower-case).
