@@ -111,13 +111,15 @@ class MyProcess extends Controller
         'index'
     ];
 
-    function index() {
+    function index()
+    {
         set_time_limit(0);
 
-        while(memory_get_usage() < 32*1024*1024) {
-            if($this->somethingToDo()) {
+        while (memory_get_usage() < 32 * 1024 * 1024) {
+            
+            if ($this->somethingToDo()) {
                 $this->doSomething();
-                sleep(1)
+                sleep(1);
             } else {
                 sleep(300);
             }
