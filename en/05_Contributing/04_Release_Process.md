@@ -154,9 +154,8 @@ How to deprecate an API:
 
 * Add a `@deprecated` item to the docblock tag, with a `{@link <class>}` item pointing to the new API to use.
 * Update the deprecated code to throw a [Deprecation::notice()](api:SilverStripe\Dev\Deprecation::notice()) error.
-* Both the docblock and error message should contain the **target version** where the functionality is removed.
-  So, if you're committing the change to a *3.1* minor release, the target version will be *4.0*. 
-* Deprecations should not be committed to patch releases
+* Both the docblock and error message should contain the **version** where the functionality is deprecated from.
+  So, if you're committing the change to a *4.12* minor release, the target version will be *4.12.0*. 
 * Deprecations should only be committed to pre-release branches, ideally before they enter the "beta" phase.
   If deprecations are introduced after this point, their target version needs to be increased by one.
 * Make sure that the old deprecated function works by calling the new function - don't have duplicated code!
@@ -164,45 +163,66 @@ How to deprecate an API:
 * Document the change in the [changelog](/changelogs) for the next release
 * Deprecated APIs can be removed only after developers have had sufficient time to react to the changes. Hence, deprecated APIs should be removed in MAJOR releases only. Between MAJOR releases, leave the code in place with a deprecation warning. 
 * Exceptions to the deprecation cycle are APIs that have been moved into their own module, and continue to work with the new minor release. These changes can be performed in a single minor release without a deprecation period.
-* Add a `warnings` entry to the module's `.upgrade.yml` file so the
-[Silverstripe Upgrader can flag deprecated APIs](/upgrading/upgrading_module#upgradeyml).  
+
+When deprecating a method:
+
+* Add the following docblock `@deprecated 1.2.3 Use anotherMethod() instead`
+* Deprecation::notice('1.2.3', 'Use anotherMethod() instead'); to the top of the method
+
+When deprecating a class:
+
+* Add the following docblock `@deprecated 1.2.3 Use AnotherClass instead`
+* Add `Deprecation::notice('1.2.3', 'Use AnotherClass instead', SCOPE_CLASS);` to the top of `__construct()`
+
+When deprecating config:
+
+* Add the following docblock `@deprecated 1.2.3 Use different_config instead`
+
+If there is no immediate replacement for deprecated code that is being called, either because the replacement is not available until the next major version, or because there is not a plan for there to be a replacement, wrap the call to the deprecated code in `Deprecation::withNoReplacement()` e.g.
+
+```php
+Deprecation::withNoReplacement(function () {
+  $this->myDeprecatedMethod();
+});
+```
+
+For any unit tests using the deprecated method/class/config, add the following the the top of the unit test. This ensures that deprecated code is still supported as usual when Deprecation are not enabled, though the tests are skipped whenever you are testing to see if Deprecated code is still be called.
+```php
+if (Deprecation::isEnabled()) {
+    $this->markTestSkipped('Test calls deprecated code');
+}
+```
 
 Here's an example for replacing `Director::isDev()` with a (theoretical) `Env::is_dev()`:
 
 ```php
 /**
  * Returns true if your are in development mode
- * @deprecated 4.0 Use {@link Env::is_dev()} instead.
+ * @deprecated 4.12.0 Use Env::is_dev() instead.
  */
 public function isDev() 
 {
-    Deprecation::notice('4.0', 'Use Env::is_dev() instead');
+    Deprecation::notice('4.12.0', 'Use Env::is_dev() instead');
     return Env::is_dev();
 }
 ```
 
-This change could be committed to a minor release like *3.2.0*, and remains deprecated in all subsequent minor releases
-(e.g. *3.3.0*, *3.4.0*), until a new major release (e.g. *4.0.0*), at which point it gets removed from the codebase. 
+This change could be committed to a minor release like *4.12.0*, and remains deprecated in all subsequent minor releases
+(e.g. *4.13.0*), until a new major release (e.g. *5.0.0*), at which point it gets removed from the codebase. 
 
-Deprecation notices are enabled by default on dev environment, but can be
-turned off via either `.env` or in your _config.php. Deprecation
-notices are always disabled on both live and test.
-
-
-`app/_config.php`
-
-
-
-```php
-Deprecation::set_enabled(false);
-```
+Deprecation notices aren't enabled by default.  They can be turned on for dev environments with one of the following methods:
 
 `.env`
-
 ```
-SS_DEPRECATION_ENABLED="0"
+SS_DEPRECATION_ENABLED=true
 ```
 
+`app/_config.php`
+```php
+Deprecation::enable();
+```
+
+To test that deprecated code is no longer being called, run code via CI in an installer/kitchen-sink project that has deprecations enabled. Then view the CI output in the "Run tests" of the github actions CI job and/or view the contents of silverstripe.log in the github actions CI artifact to see if there are deprecation warnings. There should be zero deprecation warnings.
 
 ## Security Releases
 
