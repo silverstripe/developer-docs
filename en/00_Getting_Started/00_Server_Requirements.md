@@ -20,7 +20,7 @@ the server to update templates, website logic, and perform upgrades or maintenan
 
 Use [phpinfo()](http://php.net/manual/en/function.phpinfo.php) to inspect your configuration.
 
-Silverstripe CMS tracks the official [PHP release support timeline](https://www.php.net/supported-versions.php). When a PHP version reaches end-of-life, Silverstripe CMS drops support for it in the next minor release. 
+Silverstripe CMS tracks the official [PHP release support timeline](https://www.php.net/supported-versions.php). When a PHP version reaches end-of-life, Silverstripe CMS drops support for it in the next minor release.
 
 ## Database
 
@@ -292,7 +292,6 @@ Using the code snippet above also tests that the ability to set the "from" addre
 
 See the [email section](/developer_guides/email) for further details, including how to set the administrator "from" email address, change the `sendmail` binary location and how to use SMTP or other mail transports instead of sendmail.
 
-
 ## PHP Requirements for older Silverstripe CMS releases {#php-support}
 
 Silverstripe CMS's PHP support has changed over time and if you are looking to upgrade PHP on your Silverstripe CMS site, this
@@ -310,14 +309,13 @@ From Silverstripe CMS 5 onwards, the [Silverstripe CMS major release policy](/pr
 
 ## CMS browser requirements
 
-Silverstripe CMS supports the following web browsers:
+Silverstripe CMS uses [browserslist](https://browsersl.ist) default settings to determine which browsers are supported. Note that this only applies for the CMS itself - you can support whatever browsers you want to in the front end of your website.
 
-* Google Chrome
-* Microsoft Edge
-* Mozilla Firefox
+These settings ensure support for the latest 2 versions of major browsers, plus all versions of those browsers with at least 0.5% worldwide market share, plus the [Firefox Extended Support Release](https://support.mozilla.org/en-US/kb/choosing-firefox-update-channel). They explicitly exclude browser versions which have reached end-of-life.
 
-We aim to provide satisfactory experiences in Apple Safari. Silverstripe CMS works well across Windows, Linux, and Mac
-operating systems.
+You can use [browserlist's "check compatible browsers" tool](https://browsersl.ist/#q=defaults) to see specifically which versions of which browsers are supported by these settings.
+
+Silverstripe CMS works well across Windows, Linux, and Mac operating systems.
 
 ## End user requirements
 

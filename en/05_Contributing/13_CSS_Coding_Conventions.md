@@ -10,10 +10,6 @@ iconBrand: css3
 This document provides guidelines for code formatting to developers contributing
 to SilverStripe. It applies to all CSS/Sass files in the SilverStripe core modules.
 
-In 2016, SilverStripe started a rewrite of the styles of the CMS interface.
-This rewrite is work-in-progress so code written prior to this
-rewrite might not follow these conventions, and is placed in a `legacy/` folder structure.
-
 ## Browser support
 
 Check our [requirements](/getting_started/server_requirements) documentation.
@@ -28,28 +24,27 @@ We use [Bootstrap 4](https://getbootstrap.com/) styles where possible.
 We follow the [AirBnB CSS Conventions](https://github.com/airbnb/css)
 and the [BEM](http://getbem.com/) methodology (block-element-modifier).
 
-Because we use [Bootstrap 4](https://getbootstrap.com/) which 
-does not follow [BEM](http://getbem.com/) naming convention there will be 
-a lot of places where class names voilate BEM. 
-However, please note that they are not a indicator of how to name classes. 
+Because we use [Bootstrap 4](https://getbootstrap.com/) which
+does not follow [BEM](http://getbem.com/) naming convention there will be
+a lot of places where class names voilate BEM.
+However, please note that they are not a indicator of how to name classes.
 Use BEM conventions where possible.
 
 ## Linting
 
 We use [sass-lint](https://github.com/sasstools/sass-lint) to ensure all new SCSS
 written complies with the rules below. It will be provided as an npm dev dependency.
-There are also quite a few [sass-lint IDE integrations](https://github.com/sasstools/sass-lint#ide-integration) 
+There are also quite a few [sass-lint IDE integrations](https://github.com/sasstools/sass-lint#ide-integration)
 which highlight any linting errors right in your code.
 
 We strongly recommend installing one of these into the editor of your choice, to
 avoid the frustration of failed pull requests. You can run the checks on console
-via `yarn run lint`.
+via `yarn lint` (see [Build Tooling](/contributing/build_tooling)).
 
 ## File and Folder Naming
 
 - All frontend files (CSS, JavaScript, images) should be placed in
   a `client/` folder on the top level of the module
-- Frontend files relating to the `framework` CMS UI should be placed in `admin/client`
 - The `client/src/components` folder should contain only reusable components
   (e.g. Button, Accordion). Presentation of these components should not rely on
   the markup context they're embedded in.
@@ -64,14 +59,13 @@ via `yarn run lint`.
 ## Icons and Graphics
 
 Most graphics used in the CMS are vector based, and stored as generated
-webfonts in `admin/client/src/font`, which also contains a HTML reference. 
+webfonts in `admin/client/src/font`, which also contains a HTML reference.
 The webfonts are generated through the [Fontastic](http://app.fontastic.me) service.
 If you need new icons to be added, please ping us on Github.  
 
 ## Legacy conventions
 
-CSS written prior to SilverStripe 4.0 is not following the conventions outlined above.
-It is contained in a `legacy/` folder structure. If modifying these styles,
+There is some legacy code that may not follow the conventions outlined above. If you modify any of these,
 consider porting them over into the new structure. Otherwise, follow these conventions:
 
 - Class naming: Use the `cms-` class prefix for major components in the cms interface,
