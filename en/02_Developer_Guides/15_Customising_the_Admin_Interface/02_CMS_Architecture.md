@@ -17,44 +17,8 @@ built on open standards and common libraries, so lots of the techniques should
 feel familiar to you. This is just a quick run down to get you started
 with some special conventions.
 
-For a more practical-oriented approach to CMS customizations, refer to the
+For a more practical-oriented approach to CMS customizations, refer to
 [Howto: Extend the CMS Interface](/developer_guides/customising_the_admin_interface/how_tos/extend_cms_interface).
-
-## Installation
-
-In order to contribute to the core frontend code, you need [NodeJS](https://nodejs.org/).
-This will install the package manager necessary to download frontend requirements.
-Once NodeJS is ready to go, you can download those requirements:
-
-```
-(cd framework && npm install)
-```
-
-Note: For each core module (e.g. `framework` and `cms`), a separate `npm install` needs to be run.
-
-## Building
-
-All "source" files for the frontend logic are located in `vendor/silverstripe/framework/client/src`.
-The base CMS interface has its own folder with `vendor/silverstripe/framework/admin/client/src`.
-If you have the `cms`  module installed, there's additional files in `vendor/silverstripe/cms/client/src`.
-
-All build commands are run through `npm`. You can check the module's
-`package.json` for available commands.
-Under the hood, files are built through [Webpack](https://webpack.github.io/).
-You'll need to run at least the `build` and `css` commands.
-Check our [build tooling](/contributing/build_tooling) docs for more details. 
-
-
-```
-cd vendor/silverstripe/admin && yarn build
-```
-
-## Coding Conventions
-
-Please follow our [CSS](/contributing/css_coding_conventions)
-and [JavaScript](/contributing/javascript_coding_conventions)
-coding conventions.
-
 
 ## Pattern library
 
@@ -256,9 +220,9 @@ If you're developing new functionality in React powered sections please refer to
 [ReactJS in Silverstripe CMS](./How_Tos/Extend_CMS_Interface.md#reactjs-in-silverstripe).
 
 [jQuery.entwine](https://github.com/hafriedlander/jquery.entwine) is a thirdparty library
-which allows us to attach behaviour to DOM elements in a flexible and structured mannger.
-It replaces the `behaviour.js` library used in previous versions of the CMS interface.
-See [JavaScript Development](/developer_guides/customising_the_admin_interface/javascript_development) for more information on how to use it.
+which allows us to attach behaviour to DOM elements in a flexible and structured manner.
+See [jQuery Entwine](/developer_guides/customising_the_admin_interface/jquery_entwine) for more information on how to use it.
+
 In the CMS interface, all entwine rules should be placed in the "ss" entwine namespace.
 If you want to call methods defined within these rules outside of entwine logic,
 you have to use this namespace, e.g. `$('.cms-menu').entwine('ss').collapse()`.
@@ -267,10 +231,6 @@ Note that only functionality that is custom to the CMS application needs to be b
 in jQuery.entwine, we're trying to reuse library code wherever possible.
 The most prominent example of this is the usage of [jQuery UI](http://jqueryui.com) for
 dialogs and buttons.
-
-The CMS includes the jQuery.entwine inspector. Press Ctrl+` ("backtick") to bring down the inspector.
-You can then click on any element in the CMS to see which entwine methods are bound to
-any particular element.
 
 ## JavaScript and CSS dependencies via Requirements and Ajax
 
@@ -284,9 +244,9 @@ Due to the procedural and selector-driven style of UI programming in jQuery.entw
 it can be difficult to find the piece of code responsible for a certain behaviour.
 Therefore it is important to adhere to file naming conventions.
 E.g. a feature only applicable to `ModelAdmin` should be placed in
-`vendor/silverstripe/framework/admin/javascript/src/ModelAdmin.js`, while something modifying all forms (including ModelAdmin forms)
-would be better suited in `vendor/silverstripe/framework/admin/javascript/src/LeftAndMain.EditForm.js`.
-Selectors used in these files should mirrow the "scope" set by its filename,
+`vendor/silverstripe/framework/admin/javascript/src/legacy/ModelAdmin.js`, while something modifying all forms (including ModelAdmin forms)
+would be better suited in `vendor/silverstripe/framework/admin/javascript/src/legacy/LeftAndMain.EditForm.js`.
+Selectors used in these files should mirror the "scope" set by its filename,
 so don't place a rule applying to all form buttons inside `ModelAdmin.js`.
 
 The CMS relies heavily on Ajax-loading of interfaces, so each interface and the JavaScript
@@ -297,7 +257,7 @@ and [jQuery.delegate](http://api.jquery.com/delegate/), so takes care of dynamic
 
 Most interfaces will require their own JavaScript and CSS files, so the Ajax loading has
 to ensure they're loaded unless already present. A custom-built library called
-`jQuery.ondemand` (located in `vendor/silverstripe/framework/thirdparty`) takes care of this transparently -
+`jQuery.ondemand` (located in `vendor/silverstripe/admin/thirdparty`) takes care of this transparently -
 so as a developer just declare your dependencies through the [Requirements](api:SilverStripe\View\Requirements) API.
 
 ## Client-side routing
@@ -314,15 +274,15 @@ window refresh. We us the below systems in combination to achieve this:
     CMS sections. This provides a native react-controlled bootstrapping and route handling
     system that works most effectively with react components. Unlike page.js routes, these
     may be lazy-loaded or registered during the lifetime of the application on the
-    `window.ss.routeRegister` wrapper. The `history` object is passed to react components.
+    `window.ss.routeRegister` wrapper.
 
 ### Registering routes
 
-### page.js (non-react) CMS sections
+#### page.js (non-react) CMS sections
 
 CMS sections that rely on entwine, page.js, and normal ajax powered content loading mechanisms
-(such as modeladmin) will typically have a single wildcard route that initiates the pajax loading
-mechanism.
+(such as modeladmin) will typically have a single wildcard route that initiates the [pjax loading
+mechanism](#pjax).
 
 The main place that routes are registered are via the `LeftAndMain::getClientConfig()` overridden method,
 which by default registers a single 'url' route. This will generate a wildcard route handler for each CMS
@@ -338,13 +298,18 @@ can be used to pass state between route handlers and inspect the current
 history state. The `next` function invokes the next matching route. If `next`
 is called when there is no 'next' route, a page refresh will occur.
 
-### React router CMS sections
+#### React router CMS sections
 
 Similarly to page.js powered routing, the main point of registration for react routing
 sections is the `LeftAndMain::getClientConfig()` overridden method, which controls the main
-routing mechanism for this section. However, there are two major differences:
+routing mechanism for this section. However, there are three major differences:
 
-Firstly, `reactRouter` must be passed as a boolean flag to indicate that this section is
+Firstly, where the page.js router uses the full path (e.g. 'admin/pages') as its route,
+react-router uses relative paths with nested routes. The main route is, by default, 'admin',
+which means the 'admin/pages' path would declare its route as 'pages'. This is added against the
+`reactRoutePath` key in the array returned from `LeftAndMain::getClientConfig()`.
+
+Secondly, `reactRouter` must be passed as a boolean flag to indicate that this section is
 controlled by the react section, and thus should suppress registration of a page.js route
 for this section.
 
@@ -352,17 +317,16 @@ for this section.
 public function getClientConfig() 
 {
     return array_merge(parent::getClientConfig(), [
-        'reactRouter' => true
+        'reactRouter' => true,
     ]);
 }
 ```
 
-Secondly, you should ensure that your react CMS section triggers route registration on the client side
-with the reactRouteRegister component. This will need to be done on the `DOMContentLoaded` event
-to ensure routes are registered before window.load is invoked. 
+Lastly, you should ensure that your react CMS section triggers route registration on the client side
+with the `reactRouteRegister` component. This will need to be done on the `DOMContentLoaded` event
+to ensure routes are registered before window.load is invoked.
 
 ```js
-import { withRouter } from 'react-router';
 import ConfigHelpers from 'lib/Config';
 import reactRouteRegister from 'lib/ReactRouteRegister';
 import MyAdmin from './MyAdmin';
@@ -371,8 +335,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const sectionConfig = ConfigHelpers.getSection('MyAdmin');
 
     reactRouteRegister.add({
-        path: sectionConfig.url,
-        component: withRouter(MyAdminComponent),
+        path: sectionConfig.reactRoutePath,
+        component: MyAdminComponent,
         childRoutes: [
             { path: 'form/:id/:view', component: MyAdminComponent },
         ],
@@ -383,15 +347,15 @@ document.addEventListener('DOMContentLoaded', () => {
 Child routes can be registered post-boot by using `ReactRouteRegister` in the same way.
 
 ```js
-// Register a nested url under `sectionConfig.url`
+// Register a nested url under `sectionConfig.reactRoutePath`
 const sectionConfig = ConfigHelpers.getSection('MyAdmin');
 reactRouteRegister.add({
     path: 'nested',
     component: NestedComponent,
-}, [ sectionConfig.url ]);
+}, [ sectionConfig.reactRoutePath ]);
 ```
 
-## PJAX: Partial template replacement through Ajax
+## PJAX: Partial template replacement through Ajax {#pjax}
 
 Many user interactions can change more than one area in the CMS.
 For example, editing a page title in the CMS form changes it in the page tree
@@ -447,7 +411,7 @@ class MyAdmin extends LeftAndMain
 <a href="{$AdminURL}myadmin" class="cms-panel-link" data-pjax-target="MyRecordInfo,Breadcrumbs">
     Update record info
 </a>
-```    
+```
 
 ```ss
 // MyRecordInfo.ss
@@ -458,14 +422,14 @@ class MyAdmin extends LeftAndMain
 
 A click on the link will cause the following (abbreviated) ajax HTTP request:
 
-```
+```HTTP
 GET /admin/myadmin HTTP/1.1
 X-Pjax:MyRecordInfo,Breadcrumbs
 X-Requested-With:XMLHttpRequest
 ```
 ... and result in the following response:
 
-```
+```JSON
 {"MyRecordInfo": "<div...", "CMSBreadcrumbs": "<div..."}
 ```
 Keep in mind that the returned view isn't always decided upon when the Ajax request
@@ -480,7 +444,7 @@ tracked in the browser history, use the `pjax` attribute on the state data.
 $('.cms-container').loadPanel(ss.config.adminUrl+'pages', null, {pjax: 'Content'});
 ```
 
-## Loading lightweight PJAX fragments
+### Loading lightweight PJAX fragments
 
 Normal navigation between URLs in the admin section of the Framework occurs through `loadPanel` and `submitForm`.
 These calls make sure the HTML5 history is updated correctly and back and forward buttons work. They also take
@@ -577,7 +541,7 @@ Built-in headers are:
  * `X-Title`: Set window title (requires URL encoding)
  * `X-Controller`: PHP class name matching a menu entry, which is marked active
  * `X-ControllerURL`: Alternative URL to record in the HTML5 browser history
- * `X-Status`: Extended status information, used for an information popover.
+ * `X-Status`: Extended status information, used for an information popover (aka "toast" message).
  * `X-Reload`: Force a full page reload based on `X-ControllerURL`
 
 ## Special Links

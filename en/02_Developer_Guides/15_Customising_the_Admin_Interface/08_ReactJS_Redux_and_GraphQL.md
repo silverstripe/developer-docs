@@ -6,9 +6,11 @@ iconBrand: react
 
 # Introduction to the "React" layer
 
-Some admin modules render their UI with React, a popular Javascript library created by Facebook. 
-For these sections, rendering happens via client side scripts that create and inject HTML 
-declaratively using data structures. 
+Some admin modules render their UI with React, a popular Javascript library created by Facebook.
+For these sections, rendering happens via client side scripts that create and inject HTML
+declaratively using data structures.
+
+Even within sections that are _not_ primarily rendered in react, several React components may be injected into the DOM.
 
 There are some several members of this ecosystem that all work together to provide a dyanamic UI. They include:
 * [ReactJS](https://facebook.github.io/react/) - A Javascript UI library
@@ -99,7 +101,7 @@ engine.
 
 [GraphQL](http://graphql.org/learn/) is a strictly-typed query language that allows you to describe what data you want to fetch from your API. Because it is based on types, it is self-documenting and predictable. Further, it's structure lends itself nicely to fetching nested objects. Here is an example of a simple GraphQL query:
 
-```
+```graphql
 query GetUser($ID: Int!) {
     user {
         name
@@ -149,7 +151,17 @@ documentation available all over the web. We recommend:
 * [Getting Started with Redux](https://egghead.io/courses/getting-started-with-redux)
 * [The React Apollo docs](http://dev.apollodata.com/react/)
 
-# The Injector API
+## Build tools and using Silverstripe React components {#using-cms-react-components}
+
+Silverstripe CMS includes react, redux, graphql, apollo, and many other thirdparty dependencies already, which are exposed using [webpack's expose-loader plugin](https://webpack.js.org/loaders/expose-loader/) for you to use as [webpack externals](https://webpack.js.org/configuration/externals/).
+
+There are also a lot of React components and other custom functionality (such as the injector, mentioned below) available for reuse. These are exposed in the same way.
+
+The recommended way to access these dependencies is by using the [@silverstripe/webpack-config npm package](https://www.npmjs.com/package/@silverstripe/webpack-config). The documentation in the readme for that package explains how to use it.
+
+If you are not using webpack to transpile your javascript, see if your build tooling has an equivalent to webpack's `externals` configuration. Alternatively, instead of `import`ing these dependencies, you can access them on the `window` object (for example the injector module is exposed as `window.Injector`).
+
+## The Injector API
 
 Much like Silverstripe CMS's [Injector API](../../extending/injector) in PHP,
 the client-side framework has its own implementation of dependency injection 
@@ -166,7 +178,7 @@ The frontend Injector works a bit differently than its backend counterpart. Inst
 Middleware works a lot like a decorator. It doesn't alter the original API of the service,
 but it can augment it with new features and concerns. This has the inherent advantage of allowing all thidparty code to have an influence over the behaviour, state, and UI of a component.
 
-## A simple middleware example
+### A simple middleware example
 
 Let's say you have an application that features error logging. By default, the error logging service simply outputs to `console.error`. But you want to customise it to send errors to a thirdparty service. For this, you could use middleware to augment the default functionality of the logger.
 
@@ -224,8 +236,7 @@ const addLoggingMiddleware = (next) => (error) => {
 }
 ```
 
-
-## Registering new services to the Injector
+### Registering new services to the Injector
 
 If you've created a module using React, it's a good idea to afford other developers an 
 API to enhance those components, forms, and state. To do that, simply register them with `Injector`.
@@ -256,7 +267,7 @@ you can pass `{ force: true }` as the third argument to the `register()` functio
 [/alert]
 
 
-## Transforming services using middleware
+### Transforming services using middleware
 
 Now that the services are registered, other developers can customise your services with `Injector.transform()`.
 
@@ -279,7 +290,7 @@ Much like the configuration layer, we need to specify a name for this transforma
 The second parameter of the `transform` argument is a callback which receives an `updater`object. It contains four functions: `component()`, `reducer()`, `form.alterSchema()` and `form.addValidation()`. We'll cover all of these in detail functions in detail further into the document, but briefly, these update functions allow you to mutate the DI container with a wrapper for the service. Remember, this function does not _replace_
 the service -- it enhances it with new functionality.
 
-### Helpful tip: Name your component middleware
+#### Helpful tip: Name your component middleware
 
 Since multiple enhancements can be applied to the same component, it will be really
 useful for debugging purposes to reveal the names of each enhancement on the `displayName` of
@@ -299,7 +310,7 @@ useful for debugging purposes to reveal the names of each enhancement on the `di
  ```
 
 
-## Controlling the order of transformations
+### Controlling the order of transformations
 
 Sometimes, it's critical to ensure that your customisation happens after another one has been executed. To afford you control over the ordering of transforms, Injector allows `before` and `after` attributes as metadata for the transformation.
 
@@ -328,7 +339,7 @@ Injector.transform(
 );
 ```
 
-### Using the * flag
+#### Using the * flag
 
 If you really want to be sure your customisation gets loaded first or last, you can use 
 `*` as your `before` or `after` reference. 
@@ -349,7 +360,7 @@ The following are not allowed:
 
 [/info]
 
-## Injector context
+### Injector context
 
 Because so much of UI design depends on context, dependency injection in the frontend is not necessarily universal. Instead, services are fetched with context.
 
@@ -384,7 +395,7 @@ Injector.transform('my-transform', (updater) => {
  category (Name = 'Title'). You can use Injector to hook into the level of specificity that you want.
 
 
-# Customising React components with Injector
+## Customising React components with Injector
 
 When middleware is used to customise a React component, it is known as a [higher order component](https://facebook.github.io/react/docs/higher-order-components.html).
 
