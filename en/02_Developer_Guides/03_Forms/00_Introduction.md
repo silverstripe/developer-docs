@@ -150,13 +150,13 @@ $fields = $form->Fields();
 $fields->push(TextField::create(/* ... */));
 
 // insert a field before another one
-$fields->insertBefore(TextField::create(/* ... */), 'Email');
+$fields->insertBefore('Email', TextField::create(/* ... */));
 
 // insert a field after another one
-$fields->insertAfter(TextField::create(/* ... */), 'Name');
+$fields->insertAfter('Name', TextField::create(/* ... */));
 
 // insert a tab before the main content tab (used to position tabs in the CMS)
-$fields->insertBefore(Tab::create(/* ... */), 'Main');
+$fields->insertBefore('Main', Tab::create(/* ... */));
 // Note: you need to create and position the new tab prior to adding fields via addFieldToTab()
 ```
 
