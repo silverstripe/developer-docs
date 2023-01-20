@@ -76,27 +76,44 @@ SilverStripe\Admin\AdminRootController:
 ---
 ```
 
-When extending the CMS or creating modules, you can take advantage of various functions that will return the configured admin URL (by default 'admin/' is returned):
+When extending the CMS or creating modules, you can take advantage of various functions that will return the configured admin URL (by default 'admin' is returned):
+
+[warning]
+Depending on your configuration, the returned value _may or may not_ include a trailing slash. The default is to not include one, but you should take care to not
+explicitly expect one scenario or the other.
+
+In PHP you can use [Controller::join_links()](api:SilverStripe\Control\Controller::join_links()) or pass an argument to
+[AdminRootController::admin_url()](api:SilverStripe\Admin\AdminRootController::admin_url()) to ensure only one `/` character separates the admin URL from the rest of
+your path.
+
+In javascript, if you are using [@silverstripe/webpack-config](https://www.npmjs.com/package/@silverstripe/webpack-config), you can use the `joinUrlPaths()` utility
+function.
+[/warning]
 
 In PHP you should use:
 
-
 ```php
 SilverStripe\Admin\AdminRootController::admin_url()
+// This method can take an argument:
+SilverStripe\Admin\AdminRootController::admin_url('more/path/here')
 ```
 
 When writing templates use:
 
-
 ```ss
 $AdminURL
+<%-- This is actually a method that can take an argument: --%>
+$AdminURL('more/path/here')
 ```
 
 And in JavaScript, this is available through the `ss` namespace
 
-
 ```js
 ss.config.adminUrl
+
+// You can use this if you use @silverstripe/webpack-config
+import { joinUrlPaths } from 'lib/urls';
+joinUrlPaths(ss.config.adminUrl, 'more/path/here')
 ```
 
 ### Multiple Admin URL and overrides
@@ -403,12 +420,12 @@ class MyAdmin extends LeftAndMain
 }
 ```
 
-```js
+```ss
 // MyAdmin.ss
 <% include SilverStripe\\Admin\\CMSBreadcrumbs %>
 <div>Static content (not affected by update)</div>
 <% include MyRecordInfo %>
-<a href="{$AdminURL}myadmin" class="cms-panel-link" data-pjax-target="MyRecordInfo,Breadcrumbs">
+<a href="$Link" class="cms-panel-link" data-pjax-target="MyRecordInfo,Breadcrumbs">
     Update record info
 </a>
 ```
@@ -441,7 +458,10 @@ on links or through the `X-Pjax` header. For firing off an Ajax request that is
 tracked in the browser history, use the `pjax` attribute on the state data.
 
 ```js
-$('.cms-container').loadPanel(ss.config.adminUrl+'pages', null, {pjax: 'Content'});
+// You can use this if you use @silverstripe/webpack-config
+import { joinUrlPaths } from 'lib/urls';
+
+$('.cms-container').loadPanel(joinUrlPaths(ss.config.adminUrl, 'pages'), null, {pjax: 'Content'});
 ```
 
 ### Loading lightweight PJAX fragments
@@ -459,9 +479,12 @@ In this case you can use the `loadFragment` call supplied by `LeftAndMain.js`. Y
 parallel as you want. This will not disturb the main navigation.
 
 ```js
-$('.cms-container').loadFragment(ss.config.adminUrl+'foobar/', 'Fragment1');
-$('.cms-container').loadFragment(ss.config.adminUrl+'foobar/', 'Fragment2');
-$('.cms-container').loadFragment(ss.config.adminUrl+'foobar/', 'Fragment3');
+// You can use this if you use @silverstripe/webpack-config
+import { joinUrlPaths } from 'lib/urls';
+
+$('.cms-container').loadFragment(joinUrlPaths(ss.config.adminUrl, 'foobar/'), 'Fragment1');
+$('.cms-container').loadFragment(joinUrlPaths(ss.config.adminUrl, 'foobar/'), 'Fragment2');
+$('.cms-container').loadFragment(joinUrlPaths(ss.config.adminUrl, 'foobar/'), 'Fragment3');
 ```
 
 The ongoing requests are tracked by the PJAX fragment name (Fragment1, 2, and 3 above) - resubmission will
@@ -470,7 +493,10 @@ result in the prior request for this fragment to be aborted. Other parallel requ
 You can also load multiple fragments in one request, as long as they are to the same controller (i.e. URL):
 
 ```js
-$('.cms-container').loadFragment(ss.config.adminUrl+'foobar/', 'Fragment2,Fragment3');
+// You can use this if you use @silverstripe/webpack-config
+import { joinUrlPaths } from 'lib/urls';
+
+$('.cms-container').loadFragment(joinUrlPaths(ss.config.adminUrl, 'foobar/'), 'Fragment2,Fragment3');
 ```
 
 This counts as a separate request type from the perspective of the request tracking, so will not abort the singular
@@ -494,8 +520,11 @@ You can hook up a response handler that obtains all the details of the XHR reque
 Alternatively you can use the jQuery deferred API:
 
 ```js
+// You can use this if you use @silverstripe/webpack-config
+import { joinUrlPaths } from 'lib/urls';
+
 $('.cms-container')
-    .loadFragment(ss.config.adminUrl+'foobar/', 'Fragment1')
+    .loadFragment(joinUrlPaths(ss.config.adminUrl, 'foobar/'), 'Fragment1')
     .success(function(data, status, xhr) {
         // Say 'success'!
         alert(status);
@@ -700,12 +729,12 @@ and load the HTML content into the main view. Example:
 <div id="my-tab-id" class="cms-tabset" data-ignore-tab-state="true">
     <ul>
         <li class="<% if MyActiveCondition %> ui-tabs-active<% end_if %>">
-            <a href="{$AdminURL}mytabs/tab1" class="cms-panel-link">
+            <a href="$AdminURL('mytabs/tab1')" class="cms-panel-link">
                 Tab1
             </a>
         </li>
         <li class="<% if MyActiveCondition %> ui-tabs-active<% end_if %>">
-            <a href="{$AdminURL}mytabs/tab2" class="cms-panel-link">
+            <a href="$AdminURL('mytabs/tab2')" class="cms-panel-link">
                 Tab2
             </a>
         </li>
@@ -713,7 +742,7 @@ and load the HTML content into the main view. Example:
 </div>
 ```
 
-The URL endpoints `{$AdminURL}mytabs/tab1` and `{$AdminURL}mytabs/tab2`
+The URL endpoints `$AdminURL('mytabs/tab1')` and `$AdminURL('mytabs/tab2')`
 should return HTML fragments suitable for inserting into the content area,
 through the `PjaxResponseNegotiator` class (see above).
 

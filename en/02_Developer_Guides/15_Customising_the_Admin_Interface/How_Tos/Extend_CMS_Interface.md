@@ -39,10 +39,10 @@ the CMS logic. Add a new section into the `<ul class="cms-menu__list">`
 <ul class="cms-menu-list">
     <!-- ... -->
     <li class="bookmarked-link first">
-        <a href="{$AdminURL}pages/edit/show/1">Edit "My popular page"</a>
+        <a href="$AdminURL('pages/edit/show/1')">Edit "My popular page"</a>
     </li>
     <li class="bookmarked-link last">
-        <a href="{$AdminURL}pages/edit/show/99">Edit "My other page"</a>
+        <a href="$AdminURL('pages/edit/show/99')">Edit "My other page"</a>
     </li>
 </ul>
 ...
@@ -172,7 +172,7 @@ and replace it with the following:
     <!-- ... -->
     <% loop $BookmarkedPages %>
     <li class="bookmarked-link $FirstLast">
-        <li><a href="{$AdminURL}pages/edit/show/$ID">Edit "$Title"</a></li>
+        <li><a href="$AdminURL('pages/edit/show/$ID')">Edit "$Title"</a></li>
     </li>
     <% end_loop %>
 </ul>
