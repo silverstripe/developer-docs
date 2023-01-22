@@ -47,14 +47,14 @@ on github, you can create a fork, edit the files, and send back your pull reques
 ### How do I translate substituted strings? (e.g. '%s' or '{my-variable}')
 
 You don't have to - if the english master-string reads 'Hello %s', your german translation would be 'Hallo %s'. Strings 
-prefixed by a percentage-sign are automatically replaced by silverstripe with dynamic content. See 
+prefixed by a percentage-sign are automatically replaced by SilverStripe with dynamic content. See 
 http://php.net/sprintf for details. The newer `{my-variable}` format works the same way, but makes its intent clearer, 
 and allows reordering of placeholders in your translation.
 
 ### Do I need to convert special characters (e.g. HTML-entities)?
 
 Special characters (such as german umlauts) need to be entered in their native form. Please don't use HTML-entities 
-("ä" instead of "ä"). Silverstripe stores and renders most strings in UTF8 (Unicode) format.
+("ä" instead of "ä"). SilverStripe stores and renders most strings in UTF8 (Unicode) format.
 
 ### How can I check out my translation in the interface?
 
@@ -85,7 +85,7 @@ dropdown which automatically includes all found translations (based on the files
 
 ### I've found a piece of untranslatable text
 
-It is entirely possible that we missed certain strings in preparing Silverstripe for translation-support. If you're 
+It is entirely possible that we missed certain strings in preparing SilverStripe for translation-support. If you're 
 technically minded, please read [i18n](../developer_guides/i18n) on how to make it translatable. Otherwise just post your findings 
 to the forum.
 
@@ -101,7 +101,7 @@ tool, and wait for your translators to do their magic!
 SilverStripe doesn't have built-in support for attribute-based RTL-modifications (`<html dir="rtl">`). 
 
 We are currently investigating the available options, and are eager to get feedback on your experiences with 
-translating silverstripe RTL.
+translating SilverStripe RTL.
 
 ### Can I translate/edit the language files in my favorite text editor (on my local installation)
 
@@ -144,7 +144,7 @@ channel. For generic translation and Transifex questions you might like to use
 
 ## Related
 
- * [i18n](/developer_guides/i18n): Developer-level documentation of Silverstripe's i18n capabilities
+ * [i18n](/developer_guides/i18n): Developer-level documentation of SilverStripe's i18n capabilities
  * [Translation Process](translation_process): Information about managing translations for the core team and/or module maintainers.
  * [translatable](https://github.com/silverstripe/silverstripe-translatable): DataObject-interface powering the website-content translations
  * `["Translatable ModelAdmin" module](http://silverstripe.org/translatablemodeladmin-module/)`: An extension which allows translations of DataObjects inside ModelAdmin

@@ -1,10 +1,10 @@
 ---
-title: Making a Silverstripe CMS core release
+title: Making a SilverStripe CMS core release
 summary: Development guide for core contributors to build and publish a new release
 iconBrand: github-alt
 ---
 
-# Making a Silverstripe CMS core release
+# Making a SilverStripe CMS core release
 
 ## Introduction
 
@@ -16,7 +16,7 @@ The artifacts for this process are typically:
  * A published announcement
  * A new composer installable stable tag for silverstripe/installer
 
-While this document is not normally applicable to normal silverstripe contributors,
+While this document is not normally applicable to normal SilverStripe contributors,
 it is still useful to have it available in a public location so that these users
 are aware of these processes.
 

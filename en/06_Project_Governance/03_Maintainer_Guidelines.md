@@ -7,23 +7,23 @@ iconBrand: wpforms
 
 # Maintainer Guidelines
 
-This doc outlines expectations on maintainers of Silverstripe Core. It also forms the default expectations for maintainers of Supported Modules, unless more specific contribution guidelines are available for a module.
+This doc outlines expectations on maintainers of SilverStripe Core. It also forms the default expectations for maintainers of Supported Modules, unless more specific contribution guidelines are available for a module.
 
 Module maintainers are people taking care of the repositories, CI, documentation, source code, conventions, community communications, issue triage, and release management.
 
 One of the most important maintainer responsibilities is to collaborate with other maintainers. Another important role is to facilitate community contributions (such as issue reports and pull requests).
 
 [note]
-A lot of extra information is available in Silverstripe CMS documentation section [“Contributing to Silverstripe”](./).
+A lot of extra information is available in SilverStripe CMS documentation section [“Contributing to SilverStripe”](./).
 All maintainers should be familiar with those docs as they explain many details about how we work.
 [/note]
 
 
-## What is Silverstripe Core
+## What is SilverStripe Core
 
-Silverstripe CMS is powered by a system of components in the form of Composer packages. These packages will be categorised as either a _module_ or a _recipe_.
+SilverStripe CMS is powered by a system of components in the form of Composer packages. These packages will be categorised as either a _module_ or a _recipe_.
 
-The "core" of Silverstripe refers to the module packages owned by the "silverstripe" Packagist vendor that fall under one of the following recipes:
+The "core" of SilverStripe refers to the module packages owned by the "silverstripe" Packagist vendor that fall under one of the following recipes:
 
 * [silverstripe/recipe-core](https://github.com/silverstripe/recipe-cms)
 * [silverstripe/recipe-cms](https://github.com/silverstripe/recipe-cms)
@@ -31,7 +31,7 @@ The "core" of Silverstripe refers to the module packages owned by the "silverstr
 
 ## What are Supported Modules
 
-In addition to Silverstripe Core, there are many [Supported Modules](https://www.silverstripe.org/software/addons/supported-modules-definition/)
+In addition to SilverStripe Core, there are many [Supported Modules](https://www.silverstripe.org/software/addons/supported-modules-definition/)
 which have the backing of Silverstripe Ltd. While it's a good idea to apply the rules outlined in this document,
 work on these modules is guided by the 
 [Supported Modules Standard](https://www.silverstripe.org/software/addons/supported-modules-definition/).
@@ -43,7 +43,7 @@ or any additional guidelines outlined via `README` and `CONTRIBUTING` files.
 
 ### Core Committers
 
-The people looking after the Silverstripe Core modules.
+The people looking after the SilverStripe Core modules.
 See the details on the [Core Committers](./core_committers) page.
 
 
@@ -94,10 +94,10 @@ First and foremost rule of a maintainer is to collaborate with other maintainers
  * Follow [Semantic Versioning](code/#picking-the-right-version) by putting any changes into the correct branch
  * API changes and non-trivial features should not be merged into release branches. 
  * API changes on master should not be merged until they have the buy-in of at least two Core Committers (or better, through the [core mailing list](https://groups.google.com/forum/#!forum/silverstripe-dev))
- * Be inclusive. Ensure a wide range of Silverstripe CMS developers can obtain an understanding of your code and docs, and you're not the only one who can maintain it.
+ * Be inclusive. Ensure a wide range of SilverStripe CMS developers can obtain an understanding of your code and docs, and you're not the only one who can maintain it.
  * Avoid `git push --force`, and be careful with your git remotes (no accidental pushes)
  * Use your own forks to create feature branches
- * We release using the standard process. See the [Making a Silverstripe CMS Core Release](making_a_silverstripe_core_release)
+ * We release using the standard process. See the [Making a SilverStripe CMS Core Release](making_a_silverstripe_core_release)
 
 
 ### How to triage
