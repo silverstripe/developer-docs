@@ -23,10 +23,11 @@ in a browser. This transpiling can be done using a variety of toolchains, but th
    * [Babel](http://babeljs.io) (ES6 transpiler)
    * [Webpack](http://webpack.js.org) (Module bundler)
 
-__Deprecated:__
-The following documentation regarding jQuery, jQueryUI and Entwine applies to legacy code only.
+[notice]
+The following documentation regarding jQuery, jQueryUI and Entwine does not apply to React components or sections powered by React.
 If you're developing new functionality in React powered sections please refer to
 [ReactJS, Redux, and GraphQL](./reactjs_redux_and_graphql).
+[/notice]
 
 ## jQuery, jQuery UI and jQuery.entwine: Our libraries of choice
 
