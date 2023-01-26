@@ -5,10 +5,11 @@ summary: Add interactivity enhancements to the admin with Javascript
 
 # CMS layout
 
-__Deprecated:__
-The following documentation regarding JavaScript layouts applies to legacy code only.
+[notice]
+The following documentation regarding JavaScript layouts does not apply to React components or sections powered by React.
 If you're developing new functionality in React powered sections please refer to
 [ReactJS in Silverstripe CMS](./how_tos/extend_cms_interface/#react-rendered-ui).
+[/notice]
 
 The CMS markup is structured into "panels", which are the base units containing interface components (or other panels),
 as declared by the class `cms-panel`. Panels can be made collapsible, and get the ability to be resized and aligned with
