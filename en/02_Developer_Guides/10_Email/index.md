@@ -80,7 +80,7 @@ You _must_ ensure emails are being sent from your _production_ environment. You 
 ```php
 use SilverStripe\Control\Email\Email;
 
-$email = new Email($from, $to, $subject, $body);
+$email = Email::create($from, $to, $subject, $body);
 $email->send();
 ```
 
@@ -93,7 +93,7 @@ Using the code snippet above also tests that the ability to set the "from" addre
 ```php
 use SilverStripe\Control\Email\Email;
 
-$email = new Email($from, $to, $subject, $body);
+$email = Email::create($from, $to, $subject, $body);
 $email->sendPlain();
 ```
 
@@ -108,7 +108,7 @@ You can also specify plain text and HTML content separately if you don't want th
 ```php
 use SilverStripe\Control\Email\Email;
 
-$email = new Email('from@mydomain.com', 'to@example.com', 'My subject');
+$email = Email::create('from@mydomain.com', 'to@example.com', 'My subject');
 $email->html('<p>My HTML email content</p>');
 $email->text('My plain text email content');
 $email->send();
@@ -173,9 +173,9 @@ the plain email:
 ```php
 use SilverStripe\Control\Email\Email;
 
-$email = new Email($from, $to, $subject, $body);
+$email = Email::create($from, $to, $subject, $body);
 $email->setPlainTemplate('MyPlanTemplate');
-$this->send();
+$email->send();
 ```
 
 ## Administrator Emails
@@ -195,6 +195,23 @@ SilverStripe\Control\Email\Email:
   admin_email:
     support@example.com: 'Support team'
 ```
+
+## Adding display names and sending to multiple recipients
+
+```php
+use SilverStripe\Control\Email\Email;
+
+$from = [
+  'from@mysite.exmaple.com' => 'Friendly business'
+];
+$to = [
+  'person.a@customer.example.com' => 'Person A',
+  'person.b@customer.example.com' => 'Person B',
+  'person.c@customer.example.com',
+]
+$email = Email::create($from, $to, $subject, $body);
+```
+
 
 [alert]
 Remember, setting a `from` address that doesn't come from your domain (such as the users email) will likely see your
@@ -240,7 +257,7 @@ marked as spam.
 ```php
 use SilverStripe\Control\Email\Email;
 
-$email = new Email($from, $to, $subject, $body);
+$email = Email::create($from, $to, $subject, $body);
 $email->replyTo('reply@example.com');
 ```
 
