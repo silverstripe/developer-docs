@@ -120,7 +120,11 @@ At launch, Silverstripe CMS major releases aim to have all PHP and JavaScript de
 
 A list of *fixed dependencies* for each Silverstripe CMS major release line is explicitly defined by the development team. *Fixed dependencies* do not change for the lifetime of a Silverstripe CMS major release line.
 
-Support for newer major releases of fixed dependencies is not added to Silverstripe CMS major release line, even if the currently used version is end-of-life. The only exception is if the upgrade is necessary to fix a high impact bug or security vulnerability. A Silverstripe CMS major release line only supports one major version of each fixed dependency.
+Support for newer major releases of fixed dependencies is not added to Silverstripe CMS major release line, even if the currently used version is end-of-life. A Silverstripe CMS major release line only supports one major version of each fixed dependency.
+
+The only exceptions are:
+- if the upgrade is necessary to fix a high impact bug or security vulnerability
+- if the upgrade is necessary to add support for a new PHP version to a Silverstripe CMS major release in active development.
 
 Non-fixed dependencies may be upgraded to new major releases or swapped out altogether within a Silverstripe CMS release line.
 
