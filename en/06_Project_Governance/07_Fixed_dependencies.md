@@ -1,18 +1,19 @@
 ---
-title: Fixed depnedencies
+title: Fixed dependencies
+description: Dependencies which will not be changed for the lifetime of a given major release
 ---
 
 # Silverstripe CMS 5 fixed dependencies
 
 Silverstripe CMS relies on third party packages. Silverstripe CMS projects may interact directly or indirectly with those dependencies.
 
-We defined a list of "fixed dependencies" for the lifetime of Silverstripe CMS 5. Those dependencies will not be upgraded to new major version within the Silverstripe CMS 5 release line.
+We've defined a list of *fixed dependencies* for the lifetime of Silverstripe CMS 5. These dependencies will not be upgraded to new major version within the Silverstripe CMS 5 release line.
 
-Dependencies not in this list, may be changed or removed altogether within the lifetime of Silverstripe CMS 5.
+Dependencies not in this list may be changed or removed altogether within the lifetime of Silverstripe CMS 5.
 
-Dependency | Version
+Dependency | Fixed major release line
 -- | --
-composer-plugin-api | 2
+[composer-plugin-api](https://getcomposer.org/doc/articles/composer-platform-dependencies.md#plugin-package-composer-plugin-api) | 2
 [composer/installers](https://packagist.org/packages/composer/installers) | 2
 [guzzlehttp/guzzle](https://packagist.org/packages/guzzlehttp/guzzle) | 7
 [guzzlehttp/psr7](https://packagist.org/packages/guzzlehttp/psr7) | 2

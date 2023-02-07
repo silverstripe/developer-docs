@@ -1,12 +1,13 @@
 ---
 title: Supported modules
+description: Modules which are commercially supported by Silverstripe
 ---
 
-# Commercially supported modules for Silverstripe CMS 5
+# Commercially supported modules
 
-Silverstripe CMS ships modules that receive commercial support. Commercially supported modules receive regular updates to work with the latest Silverstripe CMS release. Their APIs conform to semantic version. They are covered by:
-- our [security release process](./Managing_Security_Issues) and 
-- our [major release policy](./Major_release_policy).
+Silverstripe CMS ships modules that receive commercial support. Commercially supported modules receive regular updates to work with the latest Silverstripe CMS release. Their APIs conform to [semantic versioning](https://semver.org/). They are covered by:
+- our [security release process](managing_security_issues) and 
+- our [major release policy](major_release_policy).
 
 These modules will be supported for the lifetime of Silverstripe CMS 5 in the provided major versions.
 
@@ -14,31 +15,31 @@ These modules will be supported for the lifetime of Silverstripe CMS 5 in the pr
 
 These modules provide the core Silverstripe CMS experience. Most Silverstripe CMS projects should install all of them.
 
-Core Module | Supported versions
+Core Module | Supported major release line
 -- | --
 [silverstripe/admin](https://packagist.org/packages/silverstripe/admin) | 2
 [silverstripe/asset-admin](https://packagist.org/packages/silverstripe/asset-admin) | 2
 [silverstripe/assets](https://packagist.org/packages/silverstripe/assets) | 2
 [silverstripe/cms](https://packagist.org/packages/silverstripe/cms) | 5
-[silverstripe/config](https://github.com/silverstripe/silverstripe-config) | 2
+[silverstripe/config](https://packagist.org/packages/silverstripe/config) | 2
 [silverstripe/campaign-admin](https://packagist.org/packages/silverstripe/campaign-admin) | 2
 [silverstripe/errorpage](https://packagist.org/packages/silverstripe/errorpage) | 2
 [silverstripe/framework](https://packagist.org/packages/silverstripe/framework) | 5
 [silverstripe/graphql](https://packagist.org/packages/silverstripe/graphql) | 5
-[silverstripe/installer](https://github.com/silverstripe/silverstripe-installer) | 5
+[silverstripe/installer](https://packagist.org/packages/silverstripe/installer) | 5
 [silverstripe/login-forms](https://packagist.org/packages/silverstripe/login-forms) | 5
 [silverstripe/mimevalidator](https://packagist.org/packages/silverstripe/mimevalidator) | 3
-[silverstripe/recipe-cms](https://github.com/silverstripe/recipe-cms) | 5
-[silverstripe/recipe-core](https://github.com/silverstripe/recipe-core) | 5
-[silverstripe/recipe-plugin](https://github.com/silverstripe/recipe-plugin) | 2
+[silverstripe/recipe-cms](https://packagist.org/packages/silverstripe/recipe-cms) | 5
+[silverstripe/recipe-core](https://packagist.org/packages/silverstripe/recipe-core) | 5
+[silverstripe/recipe-plugin](https://packagist.org/packages/silverstripe/recipe-plugin) | 2
 [silverstripe/reports](https://packagist.org/packages/silverstripe/reports) | 5
 [silverstripe/session-manager](https://packagist.org/packages/silverstripe/session-manager) | 2
 [silverstripe/siteconfig](https://packagist.org/packages/silverstripe/siteconfig) | 5
-[silverstripe/vendor-plugin](https://github.com/silverstripe/vendor-plugin) | 2
+[silverstripe/vendor-plugin](https://packagist.org/packages/silverstripe/vendor-plugin) | 2
 [silverstripe/versioned](https://packagist.org/packages/silverstripe/versioned) | 2
 [silverstripe/versioned-admin](https://packagist.org/packages/silverstripe/versioned-admin) | 2
 
-## Optional modules
+## Other supported modules
 
 These modules extend the core Silverstripe CMS functionality. Silverstripe CMS projects can pick and choose which of these modules to install based on their needs.
 
@@ -70,13 +71,13 @@ Supported PHP Module | Supported versions
 [silverstripe/lumberjack](https://packagist.org/packages/silverstripe/lumberjack) | 3
 [silverstripe/mfa](https://packagist.org/packages/silverstripe/mfa) | 5
 [silverstripe/realme](https://packagist.org/packages/silverstripe/realme) | 5
-[silverstripe/recipe-authoring-tools](https://github.com/silverstripe/recipe-authoring-tools) | 2
-[silverstripe/recipe-blog](https://github.com/silverstripe/recipe-blog) | 2
-[silverstripe/recipe-collaboration](https://github.com/silverstripe/recipe-collaboration) | 2
-[silverstripe/recipe-content-blocks](https://github.com/silverstripe/recipe-content-blocks) | 3
-[silverstripe/recipe-form-building](https://github.com/silverstripe/recipe-form-building) | 2
-[silverstripe/recipe-reporting-tools](https://github.com/silverstripe/recipe-reporting-tools) | 2
-[silverstripe/recipe-services](https://github.com/silverstripe/recipe-services) | 2
+[silverstripe/recipe-authoring-tools](https://packagist.org/packages/silverstripe/recipe-authoring-tools) | 2
+[silverstripe/recipe-blog](https://packagist.org/packages/silverstripe/recipe-blog) | 2
+[silverstripe/recipe-collaboration](https://packagist.org/packages/silverstripe/recipe-collaboration) | 2
+[silverstripe/recipe-content-blocks](https://packagist.org/packages/silverstripe/recipe-content-blocks) | 3
+[silverstripe/recipe-form-building](https://packagist.org/packages/silverstripe/recipe-form-building) | 2
+[silverstripe/recipe-reporting-tools](https://packagist.org/packages/silverstripe/recipe-reporting-tools) | 2
+[silverstripe/recipe-services](https://packagist.org/packages/silverstripe/recipe-services) | 2
 [silverstripe/registry](https://packagist.org/packages/silverstripe/registry) | 3
 [silverstripe/restfulserver](https://packagist.org/packages/silverstripe/restfulserver) | 3
 [silverstripe/securityreport](https://packagist.org/packages/silverstripe/securityreport) | 3
@@ -105,10 +106,8 @@ The following two NPM packages are also supported because they are required to b
 - [@silverstripe/webpack-config](https://www.npmjs.com/package/@silverstripe/webpack-config)
 - [@silverstripe/eslint-config](https://www.npmjs.com/package/@silverstripe/eslint-config)
 
-You'll only need to interact with them if you are customising the Silverstripe CMS UI.
+## Other modules in the "silverstripe" namespace
 
-## Other non-supported modules
+They are other modules hosted under the _silverstripe_ Packagist namespace. These modules are maintained on a best effort basis. They do not go through regular regression testing. Their APIs may be more fluid than supported modules. They maybe more experimental or may not receive the same level of care as supported modules.
 
-They are other modules hosted under the _silverstripe_ Packagist handle. These modules are maintained on a best effort basis. They do not go through regular regression testing. Their APIs may be more fluid than supported modules. They maybe more experimental or may not receive the same level of care as supported modules.
-
-Unsupported modules can still be used in Silverstripe CMS projects, but should be considered as community modules.
+These modules can still be used in Silverstripe CMS projects, but should be considered as community modules.

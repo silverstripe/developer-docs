@@ -12,11 +12,11 @@ the server to update templates, website logic, and perform upgrades or maintenan
 
 ## PHP
 
-* PHP >=7.4
+* PHP >=8.1
 * PHP extensions: `ctype`, `dom`, `fileinfo`, `hash`, `intl`, `mbstring`, `session`, `simplexml`, `tokenizer`, `xml`
 * PHP configuration: `memory_limit` with at least `48M`
 * PHP extension for image manipulation: Either `gd` or `imagick`
-* PHP extension for a database connector (e.g. `pdo` or `mysqli`)
+* PHP extension for a database connector (e.g. `mysql`)
 
 Use [phpinfo()](http://php.net/manual/en/function.phpinfo.php) to inspect your configuration.
 
