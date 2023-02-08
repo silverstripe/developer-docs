@@ -108,6 +108,6 @@ The following two NPM packages are also supported because they are required to b
 
 ## Other modules in the "silverstripe" namespace
 
-They are other modules hosted under the _silverstripe_ Packagist namespace. These modules are maintained on a best effort basis. They do not go through regular regression testing. Their APIs may be more fluid than supported modules. They maybe more experimental or may not receive the same level of care as supported modules.
+There are other modules hosted under the _silverstripe_ Packagist namespace. These modules are maintained on a best effort basis. They are not guaranteed to go through regular regression testing. Their APIs may be more fluid than supported modules. They maybe more experimental or may not receive the same level of care as supported modules.
 
 These modules can still be used in Silverstripe CMS projects, but should be considered as community modules.
