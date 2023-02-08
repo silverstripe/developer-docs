@@ -26,10 +26,10 @@ $page = $this->post($url);
 Performs a POST request on $url and retrieves the [HTTPResponse](api:SilverStripe\Control\HTTPResponse). This also changes the current page to the value
 of the response.
 
-<div class="notice" markdown="1">
-**Compatibility Notice:** Previous versions of Silverstripe CMS would send a GET request if `post()` was called with no POST variables supplied in the second argument.
+[notice]
+Previous versions of Silverstripe CMS would send a GET request if `post()` was called with no POST variables supplied in the second argument.
 Silverstripe CMS 4.6 and later always sends a POST request for consistency.
-</div>
+[/notice]
 
 ## Other Requests
 ```php
