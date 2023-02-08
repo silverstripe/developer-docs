@@ -16,15 +16,21 @@ To see deprecation warnings in your project and in your project's CI, add `SS_DE
 
 Alternatively, add the following line to you project's `app/_config.php`.
 ```php
-Deprecation::enable()
+Deprecation::enable();
 ```
 
 Deprecation notices will only ever show if your `SS_ENVIRONMENT_TYPE` is set to `dev`.
 
 Your project will now start emitting deprecation warnings on the frontend if you are calling deprecated code, along with the different API you should now use instead, if a replacement exists.
 
-Not all API that gets deprecated will have an equivalent replacement API in that same major version; some of the API is only available from the next major release.  A good example of this is the upgrade for what powers the `SilverStripe\Control\Email\Email` class from `swiftmailer` in CMS 4 to `symfony/mailer` in CMS 5. In these cases, you'll need to upgrade to the new major version before you can access the replacement API.
+Not all API that gets deprecated will have an equivalent replacement API in that same major version; some of the API is only available from the next major release. A good example of this is the upgrade for what powers the `SilverStripe\Control\Email\Email` class from `swiftmailer` in CMS 4 to `symfony/mailer` in CMS 5. In these cases, you'll need to upgrade to the new major version before you can access the replacement API.
 
-Your project will emit deprecation notices for these, although there may be nothing you can do to stop calling that code until you upgrade to the new major version. In this case you should use the deprecation notice to construct a list of what you may need to change after upgrading.
+Some of the deprecated API will have no replacement in CMS 5.
+
+Some code that has been deprecated with no immediate replacement will not emit deprecation notices by default. If you wish to also see notices for deprecated code with no immediate replacement, add the following line to you project's `app/_config.php`. Note that this will _also_ emit deprecation notices for usages of the deprecated code inside core modules.
+
+```php
+Deprecation::enable(true);
+```
 
 Once you have resolved all of the deprecation notices you can, it is recommended to turn off deprecation notices again.

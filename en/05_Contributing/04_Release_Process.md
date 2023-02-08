@@ -174,6 +174,27 @@ When deprecating a class:
 
 * Add the following docblock `@deprecated 1.2.3 Use AnotherClass instead`
 * Add `Deprecation::notice('1.2.3', 'Use AnotherClass instead', SCOPE_CLASS);` to the top of `__construct()`
+* Wrap `Deprecation::notice()` with `Deprecation::withNoReplacement()` if there's no replacement for that deprecated class. e.g:
+
+```php
+/**
+ * @deprecated 4.12.0 Will be removed without equivalent functionality
+ */
+class MyDeprecatedClass extends AnotherClass
+{
+    public function __construct()
+    {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice(
+                '4.12.0',
+                'Will be removed without equivalent functionality',
+                Deprecation::SCOPE_CLASS
+            );
+        });
+        parent::__construct();
+    }
+}
+```
 
 When deprecating config:
 
