@@ -52,7 +52,6 @@ Supported PHP Module | Supported versions
 [cwp/starter-theme](https://packagist.org/packages/cwp/starter-theme) | 4
 [cwp/watea-theme](https://packagist.org/packages/cwp/watea-theme) | 4
 [dnadesign/silverstripe-elemental](https://packagist.org/packages/dnadesign/silverstripe-elemental) | 5
-[dnadesign/silverstripe-elemental-subsites](https://packagist.org/packages/dnadesign/silverstripe-elemental-subsites) | 4
 [dnadesign/silverstripe-elemental-userforms](https://packagist.org/packages/dnadesign/silverstripe-elemental-userforms) | 4
 [silverstripe-themes/simple](https://packagist.org/packages/silverstripe-themes/simple) | 3
 [silverstripe/auditor](https://packagist.org/packages/silverstripe/auditor) | 3
