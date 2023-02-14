@@ -248,5 +248,4 @@ class PlayerAdmin extends ModelAdmin
 
 ## Related
 
-*  [CsvParser](api:SilverStripe\Dev\CsvParser)
 *  [ModelAdmin](api:SilverStripe\Admin\ModelAdmin)
