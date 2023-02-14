@@ -44,6 +44,16 @@ Examples:
  - A paginating data manipulator can apply a limit to a list (show only 20 records)
  - A sorting data manipulator can sort the Title in a descending order.
 
+### GridField_PostFilterDataManipulator
+
+Modifies the data list _after_ the `canView` permission checks have been performed.
+
+Examples:
+
+- A paginating data manipulator can apply a limit to a list (show only 20 records)
+  - Note that this is less performant than paginating with a `GridField_DataManipulator`, but
+  provides more accurate results.
+
 ### GridField_URLHandler
 
 Sometimes an action isn't enough, we need to provide additional support URLs for the grid. It 
