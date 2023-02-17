@@ -171,13 +171,13 @@ class MyResolverClassA
 This method relies on [resolver discovery](/developer_guides/graphql/getting_started/working_with_generic_types/resolver_discovery),
 which you can learn more about in the documentation.
 
-Alternatively, you can [hardcode the resolver into your config](/developer_guides/graphql/getting_started/working_with_generic_types/resolver_discovery#field-resolvers).
+Alternatively, you can [hardcode the resolver into your config](/developer_guides/graphql/getting_started/working_with_generic_types/resolver_discovery#field-resolvers). Note that the resolver value here is a yaml array, which PHP will interpret as a `callable`.
 
 **app/_graphql/queries.yml**
 ```yaml
 latestPost:
   type: Post
-  resolver: ['MyApp\Resolvers\MyResolvers', 'latestPost']
+  resolver: ['MyApp\Resolvers\MyResolvers', 'resolveLatestPost']
 ```
 
 ## `ScaffoldingProvider`s are now `SchemaUpdater`s
