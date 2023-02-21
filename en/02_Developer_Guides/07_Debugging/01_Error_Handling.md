@@ -170,6 +170,10 @@ SilverStripe\Core\Injector\Injector:
 The log file will be relative to the main index.php file path (default: inside public/), so "../silverstripe.log" will
 create a file in your project root.
 
+[notice]
+You will need to make sure the user running the php process has write access to the log file, wherever you choose to put it.
+[/notice]
+
 The `info` argument provides the minimum level to start logging at.
 
 ### Disabling the default handler
