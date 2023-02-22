@@ -66,6 +66,29 @@ Each individual [FormField](api:SilverStripe\Forms\FormField) instance is respon
 `validate` to check for a specific format.
 [/info]
 
+## Extensions
+
+Extensions applied to `FormField`, or subclasses, can hook into the validation logic and adjust the results by utilising
+the `updateValidationResult` method. For example, an extension applied to `EmailField` could look like this:
+
+```php
+public function updateValidationResult(bool &$result, Validator $validator)
+{
+    if (str_ends_with($this->owner->Value(), '@example.com')) {
+        $validator->validationError($this->owner->Name(), 'Please provide a valid email address');
+        $result = false;
+    }
+}
+```
+
+[notice]
+This extension hook will not work without the ampersand (`&`) in the `&$result` argument. This is because the return
+value of the function is ignored, so the validation result has to be updated by changing the value of the `$result`
+variable. This is known as [passing by reference](https://www.php.net/manual/en/language.references.pass.php).
+[/notice]
+
+## Subclasses
+
 Subclasses of `FormField` can define their own version of `validate` to provide custom validation rules such as the 
 above example with the `Email` validation. The `validate` method on `FormField` takes a single argument of the current 
 `Validator` instance.
@@ -75,58 +98,28 @@ public function validate($validator)
 {
     if ((int) $this->Value() === 10) {
         $validator->validationError($this->Name(), 'This value cannot be 10');
-        return false;
+        return $this->extendValidationResult(false, $validator);
     }
 
-    return true;
+    return $this->extendValidationResult(true, $validator);
 }
 ```
 
-The `validate` method should return `true` if the value passes any validation and `false` if Silverstripe CMS should trigger
-a validation error on the page. In addition a useful error message must be set on the given validator.
+The `validate` method should compute a boolean (`true` if the value passes validation and `false` if Silverstripe CMS 
+should trigger a validation error on the page) and pass this to the `extendValidationResult` method to allow extensions
+to hook into the validation logic. In addition, in the event of failed validation, a useful error message must be set
+on the given validator.
 
 [notice]
 You can also override the entire `Form` validation by subclassing `Form` and defining a `validate` method on the form.
 [/notice]
 
-Say we need a custom `FormField` which requires the user input a value in a `TextField` between 2 and 5. There would be
-two ways to go about this:
+## Form action validation
 
-A custom `FormField` which handles the validation. This means the `FormField` can be reused throughout the site and have
-the same validation logic applied to it throughout.
+An alternative approach to using custom class or an extension is to define the behavior inside the Form's action method.
+This is less reusable and would not be possible within the `CMS` or other automated `UI` but does not rely on creating
+custom `FormField` classes or extensions.
 
-**app/src/CustomNumberField.php**
-
-```php
-use SilverStripe\Forms\TextField;
-
-class CustomNumberField extends TextField
-{
-    public function validate($validator)
-    {
-        if (!is_numeric($this->value)) {
-            $validator->validationError(
-                $this->name, 'Not a number. This must be between 2 and 5', 'validation', false
-            );
-            
-            return false;
-        } elseif ($this->value > 5 || $this->value < 2) {
-            $validator->validationError(
-                $this->name, 'Your number must be between 2 and 5', 'validation', false
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-}
-```
-
-Or, an alternative approach to the custom class is to define the behavior inside the Form's action method. This is less
-reusable and would not be possible within the `CMS` or other automated `UI` but does not rely on creating custom 
-`FormField` classes.
-    
 ```php
 use SilverStripe\CMS\Controllers\ContentController;
 use SilverStripe\Forms\EmailField;
@@ -181,7 +174,7 @@ class Page_Controller extends ContentController
 }
 ```
 
-## Exempt validation actions
+## Validation-exempt actions
 
 In some cases you might need to disable validation for specific actions. E.g. actions which discard submitted
 data may not need to check the validity of the posted content.
