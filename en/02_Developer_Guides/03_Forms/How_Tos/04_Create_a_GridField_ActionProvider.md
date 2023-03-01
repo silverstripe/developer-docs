@@ -96,10 +96,9 @@ class GridFieldCustomAction extends AbstractGridFieldComponent implements GridFi
         // perform your action here
 
         // output a success message to the user
-        Controller::curr()->getResponse()->setStatusCode(
-            200,
-            'Do Custom Action Done.'
-        );
+        Controller::curr()->getResponse()
+            ->setStatusCode(200)
+            ->addHeader('X-Status', 'Do Custom Action Done.');
     }
 }
 ```
@@ -274,10 +273,9 @@ class GridFieldCustomAction extends AbstractGridFieldComponent implements GridFi
         // perform your action here
 
         // output a success message to the user
-        Controller::curr()->getResponse()->setStatusCode(
-            200,
-            'Do Custom Action Done.'
-        );
+        Controller::curr()->getResponse()
+            ->setStatusCode(200)
+            ->addHeader('X-Status', 'Do Custom Action Done.');
     }
 }
 ```

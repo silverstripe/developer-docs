@@ -173,11 +173,17 @@ When deprecating a method:
 When deprecating a class:
 
 * Add the following docblock `@deprecated 1.2.3 Use AnotherClass instead`
-* Add `Deprecation::notice('1.2.3', 'Use AnotherClass instead', SCOPE_CLASS);` to the top of `__construct()`
+* Add `Deprecation::notice('1.2.3', 'Use AnotherClass instead', Deprecation::SCOPE_CLASS);` to the top of `__construct()`
 
 When deprecating config:
 
 * Add the following docblock `@deprecated 1.2.3 Use different_config instead`
+
+When deprecating some behaviour or combination of configuration values:
+
+* Add `Deprecation::notice('1.2.3', 'Using x with y is deprecated. Do [other thing] instead', Deprecation::SCOPE_GLOBAL);`
+* It may not be immediately clear where this type of deprecation notice should go. In that case, add it to the `HTTPApplication::warnAboutDeprecatedSetups()` method.
+* It may be appropriate to link to some documentation in the message for this type of deprecation notice.
 
 If there is no immediate replacement for deprecated code that is being called, either because the replacement is not available until the next major version, or because there is not a plan for there to be a replacement, the message should be "Will be removed without equivalent functionality to replace it."
 
