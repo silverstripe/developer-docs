@@ -42,19 +42,23 @@ You can set "real" environment variables using Apache. Please
 
 ## How to access the environment variables
 
-Accessing the environment variables should be done via the `Environment::getEnv()` method.
+Accessing the environment variables should be done via the [`Environment::getEnv()`](api:SilverStripe\Core\Environment::getEnv()) method.
 
 ```php
 use SilverStripe\Core\Environment;
 Environment::getEnv('SS_DATABASE_CLASS');
 ```
 
-Individual settings can be assigned via `Environment::setEnv()` or `Environment::putEnv()` methods.
+Individual settings can be assigned via [`Environment::setEnv()`](api:SilverStripe\Core\Environment::setEnv()) or [`Environment::putEnv()`](api:SilverStripe\Core\Environment::putEnv()) methods.
 
 ```php
 use SilverStripe\Core\Environment;
 Environment::setEnv('API_KEY', 'AABBCCDDEEFF012345');
 ```
+
+[warning]
+`Environment::getEnv()` will return `false` whether the variable was explicitly set as `false` or simply wasn't set at all. You can use [`Environment::hasEnv()`](api:SilverStripe\Core\Environment::hasEnv()) to check whether an environment variable was set or not.
+[/warning]
 
 ### Using environment variables in config
 
