@@ -115,5 +115,4 @@ class PlayerCsvBulkLoader extends CsvBulkLoader
 
 ## Related
 
-*  [CsvParser](api:SilverStripe\Dev\CsvParser)
 *  [ModelAdmin](api:SilverStripe\Admin\ModelAdmin)

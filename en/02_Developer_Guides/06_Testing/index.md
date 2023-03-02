@@ -24,7 +24,7 @@ fundamental concepts that we build on in this documentation.
 
 ## Running Tests
 
-In order to run tests, you need to install Silverstripe CMS using [/getting-started/composer](Composer),
+In order to run tests, you need to install Silverstripe CMS using [Composer](/getting-started/composer),
 which will pull in the required development dependencies to run tests.
 
 Tests are run from the commandline, in your webroot folder:
@@ -46,7 +46,7 @@ Just like on web requests, Silverstripe CMS caches metadata about the execution 
 This cache can get stale, e.g. when you change YAML configuration or add certain types of PHP code.
 In order to flush the cache, use the `flush=1` CLI parameter:
 
-```
+```bash
 vendor/bin/phpunit vendor/silverstripe/framework/tests '' flush=1
 ```
 
@@ -55,25 +55,26 @@ vendor/bin/phpunit vendor/silverstripe/framework/tests '' flush=1
 PHPUnit can generate a code coverage report ([docs](http://www.phpunit.de/manual/current/en/code-coverage-analysis.html))
 which shows you how much of your logic is executed by your tests. This is very useful to determine gaps in tests.
 
-	:::bash
-	vendor/bin/phpunit --coverage-html <output-folder> <optional-tests-folder>
+```bash
+vendor/bin/phpunit --coverage-html <output-folder> <optional-tests-folder>
+```
 
 To view the report, open the `index.html` in `<output-folder>` in a web browser.
 
 Typically, only your own custom PHP code in your project should be regarded when producing these reports. To exclude 
 some `thirdparty/` directories add the following to the `phpunit.xml` configuration file.
+```xml
+<filter>
+	<blacklist>
+		<directory suffix=".php">vendor/silverstripe/framework/dev/</directory>
+		<directory suffix=".php">vendor/silverstripe/framework/thirdparty/</directory>
+		<directory suffix=".php">vendor/silverstripe/cms/thirdparty/</directory>
 
-	:::xml
-	<filter>
-		<blacklist>
-			<directory suffix=".php">vendor/silverstripe/framework/dev/</directory>
-			<directory suffix=".php">vendor/silverstripe/framework/thirdparty/</directory>
-			<directory suffix=".php">vendor/silverstripe/cms/thirdparty/</directory>
-
-			<!-- Add your custom rules here -->
-			<directory suffix=".php">app/thirdparty/</directory>
-		</blacklist>
-	</filter>
+		<!-- Add your custom rules here -->
+		<directory suffix=".php">app/thirdparty/</directory>
+	</blacklist>
+</filter>
+```
 
 ## Configuration
 
