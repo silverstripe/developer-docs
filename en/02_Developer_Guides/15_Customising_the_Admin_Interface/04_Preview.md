@@ -272,6 +272,7 @@ themes whilst rendering out the preview content.
 
 ```php
 use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\View\Requirements;
 use SilverStripe\View\SSViewer;
 
 class MyAdmin extends ModelAdmin 
@@ -300,18 +301,65 @@ class MyAdmin extends ModelAdmin
             return $this->httpError(404);
         }
 
-        // Include use of a front-end theme temporarily.
+        // Include use of a front-end theme temporarily and clear any CMS requirements.
         $oldThemes = SSViewer::get_themes();
         SSViewer::set_themes(SSViewer::config()->get('themes'));
+        Requirements::clear();
+
+        // Render the preview content
+        // Note that if your template is an include and relies on global css or js, you should
+        // use the Requirements API here to include those
         $preview = $obj->forTemplate();
 
-        // Make sure to set back to backend themes.
+        // Make sure to set back to backend themes and restore CMS requirements.
         SSViewer::set_themes($oldThemes);
+        Requirements::restore();
 
         return $preview;
     }
 }
 ```
+
+[hint]
+If the css or js you have added via [the Requirements API](/developer_guides/templates/requirements/#php-requirements-api)
+aren't coming through, you may need to add `<head>` and `<body>` tags to the markup. It may not be appropriate to do this in
+your main template (you don't want two `<body>` tags on a page that includes the template), so you might need a preview wrapper
+template, like so:
+
+**themes/mytheme/templates/PreviewBase.ss**
+```ss
+<!DOCTYPE html>
+<html>
+<%-- head tag is needed for css to be injected --%>
+<head></head>
+<%-- body tag is needed for javascript to be injected --%>
+<body>
+    <%-- these two divs are just here to comply with styling from the simple theme, replace them with your own theme markup --%>
+    <div class="main"><div class="inner typography line">
+        $Preview
+    </div></div>
+</body>
+</html>
+```
+
+**in app/src/Admin/MyAdmin.php**
+```php
+public function cmsPreview()
+{
+    //... ommitted for brevity
+
+    // Add in global css/js that would normally be added in the page base template (as needed)
+    Requirements::themedCSS('client/dist/css/style.css');
+    // Render the preview content
+    $preview = $obj->forTemplate();
+    // Wrap preview in proper html, body, etc so Requirements are used
+    $preview = SSViewer::create('PreviewBase')->process(ArrayData::create(['Preview' => $preview]));
+
+    //... ommitted for brevity
+}
+```
+
+[/hint]
 
 ### Enabling preview for DataObjects which belong to a page
 If the `DataObject` you want to preview belongs to a specific page, for example
