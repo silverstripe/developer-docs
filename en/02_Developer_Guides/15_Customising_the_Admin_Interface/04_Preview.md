@@ -144,7 +144,9 @@ class Product extends DataObject implements CMSPreviewable
 
     public function PreviewLink($action = null)
     {
-        return null;
+        $link = null;
+        $this->extend('updatePreviewLink', $link, $action);
+        return $link;
     }
 
     public function CMSEditLink()
@@ -181,11 +183,13 @@ public function PreviewLink($action = null)
         return null;
     }
     $admin = MyAdmin::singleton();
-    return Controller::join_links(
+    $link = Controller::join_links(
         $admin->getLinkForModelClass(static::class),
         'cmsPreview',
         $this->ID
     );
+    $this->extend('updatePreviewLink', $link, $action);
+    return $link;
 }
 ```
 
@@ -198,11 +202,13 @@ public function PreviewLink($action = null)
         return null;
     }
     $admin = MyAdmin::singleton();
-    return Controller::join_links(
+    $link = Controller::join_links(
         $admin->Link(str_replace('\\', '-', $this->ClassName)),
         'cmsPreview',
         $this->ID
     );
+    $this->extend('updatePreviewLink', $link, $action);
+    return $link;
 }
 ```
 
@@ -444,7 +450,9 @@ class Product extends DataObject implements CMSPreviewable
 
     public function PreviewLink($action = null)
     {
-        return null;
+        $link = null;
+        $this->extend('updatePreviewLink', $link, $action);
+        return $link;
     }
 
     public function CMSEditLink()
@@ -478,17 +486,18 @@ page's frontend URL.
 ```php
 public function PreviewLink($action = null)
 {
+    $link = null
     if (!$this->isInDB()) {
-        return null;
+        return $link;
     }
     // Let the page know it's being previewed from a DataObject edit form (see Page::MetaTags())
     $action = $action . '?DataObjectPreview=' . mt_rand();
     // Scroll the preview straight to where the object sits on the page.
     if ($page = $this->ProductPage()) {
         $link = $page->Link($action) . '#' . $this->getAnchor();
-        return $link;
     }
-    return null;
+    $this->extend('updatePreviewLink', $link, $action);
+    return $link;
 }
 ```
 
