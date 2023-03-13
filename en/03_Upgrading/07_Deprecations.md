@@ -16,7 +16,7 @@ To enable deprecation warnings, set the `SS_DEPRECATION_ENABLED` environment var
 
 [info]
 If the `SS_DEPRECATION_ENABLED` environment variable is set, this takes precedence over use of the `Deprecation::enable()` static method.
-[info]
+[/info]
 
 ```env
 SS_DEPRECATION_ENABLED=true
@@ -76,7 +76,7 @@ Deprecation warnings can be set to output in HTTP responses by setting `SS_DEPRE
 
 [info]
 If the `SS_DEPRECATION_SHOW_HTTP` environment variable is set, this takes precedence over use of the `Deprecation::setShouldShowForHttp()` static method.
-[info]
+[/info]
 
 ```env
 SS_DEPRECATION_SHOW_HTTP=true
@@ -102,7 +102,7 @@ You can suppress deprecation warnings from CLI output by setting `SS_DEPRECATION
 
 [info]
 If the `SS_DEPRECATION_SHOW_CLI` environment variable is set, this takes precedence over use of the `Deprecation::SS_DEPRECATION_SHOW_CLI()` static method.
-[info]
+[/info]
 
 ```env
 SS_DEPRECATION_SHOW_CLI=false
