@@ -57,14 +57,9 @@ The format for that situation is always the same, with increasing complexity if 
 nesting `GridField`s. For the below examples it is assumed you aren't using nested
 `GridField`s.
 
-If your object belongs to a page, you can safely get away with returning `null` or an empty
-string, as it won't be used. You can choose to return a valid edit link, but because of the
-complexity of the way these links are generated it would be difficult to do so in a general,
-reusable way.
-
 [hint]
 As of Silverstripe CMS 4.12.0, you can
-[use CMSEditLinkExtension](/developer_guides/model/data_model_and_orm/managing_records#getting-an-edit-link).
+[use CMSEditLinkExtension](/developer_guides/model/managing_records#getting-an-edit-link).
 
 ```php
 namespace MyProject\Model;
