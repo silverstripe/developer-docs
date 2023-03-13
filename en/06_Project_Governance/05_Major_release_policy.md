@@ -138,7 +138,7 @@ Commercially supported modules are reviewed with each new major release. At laun
 
 New modules may be added to the commercially supported modules list during a Silverstripe CMS major release line's lifespan. Modules are not withdrawn from the commercially supported modules list for a Silverstripe CMS major releases line unless external factors make it impractical to continue support. e.g. The module requires a discontinued third party service to work as intended.
 
-Modules that are supported for one major release line may not be supported for follow up release lines.
+Modules that are supported for one major release line may not be supported for follow-up release lines. Supported modules can be renamed or their namespaces can be changed when a new Silverstripe CMS major release is published.
 
 ## Expected Silverstripe CMS major release timeline
 
