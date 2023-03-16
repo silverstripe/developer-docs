@@ -30,7 +30,7 @@ public function process(Schema $schema, string $query, array $context, array $va
 
 The return value should be [`ExecutionResult`](api:GraphQL\Executor\ExecutionResult) or an `array`.
 
-* `$schema`: The underlying [Schema](http://webonyx.github.io/graphql-php/type-system/schema/) object.
+* `$schema`: The underlying [Schema](https://webonyx.github.io/graphql-php/schema-definition/) object.
   Useful to inspect whether types are defined in a schema.
 * `$query`: The raw query string.
 * `$context`: An arbitrary array which holds information shared between resolvers.

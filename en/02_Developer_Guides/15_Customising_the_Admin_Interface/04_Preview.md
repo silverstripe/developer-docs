@@ -450,7 +450,7 @@ being edited sits on the page.
 We use `ss.preview` entwine namespace for all preview-related entwines.
 
 Like most of the CMS, the preview UI is powered by
-[jQuery entwine](https://github.com/hafriedlander/jquery.entwine). This means
+[jQuery entwine](/developer_guides/customising_the_admin_interface/jquery_entwine). This means
 its defaults are configured through JavaScript, by setting entwine properties.
 In order to achieve this, create a new file `app/javascript/MyLeftAndMain.Preview.js`.
 

@@ -13,10 +13,10 @@ declaratively using data structures.
 Even within sections that are _not_ primarily rendered in react, several React components may be injected into the DOM.
 
 There are some several members of this ecosystem that all work together to provide a dyanamic UI. They include:
-* [ReactJS](https://facebook.github.io/react/) - A Javascript UI library
-* [Redux](http://redux.js.org/) - A state manager for Javascript
-* [GraphQL](http://graphql.org/) - A query language for your API
-* [Apollo](https://www.apollodata.com/) - A framework for using GraphQL in your application
+* [ReactJS](https://react.dev/) - A Javascript UI library
+* [Redux](https://redux.js.org/) - A state manager for Javascript
+* [GraphQL](https://graphql.org/) - A query language for your API
+* [Apollo Client](https://www.apollographql.com/apollo-client) - A framework for using GraphQL in your application
 
 All of these pillars of the frontend application can be customised, giving you more control over how the admin interface looks, feels, and behaves.
 
@@ -99,7 +99,7 @@ engine.
 
 ## GraphQL and Apollo
 
-[GraphQL](http://graphql.org/learn/) is a strictly-typed query language that allows you to describe what data you want to fetch from your API. Because it is based on types, it is self-documenting and predictable. Further, it's structure lends itself nicely to fetching nested objects. Here is an example of a simple GraphQL query:
+[GraphQL](https://graphql.org/learn/) is a strictly-typed query language that allows you to describe what data you want to fetch from your API. Because it is based on types, it is self-documenting and predictable. Further, it's structure lends itself nicely to fetching nested objects. Here is an example of a simple GraphQL query:
 
 ```graphql
 query GetUser($ID: Int!) {
@@ -140,16 +140,16 @@ The above query is almost self-descriptive. It gets a user by ID, returns his or
 }
 ```
 
-On its own, GraphQL offers nothing functional, as it's just a query language. You still need a service that will invoke queries and map their results to UI. For that, Silverstripe CMS uses an implementation of [Apollo](http://dev.apollodata.com/) that works with React.
+On its own, GraphQL offers nothing functional, as it's just a query language. You still need a service that will invoke queries and map their results to UI. For that, Silverstripe CMS uses an implementation of [Apollo Client](https://www.apollographql.com/docs/react/) that works with React.
 
 ## For more information
 
 This documentation will stop short of explaining React, Redux, and GraphQL/Apollo in-depth, as there is much better
 documentation available all over the web. We recommend:
-* [The Official React Tutorial](https://facebook.github.io/react/tutorial/tutorial.html)
-* [Build With React](http://buildwithreact.com/tutorial)
+* [The Official React Tutorial](https://react.dev/learn)
+* [Build With React](https://buildwithreact.com/tutorial)
 * [Getting Started with Redux](https://egghead.io/courses/getting-started-with-redux)
-* [The React Apollo docs](http://dev.apollodata.com/react/)
+* [The React Apollo docs](https://www.apollographql.com/docs/react/)
 * [GraphQL in Silverstripe](/developer_guides/graphql/)
 
 ## Build tools and using Silverstripe React components {#using-cms-react-components}
@@ -617,7 +617,7 @@ API using several helper methods, including:
 
 [info]
 For a complete list of props that are available to update on a `Field` object,
-see http://redux-form.com/6.8.0/docs/api/Field.md/#props-you-can-pass-to-field-
+see https://redux-form.com/8.3.0/docs/api/field.md/#props-you-can-pass-to-field-
 [/info]
 
 [notice]
@@ -635,7 +635,7 @@ In addition to mutation methods, several readonly methods are available on `Form
 
 ### Adding validation to a form
 
-Validation for React-rendered forms is handled by the [redux-form](http://redux-form.com) package. You can inject your own middleware to add custom validation rules using the `updater.form.addValidation()` function.
+Validation for React-rendered forms is handled by the [redux-form](https://redux-form.com) package. You can inject your own middleware to add custom validation rules using the `updater.form.addValidation()` function.
 
 ```js
 Injector.transform(
@@ -665,10 +665,7 @@ The `addValidation()` function takes a callback, with an instance of `FormValida
 
 ## Using Injector to customise Redux state data
 
-Before starting this tutorial, you should become familiar with the concepts of [Immutability](https://www.sitepoint.com/immutability-javascript/) and [Redux](http://redux.js.org).
-
-The examples use [Spread in object literals](http://redux.js.org/docs/recipes/UsingObjectSpreadOperator.html) which is at this moment in Stage 3 Proposal. If you're more comfortable with using
- the `Object.assign()` API that shouldn't present any problems and should work the same.
+Before starting this tutorial, you should become familiar with the concepts of [Immutability](https://www.sitepoint.com/immutability-javascript/) and [Redux](https://redux.js.org).
 
 For example:
 ```js
@@ -695,7 +692,7 @@ As you can see, we use the `reducer()` function on the `update` object to augmen
 
 ### Using Redux dev tools
 
-It is important to learn the basics of [Redux dev tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en), so that you can find out what ACTIONS and payloads to intercept and modify in your Transformer should target.
+It is important to learn the basics of [Redux dev tools](https://github.com/reduxjs/redux-devtools/tree/main/extension#installation), so that you can find out what ACTIONS and payloads to intercept and modify in your Transformer should target.
 
 Most importantly, it helps to understand the "Action" sub-tab on the right panel (bottom if your dev tools is small), as this will be the data your Transformer will most likely receive, pending other transformers that may run before/after your one.
 

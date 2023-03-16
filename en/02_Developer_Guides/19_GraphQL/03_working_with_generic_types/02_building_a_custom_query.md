@@ -124,7 +124,7 @@ A resolver is executed in a particular query context, which is passed into the m
   Use implementors of [`ContextProvider`](api:SilverStripe\GraphQL\Schema\Interfaces\ContextProvider) to get and set
   data, rather than relying on the array keys directly.
 * [`?ResolveInfo`](api:GraphQL\Type\Definition\ResolveInfo)` $info`: Data structure containing useful information for the resolving process (e.g. the field name).
-  See [Fetching Data](http://webonyx.github.io/graphql-php/data-fetching/) in the underlying PHP library for details.
+  See [Fetching Data](https://webonyx.github.io/graphql-php/data-fetching/) in the underlying PHP library for details.
 
 ## Using Context Providers
 

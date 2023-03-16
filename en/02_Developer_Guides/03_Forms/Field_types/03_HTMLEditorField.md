@@ -251,7 +251,7 @@ HtmlEditorConfig::get('cms')->setOption('image_size_presets', [
 
 ## oEmbed: Embedding media through external services
 
-The ["oEmbed" standard](http://www.oembed.com/) is implemented by many media services around the web, allowing easy 
+The ["oEmbed" standard](https://www.oembed.com/) is implemented by many media services around the web, allowing easy 
 representation of files just by referencing a website URL. For example, a content author can insert a playable youtube 
 video just by knowing its URL, as opposed to dealing with manual HTML code.
 
@@ -337,7 +337,7 @@ HtmlEditorConfig::get('cms')->setOption('element_format', 'xhtml');
 
 By default, TinyMCE and Silverstripe CMS will generate valid HTML5 markup, but it will strip out many HTML5 tags like 
 `<article>` or `<figure>`. If you plan to use those, add them to the 
-[valid_elements](http://www.tinymce.com/wiki.php/Configuration:valid_elements) configuration setting.
+[valid_elements](https://www.tinymce.com/wiki.php/Configuration:valid_elements) configuration setting.
 
 Also, the [HTMLValue](api:SilverStripe\View\Parsers\HTMLValue) API underpinning the HTML processing parses the markup into a temporary object tree 
 which can be traversed and modified before saving. The built-in parser only supports HTML4 and XHTML syntax. In order 

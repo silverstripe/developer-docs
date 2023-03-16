@@ -1,24 +1,18 @@
 ---
 title: Architecture Diagrams
-summary: A visual overview of the architecture and design of GraphQL 4
+summary: A visual overview of the architecture and design of silverstripe/graphql
 icon: sitemap
 ---
 
-## GraphQL 3 vs GraphQL 4
+## A very high-level overview
 
-![A high-level view of the differences between GraphQL v3 and v4 lifecycle](../../_images/graphql/graphql3_vs_4.png)
+![A high-level overview of the lifecycle](../../_images/graphql/high-level-lifecycle.png)
 
-In GraphQL 3, the schema is built at request time, adding significant overhead to every API request. As the schema grows, this "Generate Schema" process becomes slower, making scalability a real problem.
-
-In GraphQL 4, the schema is generated during a build step, which generates code generation artefacts. These artefacts are executed at request time, meaning the schema itself imposes no penalty on the response time.
-
-[info]
-A useful analog to these two different approaches is a dynamic website versus a static website. In the case of the former, the PHP process is doing work on every single request. In the case of the latter, it does a lot of work once, in a separate context, in exchange for doing zero work on every page request.
-[/info]
+The schema is generated during a build step, which generates code generation artefacts. These artefacts are executed at request time, meaning the schema itself imposes no penalty on the response time.
 
 ## The build process
 
-![A high-level view of the GraphQL v4 build process](../../_images/graphql/build_process.png)
+![A high-level view of the GraphQL build process](../../_images/graphql/build_process.png)
 
 * **dev/graphql/build**: This is the command that builds the schema. It also runs as a side effect of `dev/build` as a fallback. It accepts a `schema` parameter if you only want to build one schema.
 

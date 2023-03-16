@@ -76,7 +76,7 @@ public function getCMSActions()
 [notice]
 The following documentation regarding jQuery, jQueryUI and Entwine does not apply to React components or sections powered by React.
 If you're developing new functionality in React powered sections please refer to
-[ReactJS in Silverstripe CMS](./extend_cms_interface.md#reactjs-in-silverstripe).
+[React, Redux, and GraphQL](/developer_guides/customising_the_admin_interface/reactjs_redux_and_graphql/).
 [/notice]
 
 As with the *Save* and *Save & publish* buttons, you might want to add some scripted reactions to user actions on the

@@ -7,7 +7,7 @@ icon: laptop-code
 # Configuration API
 
 Silverstripe CMS comes with a comprehensive code based configuration system through the [Config](api:SilverStripe\Core\Config\Config) class. It primarily 
-relies on declarative [YAML](http://en.wikipedia.org/wiki/YAML) files, and falls back to procedural PHP code, as well 
+relies on declarative [YAML](https://en.wikipedia.org/wiki/YAML) files, and falls back to procedural PHP code, as well 
 as PHP static variables. This is provided by the [silverstripe/config](https://github.com/silverstripe/silverstripe-config)
 library.
 

@@ -21,9 +21,9 @@ The assets module is composed of these major storage classes:
 * [api:SilverStripe\Assets\Storage\DBFile]: This is the DB field used by the File dataobject internally for
   storing references to physical files in the asset backend.
 * [api:SilverStripe\Assets\Flysystem\FlysystemAssetStore]: The default backend, provided by
-  [Flysystem](https://flysystem.thephpleague.com/), which Silverstripe CMS uses as an asset persistence layer.
+  [Flysystem](https://flysystem.thephpleague.com/docs/), which Silverstripe CMS uses as an asset persistence layer.
 * [api:SilverStripe\Assets\InterventionBackend]: Default image resizing mechanism, provided by
-  [intervention image](http://image.intervention.io/).
+  [intervention image](https://image.intervention.io/).
 
 These interfaces are also provided to abstract certain behaviour:
 
@@ -34,7 +34,7 @@ These interfaces are also provided to abstract certain behaviour:
 
 ## Storage via database columns
 
-Asset storage is provided out of the box via a [Flysystem](http://flysystem.thephpleague.com/) backed store.
+Asset storage is provided out of the box via a [Flysystem](https://flysystem.thephpleague.com/docs/) backed store.
 However, any class that implements the `AssetStore` interface could be substituted to provide storage backends
 via other mechanisms.
 
@@ -69,7 +69,7 @@ assets/
 ```
 
 The URL for this file will match the physical location on disk:
-`http://www.example.com/assets/my-public-folder/my-public-file.jpg`.
+`https://www.example.com/assets/my-public-folder/my-public-file.jpg`.
 
 ## Variant file paths (e.g. resized images) {#variant-file-paths}
 
@@ -87,10 +87,7 @@ assets/
 ```
 
 The URL for this file will match the physical location on disk:
-`http://www.example.com/assets/my-public-folder/my-public-file__FitWzYwLDYwXQ.jpg`.
-
-Note: Before 4.4.0, public files were stored with a content hash by default
-(see [Protected file paths](#protected-file-paths)).
+`https://www.example.com/assets/my-public-folder/my-public-file__FitWzYwLDYwXQ.jpg`.
 
 ## Protected file paths {#protected-file-paths}
 
@@ -119,7 +116,7 @@ This corresponds to a file with the following properties:
 
 The URL for this file will not match the physical location on disk.
 It leaves out the `.protected/` folder, and leaves that to Silverstripe CMS's integrated routing:
-`http://www.example.com/assets/my-protected-folder/b63923d8d4/my-protected-file.jpg`.
+`https://www.example.com/assets/my-protected-folder/b63923d8d4/my-protected-file.jpg`.
 
 For more information on how protected files are stored see the [file security](/developer_guides/files/file_security)
 section. We recommend moving this folder outside of the webroot,

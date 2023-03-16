@@ -145,8 +145,8 @@ Since TinyMCE can't represent all these variations, we're showing a placeholder 
 custom `[embed]` shortcode.
 
 ```html
-[embed width=480 height=270 class=left thumbnail=http://i1.ytimg.com/vi/lmWeD-vZAMY/hqdefault.jpg?r=8767]
-	http://www.youtube.com/watch?v=lmWeD-vZAMY
+[embed width=480 height=270 class=left thumbnail=https://i1.ytimg.com/vi/lmWeD-vZAMY/hqdefault.jpg?r=8767]
+	https://www.youtube.com/watch?v=lmWeD-vZAMY
 [/embed]
 ```
 
@@ -269,7 +269,7 @@ The parser will raise an error if it can not find a matching opening tag for any
 
 ## Related Documentation
 
- * [Wordpress Implementation](http://codex.wordpress.org/Shortcode_API)
+ * [Wordpress Implementation](https://codex.wordpress.org/Shortcode_API)
  * [How to Create a Google Maps Shortcode](how_tos/create_a_google_maps_shortcode)
 
 ## API Documentation

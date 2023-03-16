@@ -117,7 +117,7 @@ vendor/bin/phpunit app/tests/PageTest.php '' flush=1
 ```
 
 [info]
-For more information on PHPUnit's assertions see the [PHPUnit manual](http://www.phpunit.de/manual/current/en/api.html#api.assert).
+For more information on PHPUnit's assertions see the [PHPUnit manual](https://docs.phpunit.de/en/9.6/assertions.html).
 [/info]
 
 ## Related Documentation

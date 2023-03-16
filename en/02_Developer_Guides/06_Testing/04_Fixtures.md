@@ -204,7 +204,7 @@ MyProject\Model\Team:
 ```
 
 [notice]
-If your tests are failing and your database has table names that follow the fully qualified class names, you've probably forgotten to implement `private static $table_name = 'Player';` on your namespaced class. This property was introduced in Silverstripe CMS 4 to reduce data migration work. See [DataObject](api:SilverStripe\ORM\DataObject) for an example.
+If your tests are failing and your database has table names that follow the fully qualified class names, you've probably forgotten to implement `private static $table_name = 'Player';` on your namespaced class. See [DataObject](api:SilverStripe\ORM\DataObject) for an example.
 [/notice]
 
 ### Defining many_many_extraFields

@@ -40,11 +40,11 @@ functionality may not be included.
 </head>
 ```
 
-The `<% base_tag %>` placeholder is replaced with the HTML base element. Relative links within a document (such as `<img
-src="someimage.jpg" alt="">`) will become relative to the URI specified in the base tag. This ensures the browser knows where
-to locate your site’s images and css files.
+The `<% base_tag %>` placeholder is replaced with the HTML base element. Relative links within a document (such as
+`<img src="someimage.jpg" alt="">` ) will become relative to the URI specified in the base tag. This ensures the
+browser knows where to locate your site’s images and css files.
 
-It renders in the template as `<base href="http://www.yoursite.com" /><!--[if lte IE 6]></base><![endif]-->`
+It renders in the template as `<base href="https://www.example.com" /><!--[if lte IE 6]></base><![endif]-->`
 
 [alert]
 A `<% base_tag %>;` is nearly always required or assumed by Silverstripe CMS to exist.
@@ -123,18 +123,18 @@ on a per-page basis.
 If you don’t want to include the title tag use `$MetaTags(false)`.
 [/notice]
 
-By default `$MetaTags` renders (assuming 4.11.0 is the current version of silverstripe/framework):
+By default `$MetaTags` renders (assuming 5.1.0 is the current version of `silverstripe/framework`):
 
 ```ss
 <title>Title of the Page</title>
-<meta name="generator" content="Silverstripe CMS 4.11">
+<meta name="generator" content="Silverstripe CMS 5.1">
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 ```
 
 `$MetaTags(false)` will render
 
 ```ss
-<meta name="generator" content="Silverstripe CMS 4.11">
+<meta name="generator" content="Silverstripe CMS 5.1">
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 ```
 
@@ -201,7 +201,7 @@ $Link
 <!-- returns /about-us/offices/ -->
 
 $AbsoluteLink
-<!-- returns http://yoursite.com/about-us/offices/ -->
+<!-- returns https://www.example.com/about-us/offices/ -->
 ```
 
 ### Linking Modes

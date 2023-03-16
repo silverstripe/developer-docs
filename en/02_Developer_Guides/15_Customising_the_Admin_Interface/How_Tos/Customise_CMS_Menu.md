@@ -79,13 +79,13 @@ class CustomLeftAndMain extends LeftAndMainExtension
     public function init()
     {
         // unique identifier for this item. Will have an ID of Menu-$ID
-        $id = 'LinkToGoogle';
+        $id = 'LinkToExample';
 
         // your 'nice' title
-        $title = 'Google';
+        $title = 'Example Site';
 
         // the link you want to item to go to
-        $link = 'http://google.com';
+        $link = 'https://www.example.com';
 
         // priority controls the ordering of the link in the stack. The
         // lower the number, the lower in the list
@@ -121,7 +121,7 @@ You can edit, add or remove existing links as shown in the examples below:
 SilverStripe\Admin\LeftAndMain:
   help_links:
     # Edit an existing link
-    'CMS User help': 'https://example.com'
+    'CMS User help': 'https://www.example.com'
     # Add a new link
     'Additional link': 'https://example.org'
     # Remove an existing link

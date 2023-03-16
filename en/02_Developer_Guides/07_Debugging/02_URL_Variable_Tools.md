@@ -62,8 +62,8 @@ Redirections](/developer_guides/controllers/redirection) for more information an
 
  | Site URL                                      | Action | 
  | --------------------------------------------- | ------ | 
- | http://localhost**/dev/build**                | Rebuild the entire database and manifest, see below for additional URL Variables | 
- | http://localhost**/admin/pages/publishall/**  | Publish all pages on the site. Only works reliably on smaller sites. |
+ | https://www.example.com/dev/build**                | Rebuild the entire database and manifest, see below for additional URL Variables | 
+ | https://www.example.com/admin/pages/publishall/**  | Publish all pages on the site. Only works reliably on smaller sites. |
 
 ###  /dev/build
 
@@ -76,5 +76,5 @@ Redirections](/developer_guides/controllers/redirection) for more information an
 
  | Site URL                                      | Action | 
  | --------------------------------------------- | ------ | 
- | http://localhost**/dev/config**                | Output a simplified representation properties in the `Config` manifest | 
- | http://localhost**/dev/config/audit**  | Audit `Config` properties and display any with missing PHP definitions |
+ | https://www.example.com/dev/config**                | Output a simplified representation properties in the `Config` manifest | 
+ | https://www.example.com/dev/config/audit**  | Audit `Config` properties and display any with missing PHP definitions |

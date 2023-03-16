@@ -12,19 +12,16 @@ If you're developing new functionality in React powered sections please refer to
 [/notice]
 
 The CMS markup is structured into "panels", which are the base units containing interface components (or other panels),
-as declared by the class `cms-panel`. Panels can be made collapsible, and get the ability to be resized and aligned with
-a layout manager, in our case [jLayout](http://www.bramstein.com/projects/jlayout/). This layout manager applies CSS
-declarations (mostly dimensions and positioning) via JavaScript.
+as declared by the class `cms-panel`. Some panels can be made collapsible.
 
 We've established a convention for a `redraw` method on each panel and UI component that need to update their content as
 a result of changes to their position, size or visibility. This method would usually be invoked by the parent container.
 
-The layout manager does not dynamically track changes to panel sizes - we have to trigger laying out manually each time
+We have to trigger laying out manually each time
 we need an update to happen (for example from `window::onresize` event, or panel toggling). It then cascades through the
 children setting sizes and positions, which in turn requires redrawing of some of the elements.
 
 The easiest way to update the layout of the CMS is to call `redraw` on the top-level `.cms-container` element.
-
 
 ```js
 $('.cms-container').redraw();
@@ -40,7 +37,7 @@ to the layout manager)
 
 [notice]
 Caveat: `layout` is also triggered when a DOM element is replaced with AJAX in `LeftAndMain::handleAjaxResponse`. In
-this case it is triggered on the parent of the element being replaced so jLayout has a chance to rebuild its algorithms.
+this case it is triggered on the parent of the element being replaced.
 Calling the top level `layout` is not enough as it will wrongly descend down the detached element's hierarchy.
 [/notice]
 
@@ -67,7 +64,7 @@ Layout manager will automatically apply algorithms to the children of `.cms-cont
 `data-layout-type` attribute. Let's take the content toolbar as an example of a second-level layout application:
 
 
-```html
+```ss
 <div class="cms-content-tools west cms-panel cms-panel-layout"
     data-expandOnClick="true"
     data-layout-type="border"
@@ -75,9 +72,6 @@ Layout manager will automatically apply algorithms to the children of `.cms-cont
     <%-- content utilising border's north, south, east, west and center classes --%>
 </div>
 ```
-
-For detailed discussion on available algorithms refer to
-[jLayout algorithms](https://github.com/bramstein/jlayout#layout-algorithms).
 
 Our [Howto: Extend the CMS Interface](how_tos/extend_cms_interface) has a practical example on how to add a bottom
 panel to the CMS UI.
@@ -107,20 +101,6 @@ for this algorithm can be found in `LeftAndMain.Layout.js`.
 Since the layout-type for the element is set to `custom` and will be ignored by the layout manager, we apply the
 _threeColumnCompressor_ explicitly `LeftAndMain::redraw`. This way we also get a chance to provide options expected
 by the algorithm that are initially taken from the `LeftAndMain::LayoutOptions` entwine variable.
-
-### Factory method
-
-Use provided factory method to generate algorithm instances.
-
-
-```js
-jLayout.threeColumnCompressor(<column-spec-object>, <options-object>);
-```
-
-The parameters are as follows:
-
-* **column-spec-object**: object providing the _menu_, _content_ and _preview_ elements (all fields mandatory)
-* **options-object**: object providing the configuration (all fields mandatory, see options below)
 
 ### Layout options
 

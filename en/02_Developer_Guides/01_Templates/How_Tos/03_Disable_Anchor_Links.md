@@ -16,7 +16,7 @@ the current page.  For example, we might have this in our template:
 ```
 
 Things get tricky because of we have set our `<base>` tag to point to the root of the site.  So, when you click the 
-first link you will be sent to http://yoursite.com/#section1 instead of http://yoursite.com/my-long-page/#section1
+first link you will be sent to `https://www.example.com/#section1` instead of `https://www.example.com/my-long-page/#section1`
 
 In order to prevent this situation, the SSViewer template renderer will automatically rewrite any anchor link that
 doesn't specify a URL before the anchor, prefixing the URL of the current page.  For our example above, the following

@@ -167,7 +167,7 @@ around 2000px on the longest edge.
 
 #### Forced resampling
 
-Since the 'master' images in your asset store may have a large file size, Silverstripe CMS
+Since the original images in your asset store may have a large file size, Silverstripe CMS
 can apply compression to your images to save bandwidth - even if no other manipulation
 (such as a crop or resize) is taking place. In many cases this can result in a smaller
 overall file size, which may be appropriate for streaming to web users.
@@ -226,13 +226,13 @@ Developers can selectively disable lazy loading for individual image in a SS tem
 `LazyLoad(false)` on the image variable (e.g.: `$MyImage.LazyLoad(false)`).
 
 ```ss
-<!-- Image will be lazy loaded -->
+<%-- Image will be lazy loaded --%>
 $Logo
 
-<!-- Image will NOT be lazy loaded -->
+<%-- Image will NOT be lazy loaded --%>
 $Logo.LazyLoad(false)
 
-<!-- We're allowing content authors to choose if the image is eager loaded-->
+<%-- We're allowing content authors to choose if the image is eager loaded--%>
 $Logo.LazyLoad($LogoLoading)
 ```
 
@@ -295,11 +295,11 @@ page after the initial page load.
 ```ss
 <img src="$Logo.URL" width="$Logo.Width" height="$Logo.Height" loading="lazy" alt="Company Logo" />
 
-<!-- The size of this image is controlled by a CSS class so it can be lazy loaded -->
+<%-- The size of this image is controlled by a CSS class so it can be lazy loaded --%>
 <img src="$resourceURL('themes/example/images/footer.png')" class="64x64square" loading="lazy" alt="" />
 
-<!-- We don't have dimension for this image, so we eager load it -->
-<img src="//example.com/sponsor.webp" alt="A generous sponsor" />
+<%-- We don't have dimension for this image, so we eager load it --%>
+<img src="//www.example.com/sponsor.webp" alt="A generous sponsor" />
 ```
 
 #### Disabling lazy loading globally

@@ -13,11 +13,11 @@
     "authors": [
         {
             "name": "SilverStripe",
-            "homepage": "http://silverstripe.com"
+            "homepage": "https://silverstripe.com"
         },
         {
             "name": "The SilverStripe Community",
-            "homepage": "http://silverstripe.org"
+            "homepage": "https://silverstripe.org"
         }
     ]
 }

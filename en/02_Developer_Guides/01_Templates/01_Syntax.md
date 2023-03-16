@@ -145,10 +145,10 @@ record and any subclasses of those two.
 
 ```ss
 $Title
-// returns the page `Title` property
+<%-- returns the page `Title` property --%>
 
 $Content
-// returns the page `Content` property
+<%-- returns the page `Content` property --%>
 ```
 
 ## Conditional Logic
@@ -170,7 +170,7 @@ A conditional can also check for a value other than falsy.
 ```
 
 [notice]
-When inside template tags variables should have a '$' prefix, and literals should have quotes. 
+When inside template tags variables should have a `$` prefix, and literals should have quotes. 
 [/notice]
 
 Conditionals can also provide the `else` case.
@@ -369,9 +369,7 @@ iteration.
 
  * `$Even`, `$Odd`: Returns boolean, handy for zebra striping.
  * `$EvenOdd`: Returns a string, either 'even' or 'odd'. Useful for CSS classes.
- * `$First`, `$Last`, `$Middle`: Booleans about the position in the list.
-    * Note: as of CMS 4.7.0 `$IsFirst` and `$IsLast` will be preferred. The original
-    syntax will continue to work, but will be deprecated in a future release.
+ * `$IsFirst`, `$IsLast`, `$Middle`: Booleans about the position in the list.
  * `$FirstLast`: Returns a string, "first", "last", "first last" (if both), or "". Useful for CSS classes.
  * `$Pos`: The current position in the list (integer).
    Will start at 1, but can take a starting index as a parameter.
@@ -401,10 +399,10 @@ pagination.
 `$Modulus` and `$MultipleOf` can help to build column and grid layouts.
 
 ```ss
-// returns an int
+<%-- returns an int --%>
 $Modulus(value, offset)
 
-// returns a boolean.
+<%-- returns a boolean. --%>
 $MultipleOf(factor, offset) 
 
 <% loop $Children %>
@@ -413,7 +411,7 @@ $MultipleOf(factor, offset)
 </div>
 <% end_loop %>
 
-// returns <div class="column-3">, <div class="column-2">,
+<%-- returns <div class="column-3">, <div class="column-2">, --%>
 ```
 
 [hint]
@@ -509,6 +507,7 @@ Given the following structure, it will output the text.
 	Page 'Grandchild 1' is a grandchild of 'My Page'
 	Page 'Child 2' is a child of 'MyPage'
 ```
+
 [notice]
 Each `<% loop %>` or `<% with %>` block results in a change of scope, regardless of how the objects are traversed in the opening statement. See the example below:
 [/notice]

@@ -121,7 +121,7 @@ we added a `SayHi` method which is unique to our extension.
 
 ```ss
 <p>$CurrentMember.SayHi</p>
-// "Hi Sam"
+<%-- "Hi Sam" --%>
 ```
 
 **app/src/Page.php**

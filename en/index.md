@@ -11,8 +11,8 @@ web server. The [Getting Started](/getting_started) section will show you what
 [install Silverstripe with Composer](/getting_started/composer).
 
 To check out the features that Silverstripe offers without installing it, read
-the [Feature Overview](http://www.silverstripe.org/software/)
-and play with our [interactive demos](http://silverstripe.org/try).
+the [Feature Overview](https://www.silverstripe.org/software/)
+and play with our [interactive demos](https://silverstripe.org/try).
 
 ## Getting support
 
@@ -21,20 +21,18 @@ Silverstripe has a wide range of options for getting support:
 * Get help on our [Slack channel](https://www.silverstripe.org/community/slack-signup/)
 * Join our [forum](https://forum.silverstripe.org)
 * Ask technical questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/silverstripe)
-* Read the technical reference in our [API Documentation](http://api.silverstripe.org/)
-* Get a user-focused overview of the CMS features in our [User Help](http://userhelp.silverstripe.com)
-* Discuss new features, API changes and the development [roadmap](http://www.silverstripe.org/software/roadmap/)
+* Read the technical reference in our [API Documentation](https://api.silverstripe.org/)
+* Get a user-focused overview of the CMS features in our [User Help](https://userhelp.silverstripe.com)
+* Discuss new features, API changes and the development [roadmap](https://www.silverstripe.org/software/roadmap/)
   on the ["feature ideas" category](https://forum.silverstripe.org/c/feature-ideas) in our forums
 
 ## Building your first Silverstripe Web application
 
 Once you have completed the [Getting Started](/getting_started) guide and have got Silverstripe installed and running,
-the following [Tutorials](http://silverstripe.org/learn/lessons) will lead through the basics and core concepts of
+the following [Tutorials](https://silverstripe.org/learn/lessons) will lead through the basics and core concepts of
 Silverstripe.
 
-Make sure you know the basic concepts of PHP7 before attempting to follow the tutorials. If you have not programmed with
-PHP5 be sure to read
-the [Introduction to PHP5 (zend.com)](http://devzone.zend.com/6/php-101--php-for-the-absolute-beginner).
+Make sure you know the basic concepts of PHP before attempting to follow the tutorials.
 
 ## Silverstripe Concepts
 

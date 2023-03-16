@@ -11,7 +11,7 @@ application can provide multiple unique themes (i.e a mobile theme).
 
 ## Downloading
 
-Head to the [ themes section of the addons site ](http://addons.silverstripe.org/add-ons?search=&type=theme) to check out the range of themes the 
+Head to the [themes section of the addons site](https://addons.silverstripe.org/add-ons?search=&type=theme) to check out the range of themes the 
 community has built. Each theme has a page with links you can use to preview and download it. Themes are published and downloaded using Composer,
 just like any other [SilverStripe module](/developer_guides/extending/modules).
 
@@ -27,7 +27,7 @@ composer require my_vendor/my_theme [version]
 
 [alert]
 As you've added new files to your Silverstripe CMS installation, make sure you clear the Silverstripe CMS cache by appending
-`?flush=1` to your website URL (e.g http://yoursite.com/?flush=1).
+`?flush=1` to your website URL (e.g `https://www.example.com/?flush=1`).
 [/alert]
 
 ### Configuring themes
@@ -95,8 +95,7 @@ The final step is to [submit your theme to Packagist](https://packagist.org/abou
 
 ## Links
 
- * [Themes Listing on silverstripe.org](http://addons.silverstripe.org/add-ons?search=&type=theme)
- * [Themes repositories on github.com](http://github.com/silverstripe-themes)
+ * [Themes Listing on silverstripe.org](https://addons.silverstripe.org/add-ons?search=&type=theme)
 
 ## Related Lessons
 * [Creating your first project](https://www.silverstripe.org/learn/lessons/v4/creating-your-first-project)

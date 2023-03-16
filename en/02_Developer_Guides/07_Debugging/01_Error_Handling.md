@@ -14,7 +14,7 @@ stops for anything, giving you early warning of a potential issue to handle.
 
 [info]
 There are a range of monolog handlers available, both in the core package and in add-ons. See the
-[Monolog documentation](https://github.com/Seldaek/monolog/blob/master/doc/01-usage.md) for more information.
+[Monolog documentation](https://github.com/Seldaek/monolog/blob/main/doc/01-usage.md) for more information.
 [/info]
 
 ## Raising errors and logging diagnostic information.
@@ -35,7 +35,7 @@ Injector::inst()->get(LoggerInterface::class)->error('Something went wrong, but 
 Although you can raise more important levels of alerts in this way, we recommend using PHP's native error systems for
 these instead.
 
-For notice-level and warning-level issues, you can also use [user_error](http://www.php.net/user_error) to throw errors
+For notice-level and warning-level issues, you can also use [user_error](https://www.php.net/user_error) to throw errors
 where appropriate. As with the default Logger implementation these will not halt execution, but will send a message
 to the PHP error log.
 
@@ -126,12 +126,12 @@ preferable to now throw exceptions instead of `E_USER_ERROR`.
 ## Configuring error logging
 
 You can configure your logging using Monolog handlers. The handlers should be provided in the `Logger.handlers`
-configuration setting. Below we have a couple of common examples, but Monolog comes with [many different handlers](https://github.com/Seldaek/monolog/blob/master/doc/02-handlers-formatters-processors.md#handlers)
+configuration setting. Below we have a couple of common examples, but Monolog comes with [many different handlers](https://github.com/Seldaek/monolog/blob/main/doc/02-handlers-formatters-processors.md#handlers)
 for you to try.
 
 ### Sending emails
 
-To send emails, you can use Monolog's [NativeMailerHandler](https://github.com/Seldaek/monolog/blob/master/src/Monolog/Handler/NativeMailerHandler.php#L74), like this:
+To send emails, you can use Monolog's `NativeMailerHandler`, like this:
 
 ```yaml
 SilverStripe\Core\Injector\Injector:
@@ -158,7 +158,7 @@ The calls key, `MailHandler`, can be anything you like: its main purpose is to l
 
 ### Logging to a file
 
-To log to a file, you can use Monolog's [StreamHandler](https://github.com/Seldaek/monolog/blob/master/src/Monolog/Handler/StreamHandler.php#L74), like this:
+To log to a file, you can use Monolog's `StreamHandler`, like this:
 
 ```yaml
 SilverStripe\Core\Injector\Injector:
@@ -318,7 +318,7 @@ Depending on your PHP settings, error stacktraces may include arguments passed i
 information such as passwords or API keys that you do not want leaking into your logs. The [Backtrace](api:SilverStripe\Dev\Backtrace)
 class is responsible for rendering this backtrace and has a configuration variable `ignore_function_args` which holds the
 names of functions for which arguments should be filtered. For functions in this list, the arguments are replaced with the
-string "<filtered>".
+string `"<filtered>"`.
 
 You can add either functions or class methods to this list - for functions just add them as a string. For class methods,
 add an array which contains the fully namespaced class name and the name of the method. If the method is declared on an

@@ -14,7 +14,7 @@ Aspect oriented programming is the idea that some logic abstractions can be appl
 > cross-cutting concerns, forming a basis for aspect-oriented software development.
 
 [notice]
-[Wikipedia](http://en.wikipedia.org/wiki/Aspect-oriented_programming) provides a much more in-depth explanation.
+[Wikipedia](https://en.wikipedia.org/wiki/Aspect-oriented_programming) provides a much more in-depth explanation.
 [/notice]
 
 In the context of the Silverstripe CMS [Dependency Injector](injector), Aspects are achieved thanks to PHP's `__call` magic 

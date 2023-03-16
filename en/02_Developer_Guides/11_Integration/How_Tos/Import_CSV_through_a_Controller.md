@@ -8,7 +8,7 @@ icon: upload
 
 You can have more customised logic and interface feedback through a custom controller. Let's create a simple upload 
 form (which is used for `MyDataObject` instances). You can access it through 
-`http://yoursite.com/MyController/?flush=all`.
+`https://www.example.com/MyController/?flush=all`.
 
 
 ```php

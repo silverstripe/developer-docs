@@ -22,13 +22,13 @@ within your module when you next flush your cache.
 
 ## Finding Modules
 
-* [Official module list on silverstripe.org](http://addons.silverstripe.org/)
+* [Official module list on silverstripe.org](https://addons.silverstripe.org/)
 * [Packagist.org "silverstripe" tag](https://packagist.org/search/?tags=silverstripe)
 * [GitHub.com "silverstripe" search](https://github.com/search?q=silverstripe)
 
 ## Installation
 
-Modules are installed through the [Composer](http://getcomposer.org) package manager. It
+Modules are installed through the [Composer](https://getcomposer.org) package manager. It
 enables you to install modules from specific versions, checking for compatibilities between modules and even allowing
 to track development branches of them. To install modules using this method, you will first need to setup Silverstripe CMS
 with [Composer](../../getting_started/composer).
@@ -50,10 +50,10 @@ composer require silverstripe/blog 1.1.0
 
 Composer is using [version constraints](https://getcomposer.org/doc/articles/versions.md).
 To lock down to a specific version, branch or commit, read up on
-["lock" files](http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file).
+["lock" files](https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control).
 
 [notice]
-After you add or remove modules, make sure you rebuild the database, class and configuration manifests by going to http://yoursite.com/dev/build?flush=1
+After you add or remove modules, make sure you rebuild the database, class and configuration manifests by going to `https://www.example.com/dev/build?flush=1`
 [/notice]
 
 ## Creating a Module {#create}
@@ -70,12 +70,12 @@ The easiest way to get started is our [Module Skeleton](https://github.com/silve
 First, create a new directory named after your intended module in your main project. It should sit alongside the other modules
 such as *silverstripe/framework* and *silverstripe/cms* and use it for the module development:
 
-`mkdir /vendor/my_vendor/nice_feature`
+`mkdir /vendor/my_vendor/module_name`
 
 Then clone the Module Skeleton to get a headstart with the module files:
 
 ```bash
-cd /vendor/my_vendor/nice_feature
+cd /vendor/my_vendor/module_name
 git clone git@github.com:silverstripe/silverstripe-module.git .
 ```
 
@@ -87,14 +87,14 @@ requirement):
 
 ```json
 {
-	"name": "my_vendor/nice_feature",
-	"description": "Short module description",
-	"type": "silverstripe-vendormodule",
-	"require": {
-		"silverstripe/cms": "^4.0",
-		"silverstripe/framework": "^4.0",
-		"silverstripe/blog": "^4@dev"
-	}
+    "name": "my_vendor/module_name",
+    "description": "Short module description",
+    "type": "silverstripe-vendormodule",
+    "require": {
+        "silverstripe/cms": "^5.0",
+        "silverstripe/framework": "^5.0",
+        "silverstripe/blog": "^5@dev"
+    }
 }
 ```
 
@@ -104,11 +104,11 @@ will constitute a project in itself. The below assumes you are using GitHub and 
 Push your module upstream to the empty repository just created:
 
 ```bash
-	git init
-	git add -A
-	git commit -m 'first commit'
-	git remote add origin git@github.com:my_vendor/nice_feature.git
-	git push -u origin master
+git init
+git add -A
+git commit -m 'first commit'
+git remote add origin git@github.com:my_vendor/module_name.git
+git push -u origin main
 ```
 
 Once the module is pushed to the repository you should see the code on GitHub. From now on it will be available for
@@ -126,7 +126,7 @@ For our *nice_module* example module we have just pushed upstream and can add th
 	"repositories": [
 		{
 			"type": "vcs",
-			"url": "git@github.com:my_vendor/nice_feature.git",
+			"url": "git@github.com:my_vendor/module_name.git",
 		}
 	]
 ```
@@ -137,15 +137,15 @@ now include the following requirement in the same `composer.json`:
 ```
 	"require": {
 		...
-		"my_vendor.nice_feature": "*"
+		"my_vendor.module_name": "*"
 	}
 ```
 
-Add the module directory name (`nice_feature/`) to `.gitignore` - we will rely on *composer* to update the dependencies so
-we don't need to version-control it through the master repository.
+Add the module directory name (`module_name/`) to `.gitignore` - we will rely on *composer* to update the dependencies so
+we don't need to version-control it through the main repository.
 
 Run `composer update` to pull the module in and update all other dependencies as well. You can also update just this one
-module by calling `composer update my_vendor/nice_feature`.
+module by calling `composer update my_vendor/module_name`.
 
 If you get cryptic composer errors it's worth checking that your module code is fully pushed. This is because composer
 can only access the code you have actually pushed to the upstream repository and it may be trying to use the stale
@@ -180,10 +180,10 @@ which the Silverstripe CMS project applies to the modules it creates and maintai
    * `tests/` (for `*Test.php` test files), and;
    * `_config/` (for `.yml` config files)
  * The module is a Composer package.
- * All Composer dependencies are bound to a single major release (e.g. `^4.0` not `>=4` or `*`).
+ * All Composer dependencies are bound to a single major release (e.g. `^5.0` not `>=5` or `*`).
  * There is a level of test coverage.
  * A clear public API documented in the docblock tags.
- * Code follows [PSR-1](http://www.php-fig.org/psr/psr-1/) and [PSR-2](http://www.php-fig.org/psr/psr-2/) style guidelines.
+ * Code follows [PSR-1](https://www.php-fig.org/psr/psr-1/) and [PSR-2](https://www.php-fig.org/psr/psr-2/) style guidelines.
  * `.gitattributes` will be used to exclude non-essential files from the distribution. At a minimum tests, docs, and IDE/dev-tool config should be excluded.
  * Add a [PSR-4 compatible autoload reference](https://getcomposer.org/doc/04-schema.md#psr-4) for your module.
 

@@ -37,7 +37,7 @@ class TeamController extends Controller
 ## Routing
 
 We need to define the URL that this controller can be accessed on. In our case, the `TeamsController` should be visible 
-at http://yoursite.com/teams/ and the `players` custom action is at http://yoursite.com/team/players/.
+at `https://www.example.com/teams/` and the `players` custom action is at `https://www.example.com/team/players/`.
 
 [info]
 If you're using the `cms` module with and dealing with `Page` objects then for your custom `Page Type` controllers you 

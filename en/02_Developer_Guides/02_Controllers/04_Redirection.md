@@ -16,11 +16,11 @@ HTTP header.
 $this->redirect($this->Link('goherenow'));
 // redirect to Page::goherenow(), i.e on the contact-us page this will redirect to /contact-us/goherenow/
 
-$this->redirect('goherenow/');
-// redirect to the URL on yoursite.com/goherenow/. (note the trailing slash)
+$this->redirect('/goherenow');
+// redirect to the URL on www.example.com/goherenow/ assuming your website is hosted at www.example.com (note the leading slash)
 
-$this->redirect('http://google.com');
-// redirect to http://google.com
+$this->redirect('https://www.example.com');
+// redirect to https://www.example.com (assuming that is an external website URL)
 
 $this->redirectBack();
 // go back to the previous page.

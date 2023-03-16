@@ -212,8 +212,8 @@ $field->setCustomValidationMessage('Whoops, looks like you have missed me!');
 ## JavaScript validation
 
 Although there are no built-in JavaScript validation handlers in Silverstripe CMS, the `FormField` API is flexible enough 
-to provide the information required in order to plug in custom libraries like [Parsley.js](http://parsleyjs.org/) or 
-[jQuery.Validate](http://jqueryvalidation.org/). Most of these libraries work on HTML `data-` attributes or special 
+to provide the information required in order to plug in custom libraries like [Parsley.js](https://parsleyjs.org/) or 
+[jQuery.Validate](https://jqueryvalidation.org/). Most of these libraries work on HTML `data-` attributes or special 
 classes added to each input. For Parsley we can structure the form like.
 
 ```php

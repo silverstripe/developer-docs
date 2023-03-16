@@ -48,7 +48,7 @@ $loader = new CsvBulkLoader('Member');
 $result = $loader->load('<my-file-path>');
 ```
 
-By the way, you can import [Member](api:SilverStripe\Security\Member) and [Group](api:SilverStripe\Security\Group) data through `http://localhost/admin/security`
+By the way, you can import [Member](api:SilverStripe\Security\Member) and [Group](api:SilverStripe\Security\Group) data through `https://www.example.com/admin/security`
 interface out of the box.
 
 ## Import through ModelAdmin
@@ -72,7 +72,7 @@ class PlayerAdmin extends ModelAdmin
 }
 ```
 
-The new admin interface will be available under `http://localhost/admin/players`, the import form is located
+The new admin interface will be available under `https://www.example.com/admin/players`, the import form is located
 below the search form on the left.
 
 ## Import through a custom controller

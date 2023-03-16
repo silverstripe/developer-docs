@@ -17,7 +17,7 @@ module in a "potentially releasable" state. Releases are planned around an issue
 [roadmap](https://www.silverstripe.org/software/roadmap/).  We re-revaluate our priorities every few weeks.
 
 Silverstripe CMS is split up into many modules listed on [github.com/silverstripe](https://github.com/silverstripe).
-Each may have a different release line (e.g. 1.x vs. 4.x).
+Each may have a different release line (e.g. 2.x vs. 5.x).
 There are high-level "recipe" milestones on the [framework repository](https://github.com/silverstripe/silverstripe-framework/milestones)
 to combine individual module milestones into a larger release that's eventually available to install with 
 [composer](https://silverstripe.org/download).
@@ -45,15 +45,15 @@ across all modules involved in a recipe release.
 
 ## Release numbering {#release-numbering}
 
-Silverstripe CMS follows [Semantic Versioning](http://semver.org).
+Silverstripe CMS follows [Semantic Versioning](https://semver.org).
 
 All Silverstripe CMS modules (including `silverstripe/framework`) may have patch releases created at any time, and will
 not necessarily match other core module patch release numbers. For example, your project may be using
-`silverstripe/cms` 4.3.1 with `silverstripe/versioned` 4.3.9.
+`silverstripe/cms` 5.3.1 with `silverstripe/versioned` 5.3.9.
 
-All Silverstripe CMS recipes are released in lock step with each other. For example, `silverstripe/installer` 4.3.1 will
-contain `silverstripe/recipe-cms` 4.3.1 and `silverstripe/recipe-core` 4.3.1. These recipes may contain various patch
-versions of its modules within the same minor release line (4.3 in this example).
+All Silverstripe CMS recipes are released in lock step with each other. For example, `silverstripe/installer` 5.3.1 will
+contain `silverstripe/recipe-cms` 5.3.1 and `silverstripe/recipe-core` 5.3.1. These recipes may contain various patch
+versions of its modules within the same minor release line (5.3 in this example).
 
 ## Regular quarterly releases
 
@@ -124,10 +124,10 @@ commitment for any new APIs introduced in that minor release.
 
 At any point in time, the core development team will support a set of releases to varying levels:
 
-* The status of major releases is determined by the [roadmap](http://silverstripe.org/roadmap)
+* The status of major releases is determined by the [roadmap](https://silverstripe.org/roadmap)
 * Minor releases of major releases in "active development" or in the "bug and security fixes" phase are released roughly every three months, and their End-of-Life (EOL) is announced at least six months in advance
 * The latest minor release is supported as long as the underlying major release
-* API changes and major new features are applied to the master branch, to be included in the next major release
+* API changes and major new features are applied to the next major release branch, to be included in the next major release
 * New APIs can be applied to the current minor release of major releases in "active development", but should usually be marked as "internal" APIs until they're considered stable
 * Enhancements are applied to the next minor release of major releases in "active development"
 * Non-critical bugfixes and all security fixes are applied to all supported minor releases of major releases in "active development" or in the "bug and security fixes" phase
@@ -138,7 +138,7 @@ At any point in time, the core development team will support a set of releases t
 
 Note that this only applies to the "core" recipe (the modules included by [silverstripe/recipe-core](https://github.com/silverstripe/recipe-core)
 and [silverstripe/recipe-cms](https://github.com/silverstripe/recipe-cms)).
-For [supported modules](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/) outside of this recipe,
+For [supported modules](/project_governance/supported_modules/) outside of this recipe,
 please refer to our [supported modules definition](https://www.silverstripe.org/software/addons/supported-modules-definition/).
 
 
@@ -266,7 +266,7 @@ A security release is a [Silverstripe CMS Core Release](making_a_silverstripe_co
 
 ### Reporting an issue
 
-Report security issues in our [commercially supported modules](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/)
+Report security issues in our [commercially supported modules](/project_governance/supported_modules/)
 to [security@silverstripe.org](mailto:security@silverstripe.org). 
 Please don't file security issues in our [bugtracker](issues_and_bugs). 
 
@@ -275,7 +275,7 @@ Silverstripe CMS does not operate a *bug bounty* program.
 ### Acknowledgment and disclosure
 
 In the event of a confirmed vulnerability in our
-[supported modules](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/),
+[supported modules](/project_governance/supported_modules/),
 we will take the following actions:
 
 * Acknowledge to the reporter that we've received the report and that a fix is forthcoming.
@@ -283,7 +283,7 @@ we will take the following actions:
 * Assign a [CVE identifier](https://cve.mitre.org) to the issue.
 * For "high" and "critical" issues (CVSS of >=7.0): Pre-announce the upcoming security release to a private pre-announcement mailing list of important stakeholders (see below).
 * We will inform you about resolution and [announce](https://forum.silverstripe.org/c/releases) a 
-[new release](http://silverstripe.org/security-releases/) publicly.
+[new release](https://www.silverstripe.org/security-releases/) publicly.
 
 You can help us determine the problem and speed up responses by providing us with more information on how to reproduce
 the issue: 
@@ -294,7 +294,7 @@ the issue:
 
 ### Severity rating
 
-Each [security release](http://www.silverstripe.org/security-releases/) includes an overall severity rating and one for 
+Each [security release](https://www.silverstripe.org/security-releases/) includes an overall severity rating and one for 
 each vulnerability. The rating indicates how important an update is.
 It follows the [Common Vulnerability Scoring System (CVSS)](https://www.first.org/cvss). 
 This rating determines which release lines are targeted with security fixes.
@@ -336,8 +336,6 @@ changelogs and the website section [Security Releases](https://www.silverstripe.
 ## Quality Assurance and Testing
 
 The quality of our software is important to us, and we continuously test it for regressions
-through a broad suite of unit and integration tests. Most of these run on 
-[Travis CI](http://travis-ci.com), and results are publicly available.
-Check the badges on the various modules available on [github.com/silverstripe](http://github.com/silverstripe).
-There's also a [build matrix](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/)
-for our commercially supported modules (only showing build status for the default branch).
+through a broad suite of unit and integration tests. These run on
+[GitHub Actions](https://docs.github.com/en/actions), and results are publicly available.
+Check the badges on the various modules available on [github.com/silverstripe](https://github.com/silverstripe).

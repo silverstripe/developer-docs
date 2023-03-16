@@ -24,7 +24,7 @@ Check our [requirements](/getting_started/server_requirements) documentation.
 
 We follow the [AirBnB JavaScript Conventions](https://github.com/airbnb/javascript),
 as well as the [AirBnB React Conventions](https://github.com/airbnb/javascript/tree/master/react).
-A lot of their rules can be validated via [ESLint](http://eslint.org/),
+A lot of their rules can be validated via [ESLint](https://eslint.org/),
 and can be checked locally via `yarn lint` (see [Build Tooling](/contributing/build_tooling)).
 
 ## Spelling
@@ -44,9 +44,9 @@ except when necessitated by third party conventions (e.g using "color" for CSS s
   [container components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.r635clean)
 - React classes in `client/src/components` and `client/src/containers` should
   have one folder per component, alongside a `README.md` and SCSS files where applicable.
-- The `client/src/state` folder should contain [Redux](http://redux.js.org/)
+- The `client/src/state` folder should contain [Redux](https://redux.js.org/)
   actions, action types and reducers. Each set of these should be kept in a folder
-  named the same as its [reducer state key](http://redux.js.org/docs/basics/Reducers.html).
+  named the same as its [reducer state key](https://redux.js.org/tutorials/fundamentals/part-3-state-actions-reducers).
 - JavaScript that pertains specifically to [entwine](/developer_guides/customising_the_admin_interface/cms_architecture/#javascript-through-jquery-entwine) logic belongs in a `client/src/legacy` directory.
 - JavaScript tests should be named after the module/class/component they're testing,
   with their file name suffixed with `-tests.js`.

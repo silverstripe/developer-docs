@@ -55,7 +55,7 @@ command line, it has no way of knowing.
 You can use the `SS_BASE_URL` environment variable to specify this.
 
 ```
-SS_BASE_URL="http://localhost/base-url"
+SS_BASE_URL="https://www.example.com/base-url"
 ```
 
 ### Usage
@@ -156,7 +156,7 @@ vendor/bin/sake myurl "myparam=1&myotherparam=2"
 
 ## Running Regular Tasks With Cron
 
-On a UNIX machine, you can typically run a scheduled task with a [cron job](http://en.wikipedia.org/wiki/Cron). Run
+On a UNIX machine, you can typically run a scheduled task with a [cron job](https://en.wikipedia.org/wiki/Cron). Run
 `BuildTask` in Silverstripe CMS as a cron job using `sake`.
 
 The following will run `MyTask` every minute.
