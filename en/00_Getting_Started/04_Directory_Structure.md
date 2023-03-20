@@ -18,8 +18,8 @@ Directory            | Description
 `public/`            | Webserver public webroot
 `public/assets/`     | Images and other files uploaded via the Silverstripe CMS. You can also place your own content inside it, and link to it from within the content area of the CMS.
 `public/assets/.protected/` | Default location for [protected assets](/developer_guides/files/file_security)
-`public/_resources/` | Exposed public files added from modules. Folders within this parent will match that of the source root location (this can be altered by configuration).
-`vendor/`            | Silverstripe modules and other supporting libraries (the framework is in `vendor/silverstripe/framework`)
+`public/_resources/` | Exposed public files added from modules. Folders within this parent will match that of the source root location ([this can be altered by configuration](/developer_guides/templates/requirements/#configuring-your-project-exposed-folders)).
+`vendor/`            | Silverstripe modules and other supporting libraries (e.g. the framework is in `vendor/silverstripe/framework`)
 `themes/`            | Standard theme installation location
 
 ## Custom Code Structure
@@ -27,22 +27,22 @@ Directory            | Description
 We use `app/` as the default folder.
 
 | Directory             | Description                                                         |
- | ---------             | -----------                                                         |
+| ---------             | -----------                                                         |
 | `app/`           | This directory contains all of your code that defines your website. |
-| `app/_config`    | YAML configuration specific to  your application                    |
-| `app/src`        | PHP code for model and controller (subdirectories are optional)     |
-| `app/tests`      | PHP Unit tests                                                      |
-| `app/templates`  | HTML [templates](/developer_guides/templates) with *.ss-extension for the `$default` theme   |
-| `app/css `       | CSS files                                                           |
-| `app/images `    | Images used in the HTML templates                                   |
-| `app/javascript` | Javascript and other script files                                   |
-| `app/client`     | More complex projects can alternatively contain frontend assets in a common `client` folder |
+| `app/_config`    | YAML configuration specific to your application                    |
+| `app/src`        | PHP code specific to your application (subdirectories are optional)     |
+| `app/tests`      | PHP unit/functional/end-to-end tests                                                      |
+| `app/templates`  | HTML [templates](/developer_guides/templates) with `*.ss-extension` for the `$default` theme   |
+| `app/client/src` | Conventional directory for source resources (images/css/javascript) for your CMS customisations |
+| `app/client/dist` | Conventional directory for transpiled resources (images/css/javascript) for your CMS customisations |
+| `app/client/lang` | Conventional directory for [javascript translation tables](/developer_guides/i18n/#translation-tables-in-javascript) |
+| `app/lang` | Contains [yaml translation tables](/developer_guides/i18n/#language-definitions) |
 | `app/themes/<yourtheme>` | Custom nested themes (note: theme structure is described below)     |
 
 Arbitrary directory-names are allowed, as long as they don't collide with existing modules or the directories lists in
 "Core Structure". Here's how you would reconfigure your default folder to `myspecialapp`.
 
-*myspecialapp/_config/config.yml*
+**`myspecialapp/_config/config.yml`**
 
 ```yml
 ---
@@ -52,13 +52,13 @@ SilverStripe\Core\Manifest\ModuleManifest:
     project: 'myspecialapp'
 ```
 
-Check our [JavaScript Coding Conventions](javascript_coding_conventions) for more details on folder and file naming in
+Check our [JavaScript Coding Conventions](/contributing/javascript_coding_conventions/) for more details on folder and file naming in
 Silverstripe core modules.
 
 ## Themes Structure
 
 | Directory                       | Description                                                     |
- | ------------------              | ---------------------------                                     |
+| ------------------              | ---------------------------                                     |
 | `themes/simple/`                | Standard "simple" theme                                         |
 | `themes/<yourtheme>/`           | Custom theme base directory                                     |
 | `themes/<yourtheme>/templates`  | Theme templates                                                 |
@@ -66,34 +66,35 @@ Silverstripe core modules.
 
 See [themes](/developer_guides/templates/themes).
 
-## Module Structure {#module_structure}
+## Module Structure
 
 Modules are commonly stored as composer packages in the `vendor/` folder. They need to have a `_config.php` file or
 a `_config/` directory present, and should follow the same conventions as posed in "Custom Site Structure".
 
-Example Forum:
+Example for the [silverstripe/blog](https://github.com/silverstripe/silverstripe-blog) module:
 
 | Directory  | Description                                                         |
- | ---------  | -----------                                                         |
-| `vendor/silverstripe/blog/`| This directory contains all of your code that defines your website. |
-| `vendor/silverstripe/blog/code` | PHP code for model and controller (subdirectories are optional)     |
+| ---------  | -----------                                                         |
+| `vendor/silverstripe/blog/` | This directory contains all of your code that defines the module. |
+| `vendor/silverstripe/_config` | YAML configuration specific to the module                    |
+| `vendor/silverstripe/blog/src` | PHP code specific to the module (subdirectories are optional)     |
 | ...        | ...                                                                 |
 
 ### Module documentation
 
-Module developers can bundle developer documentation with their code by producing plain text files inside a 'docs'
+Module developers can bundle developer documentation with their code by producing plain text files inside a `docs/`
 folder located in the module folder. These files can be written with the Markdown syntax
 (see [Contributing Documentation](/contributing/documentation))
 and include media such as images or videos.
 
 Inside the `docs/` folder, developers should organise the markdown files into each separate language they wish to write
-documentation for (usually just `en`). Inside each languages' subfolder, developers then have freedom to create whatever
+documentation for (e.g. `en` for english documentation). Inside each languages' subfolder, developers then have freedom to create whatever
 structure they wish for organising the documentation they wish.
 
 Example Blog Documentation:
 
 | Directory  | Description                                                         |
- | ---------  | -----------                                                         |
+| ---------  | -----------                                                         |
 | `vendor/silverstripe/blog/docs` | |
 | `vendor/silverstripe/blog/docs/_manifest_exclude` | Empty file to signify that Silverstripe does not need to load classes from this folder |
 | `vendor/silverstripe/blog/docs/en/`       | English documentation  |
@@ -101,7 +102,7 @@ Example Blog Documentation:
 | `vendor/silverstripe/blog/docs/en/Getting_Started.md` | Documentation page. Naming convention is Uppercase and underscores. |
 | `vendor/silverstripe/blog/docs/en/_images/` | Folder to store any images or media |
 | `vendor/silverstripe/blog/docs/en/Some_Topic/` | You can organise documentation into nested folders. Naming convention is Uppercase and underscores. |
-| `vendor/silverstripe/blog/docs/en/04_Some_Topic/00_Getting_Started.md`|Structure is created by use of numbered prefixes. This applies to nested folders and documentations pages, index.md should not have a prefix.|
+| `vendor/silverstripe/blog/docs/en/04_Some_Topic/00_Getting_Started.md`|Structure is created by use of numbered prefixes. This applies to nested folders and documentations pages, `index.md` should not have a prefix.|
 
 ## Autoloading
 

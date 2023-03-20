@@ -5,81 +5,79 @@ summary: Modify the data model without using subclasses.
 
 # Extending DataObjects
 
-You can add properties and methods to existing [DataObject](api:SilverStripe\ORM\DataObject)s like [Member](api:SilverStripe\Security\Member) without hacking core code or sub 
-classing by using [DataExtension](api:SilverStripe\ORM\DataExtension). See the [Extending SilverStripe](../extending) guide for more information on
-[DataExtension](api:SilverStripe\ORM\DataExtension).
+You can add properties and methods to existing [`DataObject`](api:SilverStripe\ORM\DataObject) subclasses like [`Member`](api:SilverStripe\Security\Member) without hacking core code or subclassing by using an [`Extension`](api:SilverStripe\Core\Extension). See the [Extending SilverStripe](../extending) guide for more information.
 
 The following documentation outlines some common hooks that the [Extension](api:SilverStripe\Core\Extension) API provides specifically for managing
-data records.
+data records. Note that this is _not_ an exhaustive list - we encourage you to look at the source code to see what other extension hooks are available.
+
+[warning]
+Avoid using the hooks shown here for checking permissions or validating data - there are specific mechanisms for handling those scenarios. See [permissions](permissions) and [validation](validation) respectively.
+[/warning]
 
 ## onBeforeWrite
 
-You can customise saving-behavior for each DataObject, e.g. for adding workflow or data customization. The function is 
-triggered when calling *write()* to save the object to the database. This includes saving a page in the CMS or altering 
-a `ModelAdmin` record.
+You can customise saving behavior for each `DataObject`, e.g. for adding workflow or data customization. The function is
+triggered when calling [`write()`](api:SilverStripe\ORM\DataObject::write()) to save the object to the database. This includes saving a page in the CMS or altering
+a record via code.
 
-Example: Disallow creation of new players if the currently logged-in player is not a team-manager.
+Example: Make sure the player has a valid and unique player number for their team when being assigned a new team.
 
 ```php
+use SilverStripe\Control\HTTPResponse_Exception;
 use SilverStripe\Security\Security;
 use SilverStripe\ORM\DataObject;
 
 class Player extends DataObject 
 {
-    private static $has_many = [
-        'Teams' => 'Team',
+    private static $db = [
+        // ...
+        'Number' => 'Int',
+    ];
+
+    private static $has_one = [
+        'Team' => Team::class,
     ];
     
     public function onBeforeWrite() 
     {
-        // check on first write action, aka "database row creation" (ID-property is not set)
-        if (!$this->isInDb()) {
-            $currentPlayer = Security::getCurrentUser();
+        // Use $this->isInDb() to check if the record is being written to the database for the first time
+        if (!$this->isInDb() && $this->Team()->exists()) {
+            $this->Number = $this->Team()->getAvailablePlayerNumber();
+        }
         
-            if (!$currentPlayer->IsTeamManager()) {
-                throw new \Exception('Player-creation not allowed');
+        // If the player changed teams
+        if ($this->isChanged('TeamID') && $this->Team()->exists()) {
+            // If the player's number is already used by someone else on this team
+            if (in_array($this->Number, $this->Team()->Players()->exclude('ID', $this->ID)->column('Number'))) {
+                // Assign a new player number
+                $this->Number = $this->Team()->getAvailablePlayerNumber();
             }
         }
         
-        // check on every write action
-        if (!$this->record['TeamID']) {
-            throw new \Exception('Cannot save player without a valid team');
-        }
-        
-        // CAUTION: You are required to call the parent-function, otherwise
+        // CAUTION: You are required to call parent::onBeforeWrite(), otherwise
         // SilverStripe will not execute the request.
         parent::onBeforeWrite();
     }
 }
-
 ```
 
 ## onBeforeDelete
 
-Triggered before executing *delete()* on an existing object.
-
-Example: Checking for a specific [permission](permissions) to delete this type of object. It checks if a 
-member is logged in who belongs to a group containing the permission "PLAYER_DELETE".
+Triggered before executing [`delete()`](api:SilverStripe\ORM\DataObject::delete()) on an existing object. It can be useful if you need to make sure you clean up some other data/files/etc which aren't directly associated with the actual `DataObject` record.
 
 ```php
-use SilverStripe\Security\Permission;
-use SilverStripe\Security\Security;
 use SilverStripe\ORM\DataObject;
 
 class Player extends DataObject 
 {
-    
-    private static $has_many = [
-        "Teams" => "Team"
-    ];
-    
+    // ...
+
     public function onBeforeDelete() 
     {
-        if(!Permission::check('PLAYER_DELETE')) {
-            Security::permissionFailure($this);
-            exit();
-        }
-        
+        /* Do some cleanup here relevant to your project before deleting the actual database record */
+
+        // CAUTION: You are required to call parent::onBeforeDelete(), otherwise
+        // SilverStripe will not execute the request.
         parent::onBeforeDelete();
     }
 }

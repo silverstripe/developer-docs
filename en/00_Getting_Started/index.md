@@ -6,7 +6,7 @@ icon: rocket
 
 ## Server Requirements
 
-Silverstripe requires PHP 7.1 or newer. It runs on many webservers and databases, but is most commonly served using
+Silverstripe requires PHP 8.1 or newer. It runs on many webservers and databases, but is most commonly served using
 Apache and MySQL/MariaDB.
 
 If you are setting up your own environment, you'll need to consider a few configuration settings such as URL rewriting
@@ -19,16 +19,21 @@ started. Silverstripe is installed via [Composer](https://getcomposer.org), a pa
 you install and upgrade the framework and other modules. Assuming you've got this tool, run the following command to
 install Silverstripe:
 
-```
+```bash
 composer create-project silverstripe/installer my-project
 ```
 
 Within the newly created `my-project` folder, point your webserver at the `public/` folder.
 
-Now create a `.env` file your project root (not the `public/` folder). It sets up the minimum
-required [environment variables](environment_management). Replace the placeholders as required:
+Now create a `.env` file in your project root (not the `public/` folder).
 
-```
+[hint]
+If you used `silverstripe/installer` to create your project, you can rename the `.env.example` file to `.env`. It includes the minimum required [environment variables](environment_management).
+[/hint]
+
+Replace the placeholders as required:
+
+```bash
 SS_DATABASE_CLASS="MySQLDatabase"
 SS_DATABASE_NAME="<database>"
 SS_DATABASE_SERVER="localhost"
@@ -41,7 +46,7 @@ SS_ENVIRONMENT_TYPE="<dev|test|live>"
 
 Now you should be able to build your database by running this command:
 
-```
+```bash
 vendor/bin/sake dev/build
 ```
 
@@ -64,4 +69,3 @@ Webserver setup is covered in
 
 If you run into trouble, see [the Tips & Tricks forum](https://forum.silverstripe.org/c/tips) or get help on
 our [Slack channel](https://www.silverstripe.org/community/slack-signup/).
-

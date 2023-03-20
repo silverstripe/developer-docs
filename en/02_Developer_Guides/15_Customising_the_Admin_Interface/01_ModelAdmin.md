@@ -371,7 +371,7 @@ If you wish to provided a tailored esperience for CMS users, you can directly in
 
 Extensions applied to a ModelAdmin can also use the `updateGridField` and `updateGridFieldConfig` hooks.
 
-To alter how the results are displayed (via [GridField](api:SilverStripe\Forms\GridField\GridField)), you can also overload the `getEditForm()` method. For
+To alter how the results are displayed (via [GridField](api:SilverStripe\Forms\GridField\GridField)), you can also override the `getEditForm()` method. For
 example, to add a new component.
 
 ### Overriding the methods on ModelAdmin

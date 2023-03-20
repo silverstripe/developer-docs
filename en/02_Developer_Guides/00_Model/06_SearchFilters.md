@@ -6,8 +6,8 @@ icon: search
 
 # SearchFilter Modifiers
 
-The `filter` and `exclude` operations specify exact matches by default. However, when filtering `DataList`s, there are a number of suffixes that
-you can put on field names to change this behavior. These are represented as `SearchFilter` subclasses and include.
+The [`filter()`](api:SilverStripe\ORM\DataList::filter()) and [`exclude()`](api:SilverStripe\ORM\DataList::exclude()) methods on `DataList` specify exact matches by default. However, when filtering a `DataList`, there are a number of suffixes that
+you can put on field names to change this behavior. These are represented as `SearchFilter` subclasses and include:
 
  * [ExactMatchFilter](api:SilverStripe\ORM\Filters\ExactMatchFilter)
  * [StartsWithFilter](api:SilverStripe\ORM\Filters\StartsWithFilter)
@@ -18,58 +18,65 @@ you can put on field names to change this behavior. These are represented as `Se
  * [LessThanFilter](api:SilverStripe\ORM\Filters\LessThanFilter)
  * [LessThanOrEqualFilter](api:SilverStripe\ORM\Filters\LessThanOrEqualFilter)
 
+See [`SilverStripe\ORM\Filters` in the API docs](api:SilverStripe\ORM\Filters) for a full list of `SearchFilter` classes available in silverstripe/framework.
+
 An example of a `SearchFilter` in use:
 
 ```php
-// fetch any player that starts with a S
+// fetch any player whose first name starts with the letter 'S' and has a PlayerNumber greater than 10
 $players = Player::get()->filter([
     'FirstName:StartsWith' => 'S',
     'PlayerNumber:GreaterThan' => '10'
 ]);
 
-// to fetch any player that's name contains the letter 'z'
+// fetch any player whose name contains the letter 'z'
 $players = Player::get()->filterAny([
     'FirstName:PartialMatch' => 'z',
     'LastName:PartialMatch' => 'z'
 ]);
 ```
 
+[hint]
+Notice the syntax - to invoke a `SearchFilter` in a `DataList`'s `filter()`/`filterAny()`/`filterByCallback()` or `exclude()`/`excludeAny()` methods, you add a colon after the field name, followed by the name of the filter (excluding the actual word "filter"). e.g. for a `StartsWithFilter`: `'FieldName:StartsWith'`
+[hint]
+
 Developers can define their own [SearchFilter](api:SilverStripe\ORM\Filters\SearchFilter) if needing to extend the ORM filter and exclude behaviors.
 
-These suffixes can also take modifiers themselves. The modifiers currently supported are `":not"`, `":nocase"` and 
-`":case"`. These negate the filter, make it case-insensitive and make it case-sensitive, respectively. The default
-comparison uses the database's default. For MySQL and MSSQL, this is case-insensitive. For PostgreSQL, this is 
+## Modifiers
+
+`SearchFilter`s can also take modifiers. The modifiers currently supported are `":not"`, `":nocase"`, and
+`":case"` (though you can implement custom modifiers on your own `SearchFilter` implementations). These negate the filter, make it case-insensitive and make it case-sensitive, respectively. The default
+comparison uses the database's default. For MySQL and MSSQL, this is case-insensitive. For PostgreSQL, this is
 case-sensitive.
 
 ```php
-// Fetch players that their FirstName is 'Sam'
+// Fetch players that their FirstName is exactly 'Sam'
 // Caution: This might be case in-sensitive if MySQL or MSSQL is used
 $players = Player::get()->filter([
     'FirstName:ExactMatch' => 'Sam'
 ]);
 
-// Fetch players that their FirstName is 'Sam' (force case-sensitive)
+// Fetch players that their FirstName is exactly 'Sam' (force case-sensitive)
 $players = Player::get()->filter([
     'FirstName:ExactMatch:case' => 'Sam'
 ]);
 
-// Fetch players that their FirstName is 'Sam' (force NOT case-sensitive)
+// Fetch players that their FirstName is exactly 'Sam' (force NOT case-sensitive)
 $players = Player::get()->filter([
     'FirstName:ExactMatch:nocase' => 'Sam'
 ]);
 ```
 
-By default the `:ExactMatch` filter is applied, hence why we can shorthand the above to:
+By default the `:ExactMatch` filter is applied, so we can shorthand the above to:
 ```php
 $players = Player::get()->filter('FirstName', 'Sam'); // Default DB engine behaviour
 $players = Player::get()->filter('FirstName:case', 'Sam'); // case-sensitive
 $players = Player::get()->filter('FirstName:nocase', 'Sam'); // NOT case-sensitive
 ```
 
-Note that all search filters (e.g. `:PartialMatch`) refer to services registered with [Injector](api:SilverStripe\Core\Injector\Injector)
+Note that all search filters (e.g. `:PartialMatch`) refer to services registered with [`Injector`](api:SilverStripe\Core\Injector\Injector)
 within the `DataListFilter.` prefixed namespace. New filters can be registered using the below yml
 config:
-
 
 ```yaml
 SilverStripe\Core\Injector\Injector:
@@ -84,11 +91,24 @@ $players = Player::get()->filter([
     'FirstName:StartsWith:nocase' => 'S'
 ]);
 
-// use :not to perform a converse operation to filter anything but a 'W'
+// use :not to get everyone whose first name does NOT start with "S"
 $players = Player::get()->filter([
-    'FirstName:StartsWith:not' => 'W'
+    'FirstName:StartsWith:not' => 'S'
 ]);
 ```
+
+[hint]
+You can combine `:not` and either `:nocase` or `:case`. Note that the order doesn't matter - these two calls are equivalent:
+
+```php
+$players = Player::get()->filter([
+    'FirstName:StartsWith:nocase:not' => 'S'
+]);
+$players = Player::get()->filter([
+    'FirstName:StartsWith:not:nocase' => 'S'
+]);
+```
+[/hint]
 
 ## Related Lessons
 * [Introduction to ModelAdmin](https://www.silverstripe.org/learn/lessons/v4/introduction-to-modeladmin-1)

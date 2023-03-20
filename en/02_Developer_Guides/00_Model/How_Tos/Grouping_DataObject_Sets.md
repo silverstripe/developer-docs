@@ -10,10 +10,10 @@ These lists can get quite long, and hard to present on a single list.
 [Pagination](/developer_guides/templates/how_tos/pagination) is one way to solve this problem,
 by splitting up the list into multiple pages.
 
-In this howto, we present an alternative to pagination: 
-Grouping a list by various criteria, through the [GroupedList](api:SilverStripe\ORM\GroupedList) class.
+In this howto, we present an alternative to pagination:
+grouping a list by various criteria, through the [GroupedList](api:SilverStripe\ORM\GroupedList) class.
 This class is a [ListDecorator](api:SilverStripe\ORM\ListDecorator), which means it wraps around a list,
-adding new functionality. 
+adding new functionality.
 
 It provides a `groupBy()` method, which takes a field name, and breaks up the managed list 
 into a number of arrays, where each array contains only objects with the same value of that field. 
@@ -79,6 +79,10 @@ class Page extends SiteTree
 }
 ```
 
+[notice]
+Notice that we're sorting as part of the ORM call. While `GroupedList` does have a `sort()` method, it doesn't work how you might expect, as it returns a sorted copy of the underlying list rather than sorting the list in place.
+[/notice]
+
 The final step is to render this into a template. The `GroupedBy()` method breaks up the set into
 a number of sets, grouped by the field that is passed as the parameter. 
 In this case, the `getTitleFirstLetter()` method defined earlier is used to break them up.
@@ -86,7 +90,7 @@ In this case, the `getTitleFirstLetter()` method defined earlier is used to brea
 ```ss
 <%-- Modules list grouped by TitleFirstLetter --%>
 <h2>Modules</h2>
-<% loop $GroupedModules.GroupedBy(TitleFirstLetter) %>
+<% loop $GroupedModules.GroupedBy("TitleFirstLetter") %>
     <h3>$TitleFirstLetter</h3>
     <ul>
         <% loop $Children %>
@@ -143,12 +147,13 @@ class Page extends SiteTree
     }
 }
 ```
+
 The final step is to render this into the template using the [GroupedList::GroupedBy()](api:SilverStripe\ORM\GroupedList::GroupedBy()) method.
 
 ```ss
-// Modules list grouped by the Month Posted
+<%-- Modules list grouped by the Month Posted --%>
 <h2>Modules</h2>
-<% loop $GroupedModulesByDate.GroupedBy(MonthCreated) %>
+<% loop $GroupedModulesByDate.GroupedBy("MonthCreated") %>
     <h3>$MonthCreated</h3>
     <ul>
         <% loop $Children %>

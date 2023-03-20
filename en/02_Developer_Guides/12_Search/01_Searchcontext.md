@@ -89,7 +89,7 @@ the `$fields` constructor parameter.
 
 ### Customising the general search field
 
-On tabular views like the GridFields and ModalAdmins, the search context is rendered as a search bar
+On tabular views like the GridFields and ModelAdmins, the search context is rendered as a search bar
 with advanced options. To customise this field, see the [Scaffolding documentation](../model/scaffolding#general-search-field).
 
 ### Generating a search form from the context
