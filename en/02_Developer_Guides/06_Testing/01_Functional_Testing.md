@@ -110,7 +110,7 @@ selector will be applied to the HTML of the most recent page. The content of eve
 assertion fails if one of the expectedMatches fails to appear.
 
 [notice]
-`&amp;nbsp;` characters are stripped from the content; make sure that your assertions take this into account.
+`&nbsp;` characters are stripped from the content; make sure that your assertions take this into account.
 [/notice]
 
 ### assertExactHTMLMatchBySelector
@@ -125,7 +125,7 @@ selector will be applied to the HTML of the most recent page.  The full HTML of 
 assertion fails if one of the expectedMatches fails to appear.
 
 [notice]
-`&amp;nbsp;` characters are stripped from the content; make sure that your assertions take this into account.
+`&nbsp;` characters are stripped from the content; make sure that your assertions take this into account.
 [/notice]
 
 ## Related Documentation
