@@ -1006,7 +1006,7 @@ the webpack configuration slightly for use in a module.
 
 ### Setup {#history-viewer-setup}
 
-Regardless of which version of `silverstripe/graphql` your project uses, the setup will be the same - you'll have some `DataObject` model, somewhere to view that model (e.g. in a `ModelAdmin`), and some basic javascript to tell the history viewer how to handle requests for your model.
+This example assumes you have some `DataObject` model and somewhere to view that model (e.g. in a `ModelAdmin`). We'll walk you through the steps required to add some javascript to tell the history viewer how to handle requests for your model.
 
 For this example we'll start with this simple `DataObject`:
 
@@ -1036,12 +1036,12 @@ If you haven't already configured frontend asset (javascript/css) building for y
 packages to be built in order to enable history viewer functionality. This section includes a very basic webpack configuration which uses [@silverstripe/webpack-config](https://www.npmjs.com/package/@silverstripe/webpack-config).
 
 [hint]
-If you have this configured for your project already, ensure you have the `react-apollo` and `graphql-tag` libraries in your `package.json`
+If you have this configured for your project already, ensure you have the `@apollo/client` and `graphql-tag` libraries in your `package.json`
 requirements (with the appropriate version constraints from below), and skip this section.
 [/hint]
 
 [notice]
-Using `@silverstripe/webpack-config` will keep your transpiled bundle size smaller and ensure you are using the correct versions of `react-apollo` and `graphql-tag`, as these will automatically be added as [webpack externals](https://webpack.js.org/configuration/externals/). If you are not using that npm package, it is very important you use the correct versions of those dependencies.
+Using `@silverstripe/webpack-config` will keep your transpiled bundle size smaller and ensure you are using the correct versions of `@apollo/client` and `graphql-tag`, as these will automatically be added as [webpack externals](https://webpack.js.org/configuration/externals/). If you are not using that npm package, it is very important you use the correct versions of those dependencies.
 [/notice]
 
 You can configure your directory structure like so:
@@ -1052,19 +1052,20 @@ You can configure your directory structure like so:
 {
   "name": "my-project",
   "scripts": {
-    "build": "yarn && NODE_ENV=production webpack -p --bail --progress",
+    "build": "yarn && NODE_ENV=production webpack --mode production --bail --progress",
     "watch": "yarn && NODE_ENV=development webpack --watch --progress"
   },
   "dependencies": {
-    "react-apollo": "^2.1.0",
-    "graphql-tag": "^2.10.0"
+    "@apollo/client": "^3.7.1",
+    "graphql-tag": "^2.12.6"
   },
   "devDependencies": {
-    "@silverstripe/webpack-config": "^1.7.0",
-    "webpack": "^2.6.1"
+    "@silverstripe/webpack-config": "^2.0.0",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^5.0.0"
   },
   "engines": {
-    "node": "^10.x"
+    "node": "^18.x"
   }
 }
 ```
@@ -1073,32 +1074,20 @@ You can configure your directory structure like so:
 
 ```js
 const Path = require('path');
-const webpackConfig = require('@silverstripe/webpack-config');
+const { JavascriptWebpackConfig } = require('@silverstripe/webpack-config');
 
-const ENV = process.env.NODE_ENV;
 const PATHS = {
-  MODULES: 'node_modules',
   ROOT: Path.resolve(),
   SRC: Path.resolve('app/client/src'),
   DIST: Path.resolve('app/client/dist'),
 };
 
 module.exports = [
-  {
-    name: 'js',
-    entry: {
+  new JavascriptWebpackConfig('cms-js', PATHS)
+    .setEntry({
       bundle: `${PATHS.SRC}/boot/index.js`,
-    },
-    output: {
-      path: PATHS.DIST,
-      filename: 'js/[name].js',
-    },
-    devtool: (ENV !== 'production') ? 'source-map' : '',
-    resolve: webpackConfig.resolveJS(ENV, PATHS),
-    externals: webpackConfig.externalJS(ENV, PATHS),
-    module: webpackConfig.moduleJS(ENV, PATHS),
-    plugins: webpackConfig.pluginJS(ENV, PATHS),
-  }
+    })
+    .getConfig(),
 ];
 ```
 
@@ -1116,13 +1105,11 @@ Don't forget to [configure your project's "exposed" folders](/developer_guides/t
 
 ### Create and use GraphQL schema {#history-viewer-gql}
 
-The history viewer uses GraphQL queries and mutations to function. Silverstripe CMS 4 support two major release lines of `silverstripe/graphql`, so instructions for using each of those are included below.
+The history viewer uses GraphQL queries and mutations to function. There's instructions for setting up a basic schema below.
 
 #### Define GraphQL schema {#define-graphql-schema}
 
-Only a minimal amount of data is required to be exposed via GraphQL scaffolding, and only to the "admin" GraphQL schema. The way you do this varies wildly between `silverstripe/graphql` v3 and v4.
-
-##### Graphl 4 {#define-graphql-schema-v4}
+Only a minimal amount of data is required to be exposed via GraphQL scaffolding, and only to the "admin" GraphQL schema.
 
 For more information, see [Working with DataObjects - Adding DataObjects to the schema](/developer_guides/graphql/working_with_dataobjects/adding_dataobjects_to_the_schema/).
 
@@ -1154,37 +1141,6 @@ to view the schema and run queries from your browser:
 composer require --dev silverstripe/graphql-devtools dev-master
 ```
 
-##### Graphl 3 {#define-graphql-schema-v3}
-
-For more information, see [Scaffolding DataObjects into the schema](https://github.com/silverstripe/silverstripe-graphql/tree/3#scaffolding-dataobjects-into-the-schema) in the graphql v3 documentation.
-
-**app/_config/graphql.yml**
-
-```yaml
-SilverStripe\GraphQL\Manager:
-  schemas:
-    admin:
-      scaffolding:
-        types:
-          MyVersionedObject:
-            fields: [ID, LastEdited]
-            operations:
-              readOne: true
-              rollback: true
-          SilverStripe\Security\Member:
-            fields: [ID, FirstName, Surname]
-            operations:
-              readOne: true
-```
-
-Once configured, flush your cache and explore the new GraphQL schema to ensure it loads correctly. You can use a GraphQL
-application such as GraphiQL, or [silverstripe-graphql-devtools](https://github.com/silverstripe/silverstripe-graphql-devtools)
-to view the schema and run queries from your browser:
-
-```bash
-composer require --dev silverstripe/graphql-devtools
-```
-
 #### Use the GraphQL query and mutation in javascript
 
 The history viewer interface uses two main operations:
@@ -1199,7 +1155,7 @@ For this we need one query and one mutation:
 **app/client/src/state/readOneMyVersionedObjectQuery.js**
 
 ```js
-import { graphql } from 'react-apollo';
+import { graphql } from '@apollo/client/react/hoc';
 import gql from 'graphql-tag';
 
 // Note that "readOneMyVersionedObject" is the query name in the schema, while
@@ -1308,7 +1264,7 @@ export default graphql(query, config);
 **app/client/src/state/revertToMyVersionedObjectVersionMutation.js**
 
 ```js
-import { graphql } from 'react-apollo';
+import { graphql } from '@apollo/client/react/hoc';
 import gql from 'graphql-tag';
 
 // Note that "rollbackMyVersionedObject" is the mutation name in the schema, while
@@ -1352,83 +1308,9 @@ export { mutation, config };
 export default graphql(mutation, config);
 ```
 
-[hint]
-While `silverstripe/graphql` v4 ignores the namespace when generating names for types, queries, and mutations, v3 includes the first part of the namespace in each of those designations. If you're implementing this for a project that still uses `silverstripe/graphql` v3, make the following changes:
-
-**app/client/src/state/readOneMyVersionedObjectQuery.js**
-
-```diff
- import { graphql } from 'react-apollo';
- import gql from 'graphql-tag';
-
--// Note that "readOneMyVersionedObject" is the query name in the schema, while
-+// Note that "readOneAppMyVersionedObject" is the query name in the schema, while
- // "ReadHistoryViewerMyVersionedObject" is an arbitrary name we're using for this invocation
- // of the query
- const query = gql`
- query ReadHistoryViewerMyVersionedObject ($id: ID!, $limit: Int!, $offset: Int!) {
--    readOneMyVersionedObject(
-+    readOneAppMyVersionedObject(
-       versioning: {
-         mode: ALL_VERSIONS
-       },
--      filter: {
--        id: { eq: $id }
--      }
-+      id: $id
-     ) {
-       id
-       versions (limit: $limit, offset: $offset, sort: {
-
-...
-
-     data: {
-       error,
-       refetch,
--       readOneMyVersionedObject,
-+       readOneAppMyVersionedObject,
-       loading: networkLoading,
-     },
-     ownProps: {
-
-...
-
-       recordId,
-     },
-   }) {
--    const versions = readOneMyVersionedObject || null;
-+    const versions = readOneAppMyVersionedObject || null;
-
-     const errors = error && error.graphQLErrors &&
-
-...
-```
-
-**app/client/src/state/revertToMyVersionedObjectVersionMutation.js**
-
-```diff
- import { graphql } from 'react-apollo';
- import gql from 'graphql-tag';
-
--// Note that "rollbackMyVersionedObject" is the mutation name in the schema, while
-+// Note that "rollbackAppMyVersionedObject" is the mutation name in the schema, while
- // "revertToMyVersionedObject" is an arbitrary name we're using for this invocation
- // of the mutation
- const mutation = gql`
- mutation revertToMyVersionedObject($id:ID!, $toVersion:Int!) {
--  rollbackMyVersionedObject(
-+  rollbackAppMyVersionedObject(
-     id: $id
-     toVersion: $toVersion
-   ) {
-...
-```
-
-[/hint]
-
 #### Register your GraphQL query and mutation with Injector
 
-Regardless of which version of `silverstripe/graphql` you're using, once your GraphQL query and mutation are created you will need to tell the JavaScript Injector about them.
+Once your GraphQL query and mutation are created you will need to tell the JavaScript Injector about them.
 This does two things:
 
 * Allow them to be loaded by core components.
