@@ -4,33 +4,112 @@ title: Deprecations
 
 # Deprecations
 
-## Updating your codebase to use avoid using deprecated API in Silverstripe CMS
-
 You'll need to go through your codebase to remove references to deprecated APIs and update your project logic.
 
 Major releases of Silverstripe CMS introduce many API changes. They include a deprecation message that will either tell you:
 - to simply use a different yet equivalent API instead, or
 - the API in question has no replacement. This is usually for API that was mostly irrelevant.
 
-To see deprecation warnings in your project and in your project's CI, add `SS_DEPRECATION_ENABLED=true` to your project's `.env` file.
+## Enabling deprecation warnings
 
-Alternatively, add the following line to you project's `app/_config.php`.
+To enable deprecation warnings, set the `SS_DEPRECATION_ENABLED` environment variable in your project's `.env` file.
+
+[info]
+If the `SS_DEPRECATION_ENABLED` environment variable is set, this takes precedence over use of the `Deprecation::enable()` static method.
+[/info]
+
+```env
+SS_DEPRECATION_ENABLED=true
+```
+
+Alternatively, add the following line to your project's `app/_config.php`.
+
 ```php
 Deprecation::enable();
 ```
 
-Deprecation notices will only ever show if your `SS_ENVIRONMENT_TYPE` is set to `dev`.
+[info]
+Deprecation warnings will only ever show if your `SS_ENVIRONMENT_TYPE` is set to `dev`.
+[/info]
 
-Your project will now start emitting deprecation warnings on the frontend if you are calling deprecated code, along with the different API you should now use instead, if a replacement exists.
+Once you have resolved all of the deprecation warnings you can, it is recommended to turn off deprecation warnings again.
 
 Not all API that gets deprecated will have an equivalent replacement API in that same major version; some of the API is only available from the next major release. A good example of this is the upgrade for what powers the `SilverStripe\Control\Email\Email` class from `swiftmailer` in CMS 4 to `symfony/mailer` in CMS 5. In these cases, you'll need to upgrade to the new major version before you can access the replacement API.
 
-Some of the deprecated API will have no replacement in CMS 5.
-
-Some code that has been deprecated with no immediate replacement will not emit deprecation notices by default. If you wish to also see notices for deprecated code with no immediate replacement, add the following line to you project's `app/_config.php`. Note that this will _also_ emit deprecation notices for usages of the deprecated code inside core modules.
+Some code that has been deprecated with no immediate replacement will not emit deprecation notices by default. If you wish to also see notices for deprecated code with no immediate replacement, add the following line to you project's `app/_config.php` file. Note that this will also emit deprecation notices for usages of the deprecated code inside core modules.
 
 ```php
 Deprecation::enable(true);
 ```
 
-Once you have resolved all of the deprecation notices you can, it is recommended to turn off deprecation notices again.
+## How to view deprecation warnings
+
+By default, deprecation warnings will be emitted to the error logger, and will be output at the end of CLI responses. They will not be included in HTTP responses by default.
+
+### Viewing deprecation warnings in the logs
+
+Deprecation warnings are output to the same error logger as all other warnings and errors. You will need to make sure you have a logging handler attached to the default `Psr\Log\LoggerInterface` or `Psr\Log\LoggerInterface.errorhandler` singletons. For example, to log to a file you can add this to your yml configuration:
+
+```yml
+SilverStripe\Core\Injector\Injector:
+  ErrorLogFileHandler:
+    class: Monolog\Handler\StreamHandler
+    constructor:
+      - "../silverstripe.log" # an absolute path, or a path relative to the index.php file (usually inside the public/ directory)
+      - "warning" # warning is the level deprecation warnings are logged as
+  Psr\Log\LoggerInterface.errorhandler:
+    calls:
+      ErrorLogFileHandler: [ pushHandler, [ '%$ErrorLogFileHandler' ] ]
+```
+
+[notice]
+You will need to make sure the user running the php process has write access to the log file, wherever you choose to put it.
+[/notice]
+
+See [Configuring error logging](/developer_guides/debugging/error_handling/#configuring-error-logging) to learn about other ways you can handle error logs.
+
+### Deprecation warnings in your browser
+
+Deprecation warnings won't be output to HTTP responses by default because it can be difficult to parse and collate information this way, and deprecation warnings in XHR/AJAX responses can result in unexpected behaviour in some situations. That said, you can choose to enable this output.
+
+Deprecation warnings can be set to output in HTTP responses by setting `SS_DEPRECATION_SHOW_HTTP` to a truthy value in your .env file.
+
+[info]
+If the `SS_DEPRECATION_SHOW_HTTP` environment variable is set, this takes precedence over use of the `Deprecation::setShouldShowForHttp()` static method.
+[/info]
+
+```env
+SS_DEPRECATION_SHOW_HTTP=true
+```
+
+Alternatively, add the following line to your project's `app/_config.php`.
+
+```php
+Deprecation::setShouldShowForHttp(true);
+```
+
+Note that the output for this won't be very easy to read. You might prefer instead to install [lekoala/silverstripe-debugbar](https://github.com/lekoala/silverstripe-debugbar) as a dev dependency. Deprecation warnings will be logged in the "messages" tab of the debugbar.
+
+[warning]
+The debugbar will _not_ show you any deprecation warnings that are triggered from XHR/AJAX requests or which are triggered after the middleware has finished generating the debugbar for the response.
+[/warning]
+
+## Deprecation warnings in the CLI
+
+Deprecation warnings are output for CLI responses by default (assuming they're enabled in general). The warnings are always output at the _end_ of the request, so you don't have to go looking through the output for them. You might want to disable outputting these warnings in CLI responses if, for example, you need to validate the output via code and don't want to add special cases for deprecation warnings.
+
+You can suppress deprecation warnings from CLI output by setting `SS_DEPRECATION_SHOW_CLI` to a falsy value in your .env file.
+
+[info]
+If the `SS_DEPRECATION_SHOW_CLI` environment variable is set, this takes precedence over use of the `Deprecation::SS_DEPRECATION_SHOW_CLI()` static method.
+[/info]
+
+```env
+SS_DEPRECATION_SHOW_CLI=false
+```
+
+Alternatively, add the following line to your project's `app/_config.php`.
+
+```php
+Deprecation::setShouldShowForCli(false);
+```
