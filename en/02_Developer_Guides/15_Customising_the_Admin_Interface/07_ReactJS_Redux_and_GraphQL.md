@@ -99,7 +99,7 @@ engine.
 
 [GraphQL](http://graphql.org/learn/) is a strictly-typed query language that allows you to describe what data you want to fetch from your API. Because it is based on types, it is self-documenting and predictable. Further, it's structure lends itself nicely to fetching nested objects. Here is an example of a simple GraphQL query:
 
-```
+```graphql
 query GetUser($ID: Int!) {
     user {
         name
@@ -118,7 +118,7 @@ query GetUser($ID: Int!) {
 
 The above query is almost self-descriptive. It gets a user by ID, returns his or her name and email address, along with the title of any blog posts he or she has written, and the first five comments for each of those. The result of that query is, very predictably, JSON that takes on the same structure.
 
-```js
+```json
 {
     "user": {
         "name": "Test user",
@@ -148,6 +148,7 @@ documentation available all over the web. We recommend:
 * [Build With React](http://buildwithreact.com/tutorial)
 * [Getting Started with Redux](https://egghead.io/courses/getting-started-with-redux)
 * [The React Apollo docs](http://dev.apollodata.com/react/)
+* [GraphQL in Silverstripe](/developer_guides/graphql/)
 
 # The Injector API
 
@@ -277,7 +278,7 @@ Injector.transform(
 Much like the configuration layer, we need to specify a name for this transformation. This will help other modules negotiate their priority over the injector in relation to yours.
 
 The second parameter of the `transform` argument is a callback which receives an `updater`object. It contains four functions: `component()`, `reducer()`, `form.alterSchema()` and `form.addValidation()`. We'll cover all of these in detail functions in detail further into the document, but briefly, these update functions allow you to mutate the DI container with a wrapper for the service. Remember, this function does not _replace_
-the service -- it enhances it with new functionality.
+the service - it enhances it with new functionality.
 
 ### Helpful tip: Name your component middleware
 
@@ -632,9 +633,9 @@ Injector.transform(
     updater.form.addValidation(
       'AssetAdmin.*',
       (values, validator) => {
-      	if (values.PostalCode.length !== 5) {
-      		validator.addError('PostalCode', 'Invalid postal code');
-      	}
+        if (values.PostalCode.length !== 5) {
+          validator.addError('PostalCode', 'Invalid postal code');
+        }
       }
     )
   }
@@ -809,36 +810,38 @@ You could manipulate the action called by the originalReducer, there isn't an ex
 
 One of the strengths of GraphQL is that it allows us to declaratively state exactly what data a given component needs to function. Because GraphQL queries and mutations are considered primary concerns of a component, they are not abstracted away somewhere in peripheral asynchronous functions. Rather, they are co-located with the component definition itself.
 
-The downside of this is that, because queries are defined statically at compile time, they don't adapt well to the extension patterns that are inherent to Silverstripe CMS projects. For instance, a query for a Member record may include fields for `FirstName` and `Email`, but if you have customised that class via extensions, and would like the component using that query to display your custom fields, your only option is to override the entire query and the component with a custom implementation. In backend code, this would be tantamount to replacing the entire `Member` class and `SecurityAdmin` section just because you had a new field. You would never do that, right? It's an over-aggressive hack! We need APIs that make extension easy.
+The downside of this is that, because queries are defined statically at compile time, they don't adapt well to the extension patterns that are inherent to Silverstripe CMS projects. For instance, a query for a [`Member`](api:SilverStripe\Security\Member) record may include fields for `FirstName` and `Email`, but if you have customised that class via extensions, and would like the component using that query to display your custom fields, your only option would be to override the entire query and the component with a custom implementation. In backend code, this would be tantamount to replacing the entire `Member` class and `SecurityAdmin` section just because you had a new field. You would never do that, right? It's an over-aggressive hack! We need APIs that make extension easy.
 
 To that end, the `Injector` library provides a container for abstract representations of GraphQL queries and mutations. You can register and transform them as you do components and reducers. They exist merely as abstract concepts until `Injector` loads, at which time all transformations are applied, and each registered query and mutation is composed and attached to their assigned components.
 
 ### Extensions are only as good as the code they're extending
 
-An important point to remember about these types of deep customisations is that they all depend heavily on the core code they're modifying to follow specific patterns. The more the core code makes use of `Injector` the easier it will be for third party developers to extend. Conversely, if the core is full of hard-coded component definitions and statically written queries, customisation will be at best less surgical and at worst, not possible. For this reason, we'll look at GraphQL customisations from two sides -- making code extensible, and then extending that code.
+An important point to remember about these types of deep customisations is that they all depend heavily on the core code they're modifying to follow specific patterns. The more the core code makes use of `Injector` the easier it will be for third party developers to extend. Conversely, if the core is full of hard-coded component definitions and statically written queries, customisation will be at best less surgical and at worst, not possible. For this reason, we'll look at GraphQL customisations from two sides - making code extensible, and then extending that code.
 
-### Building an extensible GraphQL app
+### Building an extensible GraphQL component
 
-Let's imagine that we have a module that adds a tab where the user can write "notes" about the content he or she is editing. We'll use GraphQL and React to render this UI. We have a dataobject called "Note" where we store these in the database.
+Let's imagine that we have a module that adds a tab where the user can write "notes" about the content they are editing. We'll use GraphQL and React to render this UI. We have a dataobject called "Note" where we store these in the database.
 
 Here's what that might look like:
+
+**my-module/client/src/components/Notes.js**
 
 ```js
 import React from 'react';
 import gql from 'graphql-tag';
-import { graphql } from 'apollo-client';
+import { graphql } from 'react-apollo';
 
-const Notes = ({ notes }) => (
+export const Notes = ({ notes }) => (
   <ul className="notes">
-    {notes.map(note => <li key={note.ID}>{note.Content}</li>)}
+    {notes.map(note => <li key={note.id}>{note.content}</li>)}
   </ul>
 );
 
 const getNotesQuery = gql`
 query ReadNotes {
   readNotes {
-    ID
-    Title
+    id
+    content
   }
 }
 `;
@@ -846,30 +849,122 @@ query ReadNotes {
 const apolloConfig = {
   props({ data: { readNotes } }) {
     return {
-      notes: readNotes
+      notes: readNotes ? readNotes : []
     };
-  }  
+  }
 };
 
 const NotesWithData = graphql(getNotesQuery, apolloConfig)(Notes);
 
 export default NotesWithData;
 ```
-Lastly, we'll expose the model to GraphQL:
+
+Next we'll expose the model to GraphQL:
+
+#### Graphql v4 {#build-extensible-gql-app-v4}
+
+**my-module/_config/graphql.yml**
 
 ```yml
-SilverStripe\GraphQL\Controller:
-  schema:
-    scaffolding:
-      types:
-        MyApp\AwesomeNotes\Note:
-          fields: [ID, Content]
-          operations:
-            read:
-              paginate: false
-            create: true
-            
+# Tell graphql that we're adding to the admin graphql schema
+SilverStripe\GraphQL\Schema\Schema:
+  schemas:
+    admin:
+      src:
+        - my-module/_graphql
 ```
+
+**my-module/_graphql/models.yml**
+
+```yml
+# Tell graphql how to scaffold the schema for our model
+App\Model\Note:
+  fields:
+    id: true
+    content: true
+  operations:
+    read:
+      plugins:
+        paginateList: false
+```
+
+#### Graphql v3 {#build-extensible-gql-app-v3}
+
+**my-module/_config/graphql.yml**
+
+```yml
+# Tell graphql how to scaffold the schema for our model inside the admin schema
+SilverStripe\GraphQL\Manager:
+  schemas:
+    admin:
+      scaffolding:
+        types:
+          App\Model\Note:
+            fields: [ id, content ]
+            operations:
+              read:
+                paginate: false
+                name: readNotes
+              create: true
+```
+
+[hint]
+Graphql v3 uses the first part of the model class's namespace in the default query/mutation names - so with a class `App\Model\Note` the default read operation would be `readAppNotes`. The example above has overridden the default name to keep it consistent with Graphql v4 behaviour.
+[/hint]
+
+#### Define the app
+
+Finally, let's make a really simple container app which holds a header and our notes component, and inject it into the DOM using entwine.
+
+**my-module/client/src/App.js**
+
+```js
+import React from 'react';
+import { inject } from 'lib/Injector';
+import Notes from './components/Notes';
+
+const App = ({ ListComponent }) => (
+  <div>
+    <h3>Notes</h3>
+    <Notes />
+  </div>
+);
+```
+
+**my-module/client/src/index.js**
+```js
+import ReactDOM from 'react-dom';
+import React from 'react';
+import { ApolloProvider } from 'react-apollo';
+import Injector from 'lib/Injector';
+import App from './App';
+
+Injector.ready(() => {
+  const { apolloClient, store } = window.ss;
+
+  // Assuming you've got some element in the DOM with the id "notes-app"
+  $('#notes-app').entwine({
+    onmatch() {
+      ReactDOM.render(
+        <ApolloProvider client={apolloClient} store={store}>
+          <App />
+        </ApolloProvider>,
+        this[0]
+      )
+    },
+
+    onunmatch: function() {
+      ReactDOM.unmountComponentAtNode(this[0]);
+    }
+  })
+});
+```
+
+The `silverstripe/admin` module provides `apolloClient` and `store` objects in the global namespace to be shared by other modules. We'll make use of those, and create our own app wrapped in `<ApolloProvider />`.
+
+We register a callback with `Injector.ready()` because the `apolloClient` and `store` are ultimately coming from the injector, so we need to make sure those are ready before mounting our component.
+
+To mount the app, we use the `onmatch()` event fired by entwine, and we're off and running. Just don't forget to unmount the component in `onunmatch()`.
 
 What we've just built may work, but we've made life very difficult for other developers. They have no way of customising this. Let's change that.
 
@@ -879,29 +974,38 @@ The best thing you can do to make your code extensible is to use `Injector` earl
 
 First, let's break up the list into smaller components.
 
-*myapp/client/components/NotesList.js*
+**my-module/client/src/components/NotesList.js**
+
 ```js
 import React from 'react';
 import { inject } from 'lib/Injector';
 
 const NotesList = ({ notes = [], ItemComponent }) => (
   <ul className="notes">
-    {notes.map(note => <ItemComponent key={note.ID} note={note} />)}
+    {notes.map(note => <ItemComponent key={note.id} note={note} />)}
   </ul>
 );
 
+// This tells the injector we want a component named "NotesListItem".
+// We'll register our version of that component, and then other people can make
+// any transformations that they like.
 export default inject(
   ['NotesListItem'],
+  // This second argument remaps the injected component name (NotesListItem) with our prop name
+  // (ItemComponent). If the prop is named the same as the injected name, we can ommit this second
+  // argument.
   (NotesListItem) => ({
     ItemComponent: NotesListItem
   })
 )(NotesList);
 ```
-*myapp/client/components/NotesListItem.js*
+
+**my-module/client/src/components/NotesListItem.js**
+
 ```js
 import React from 'react';
 
-const NotesListItem = ({ note }) => <li>{note.Content}</li>;
+const NotesListItem = ({ note }) => <li>{note.content}</li>;
 
 export default NotesListItem;
 ```
@@ -910,7 +1014,8 @@ export default NotesListItem;
 
 The next piece is the query. We'll need to register that with `Injector`. Unlike components and reducers, this is a lot more abstract. We're actually not going to write any GraphQL at all. We'll just build the concept of the query in an abstraction layer, and leave `Injector` to build the GraphQL syntax at runtime.
 
-*myapp/client/readNotes.js*
+**my-module/client/src/state/readNotes.js**
+
 ```js
 import { graphqlTemplates } from 'lib/Injector';
 
@@ -920,7 +1025,7 @@ const query = {
   apolloConfig: {
     props({ data: { readNotes } }) {
       return {
-        notes: readNotes,
+        notes: readNotes ? readNotes : [],
       }
     }
   },
@@ -929,8 +1034,8 @@ const query = {
   pagination: false,
   params: {},
   fields: [
-    'Content',
-    'ID'
+    'id',
+    'content',
   ],
 };
 
@@ -939,17 +1044,35 @@ export default query;
 
 Dynamic GraphQL queries are generated by populating pre-baked templates with specific pieces of data, including fields, fragments, variables, parameters, and more. By default, the templates available to you follow the GraphQL scaffolding API (`readMyObjects`, `readOneMyObject`, `createMyObject`, `deleteMyObject`, and `updateMyObject`).
 
-In this example, we're using the `READ` template, which needs to know the plural name of the object (e.g. `readNotes`), whether pagination is activated, and which fields you want to query.
+In this example, we're using the `READ` template, which needs to know the plural name of the object (e.g. `READ` with `Notes` makes a `readNotes` query), whether pagination is activated, and which fields you want to query.
+
+[hint]
+For simplicity, we're not querying any relations or otherwise nested data here. If we had, for example, a `foo` relation with a `title` field and this was exposed in the schema, we would need to add it to the fields array like this:
+
+```js
+const query = {
+  //...
+  fields: [
+    'foo', [
+        'title',
+    ]
+  ],
+};
+```
+
+You might instinctively try to use JSON object notation for this instead, but that won't work.
+[/hint]
 
 #### Register all the things
 
 Let's now register all of this with Injector.
 
-*myapp/client/registerDependencies.js*
+**my-module/client/src/boot/registerDependencies.js**
+
 ```js
-import NotesList from './NotesList';
-import NotesListItem from './NotesListItem';
-import readNotes from './readNotes';
+import NotesList from '../components/NotesList';
+import NotesListItem from '../components/NotesListItem';
+import readNotes from '../state/readNotes';
 import Injector, { injectGraphql } from 'lib/Injector';
 
 const registerDependencies = () => {
@@ -961,13 +1084,27 @@ const registerDependencies = () => {
 export default registerDependencies;
 ```
 
-We use `Injector.query.register` to register our `readNotes` query as extensible.
+[hint]
+If you have a lot of components or queries to add, you can use `registerMany` instead:
+
+```js
+Injector.component.registerMany({
+    NotesList,
+    NotesListItem,
+    //...etc
+});
+```
+
+[/hint]
+
+We use `Injector.query.register()` to register our `readNotes` query so that other projects can extend it.
 
 #### Applying the injected query as a transformation
 
-The only missing piece now is to attach the `ReadNotes` injected query to the `NotesList` component. We could have done this using `injectGraphql` in the `NotesList` component itself, but instead, we'll do it as an Injector transformation. Why? There's a good chance whoever is customising the query will want to customise the UI of the component that is using that query. If someone adds a new field to a query, it is likely the component should display that new field. Registering the GraphQL injection as a transformation will allow a thirdparty developer to override the UI of the component explicitly *after* the GraphQL query is attached. This is important, because otherwise, the component override would not be wired up to your data source.
+The only missing piece now is to attach the `ReadNotes` injected query to the `NotesList` component. We could have done this using `injectGraphql` in the `NotesList` component itself, but instead, we'll do it as an Injector transformation. Why? There's a good chance whoever is customising the query will want to customise the UI of the component that is using that query. If someone adds a new field to a query, it is likely the component should display that new field. Registering the GraphQL injection as a transformation will allow a thirdparty developer to override the UI of the component explicitly *after* the GraphQL query is attached. This is important, because otherwise the customised component wouldn't use the query.
 
-*myapp/client/registerDependencies.js*
+**my-module/client/src/boot/registerDependencies.js**
+
 ```js
 // ...
 const registerDependencies = () => {
@@ -983,43 +1120,42 @@ const registerDependencies = () => {
 export default registerDependencies;
 ```
 
-The transformation adds the higher-order component `injectGraphQL`, using the query we have just registered, `ReadNotes` as a dependency.
+The transformation adds the higher-order component `injectGraphQL`, using the query we have just registered, `ReadNotes` as a dependency - basically, we're injecting the result of the query into the component.
 
 All of this feels like a lot of extra work, and, to be fair, it is. You're probably used to simply inlining one or many higher-order component compositions in your components. That works great when you're not concerned about making your components extensible, but if you want others to be able to customise your app, you really need to be sure to follow these steps.
 
-#### Define the app
-Let's make a really simple container app that calls `NotesList` as a dependency.
+#### Update the app
 
-*myapp/client/App.js*
+Our container app needs to have the `NotesList` component injected into it.
+
+**my-module/client/src/App.js**
+
 ```js
 import React from 'react';
 import { inject } from 'lib/Injector';
 
-const App = ({ ListComponent }) => (
+const App = ({ NotesList }) => (
   <div>
     <h3>Notes</h3>
-    <ListComponent />
+    <NotesList />
   </div>
 );
 
-export default inject(
-  ['NotesList'],
-  (NotesList) => ({
-    ListComponent: NotesList,
-  })
-)(App);
+export default inject(['NotesList'])(App);
 ```
-You can register this with `Injector`, too, but since it's already injected with dependencies, it could get pretty convoluted. High level components like this are best left uncustomisable.
 
-#### Bootstrap and mount
+You can register the `App` component with `Injector`, too, but since it's already injected with dependencies it could get pretty convoluted. High level components like this are best left uncustomisable.
 
-Since almost everything is in `Injector` now, our mounting code is pretty trivial.
+#### Use the Injector from an entwine context
 
-*myapp/client/index.js*
+Since almost everything is in `Injector` now, we need to update our mounting logic to inject the dependencies into our app.
+
+**my-module/client/src/index.js**
+
 ```js
 import { render } from 'react-dom';
 import React from 'react';
-import registerDependencies from './registerDependencies';
+import registerDependencies from './boot/registerDependencies';
 import { ApolloProvider } from 'react-apollo';
 import Injector, { InjectorProvider, provideInjector, inject } from 'lib/Injector';
 import App from './App';
@@ -1045,43 +1181,81 @@ Injector.ready(() => {
   })
 });
 ```
-We register a callback with `Injector` to ensure that we don't attempt to render anything before the transformations have been applied. This would result in fatal errors, so be sure to wrap your mounting code in `Injector.ready()`.
 
-The `silverstripe/admin` module was generous enough to hang its `apolloClient` and `store` objects in the global namespace to be shared by other modules. We'll make use of those, and create our own app wrapped in `<ApolloProvider />`. We then make our app `Injector` aware by wrapping it with the `provideInjector` higher-order component.
+The callback we register with `Injector.ready()` is even more important now - it ensures that we don't attempt to render anything before the transformations have been applied, which would result in fatal errors.
 
-To mount the app, we use the `onmatch()`  event fired by entwine, and we're off and running.
+We then make our app `Injector` aware by wrapping it with the `provideInjector` higher-order component.
 
 ### Extending an existing GraphQL app
 
-Let's suppose we have our own module that extends the `Notes` object in some way. Perhaps we have a `Priority` field whose value alters the UI in some way. Thanks to a module developer who gave use plenty of extension points through `Injector`, this will be pretty easy.
+Let's suppose we have a project that extends the `Notes` object in some way. Perhaps we have a `Priority` field whose value alters the UI in some way. Thanks to a module developer who gave use plenty of extension points through `Injector`, this will be pretty easy.
 
 #### Applying the extensions
 
 We'll first need to apply the extension and update our GraphQL scaffolding.
 
-```yaml
-MyApp\AwesomeNotes\Note:
+**app/_config/extensions.yml**
+
+```yml
+App\Model\Note:
   extensions:
-    # this extension adds a "Priority" field
-    - MyOtherApp\NastyNotes\NoteExtension
-SilverStripe\GraphQL\Controller:
-  schema:
-    scaffolding:
-      types:
-        MyApp\AwesomeNotes\Note:
-          fields: [ Priority ]
+    # this extension adds a "Priority" integer field
+    - MyOtherApp\Extension\NoteExtension
+```
+
+##### Graphql 4 {#applying-extensions-gql-v4}
+
+Remember, this example is in a project which is customising the schema from the previous example, so we still have to tell graphql where to find our schema modifications.
+
+If you're following along, you could declare a different folder than before within the same project so you can see how the schema definitions merge together into a single schema.
+
+**app/_config/graphql.yml**
+
+```yml
+SilverStripe\GraphQL\Schema\Schema:
+  schemas:
+    admin:
+      src:
+        - app/_graphql
+```
+
+**app/_graphql/models.yml**
+
+```yml
+App\Model\Note:
+  fields:
+    Priority: true
+```
+
+##### Graphql 3 {#applying-extensions-gql-v3}
+
+**app/_config/graphql.yml**
+
+```yml
+SilverStripe\GraphQL\Manager:
+  schemas:
+    admin:
+      scaffolding:
+        types:
+          App\Model\Note:
+            fields: [ priority ]
 ```
 
 #### Creating transforms
 
 Let's first update the `NotesListItem` to contain our new field.
 
-*my-other-app/client/transformNotesListItem.js*
+**app/client/src/transformNotesListItem.js**
+
+[notice]
+Note that we're overriding the entire `NotesListItem` component. This is the main reason we broke the original list up into smaller components.
+[/notice]
+
 ```js
 import React from 'react';
 
-const transformNotesListItem = () => ({ note: { Content, Priority } }) => (
-  <li className={`priority-${Priority}`}>{Content} [PRIORITY: {Priority}]</li>
+const transformNotesListItem = () => ({ note: { content, priority } }) => (
+  <li className={`priority-${priority}`}>{content} [PRIORITY: {['Low', 'Medium', 'High'][priority]}]</li>
 );
 
 export default transformNotesListItem;
@@ -1089,10 +1263,11 @@ export default transformNotesListItem;
 
 Now, let's update the query to fetch our new field.
 
-*my-other-app/client/transformReadNotes.js*
+**app/client/src/transformReadNotes.js**
+
 ```js
 const transformReadNotes = (manager) => {
-  manager.addField('Priority');
+  manager.addField('priority');
 };
 
 export default transformReadNotes;
@@ -1104,59 +1279,60 @@ Simple! The transformation passes us a `ApolloGraphQLManager` instance that prov
 
 In the above example, we added a single field to a query. Here's how that works:
 
-
 ```js
 manager.addField(fieldName, fieldPath = 'root')
 ```
 
-The `fieldPath` argument tells the manager at what level to add the field. In this case, since the `Priority` field is going on the root query (`readNotes`), we'll use `root` as the path. But suppose we had a more complex query like this:
+The `fieldPath` argument tells the manager at what level to add the field. In this case, since the `priority` field is going on the root query (`readNotes`), we'll use `root` as the path. But suppose we had a more complex query like this:
 
-```
+```graphql
 query readMembers {
-	FirstName
-	Surname
-	Friends {
-		Email
-		Company {
-			Name
-		}
-	}
+    firstName
+    surname
+    friends {
+        email
+        company {
+            name
+        }
+    }
 }
 ```
 
-If we wanted to add a field to the nested `Company` query on `Friends`, we would use a path syntax.
+If we wanted to add a field to the nested `company` query on `friends`, we would use a path syntax.
 
 ```js
-manager.addField('Tagline', 'root/Friends/Company');
+manager.addField('tagline', 'root/friends/company');
 ```
 
 #### Adding field arguments
 
 Let's suppose we had the following query:
 
-```
-query ReadMembers($ImageSize: String!) {
-	readMembers {
-		FirstName
-		Avatar(Size: $ImageSize)
-		Company {
-			Name
-		}
-	}
+```graphql
+query ReadMembers($imageSize: String!) {
+    readMembers {
+        firstName
+        avatar(size: $imageSize)
+        company {
+            name
+        }
+    }
 }
 ```
 
-Maybe the `Company` type has a `Logo`, and we want to apply the `ImageSize` parameter as an argument to that field.
+Maybe the `company` type has a `logo`, and we want to apply the `imageSize` parameter as an argument to that field.
 
 ```js
-manager.addArg('Size', 'ImageSize', 'root/Company/Logo');
+manager.addArg('size', 'imageSize', 'root/company/logo');
 ```
 
-Where `root/Company/Logo` is the path to the field, `Size` is the name of the argument on that field, and `ImageSize` is the name of the variable.
+Where `root/company/logo` is the path to the field, `size` is the name of the argument on that field, and `imageSize` is the name of the variable.
 
 #### Applying the transforms
 
 Now, let's apply all these transformations, and we'll use the `after` property to ensure they get applied in the correct sequence.
+
+**app/client/src/boot.js**
 
 ```js
 import Injector, { injectGraphql } from 'lib/Injector';
@@ -1173,36 +1349,17 @@ Injector.transform(
 );
 ```
 
+[hint]
+This transformation could either be transpiled as-is, or if you have other javascript to include in this module you might want to export it as a function and call it from some entry point.
+Don't forget to add the transpiled result to the CMS e.g. via the `SilverStripe\Admin\LeftAndMain.extra_requirements_javascript` configuration property.
+[/hint]
+
 ### Creating extensible mutations
 
-Let's now add an `AddForm` component to our list that lets the user create a new note.
+Going back to the original module, let's add an `AddForm` component to our list that lets the user create a new note.
 
-*myapp/client/App.js*
-```js
-import React from 'react';
-import { inject } from 'lib/Injector';
+**my-module/client/src/components/AddForm.js**
 
-const App = ({ ListComponent, AddComponent }) => (
-  <div>
-    <h3>Notes</h3>
-    <ListComponent />
-    <AddComponent />
-  </div>
-);
-
-export default inject(
-  ['NotesList','NoteAddForm'],
-  (NotesList, NoteAddForm) => ({
-    ListComponent: NotesList,
-    AddComponent: NoteAddForm,
-  })
-)(App);
-
-```
-
-And we'll create some UI for that `AddComponent`.
-
-*myapp/client/AddForm.js*
 ```js
 import React from 'react';
 
@@ -1223,9 +1380,33 @@ const AddForm = ({ onAdd }) => {
 export default AddForm;
 ```
 
-Next, a mutation to attach to the form.
+[info]
+Because this isn't a full react tutorial, we've avoided the complexity of ensuring the list gets updated when we add an item to the form. You'll have to refresh the page to see your note after adding it.
+[/info]
 
-*myapp/cient/createNote.js*
+And we'll inject that component into our `App` container.
+
+**my-module/client/src/App.js**
+
+```js
+import React from 'react';
+import { inject } from 'lib/Injector';
+
+const App = ({ NotesList, NoteAddForm }) => (
+  <div>
+    <h3>Notes</h3>
+    <NotesList />
+    <NoteAddForm />
+  </div>
+);
+
+export default inject(['NotesList', 'NoteAddForm'])(App);
+```
+
+Next, add a mutation template to attach to the form.
+
+**my-module/cient/src/state/createNote.js**
+
 ```js
 import { graphqlTemplates } from 'lib/Injector';
 
@@ -1237,8 +1418,8 @@ const mutation = {
         onAdd: (content) => {
           mutate({
             variables: {
-              Input: {
-                Content: content,
+              input: {
+                content, // For graphql v3 this needs to start with a capital letter, i.e. Content: content
               }
             }
           });
@@ -1249,25 +1430,64 @@ const mutation = {
   templateName: CREATE,
   singularName: 'Note',
   pagination: false,
-  params: {},
+  params: {
+    input: 'CreateNoteInput!', // For graphql v3 use 'AppNoteCreateInputType!'
+  },
   fields: [
-    'Content',
-    'ID'
+    'content',
+    'id'
   ],
 };
 
 export default mutation;
 ```
 
-It looks like a lot of code, but if you're familiar with Apollo mutations, this is pretty standard. The supplied `mutate` function gets mapped to a prop -- in this case `onAdd`, which the `AddForm` component is configured to invoke. We've also supplied the `singularName` as well as the template `CREATE` for the `createNote` scaffolded mutation.
+[notice]
+With graphql v3, the field names in the input object have to start with capital letters, and the input _type_ can't easily be overridden - it's always the first part of your namespace, then the class name, then "CreateInputType". So assuming your model's fully qualified classname is `App\Model\Note`, the input type is `AppNoteCreateInputType`.
+[/notice]
+
+It looks like a lot of code, but if you're familiar with Apollo mutations, this is pretty standard. The supplied `mutate()` function gets mapped to a prop - in this case `onAdd`, which the `AddForm` component is configured to invoke. We've also supplied the `singularName` as well as the template `CREATE` for the `createNote` scaffolded mutation.
+
+And make sure we're exposing the mutation in our graphql schema:
+
+#### Graphql 4 {#extensible-mutations-gql-v4}
+
+**my-module/_graphql/models.yml**
+
+```yml
+App\Model\Note:
+  #...
+  operations:
+    #...
+    create: true
+```
+
+#### Graphql 3 {#extensible-mutations-gql-v3}
+
+**my-module/_config/graphql.yml**
+
+```yml
+SilverStripe\GraphQL\Manager:
+  schemas:
+    admin:
+      scaffolding:
+        types:
+          App\Model\Note:
+            #...
+            operations:
+              #...
+              create:
+                name: createNote
+```
 
 Lastly, let's just register all this with `Injector`.
 
-*myapp/client/registerDependencies.js*
+**my-module/client/src/boot/registerDependencies.js**
+
 ```js
 //...
-import AddForm from './AddForm';
-import createNote from './createNote';
+import AddForm from './components/AddForm';
+import createNote from './state/createNote';
 
 const registerDependencies = () => {
   //...
@@ -1290,9 +1510,9 @@ This is exactly the same pattern as we did before with a query, only with differ
 
 ### Extending mutations
 
-Now let's switch back to our thirdparty module that is customising our Notes application. The developer is going to want to ensure that users can supply a "Priority" value for each note entered. This will involve updating the `AddForm` component.
+Now let's switch back to the project where we're customising the Notes application. The developer is going to want to ensure that users can supply a "Priority" value for each note entered. This will involve updating the `AddForm` component.
 
-*my-other-app/client/transformAddForm.js*
+**app/client/src/transformAddForm.js**
 ```js
 import React from 'react';
 
@@ -1304,14 +1524,14 @@ const transformAddForm = () => ({ onAdd }) => {
       <input type="text" ref={node => content = node}/>
       <label>Priority</label>
       <select ref={node => priority = node}>
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
+        <option value="0">Low</option>
+        <option value="1">Medium</option>
+        <option value="2">High</option>
       </select>
       <button onClick={(e) => {
         e.preventDefault();
         if (content && priority) {
-          onAdd(content.value, priority.value);
+          onAdd(content.value, Number(priority.value));
         }
       }}>Add</button>
     </div>
@@ -1321,19 +1541,21 @@ const transformAddForm = () => ({ onAdd }) => {
 export default transformAddForm;
 ```
 
-We've extended the `onAdd` callback to take two parameters -- one for the note content, and another for the priority. We'll need to update the mutation to reflect this.
+We're now passing two arguments to the `onAdd` callback - one for the note content, and another for the priority. We'll need to update the mutation to reflect this.
 
-*my-other-app/client/transformCreateNote.js*
+**app/client/src/transformCreateNote.js**
+
 ```js
 const transformCreateNote = (manager) => {
-  manager.addField('Priority');
+  manager.addField('priority');
   manager.transformApolloConfig('props', ({ mutate }) => (prevProps) => {
     const onAdd = (content, priority) => {
       mutate({
         variables: {
-          Input: {
-            Content: content,
-            Priority: priority
+          input: {
+            // Don't forget to keep the content variable in here!
+            content, // In GraphQL v3 these must both start with capital letters (i.e. `Content: content` and `Priority: priority`)
+            priority,
           }
         }
       });
@@ -1349,9 +1571,11 @@ const transformCreateNote = (manager) => {
 export default transformCreateNote;
 ```
 
-All we've done here is overridden the `props` setting in the `CreateNote` apollo config. Recall from the previous section that it maps the `mutate` function to the `onAdd` prop. Since we've changed the signature of that function, we'll need to override the entire prop.
+All we've done here is overridden the `props` setting in the `CreateNote` apollo config. Recall from the previous section that it maps the `mutate` function to the `onAdd` prop. Since we've changed the signature of that function, we need to override the entire prop.
 
 Now we just need to register these transforms, and we're done!
+
+**app/client/src/index.js**
 
 ```js
 //...
@@ -1367,5 +1591,4 @@ Injector.transform(
   },
   { after: ['noteslist-graphql', 'notesaddform-graphql'] }
 );
-
 ```
