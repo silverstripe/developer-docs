@@ -1,125 +1,60 @@
 ---
-title: Formatting, Modifying and Casting Variables
+title: Formatting, Casting, and Escaping Variable Content
 summary: Information on casting, security, modifying data before it's displayed to the user and how to format data within the template.
 icon: code
 ---
 
-# Formatting and Casting
+# Formatting, casting, and escaping variable content
 
 All objects that are being rendered in a template should be a [ViewableData](api:SilverStripe\View\ViewableData) instance such as `DataObject`, 
-`DBField` or `Controller`. From these objects, the template can include any method from the object in 
-[scope](syntax#scope).
-
-For instance, if we provide a [DBHtmlText](api:SilverStripe\ORM\FieldType\DBHtmlText) instance to the template we can call the `FirstParagraph` method. This will 
-output the result of the [DBHtmlText::FirstParagraph()](api:SilverStripe\ORM\FieldType\DBHtmlText::FirstParagraph()) method to the template.
-
-**app/src/Page.ss**
-
-```ss
-$Content.FirstParagraph
-<!-- returns the result of DBHtmlText::FirstParagragh() -->
-
-$LastEdited.Format("d/m/Y")
-<!-- returns the result of DBDatetime::Format("d/m/Y") -->
-```
-
-Any public method from the object in scope can be called within the template. If that method returns another 
-`ViewableData` instance, you can chain the method calls.
-
-```ss
-$Content.FirstParagraph.NoHTML
-<!-- "First Paragraph" -->
-
-<p>Copyright {$Now.Year}</p>
-<!-- "Copyright 2014" -->
-
-<div class="$URLSegment.LowerCase">
-<!-- <div class="about-us"> -->
-```
-
-[notice]
-See the API documentation for [DBHtmlText](api:SilverStripe\ORM\FieldType\DBHtmlText), [FieldType](api:SilverStripe\ORM\FieldType), [DBText](api:SilverStripe\ORM\FieldType\DBText) for all the methods you can use to format 
-your text instances. For other objects such as [DBDatetime](api:SilverStripe\ORM\FieldType\DBDatetime) objects see their respective API documentation pages.
-[/notice]
-
-## forTemplate
-
-When rendering an object to the template such as `$Me` the `forTemplate` method is called. This method can be used to 
-provide default template for an object.
-
-**app/src/Page.php**
-
-```php
-use SilverStripe\CMS\Model\SiteTree;
-
-class Page extends SiteTree 
-{
-
-    public function forTemplate() 
-    {
-        return "Page: ". $this->Title;
-    }
-}
-```
-
-**app/templates/Page.ss**
-
-```ss
-$Me
-<!-- returns Page: Home -->
-```
+`DBField` or `Controller`. From these objects, the template can include any method from the object in [scope](syntax#scope).
 
 ## Casting
 
-Methods which return data to the template should either return an explicit object instance describing the type of 
-content that method sends back, or provide a type in the `$casting` array for the object. When rendering that method 
-to a template, Silverstripe CMS will ensure that the object is wrapped in the correct type and values are safely escaped.
+The templating system casts variables and the result of method calls into one of the various [`DBField`](api:SilverStripe\ORM\FieldType\DBField)
+classes before outputting them in the final rendered markup. Those `DBField` classes provide methods that developers can use to format data in
+the template (e.g. choosing how to format a date), as well as defining whether HTML markup in that data will be escaped, stripped, or included
+directly in the rendered result.
+
+Methods which return data to the template should either return an explicit object instance describing the type of
+content that method sends back, or provide a type (using the same format as the `$db` array described in
+[Data types and casting](/developer_guides/model/data_types_and_casting/)) in the `$casting` array for the object. When rendering that method
+to a template, Silverstripe CMS will ensure that the object is wrapped in the correct type. This provides you with all of the methods available in
+that class, and ensures and values are safely escaped.
 
 ```php
-use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\View\ViewableData;
 
-class Page extends SiteTree 
+class MyTemplatedObject extends ViewableData 
 {
-
     private static $casting = [
         'MyCustomMethod' => 'HTMLText' 
     ];
 
     public function MyCustomMethod() 
     {
-        return "<h1>This is my header</h1>";
+        return '<h1>This is my header</h1>';
     }
 }
 ```
 
-When calling `$MyCustomMethod` Silverstripe CMS now has the context that this method will contain HTML and escape the data
-accordingly. 
-
-[note]
-By default, all content without a type explicitly defined in a `$casting` array will be assumed to be `Text` content 
-and HTML characters encoded.
-[/note]
-
-## Escaping
-
-Properties are usually auto-escaped in templates to ensure consistent representation, and avoid format clashes like 
-displaying un-escaped ampersands in HTML. By default, values are escaped as `XML`, which is equivalent to `HTML` for 
-this purpose. 
-
-[note]
-There's some exceptions to this rule, see the ["security" guide](../security).
-[/note]
+When calling `$MyCustomMethod` on the above object from a template, Silverstripe CMS now has the context that this method contains HTML, so it
+won't escape the value.
 
 For every field used in templates, a casting helper will be applied. This will first check for any
 `casting` helper on your model specific to that field, and will fall back to the `default_cast` config
 in case none are specified.
 
-By default, `ViewableData.default_cast` is set to `Text`, which will ensure all fields have special
-characters HTML escaped by default.
+[note]
+By default, all content without a type explicitly defined in a `$casting` array will use the `ViewableData.default_cast` configuration. By default,
+that configuration is set to `Text`, so HTML characters are escaped.
+[/note]
 
-The most common casting types are:
+### Common casting types
 
- * `Text` Which is a plain text string, and will be safely encoded via HTML entities when placed into
+Values can be cast as any `DBField` instance, but these tend to be the most common:
+
+ * `Text` Which is a plain text string, and will be safely encoded via [`htmlspecialchars()`](https://www.php.net/manual/en/function.htmlspecialchars.php) when placed into
  a template.
  * `Varchar` which is the same as `Text` but for single-line text that should not have line breaks.
  * `HTMLFragment` is a block of raw HTML, which should not be escaped. Take care to sanitise any HTML
@@ -130,31 +65,97 @@ The most common casting types are:
  * `Decimal` for floating point values.
  * `Boolean` For boolean values.
  * `Datetime` for date and time.
- 
-See the [Model data types and casting](/developer_guides/model/data_types_and_casting) section for
-instructions on configuring your model to declare casting types for fields.
 
-## Escape methods in templates
+## Formatting
+
+As has been mentioned in a few sections of documentation already, in a template you have access to all of the public properties and methods of any
+object in scope. For instance, if we provide a [`DBHtmlText`](api:SilverStripe\ORM\FieldType\DBHtmlText) instance to the template (either directly
+by returning it from a method, or by declaring it in the `$db` configuration for a `DataObject` model, or by declaring it in the `$casting` configuration),
+we can use `$MyField.FirstParagraph` in the template. This will
+output the result of the [`DBHtmlText::FirstParagraph()`](api:SilverStripe\ORM\FieldType\DBHtmlText::FirstParagraph()) method to the template.
+
+**app/src/Page.ss**
+
+```ss
+<%-- prints the result of DBHtmlText::FirstParagragh() --%>
+$Content.FirstParagraph
+
+<%-- prints the result of DBDatetime::Format("d/m/Y") --%>
+$LastEdited.Format("d/m/Y")
+```
+
+Any public method from the object in scope can be called within the template. If that method returns another
+`ViewableData` instance, you can chain the method calls.
+
+```ss
+<%-- prints the first paragraph of content for the first item in the list --%>
+$MyList.First.Content.FirstParagraph
+
+<%-- prints "Copyright 2023" --%>
+<p>Copyright {$Now.Year}</p>
+
+<%-- prints <div class="about-us"> --%>
+<div class="$URLSegment.LowerCase">
+```
+
+### Commonly useful formatting methods
+
+All `DBField` instances share the following useful methods for formatting their values:
+
+- [`RAW()`](api:SilverStripe\ORM\FieldType\DBField::RAW()) - outputs the _raw_ value into the template with no escaping.
+- [`XML()`](api:SilverStripe\ORM\FieldType\DBField::XML()) (and its alias [`HTML()`](api:SilverStripe\ORM\FieldType\DBField::HTML())) - encodes the value (using [`htmlspecialchars()`](https://www.php.net/manual/en/function.htmlspecialchars.php)) before outputting it.
+- [`CDATA`](api:SilverStripe\ORM\FieldType\DBField::CDATA()) - formats the value safely for insertion as a literal string in an XML file.
+  - e.g. `<element>$Field.CDATA</element>` will ensure that the `<element>` body is safely escaped as a string.
+- [`JS()`](api:SilverStripe\ORM\FieldType\DBField::JS()) - ensures that text is properly escaped for use in Javascript.
+  - e.g. `var fieldVal = '$Field.JS';` can be used in javascript defined in templates to encode values safely.
+- [`ATT()`](api:SilverStripe\ORM\FieldType\DBField::ATT()) (and its alias [`HTMLATT()`](api:SilverStripe\ORM\FieldType\DBField::HTMLATT())) - formats the value appropriate for an HTML attribute string
+  - e.g. `<div data-my-field="$MyField.HTMLATT"></div>`
+- [`RAWURLATT()`](api:SilverStripe\ORM\FieldType\DBField::RAWURLATT()) - encodes strings for use in URLs via [`rawurlencode()`](https://www.php.net/manual/en/function.rawurlencode.php)
+- [`URLATT()`](api:SilverStripe\ORM\FieldType\DBField::URLATT()) - encodes strings for use in URLs via [`urlencode()`](https://www.php.net/manual/en/function.urlencode.php)
+- [`JSON()`](api:SilverStripe\ORM\FieldType\DBField::JSON()) - encodes the value as a JSON string via [`json_encode()`](https://www.php.net/manual/en/function.json-encode.php)
+
+[info]
+See [the API documentation](api:SilverStripe\ORM\FieldType) for all the formatting methods available to you for the various field types.
+[/info]
+
+## Escaping HTML values in templates {#escaping}
+
+[notice]
+For specific security advice related to escaping values, see the [Security](/developer_guides/security/secure_coding/#xss-cross-site-scripting)
+documentation.
+[/notice]
+
+The concept of escaping values in templates is ultimately just a combination of formatting and casting.
+
+Values are typically escaped (i.e. the special HTML characters are encoded) in templates by either not
+declaring a casting type, or by defaulting to the `Text` casting type defined on `ViewableData`.
+
+See the [casting](#casting) section above for
+instructions on configuring your model to declare casting types for fields, and how some of the more common
+casting types affect escaping.
+
+[info]
+In addition to escaping via casting, `DBField` instances have an `escape_type` configuration property which is
+either set to `"xml"` or `"raw"`. This configuration tells you whether XML content will be escaped or not, but does
+_not_ actually directly affect the casting of the value in templates. That is determined by what is returned from
+the `forTemplate()` method (or any method explicitly called from within the template).
+[/info]
+
+### Escape methods in templates
 
 Within the template, fields can have their encoding customised at a certain level with format methods.
-See [DBField](api:SilverStripe\ORM\FieldType\DBField) for the specific implementation, but they will generally follow the below rules:
 
-* `$Field` with no format method supplied will correctly cast itself for the HTML template, as defined
-  by the casting helper for that field. In most cases this is the best method to use for templates.
-* `$Field.XML` Will invoke `htmlentities` on special characters in the value, even if it's already
-  cast as HTML.
-* `$Field.ATT` will ensure the field is XML encoded for placement inside a HTML element property.
-  This will invoke `htmlentities` on the value (even if already cast as HTML) and will escape quotes.
-* `Field.JS` will cast this value as a javascript string. E.g. `var fieldVal = '$Field.JS';` can
-  be used in javascript defined in templates to encode values safely.
-* `$Field.CDATA` will cast this value safely for insertion as a literal string in an XML file.
-  E.g. `<element>$Field.CDATA</element>` will ensure that the `<element>` body is safely escaped
-  as a string.
+See the [formatting](#formatting) section above for some of the more common formatting methods available
+and how they affect escaping.
+
+[hint]
+If you are unsure of whether the field has been cast to `HTMLText` but you know
+it contains safe HTML content, you can use `.RAW` to ensure the HTML is not escaped.
+[/hint]
 
 [warning]
-Note: Take care when using `.XML` on `HTMLText` fields, as this will result in double-encoded
-html. To ensure that the correct encoding is used for that field in a template, simply use
-`$Field` by itself to allow the casting helper to determine the best encoding itself.
+Be careful using `.RAW` on non HTML field types - if the value being formatted includes content provided
+by the user you could be introducing attack vectors for cross-site scripting attacks.
 [/warning]
 
 ## Cast summary methods
@@ -166,10 +167,10 @@ For instance, The following class methods can be used in templates for the below
 
 Text / HTMLText methods:
 
-* `$Plain` Will convert any HTML to plain text version. For example, could be used for plain-text
+* [`Plain()`](api:SilverStripe\ORM\FieldType\DBString::Plain()) Will convert any HTML to plain text version. For example, could be used for plain-text
   version of emails.
-* `$LimitSentences(<num>)` Will limit to the first `<num>` sentences in the content. If called on
-  HTML content this will have all HTML stripped and converted to plain text.
+* [`LimitSentences(<num>)`](api:SilverStripe\ORM\FieldType\DBText::LimitSentences()) - limits output to the first `<num>` sentences in the content. This method internally calls `Plain()`,
+  converting HTML content into plain text.
 
 ## Related Lessons
 * [Dealing with arbitrary template data](https://www.silverstripe.org/learn/lessons/v4/dealing-with-arbitrary-template-data-1)

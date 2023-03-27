@@ -12,8 +12,8 @@ application can provide multiple unique themes (i.e a mobile theme).
 ## Downloading
 
 Head to the [themes section of the addons site](https://addons.silverstripe.org/add-ons?search=&type=theme) to check out the range of themes the 
-community has built. Each theme has a page with links you can use to preview and download it. Themes are published and downloaded using Composer,
-just like any other [SilverStripe module](/developer_guides/extending/modules).
+community has built. Themes are published and downloaded using Composer,
+just like any other [Silverstripe module](/developer_guides/extending/modules).
 
 ## Installation
 
@@ -32,27 +32,32 @@ As you've added new files to your Silverstripe CMS installation, make sure you c
 
 ### Configuring themes
 
-After installing the files through either method, update the current theme in Silverstripe CMS. This can be done by 
-altering the `SSViewer.themes` setting in a [config.yml](../configuration)
+After installing a new theme or manually adding one yourself, update the current theme in Silverstripe CMS. This can be done by
+altering the `SSViewer.themes` setting in a [yaml configuration](../configuration).
 
 **app/_config/app.yml**
 
 ```yaml
 SilverStripe\View\SSViewer:
   themes:
+    - '$public'
     - theme_name
     - '$default'
 ```
+
+This configuration determines the priority order of themes for your project for template and resource resolution,
+and can include as many themes as you like.
+
+Silverstripe CMS has support for cascading themes, which will allow users to define multiple themes for a project. This means you can have a template or other resource defined in any theme, and reference or override it in another theme.
 
 There are a variety of ways in which you can specify a theme. The below describe the three
 main styles of syntax:
 
 1. You can use the following to point to a theme or path within your root project:
 
-  - `themename` -> A simple name with no slash represents a theme in the `/themes` directory
-  - `/some/path/to/theme` - Any `/` prefixed string will be treated as a direct filesystem path to a theme root.
-  - `$themeset` - Any `$` prefixed name will refer to a set of themes. By default only `$default` set is configured,
-  which represents all module roots with a `templates` directory.
+  - Refer to the theme directly by name. A simple name with no slash represents a theme in the `themes/` directory (e.g. "mytheme" refers to the `themes/mytheme` theme).
+  - `/some/path/to/theme` - Any string prefixed with `/` will be treated as a filesystem path to a theme root (relative to the project root).
+  - `$themeset` - Any `$` prefixed name will refer to a set of themes. By default only the `$default` and `$public` sets are configured (see [special themesets](#special-themesets) below).
 
 2. Using the `:` syntax you can also specify themes relative to the given module:
 
@@ -69,13 +74,26 @@ main styles of syntax:
   - `mymodule:` - Also points to the base folder of the given module, but without a vendor.
   The `:` is necessary to distinguish this from a non-module theme.
 
+#### Special themesets
+
+In the above configuration, `$public` and `$default` are special placeholders.
+
+`$public` refers to the `public/` directory in your project, which effectively makes your `public/` directory a theme itself.
+Any resources you put in that directory can be accessed the same way you access regular theme resources, such as via [the requirements API](requirements)
+or the [`ThemeResourceLoader`](api:SilverStripe\View\ThemeResourceLoader).
+
+[warning]
+We recommend you don't include any templates in the public directory, as doing so could expose sensitive information such as information about your database schema.
+[/warning]
+
+`$default` refers to all modules which have a `template/` directory (including your project). Typically this goes at the end of the themes configuration,
+so that your themes take precedence over any templates provided by modules.
+
 ## Developing your own theme
 
-A `theme` within Silverstripe CMS is simply a collection of templates and other front end assets such as javascript and CSS located within the `themes` directory. 
+A `theme` within Silverstripe CMS is simply a collection of templates and other front end resources such as javascript and CSS located within the `themes/` directory.
 
 ![themes:basicfiles.gif](../../_images/basicfiles.gif)
-
-Silverstripe CMS has support for cascading themes, which will allow users to define multiple themes for a project. This means you can have a template defined in any theme, and have it continue to look back through the list of themes until a match is found.
 
 To define extra themes simply add extra entries to the `SilverStripe\View\SSViewer.themes` configuration array. You will probably always want to ensure that you include `'$default'` in your list of themes to ensure that the base templates are used when required.
 

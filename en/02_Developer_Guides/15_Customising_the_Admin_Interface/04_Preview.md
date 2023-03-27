@@ -215,7 +215,7 @@ need to replace any `$this->` with `$this->owner->` to get the values from the a
 [/hint]
 
 Let's assume when you display this object on the front end you're just looping through a
-list of items and indirectly calling `forTemplate` using the [`$Me` template variable](../templates/syntax#me).
+list of items and indirectly calling `forTemplate` using the [`$Me` template variable](../templates/syntax#fortemplate).
 This method will be used by the `cmsPreview` action in the `MyAdmin` class to tell the
 CMS what to display in the preview panel.
 
