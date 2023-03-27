@@ -988,7 +988,7 @@ module.exports = [
 console.log('Hello world');
 ```
 
-At this stage, running `yarn build` should correctly build `app/client/dist/js/bundle.js`.
+At this stage, running `yarn build` correctly build `app/client/dist/js/bundle.js`.
 
 [notice]
 Don't forget to [configure your project's "exposed" folders](/developer_guides/templates/requirements/#configuring-your-project-exposed-folders) and run `composer vendor-expose` on the command line so that the browser has access to your new dist js file.
@@ -1207,7 +1207,7 @@ mutation revertToMyVersionedObject($id:ID!, $toVersion:Int!) {
 
 const config = {
   props: ({ mutate, ownProps: { actions } }) => {
-    const revertToVersion = (id, toVersion) => mutate({
+    const revertToMyVersionedObject = (id, toVersion) => mutate({
       variables: {
         id,
         toVersion,
@@ -1217,7 +1217,7 @@ const config = {
     return {
       actions: {
         ...actions,
-        revertToVersion,
+        revertToMyVersionedObject,
       },
     };
   },
