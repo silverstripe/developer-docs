@@ -920,15 +920,16 @@ Finally, let's make a really simple container app which holds a header and our n
 
 ```js
 import React from 'react';
-import { inject } from 'lib/Injector';
 import Notes from './components/Notes';
 
-const App = ({ ListComponent }) => (
+const App = () => (
   <div>
     <h3>Notes</h3>
     <Notes />
   </div>
 );
+
+export default App;
 ```
 
 **my-module/client/src/index.js**
@@ -1224,7 +1225,7 @@ SilverStripe\GraphQL\Schema\Schema:
 ```yml
 App\Model\Note:
   fields:
-    Priority: true
+    priority: true
 ```
 
 ##### Graphql 3 {#applying-extensions-gql-v3}
@@ -1486,8 +1487,8 @@ Lastly, let's just register all this with `Injector`.
 
 ```js
 //...
-import AddForm from './components/AddForm';
-import createNote from './state/createNote';
+import AddForm from '../components/AddForm';
+import createNote from '../state/createNote';
 
 const registerDependencies = () => {
   //...
@@ -1575,7 +1576,7 @@ All we've done here is overridden the `props` setting in the `CreateNote` apollo
 
 Now we just need to register these transforms, and we're done!
 
-**app/client/src/index.js**
+**app/client/src/boot.js**
 
 ```js
 //...
