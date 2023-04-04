@@ -22,6 +22,10 @@ SilverStripe\ORM\Connect\DBSchemaManager:
     - App\Model\ModelWithManyRecords
 ```
 
+[info]
+Note: The entire inheritance chain (both ancestors and descendents) of models in that configuration array will be excluded from the check and repair step.
+[/info]
+
 You can also disable these checks entirely:
 
 ```yml
