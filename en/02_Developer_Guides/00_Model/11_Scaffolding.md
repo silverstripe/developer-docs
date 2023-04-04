@@ -53,6 +53,10 @@ public function getCMSFields()
         )
     );
     
+    // It is a good to offer an extension point here so that others may extend this form.
+    // If your class doesn't already have the Extensible trait you'll need to use it.
+    $this->extend('updateCMSFields', $fields);
+    
     return $fields;
 }
 ```
