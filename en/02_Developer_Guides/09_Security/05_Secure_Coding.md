@@ -21,8 +21,7 @@ See [http://shiflett.org/articles/sql-injection](http://shiflett.org/articles/sq
 ### Parameterised queries
 
 Parameterised queries, or prepared statements, allow the logic around the query and its structure to be separated from
-the parameters passed in to be executed. Many DB adaptors support these as standard including [PDO](http://php.net/manual/en/pdo.prepare.php),
-[MySQL](http://php.net/manual/en/mysqli.prepare.php), [SQL Server](http://php.net/manual/en/function.sqlsrv-prepare.php),
+the parameters passed in to be executed. Many DB adaptors support these as standard including [MySQL](http://php.net/manual/en/mysqli.prepare.php), [SQL Server](http://php.net/manual/en/function.sqlsrv-prepare.php),
 [SQLite](http://php.net/manual/en/sqlite3.prepare.php), and [PostgreSQL](http://php.net/manual/en/function.pg-prepare.php).
 
 The use of parameterised queries whenever possible will safeguard your code in most cases, but care

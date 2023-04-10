@@ -148,11 +148,7 @@ $email = Email::create()
     ->to($to)
     ->subject($subject);
 
-if ($email->send()) {
-    //email sent successfully
-} else {
-    // there may have been 1 or more failures
-}
+$email->send();
 ```
 
 [info]
@@ -260,6 +256,25 @@ use SilverStripe\Control\Email\Email;
 $email = Email::create($from, $to, $subject, $body);
 $email->replyTo('reply@example.com');
 ```
+
+## Catching email send failure exceptions
+
+If you wish to handle email send failures then you can wrap `$email->send()` with a try/catch block that catches the Symfony Mailer `TransportExceptionInterface`.
+
+```php
+use SilverStripe\Control\Email\Email;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+
+$email = Email::create('from@example.com', 'to@example.com', 'My subject');
+$email->text('My plain text email content');
+try {
+    $email->send();
+} catch (TransportExceptionInterface $e) {
+    // handle exception
+}
+```
+
+For more information, refer to [handling sending failures](https://symfony.com/doc/current/mailer.html#handling-sending-failures) in the symfony/mailer docs.
 
 ## Advanced customisation
 

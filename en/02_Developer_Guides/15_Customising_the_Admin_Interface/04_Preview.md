@@ -55,7 +55,8 @@ If your object belongs to [a custom ModelAdmin](./modeladmin), the edit URL for 
 object is predictable enough to construct and return from this method as you'll see below.
 The format for that situation is always the same, with increasing complexity if you're
 nesting `GridField`s. For the below examples it is assumed you aren't using nested
-`GridField`s.
+`GridField`s - though [CMSEditLinkExtension](/developer_guides/model/data_model_and_orm/managing_records#getting-an-edit-link)
+will handle those situations for you if you use it.
 
 If your object belongs to a page, you can safely get away with returning `null` or an empty
 string, as it won't be used. You can choose to return a valid edit link, but because of the
@@ -197,7 +198,7 @@ public function PreviewLink($action = null)
 The `CMSEditLink()` method is also very easy to implement, because the edit link used by
 `ModelAdmin` is predictable.
 
-If you aren't using [CMSEditLinkExtension](/developer_guides/model/data_model_and_orm/managing_records#getting-an-edit-link),
+If you aren't using [CMSEditLinkExtension](/developer_guides/model/managing_records#getting-an-edit-link),
 you can simply call `getCMSEditLinkForManagedDataObject()` on a singleton of the `ModelAdmin` subclass:
 
 ```php
