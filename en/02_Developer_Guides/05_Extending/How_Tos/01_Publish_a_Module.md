@@ -17,7 +17,7 @@ modules. If you plan on releasing your module to the public, ensure that you pro
 of your module containing the meta-data about your module.
 
 For more information about what your `composer.json` file should include, consult the 
-[Composer Documentation](http://getcomposer.org/doc/01-basic-usage.md).
+[Composer Documentation](https://getcomposer.org/doc/01-basic-usage.md).
 
 **mycustommodule/composer.json**
 
@@ -25,18 +25,18 @@ For more information about what your `composer.json` file should include, consul
 {
   "name": "my-vendor/my-module",
   "description": "One-liner describing your module",
-  "homepage": "http://github.com/my-vendor/my-module",
+  "homepage": "https://github.com/my-vendor/my-module",
   "keywords": ["silverstripe", "some-tag", "some-other-tag"],
   "license": "BSD-3-Clause",
   "authors": [
     {"name": "Your Name","email": "your@email.com"}
   ],
   "support": {
-    "issues": "http://github.com/my-vendor/my-module/issues"
+    "issues": "https://github.com/my-vendor/my-module/issues"
   },
   "require": {
-    "silverstripe/cms": "^4",
-    "silverstripe/framework": "^4"
+    "silverstripe/cms": "^5",
+    "silverstripe/framework": "^5"
   },
   "autoload": {
     "psr-4": {
@@ -50,7 +50,7 @@ For more information about what your `composer.json` file should include, consul
     ],
     "screenshots": [
       "relative/path/screenshot1.png",
-      "http://myhost.com/screenshot2.png"
+      "https://www.example.com/screenshot2.png"
     ]
   }
 }
@@ -60,7 +60,7 @@ For more information about what your `composer.json` file should include, consul
 
 Once your module is published online with a service like github.com or bitbucket.com, submit the repository to 
 [Packagist](https://packagist.org/) to have the module accessible to developers. It'll automatically get picked
-up by [addons.silverstripe.org](http://addons.silverstripe.org/) website due to the `silverstripe` keyword in the file.
+up by [addons.silverstripe.org](https://addons.silverstripe.org/) website due to the `silverstripe` keyword in the file.
 
 Note that Silverstripe CMS modules have the following distinct characteristics:
 
@@ -89,23 +89,19 @@ By using Composer, this is made easy for developers by allowing them to specify 
 version of your module should be a separate branch in your version control and each branch should have a `composer.json` 
 file explicitly defining what versions of Silverstripe CMS you support.
 
-Say you have a module which supports Silverstripe CMS 3.0. A new release of this module takes advantage of new features
-in Silverstripe CMS 3.1. In this case, you would create a new branch for the 3.0 compatible code base of your module. This 
+Say you have a module which supports Silverstripe CMS 5.0. A new release of this module takes advantage of new features
+in Silverstripe CMS 5.1. In this case, you would create a new branch for the 5.0 compatible code base of your module. This 
 allows you to continue fixing bugs on this older release branch.
-
-[info]
-As a convention, the `master` branch of your module should always work with the `master` branch of Silverstripe CMS.
-[/info]
 
 Other branches should be created on your module as needed if they're required to support specific Silverstripe CMS releases.
 
-You can have an overlap in supported versions, e.g two branches in your module both support Silverstripe CMS 3.1. In this 
+You can have an overlap in supported versions, e.g two branches in your module both support Silverstripe CMS 5.0. In this 
 case, you should explain the differences in your `README.md` file.
 
 Here's some common values for your `require` section
-(see [getcomposer.org](http://getcomposer.org/doc/01-basic-usage.md#package-versions) for details):
+(see [getcomposer.org](https://getcomposer.org/doc/01-basic-usage.md#package-versions) for details):
 
- * `3.0.*`: Version `3.0`, including `3.0.1`, `3.0.2` etc, excluding `3.1`
- * `~3.0`: Version `3.0` or higher, including `3.0.1` and `3.1` etc, excluding `4.0`
- * `~3.0,<3.2`: Version `3.0` or higher, up until `3.2`, which is excluded
- * `~3.0,>3.0.4`: Version `3.0` or higher, starting with `3.0.4`
+ * `5.0.*`: Version `5.0`, including `5.0.1`, `5.0.2` etc, excluding `5.1`
+ * `~5.0`: Version `5.0` or higher, including `5.0.1` and `5.1` etc, excluding `6.0`
+ * `~5.0,<5.2`: Version `5.0` or higher, up until `5.2`, which is excluded
+ * `~5.0,>5.0.4`: Version `5.0` or higher, starting with `5.0.4`

@@ -74,7 +74,7 @@ Note that this _doesn't_ apply for the session cookie, which is handled separate
 
 The [Cookie](api:SilverStripe\Control\Cookie) class manipulates and sets cookies using a [Cookie_Backend](api:SilverStripe\Control\Cookie_Backend). The backend is in charge of the logic
 that fetches, sets and expires cookies. By default we use a [CookieJar](api:SilverStripe\Control\CookieJar) backend which uses PHP's 
-[setcookie](http://www.php.net/manual/en/function.setcookie.php) function.
+[setcookie](https://www.php.net/manual/en/function.setcookie.php) function.
 
 The [CookieJar](api:SilverStripe\Control\CookieJar) keeps track of cookies that have been set by the current process as well as those that were received
 from the browser.

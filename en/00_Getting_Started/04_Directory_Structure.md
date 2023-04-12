@@ -24,8 +24,7 @@ Directory            | Description
 
 ## Custom Code Structure
 
-We're using `app/` as the default folder. Note that until Silverstripe 4.2, this directory was named `mysite/`, and PHP
-code was stored in a `code/` rather than `src/` folder.
+We use `app/` as the default folder.
 
 | Directory             | Description                                                         |
  | ---------             | -----------                                                         |
@@ -79,9 +78,6 @@ Example Forum:
 | `vendor/silverstripe/blog/`| This directory contains all of your code that defines your website. |
 | `vendor/silverstripe/blog/code` | PHP code for model and controller (subdirectories are optional)     |
 | ...        | ...                                                                 |
-
-Note: Before Silverstripe 4.x, modules were living as top-level folders in the webroot itself. Some modules might not
-have been upgraded to support placement in `vendor/`.
 
 ### Module documentation
 

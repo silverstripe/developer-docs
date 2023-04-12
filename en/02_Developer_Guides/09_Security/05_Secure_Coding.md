@@ -3,6 +3,7 @@ title: Security
 summary: Learn how to minimise vulnerabilities in your code
 icon: user-secret
 ---
+
 # Security
 
 ## Introduction
@@ -16,13 +17,14 @@ The [coding-conventions](/contributing/coding_conventions) help guard against SQ
 diligence: ensure that any variable you insert into a filter / sort / join clause is either parameterised, or has been
 escaped.
 
-See [http://shiflett.org/articles/sql-injection](http://shiflett.org/articles/sql-injection).
+See the [OWASP article on SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection) for more information.
 
 ### Parameterised queries
 
 Parameterised queries, or prepared statements, allow the logic around the query and its structure to be separated from
-the parameters passed in to be executed. Many DB adaptors support these as standard including [MySQL](http://php.net/manual/en/mysqli.prepare.php), [SQL Server](http://php.net/manual/en/function.sqlsrv-prepare.php),
-[SQLite](http://php.net/manual/en/sqlite3.prepare.php), and [PostgreSQL](http://php.net/manual/en/function.pg-prepare.php).
+the parameters passed in to be executed. Many DB adaptors support these as standard including
+[MySQL](https://php.net/manual/en/mysqli.prepare.php), [SQL Server](https://php.net/manual/en/function.sqlsrv-prepare.php),
+[SQLite](https://php.net/manual/en/sqlite3.prepare.php), and [PostgreSQL](https://php.net/manual/en/function.pg-prepare.php).
 
 The use of parameterised queries whenever possible will safeguard your code in most cases, but care
 must still be taken when working with literal values or table/column identifiers that may 
@@ -71,19 +73,19 @@ DB::prepared_query(
 
 Silverstripe CMS internally will use parameterised queries in SQL statements wherever possible.
 
-If necessary Silverstripe performs any required escaping through database-specific methods (see [Database::addslashes()](api:SilverStripe\ORM\Connect\Database::addslashes())).
-For [MySQLDatabase](api:SilverStripe\ORM\Connect\MySQLDatabase), this will be `[mysql_real_escape_string()](http://de3.php.net/mysql_real_escape_string)`.
+If necessary Silverstripe performs any required escaping through database-specific methods (see [`Database::addslashes()`](api:SilverStripe\ORM\Connect\Database::addslashes())).
+For [`MySQLDatabase`](api:SilverStripe\ORM\Connect\MySQLDatabase), this will be [`mysqli::real_escape_string()`](https://www.php.net/manual/en/mysqli.real-escape-string.php).
 
-*  Most [DataList](api:SilverStripe\ORM\DataList) accessors (see escaping note in method documentation)
-*  DataObject::get_by_id()
-*  DataObject::update()
-*  DataObject::castedUpdate()
-*  DataObject->Property = 'val', DataObject->setField('Property','val')
-*  DataObject::write()
-*  DataList->byID()
-*  Form->saveInto()
-*  FormField->saveInto()
-*  DBField->saveInto()
+*  Most [`DataList`](api:SilverStripe\ORM\DataList) accessors (see escaping note in method documentation)
+*  [`DataObject::get_by_id()`](api:SilverStripe\ORM\DataObject::get_by_id())
+*  [`DataObject::update()`](api:SilverStripe\ORM\DataObject::update())
+*  [`DataObject::castedUpdate()`](api:SilverStripe\ORM\DataObject::castedUpdate())
+*  `$dataObject->SomeField = 'val'`, [`DataObject::setField()`](api:SilverStripe\ORM\DataObject::setField())
+*  [`DataObject::write()`](api:SilverStripe\ORM\DataObject::write())
+*  [`DataList::byID()`](api:SilverStripe\ORM\DataList::byID())
+*  [`Form::saveInto()`](api:SilverStripe\Forms\Form::saveInto())
+*  [`FormField::saveInto()`](api:SilverStripe\Forms\FormField::saveInto())
+*  [`DBField::saveInto()`](api:SilverStripe\ORM\FieldType\DBField::saveInto())
 
 Data is not escaped when writing to object-properties, as inserts and updates are normally
 handled via prepared statements.
@@ -114,16 +116,15 @@ As a rule of thumb, whenever you're creating SQL queries (or just chunks of SQL)
 but there may be cases where you need to take care of escaping yourself. See [coding-conventions](/getting_started/coding-conventions)
 and [datamodel](/developer_guides/model) for ways to parameterise, cast, and convert your data.
 
-*  `SQLSelect`
-*  `DB::query()`
-*  `DB::prepared_query()`
-*  `Director::urlParams()`
-*  `Controller->requestParams`, `Controller->urlParams`
-*  `HTTPRequest` data
+*  [`SQLSelect`](api:SilverStripe\ORM\Queries\SQLSelect)
+*  [`DB::query()`](api:SilverStripe\ORM\DB::query())
+*  [`DB::prepared_query()`](api:SilverStripe\ORM\DB::prepared_query())
+*  `Controller->requestParams`
+*  `Controller->urlParams`
+*  [`HTTPRequest`](api:SilverStripe\Control\HTTPRequest) data
 *  GET/POST data passed to a form method
 
 Example:
-
 
 ```php
 use SilverStripe\Core\Convert;
@@ -139,7 +140,6 @@ class MyForm extends Form
         // ...
     }
 }
-
 ```
 
 *  `FormField->Value()`
@@ -197,7 +197,6 @@ This might not be applicable in all cases - especially if you are building an AP
 you're passing unescaped data, make sure to be explicit about it by writing *phpdoc*-documentation and *prefixing* your
 variables ($RAW_data instead of $data).
 
-
 ## XSS (Cross-Site-Scripting)
 
 Silverstripe CMS helps you guard any output against clientside attacks initiated by malicious user input, commonly known as
@@ -206,12 +205,11 @@ displaying a blog post in HTML from a trusted author, or escaping a search param
 redisplaying it).
 
 [notice]
-Note: Silverstripe CMS templates do not remove tags, please use [strip_tags()](http://php.net/strip_tags) for this purpose
-or [sanitize](http://htmlpurifier.org/) it correctly.
+Note: Silverstripe CMS templates do not remove tags, please use [strip_tags()](https://php.net/strip_tags) for this purpose
+or [sanitize](https://htmlpurifier.org/) it correctly.
 [/notice]
 
-See [http://shiflett.org/articles/foiling-cross-site-attacks](http://shiflett.org/articles/foiling-cross-site-attacks)
-for in-depth information about "Cross-Site-Scripting".
+See the [OWASP article on XSS](https://owasp.org/www-community/attacks/xss/) for more information.
 
 ### Additional options
 
@@ -346,7 +344,7 @@ template, you'll need to take care of casting and escaping yourself in PHP.
 The [Convert](api:SilverStripe\Core\Convert) class has utilities for this, mainly *Convert::raw2xml()* and *Convert::raw2att()* (which is
 also used by *XML* and *ATT* in template code).
 
-<div class="warning" markdown='1'>
+[warning]
 Most of the `Convert::raw2` methods accept arrays and do not affect array keys.
 If you serialize your data, make sure to do that before you pass it to `Convert::raw2` methods.
 
@@ -357,7 +355,8 @@ json_encode(Convert::raw2sql($request->getVar('multiselect')));  // WRONG!
 
 Convert::raw2sql(json_encode($request->getVar('multiselect')));  // Correct!
 ```
-</div>
+
+[/warning]
 
 PHP:
 
@@ -431,7 +430,7 @@ Some rules of thumb:
 
 ## Cross-Site Request Forgery (CSRF)
 
-Silverstripe CMS has built-in countermeasures against [CSRF](http://shiflett.org/articles/cross-site-request-forgeries) identity theft for all form submissions. A form object
+Silverstripe CMS has built-in countermeasures against CSRF identity theft for all form submissions. A form object
 will automatically contain a `SecurityID` parameter which is generated as a secure hash on the server, connected to the
 currently active session of the user. If this form is submitted without this parameter, or if the parameter doesn't
 match the hash stored in the users session, the request is discarded.
@@ -443,6 +442,8 @@ through [Form::setStrictFormMethodCheck()](api:SilverStripe\Forms\Form::setStric
 Sometimes you need to handle state-changing HTTP submissions which aren't handled through
 Silverstripe CMS's form system. In this case, you can also check the current HTTP request
 for a valid token through [SecurityToken::checkRequest()](api:SilverStripe\Security\SecurityToken::checkRequest()).
+
+See the [OWASP article about CSRF](https://owasp.org/www-community/attacks/csrf) for more information.
 
 ## Casting user input
 
@@ -500,10 +501,8 @@ for instructions on how to secure the assets folder against malicious script exe
 
 ### Don't run Silverstripe in the webroot
 
-Silverstripe routes all execution through a [public/ subfolder](/getting_started/directory_structure))
+Silverstripe routes all execution through a [`public/` subfolder](/getting_started/directory_structure))
 by default. This enables you to keep application code and configuration outside of webserver routing.
-But since this was introduced after the 4.0, there's a fallback `.htaccess` file in place
-which allows you to set the webroot to the project root. Don't rely on this, since it increases your security surface.
 
 ```
 .htaccess <- fallback, shouldn't be used
@@ -512,7 +511,7 @@ public/ <- this should be your webroot
   index.php
 app/
   _config/
-    secrets.yml <- this isn't routed if public/ is your webroot
+    secrets.yml <- your webserver shouldn't be able to serve this, as it's outside of the public/ folder
 ```
 
 ### Don't place protected files in the webroot
@@ -530,22 +529,7 @@ or contain links to, external resources or scripts that may hijack browser sessi
 Even if the uploader of this content may be a trusted user, there is no safeguard against these users being
 deceived by the content source.
 
-Flash files (swf) are also prone to a variety of security vulnerabilities of their own, and thus by default are
-disabled from file upload. As a standard practice, any users wishing to allow flash upload to their sites should
-take the following precautions:
-
- * Only allow flash uploads from trusted sources, preferably those with available source.
- * Make use of the [AllowScriptAccess](http://helpx.adobe.com/flash/kb/control-access-scripts-host-web.html)
-   parameter to ensure that any embedded Flash file is isolated from its environments scripts. In an ideal
-   situation, all flash content would be served from another domain, and this value is set to "sameDomain". If this
-   is not feasible, this should be set to "never". For trusted flash files you may set this to "sameDomain" without
-   an isolated domain name, but do so at your own risk.
- * Take note of any regional cookie legislation that may affect your users. See
-   [Cookie Law and Flash Cookies](http://eucookiedirective.com/cookie-law-and-flash-cookies/).
-
-See [the Adobe Flash security page](http://www.adobe.com/devnet/flashplayer/security.html) for more information.
-
-ADMIN privileged users may be allowed to override the above upload restrictions if the
+Users with ADMIN priveledges may be allowed to override the above upload restrictions if the
 `File.apply_restrictions_to_admin` config is set to false. By default this is true, which enforces these
 restrictions globally.
 
@@ -558,17 +542,15 @@ Silverstripe CMS stores passwords with a strong hashing algorithm (blowfish) by 
 (see [PasswordEncryptor](api:SilverStripe\Security\PasswordEncryptor)). It adds randomness to these hashes via
 salt values generated with the strongest entropy generators available on the platform
 (see [RandomGenerator](api:SilverStripe\Security\RandomGenerator)). This prevents brute force attacks with
-[Rainbow tables](http://en.wikipedia.org/wiki/Rainbow_table).
+[Rainbow tables](https://en.wikipedia.org/wiki/Rainbow_table).
 
 Strong passwords are a crucial part of any system security. So in addition to storing the password in a secure fashion,
 you can also enforce specific password policies by configuring a 
 [PasswordValidator](api:SilverStripe\Security\PasswordValidator). This can be done through a `_config.php` file
 at runtime, or via YAML configuration.
 
-From Silverstripe CMS 4.3 onwards, the default password validation rules are configured in the framework's `passwords.yml`
-file. You will need to ensure that your config file is processed after it. For Silverstripe CMS <4.3 you will need to
-use a `_config.php` file to modify the class's config at runtime (see `_config.php` installed in your mysite/app folder
-if you're using silverstripe/recipe-core).
+The default password validation rules are configured in the framework's `passwords.yml`
+file. You will need to ensure that your config file is processed after it.
 
 ```yaml
 ---
@@ -615,7 +597,7 @@ In addition, you can tighten password security with the following configuration 
 
 ## Clickjacking: Prevent iframe Inclusion
 
-"[Clickjacking](http://en.wikipedia.org/wiki/Clickjacking)"  is a malicious technique
+"[Clickjacking](https://owasp.org/www-community/attacks/Clickjacking)"  is a malicious technique
 where a web user is tricked into clicking on hidden interface elements, which can
 lead to the attacker gaining access to user data or taking control of the website behaviour.
 
@@ -853,5 +835,7 @@ for details on how to apply caching safely, and read Google's
 
 ##  Related
 
- * [http://silverstripe.org/security-releases/](http://silverstripe.org/security-releases/)
- * [Best-practices for securing MySQL (securityfocus.com)](http://www.securityfocus.com/infocus/1726)
+ * [Silverstripe CMS security vulnerability advisories](https://silverstripe.org/security-releases/)
+ * [MySQL security documentation](https://dev.mysql.com/doc/refman/8.0/en/security.html)
+ * [OWASP Top Ten](https://owasp.org/www-project-top-ten/)
+ * [OWASP List of Attacks](https://owasp.org/www-community/attacks/)

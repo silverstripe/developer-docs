@@ -6,7 +6,7 @@ icon: database
 
 # Introduction to the Data Model and ORM
 
-Silverstripe uses an [object-relational mapping](http://en.wikipedia.org/wiki/Object-relational_mapping) to represent its
+Silverstripe uses an [object-relational mapping](https://en.wikipedia.org/wiki/Object-relational_mapping) to represent its
 information.
 
 *  Each database table maps to a PHP class.
@@ -14,7 +14,7 @@ information.
 *  Each database column maps to a property on a PHP object.
 
 All data tables in Silverstripe CMS are defined as subclasses of [DataObject](api:SilverStripe\ORM\DataObject). The [DataObject](api:SilverStripe\ORM\DataObject) class represents a
-single row in a database table, following the ["Active Record"](http://en.wikipedia.org/wiki/Active_record_pattern)
+single row in a database table, following the ["Active Record"](https://en.wikipedia.org/wiki/Active_record_pattern)
 design pattern. Database Columns are defined as [Data Types](/developer_guides/model/data_types_and_casting) in the static `$db` variable
 along with any [relationships](relations) defined as `$has_one`, `$has_many`, `$many_many` properties on the class.
 
@@ -42,7 +42,12 @@ so on. After writing this class, we need to regenerate the database schema.
 ## Generating the Database Schema
 
 After adding, modifying or removing `DataObject` subclasses, make sure to rebuild your Silverstripe CMS database. The
-database schema is generated automatically by visiting the URL http://www.yoursite.com/dev/build while authenticated as an administrator.
+database schema is generated automatically by visiting the `/dev/build` (e.g. `https://www.example.com/dev/build`) in your browser
+while authenticated as an administrator.
+
+[info]
+In dev mode, you do not need to be authenticated to build the database by visiting the `/dev/build` route.
+[/info]
 
 This script will analyze the existing schema, compare it to what's required by your data classes, and alter the schema
 as required.
@@ -125,7 +130,7 @@ $player = Player::create();
 ```
 
 [notice]
-Using the `create()` method provides chainability, which can add elegance and brevity to your code, e.g. `Player::create()->write()`. More importantly, however, it will look up the class in the [Injector](../extending/injector) so that the class can be overridden by [dependency injection](http://en.wikipedia.org/wiki/Dependency_injection).
+Using the `create()` method provides chainability, which can add elegance and brevity to your code, e.g. `Player::create()->write()`. More importantly, however, it will look up the class in the [Injector](../extending/injector) so that the class can be overridden by [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection).
 [/notice]
 
 

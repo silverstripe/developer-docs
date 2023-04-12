@@ -148,7 +148,7 @@ class VersionedModel extends DataObject
 
 [notice]
 The extension is automatically applied to the `SiteTree` class. For more information on extensions see
-<a href="../extending">extending</a> and the <a href="../configuration">Configuration</a> documentation.
+[extending](/developer_guides/extending/) and the [Configuration](/developer_guides/configuration/) documentation.
 [/notice]
 
 [warning]
@@ -200,8 +200,6 @@ If a `MyPage` gets published, all its related `Banners` will also be published, 
 Note that ownership cannot be used with polymorphic relations. E.g. has_one to non-type specific `DataObject`.
 
 #### Unversioned DataObject ownership
-
-*Requires Silverstripe CMS 4.1 or newer*
 
 Ownership can be used with non-versioned DataObjects, as the necessary functionality is included by default
 by the versioned object through the [`RecursivePublishable`](api:SilverStripe\Versioned\RecursivePublishable) extension which is
@@ -591,7 +589,7 @@ The current stage for each request is determined by `VersionedHTTPMiddleware` be
 `Versioned::choose_site_stage()`. It checks for a `stage` GET parameter, so you can force a draft stage by appending
 `?stage=Stage` to your request.
 
-Since Silverstripe CMS 4.2, the current stage setting is no longer "sticky" in the session.
+The current stage setting is not "sticky" in the session.
 Any links presented on the view produced with `?stage=Stage` need to have the same GET parameters in order
 to retain the stage. If you are using the `SiteTree->Link()` and `Controller->Link()` methods,
 this is automatically the case for `DataObject` links, controller links and form actions.
@@ -861,7 +859,7 @@ Versioned::set_reading_mode($origMode); // reset current mode
 
 ## Using the history viewer
 
-Since Silverstripe CMS 4.3 you can use the React and GraphQL driven history viewer UI to display historic changes and
+You can use the React and GraphQL driven history viewer UI to display historic changes and
 comparisons for a versioned DataObject. This is automatically enabled for SiteTree objects and content blocks in
 [dnadesign/silverstripe-elemental](https://github.com/dnadesign/silverstripe-elemental).
 
@@ -880,8 +878,7 @@ If you want to enable the history viewer for a custom versioned DataObject, you 
 
 [notice]
 **Please note:** these examples are given in the context of project-level customisation. You may need to adjust
-the webpack configuration slightly for use in a module. They are also designed to be used on Silverstripe CMS 4.3 or
-later.
+the webpack configuration slightly for use in a module.
 [/notice]
 
 ### Setup {#history-viewer-setup}
@@ -1062,7 +1059,7 @@ application such as GraphiQL, or [silverstripe-graphql-devtools](https://github.
 to view the schema and run queries from your browser:
 
 ```bash
-composer require --dev silverstripe/graphql-devtools dev-master
+composer require --dev silverstripe/graphql-devtools
 ```
 
 #### Use the GraphQL query and mutation in javascript

@@ -89,7 +89,7 @@ class MyDataObject extends DataObject
 
 ### General search field
 
-Tabular views such as `GridField` or `ModalAdmin` include a search bar. As of Silverstripe CMS 4.12, the search bar will search across all of your searchable fields by default. It will return a match if the search terms appear in any of the searchable fields.
+Tabular views such as `GridField` or `ModalAdmin` include a search bar. The search bar will search across all of your searchable fields by default. It will return a match if the search terms appear in any of the searchable fields.
 
 #### Exclude fields from the general search
 
@@ -114,7 +114,7 @@ class MyDataObject extends DataObject
 By default the general search field uses the name "q". If you already use that field name or search query in your [SearchContext](/developer_guides/search/searchcontext), you can change this to whatever name you prefer either globally or per class:
 
 [hint]
-If you set `general_search_field_name` to any empty string, general search will be disabled entirely. Instead, the first field in your searchable fields configuration will be used, which was the default behaviour prior to Silverstripe CMS 4.12.
+If you set `general_search_field_name` to any empty string, general search will be disabled entirely. Instead, the first field in your searchable fields configuration will be used.
 [/hint]
 
 **Globally change the general search field name via yaml config**

@@ -77,7 +77,7 @@ When rendered in HTML code, these URLs will be rewritten to their matching path 
 
 ## Template Requirements API
 
-**<my-module-dir>/templates/SomeTemplate.ss**
+**`<my-module-dir>/templates/SomeTemplate.ss`**
 
 ```
 <% require css("<my-module-dir>/css/some_file.css") %>
@@ -372,7 +372,7 @@ SilverStripe\Core\Injector\Injector:
 
 [alert]
 While the framework does afford you the option of minification at runtime, we recommend using one of many frontend build
-tools to do this for you, e.g. [Webpack](https://webpack.github.io/), [Gulp](http://gulpjs.com/), or [Grunt](https://gruntjs.com/).
+tools to do this for you, e.g. [Webpack](https://webpack.github.io/), [Gulp](https://gulpjs.com/), or [Grunt](https://gruntjs.com/).
 [/alert]
 
 

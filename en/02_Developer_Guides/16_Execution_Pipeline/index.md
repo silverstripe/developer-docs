@@ -16,7 +16,7 @@ Silverstripe CMS needs to boot its core and run through several stages of proces
 The first step in most environments is a rewrite of a request path into parameters passed to a PHP script.
 This allows writing friendly URLs instead of linking directly to PHP files.
 The implementation depends on your web server; we'll show you the most common one here: 
-Apache with [mod_rewrite](http://httpd.apache.org/docs/2.0/mod/mod_rewrite.html).
+Apache with [mod_rewrite](https://httpd.apache.org/docs/current/mod/mod_rewrite.html).
 Check our [installation guides](/getting_started/installation) on how other web servers like IIS or nginx handle rewriting.
 
 The standard Silverstripe CMS project ships with a `.htaccess` file in your webroot for this purpose.

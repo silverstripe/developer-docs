@@ -75,7 +75,7 @@ SilverStripe\Core\Injector\Injector:
 ```
 
 [info]
-Environment variables cannot be used outside of Injector config as of version 4.2.
+Environment variables cannot be used outside of Injector config.
 [/info]
 
 ## Including an extra .env file

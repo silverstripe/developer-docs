@@ -158,7 +158,7 @@ permission whitelist by invoking the getter as a method, but pass in a falsey va
 (or '0' in template as a workaround for all parameters being cast as string)
 
 
-```php
+```ss
 <% if not $canView %>
     <!-- The user will be denied if they follow this url -->
     <li><a href="$getURL(0)">Access to $Title is denied</a></li>
@@ -252,9 +252,9 @@ assets/
 
 The urls for these two files, however, do not reflect the physical structure directly.
 
-* The public file at `http://www.example.com/assets/OldCompanyLogo.gif` will be served directly from the web server,
+* The public file at `https://www.example.com/assets/OldCompanyLogo.gif` will be served directly from the web server,
   and will not invoke a PHP request.
-* The protected file at `http://www.example.com/assets/a870de278b/NewCompanyLogo.gif` will be routed via a 404 handler to PHP,
+* The protected file at `https://www.example.com/assets/a870de278b/NewCompanyLogo.gif` will be routed via a 404 handler to PHP,
   which will be passed to the `[ProtectedFileController](api:SilverStripe\Assets\Storage\ProtectedFileController)` controller, which will serve
   up the content of the hidden file, conditional on a permission check.
 
@@ -487,7 +487,7 @@ this file security.
 
 For instance your server configuration should look similar to the below:
 
-```
+```htaccess
 <Directory "/var/www/superarcade/public/assets">
   php_admin_flag engine off
 </Directory>
@@ -504,7 +504,7 @@ while ensuring non-existent files are processed via the Framework.
 
 The default rule for IIS is as below (only partial configuration displayed):
 
-```
+```xml
 <rule name="Secure and 404 File rewrite" stopProcessing="true">
     <match url="^(.*)$" />
     <conditions>

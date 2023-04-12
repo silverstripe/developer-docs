@@ -30,5 +30,5 @@ Silverstripe CMS relies on many Symfony packages. Silverstripe CMS 5 tracks the 
 
 ## Related information
 
-- [Dependency management](./Major_release_policy#Dependency-management) as defined by our Major release policy
-- [Symfony support commitments](./Major_release_policy#Symfony-support-commitments) as defined by our Major release policy
+- [Dependency management](/project_governance/major_release_policy/#dependency-management) as defined by our Major release policy
+- [Symfony support commitments](/project_governance/major_release_policy/#symfony-support-commitments) as defined by our Major release policy

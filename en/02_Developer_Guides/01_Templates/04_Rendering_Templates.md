@@ -35,6 +35,7 @@ echo $arrayData->renderWith('Coach_Message');
 // returns "<strong>John</strong> is the Head Coach on our team."
 
 ```
+
 If your template is a Layout template that needs to be rendered into the main Page template (to include a header and footer, for example), you need to render your Layout template into a string, and pass that as the Layout parameter to the Page template.
 
 ```php

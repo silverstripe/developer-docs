@@ -33,7 +33,7 @@ class Player extends DataObject
 }
 ```
 
-```
+```php
 <?php
 use SilverStripe\ORM\DataObject;
 

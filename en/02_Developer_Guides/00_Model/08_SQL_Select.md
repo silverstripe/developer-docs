@@ -296,15 +296,13 @@ $map = $players->map('Name', 'NameWithBirthyear');
 
 ### Data types
 
-As of Silverstripe CMS 4.4, the following PHP types will be used to return database content:
+The following PHP types are used to return database content:
 
  * booleans will be an integer 1 or 0, to ensure consistency with MySQL that doesn't have native booleans
  * integer types returned as integers
  * floating point / decimal types returned as floats
  * strings returned as strings
  * dates / datetimes returned as strings
-
-Up until Silverstripe CMS 4.3, bugs meant that strings were used for every column type.
 
 ## Related Lessons
 * [Building custom SQL](https://www.silverstripe.org/learn/lessons/v4/beyond-the-orm-building-custom-sql-1)

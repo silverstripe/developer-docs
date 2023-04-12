@@ -85,7 +85,7 @@ The relationship can also be navigated in [templates](../templates).
 A has_one can also be polymorphic, which allows any type of object to be associated.
 This is useful where there could be many use cases for a particular data structure.
 
-An additional column is created called "`<relationship-name>`Class", which along
+An additional column is created called `<relationship-name>Class`, which along
 with the ID column identifies the object.
 
 To specify that a has_one relation is polymorphic set the type to [api:SilverStripe\ORM\DataObject]
@@ -381,7 +381,7 @@ class Team extends DataObject
 }
 class Supporter extends DataObject
 {
-    // Prior to 4.2.0, this also needs to include the reverse relation name via dot-notation
+    // It can be useful, but not necessary, to include the reverse relation name via dot-notation
     // i.e. 'Supports' => Team::class . '.Supporters'
     private static $belongs_many_many = [
         'Supports' => Team::class,

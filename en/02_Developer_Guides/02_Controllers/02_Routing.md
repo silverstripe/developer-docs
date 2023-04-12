@@ -144,7 +144,7 @@ start parsing variables and the appropriate controller action AFTER the `//`).
 
 ### Wildcard URL Patterns
 
-As of Silverstripe CMS 4.6 there are two wildcard patterns that can be used. `$@` and `$*`. These parameters can only be used
+There are two wildcard patterns that can be used. `$@` and `$*`. These parameters can only be used
 at the end of a URL pattern, any further rules are ignored.
 
 Inspired by bash variadic variable syntax there are two ways to capture all URL parameters without having to explicitly
@@ -281,10 +281,6 @@ class BreadAPIController extends Controller
     ];
 ```
 
-<div class="alert" markdown="1">
-In Silverstripe CMS versions prior to 4.6, an empty key (`''`) must be used in place of the `'/'` key. When specifying an HTTP method, the empty string must be separated from the method (e.g. `'GET '`). The empty key and slash key are also equivalent in Director rules.
-</div>
-
 ## Related Lessons
 * [Creating filtered views](https://www.silverstripe.org/learn/lessons/v4/creating-filtered-views-1)
 * [Controller actions / DataObjects as pages](https://www.silverstripe.org/learn/lessons/v4/controller-actions-dataobjects-as-pages-1)
@@ -293,5 +289,5 @@ In Silverstripe CMS versions prior to 4.6, an empty key (`''`) must be used in p
 
 * [Controller](api:SilverStripe\Control\Controller) API documentation
 * [Director](api:SilverStripe\Control\Director) API documentation
-* [Example routes: framework](https://github.com/silverstripe/silverstripe-framework/blob/master/_config/routes.yml)
-* [Example routes: cms](https://github.com/silverstripe/silverstripe-cms/blob/master/_config/routes.yml)
+* [Example routes: framework](https://github.com/silverstripe/silverstripe-framework/blob/5/_config/routes.yml)
+* [Example routes: cms](https://github.com/silverstripe/silverstripe-cms/blob/5/_config/routes.yml)

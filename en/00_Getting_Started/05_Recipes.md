@@ -46,7 +46,7 @@ When we announce a new release of Silverstripe CMS and publish a changelog for i
   the admin UI and CMS features. We recommend specifying this recipe in your dependencies.
 - [`silverstripe/installer`](https://packagist.org/packages/silverstripe/installer): Includes `recipe-cms`, and adds a
   default theme for the front-end of your site. We recommend creating new projects based on this recipe (
-  via `composer create-project silverstripe/installer myproject ^4`).
+  via `composer create-project silverstripe/installer myproject ^5`).
 
 When determining whether you are running the latest version of Silverstripe CMS, it is easier to refer to the Recipe
 version than the individual Module versions, which may not align with Recipe versions. You can use Packagist to find

@@ -48,7 +48,7 @@ composer install --prefer-source
 cd vendor/silverstripe/admin && yarn install && yarn pattern-lib
 ```
 
-The pattern library will be available at [http://localhost:6006](http://localhost:6006). The JS source files will be watched, so every time you make a change to a JavaScript file, the pattern library will automatically update itself.
+The pattern library will be available at `http://localhost:6006`. The JS source files will be watched, so every time you make a change to a JavaScript file, the pattern library will automatically update itself.
 
 If you want to build a static version of the pattern library, you can replace `yarn pattern-lib` with `yarn build-storybook`. This will output the pattern library files to a `storybook-static` folder.
 
@@ -151,7 +151,7 @@ In this case, you can either overload the full base template as described above.
 To avoid duplicating all this template code, you can also use the special [LeftAndMain::Tools()](api:SilverStripe\Admin\LeftAndMain::Tools()) and
 [LeftAndMain::EditFormTools()](api:SilverStripe\Admin\LeftAndMain::EditFormTools()) methods available in `LeftAndMain`.
 These placeholders are populated by auto-detected templates,
-with the naming convention of "<controller classname>_Tools.ss" and "<controller classname>_EditFormTools.ss".
+with the naming convention of `<controller classname>_Tools.ss` and `<controller classname>_EditFormTools.ss`.
 So to add or "subclass" a tools panel, simply create this file and it's automatically picked up.
 
 ## Layout and Panels
@@ -234,10 +234,10 @@ correctly configured form.
 [notice]
 The following documentation regarding Entwine does not apply to React components or sections powered by React.
 If you're developing new functionality in React powered sections please refer to
-[ReactJS in Silverstripe CMS](./How_Tos/Extend_CMS_Interface.md#reactjs-in-silverstripe).
+[React, Redux, and GraphQL](/developer_guides/customising_the_admin_interface/reactjs_redux_and_graphql/).
 [/notice]
 
-[jQuery.entwine](https://github.com/hafriedlander/jquery.entwine) is a thirdparty library
+jQuery.entwine is a library
 which allows us to attach behaviour to DOM elements in a flexible and structured manner.
 See [jQuery Entwine](/developer_guides/customising_the_admin_interface/jquery_entwine) for more information on how to use it.
 
@@ -247,7 +247,7 @@ you have to use this namespace, e.g. `$('.cms-menu').entwine('ss').collapse()`.
 
 Note that only functionality that is custom to the CMS application needs to be built
 in jQuery.entwine, we're trying to reuse library code wherever possible.
-The most prominent example of this is the usage of [jQuery UI](http://jqueryui.com) for
+The most prominent example of this is the usage of [jQuery UI](https://jqueryui.com) for
 dialogs and buttons.
 
 ## JavaScript and CSS dependencies via Requirements and Ajax
@@ -270,8 +270,7 @@ so don't place a rule applying to all form buttons inside `ModelAdmin.js`.
 The CMS relies heavily on Ajax-loading of interfaces, so each interface and the JavaScript
 driving it have to assume its underlying DOM structure is appended via an Ajax callback
 rather than being available when the browser window first loads.
-jQuery.entwine is effectively an advanced version of [jQuery.live](http://api.jquery.com/live/)
-and [jQuery.delegate](http://api.jquery.com/delegate/), so takes care of dynamic event binding.
+jQuery.entwine is effectively an advanced version of [jQuery.on](https://api.jquery.com/on/), so takes care of dynamic event binding.
 
 Most interfaces will require their own JavaScript and CSS files, so the Ajax loading has
 to ensure they're loaded unless already present. A custom-built library called
@@ -287,7 +286,7 @@ window refresh. We us the below systems in combination to achieve this:
     `vendor/silverstripe/admin/client/src/lib/Router.js` wrapper.
 	The router is available on `window.ss.router` and provides the same API as
 	described in the
-	[Page.js docs](https://github.com/visionmedia/page.js/blob/master/Readme.md#api).
+	[Page.js docs](https://github.com/visionmedia/page.js#api).
   * [React router](https://github.com/reactjs/react-router) is used for react-powered
     CMS sections. This provides a native react-controlled bootstrapping and route handling
     system that works most effectively with react components. Unlike page.js routes, these
@@ -311,7 +310,7 @@ these must be registered prior to `window.onload`, as they would otherwise be ad
 than the wildcard routes, as page.js prioritises routes in order of registration, not by specificity.
 Once registered, routes can we called with `windw.ss.router.show('admin/pages')`.
 
-Route callbacks are invoked with two arguments, `context` and `next`. The [context object](https://github.com/visionmedia/page.js/blob/master/Readme.md#context)
+Route callbacks are invoked with two arguments, `context` and `next`. The [context object](https://github.com/visionmedia/page.js#context)
 can be used to pass state between route handlers and inspect the current
 history state. The `next` function invokes the next matching route. If `next`
 is called when there is no 'next' route, a page refresh will occur.
@@ -421,8 +420,8 @@ class MyAdmin extends LeftAndMain
 }
 ```
 
+**MyAdmin.ss**
 ```ss
-// MyAdmin.ss
 <% include SilverStripe\\Admin\\CMSBreadcrumbs %>
 <div>Static content (not affected by update)</div>
 <% include MyRecordInfo %>
@@ -431,8 +430,8 @@ class MyAdmin extends LeftAndMain
 </a>
 ```
 
+**MyRecordInfo.ss**
 ```ss
-// MyRecordInfo.ss
 <div data-pjax-fragment="MyRecordInfo">
     Current Record: $currentPage.Title
 </div>
@@ -445,11 +444,13 @@ GET /admin/myadmin HTTP/1.1
 X-Pjax:MyRecordInfo,Breadcrumbs
 X-Requested-With:XMLHttpRequest
 ```
+
 ... and result in the following response:
 
 ```JSON
 {"MyRecordInfo": "<div...", "CMSBreadcrumbs": "<div..."}
 ```
+
 Keep in mind that the returned view isn't always decided upon when the Ajax request
 is fired, so the server might decide to change it based on its own logic,
 sending back different `X-Pjax` headers and content.
@@ -585,7 +586,7 @@ To avoid repetition, we've written some helpers for various use cases:
 
 ## Buttons
 
-Silverstripe CMS automatically applies a [jQuery UI button style](http://jqueryui.com/demos/button/)
+Silverstripe CMS automatically applies a [jQuery UI button style](https://jqueryui.com/button/)
 to all elements with the class `.ss-ui-button`. We've extended the jQuery UI widget a bit
 to support defining icons via HTML5 data attributes (see `ssui.core.js`).
 These icon identifiers relate to icon files in `vendor/silverstripe/framework/admin/images/sprites/src/btn-icons`,
@@ -633,7 +634,7 @@ Note: You can see any additional HTTP headers through the web developer tools in
 ## Tree
 
 The CMS tree for viewing hierarchical structures (mostly pages) is powered
-by the [jstree](http://jstree.com) library. It is configured through
+by the [jstree](https://www.jstree.com) library. It is configured through
 `client/src/legacy/LeftAndMain.Tree.js` in the `silverstripe/admin` module, as well as some
 HTML5 metadata generated on its container (see the `data-hints` attribute).
 For more information, see the [Howto: Customise the CMS tree](/developer_guides/customising_the_admin_interface/how_tos/customise_cms_tree).
@@ -644,7 +645,7 @@ form fields to select one or more entries from those hierarchies
 
 ## Tabs
 
-We're using [jQuery UI tabs](http://jqueryui.com/), but in a customised fashion.
+We're using [jQuery UI tabs](https://jqueryui.com/tabs/), but in a customised fashion.
 HTML with tabs can be created either directly through HTML templates in the CMS,
 or indirectly through a [TabSet](api:SilverStripe\Forms\TabSet) form field. Since tabsets are useable
 outside of the CMS as well, the baseline application of tabs happens via
@@ -670,7 +671,6 @@ Form template with custom tab navigation (trimmed down):
 
 
 ```ss
-
 <form $FormAttributes data-layout-type="border">
 
     <div class="cms-content-header north">
@@ -700,7 +700,6 @@ Tabset template without tab navigation (e.g. `CMSTabset.ss`)
 
 
 ```ss
-
 <div $AttributesHTML>
     <% loop Tabs %>
         <% if Tabs %>
@@ -726,7 +725,6 @@ and load the HTML content into the main view. Example:
 
 
 ```ss
-
 <div id="my-tab-id" class="cms-tabset" data-ignore-tab-state="true">
     <ul>
         <li class="<% if MyActiveCondition %> ui-tabs-active<% end_if %>">

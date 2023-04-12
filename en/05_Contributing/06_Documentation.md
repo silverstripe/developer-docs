@@ -8,8 +8,8 @@ icon: file-alt
 
 Documentation for a software project is a continuing, collaborative effort. We encourage everybody to contribute in any way they can, from simply fixing spelling mistakes, to writing recipes, reviewing existing documentation and translation to other languages.
 
-Modifying documentation requires basic knowledge of [PHPDoc](http://en.wikipedia.org/wiki/PHPDoc) and 
-[Markdown](http://daringfireball.net/projects/markdown/) as well as a GitHub user account.
+Modifying documentation requires basic knowledge of [PHPDoc](https://en.wikipedia.org/wiki/PHPDoc) and 
+[Markdown](https://daringfireball.net/projects/markdown/) as well as a GitHub user account.
 
 [info]
 Note that there are two sources of documentation, depending on the intended audience. You can see where each of those lives in the [repositories](#repositories) section below.
@@ -23,16 +23,16 @@ page you want to edit. Alternatively, locate the appropriate .md file in the
 
 
  * After editing the documentation, describe your changes in the "commit summary" and "extended description" fields below then press "Commit Changes".
- * After committing you changes, you will see a form to submit a Pull Request: "[pull requests](http://help.github.com/pull-requests/)". You should be able to adjust the version to which your documentation changes apply before submitting the form. Any changes submitted in a pull request will be sent to the core committers for approval.
+ * After committing you changes, you will see a form to submit a Pull Request: "[pull requests](https://support.github.com/features/pull-requests)". You should be able to adjust the version to which your documentation changes apply before submitting the form. Any changes submitted in a pull request will be sent to the core committers for approval.
 
 [warning]
-You should make your changes in the lowest major branch they apply to. For instance, if you fix a spelling issue that you found in the CMS 4 documentation, submit your fix to the `4` branch in Github and it'll be copied to the most recent major version of the documentation automatically. *Don't submit multiple pull requests for the same change*.
+You should make your changes in the lowest major branch they apply to. For instance, if you fix a spelling issue that you found in the CMS 5 documentation, submit your fix to the `5` branch in Github and it'll be copied to the most recent major version of the documentation automatically. *Don't submit multiple pull requests for the same change*.
 [/warning]
 
 ## Editing on your computer
 
-If you prefer to edit content on your local machine, you can "[fork](http://help.github.com/forking/)" the 
-[silverstripe/developer-docs](http://github.com/silverstripe/developer-docs) repository, make changes locally, and then [send us a pull request](http://help.github.com/pull-requests/) to incorporate your changes.
+If you prefer to edit content on your local machine, you can "[fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo)" the 
+[silverstripe/developer-docs](https://github.com/silverstripe/developer-docs) repository, make changes locally, and then [send us a pull request](https://github.com/silverstripe/developer-docs/compare) to incorporate your changes.
 
 [warning]
 If you submit a new feature or an API change, we strongly recommend and request that you include a PR to update the necessary documentation. This helps prevent our documentation from getting out of date.
@@ -41,9 +41,9 @@ If you submit a new feature or an API change, we strongly recommend and request 
 ## Repositories
 
 * End-user help: [silverstripe/silverstripe-userhelp-content](https://github.com/silverstripe/silverstripe-userhelp-content/)
-* Developer guides: [silverstripe/developer-docs](http://github.com/silverstripe/developer-docs/)
+* Developer guides: [silverstripe/developer-docs](https://github.com/silverstripe/developer-docs/)
 * Website code for user and developer docs: [silverstripe/doc.silverstripe.org](https://github.com/silverstripe/doc.silverstripe.org)
-* Developer API documentation: [silverstripe/api.silverstripe.org](http://github.com/silverstripe/api.silverstripe.org)
+* Developer API documentation: [silverstripe/api.silverstripe.org](https://github.com/silverstripe/api.silverstripe.org)
 
 ## Source control
 
@@ -55,14 +55,14 @@ If you are adding documentation for functionality that has not yet been released
 
 ## What to write
 
-See [what to write (jacobian.org)](http://jacobian.org/writing/great-documentation/what-to-write/) for an excellent introduction to the different types of documentation. Also see [producing OSS: "documentation"](http://producingoss.com/en/getting-started.html#documentation) for good rules of thumb 
+See [what to write (jacobian.org)](https://jacobian.org/writing/great-documentation/what-to-write/) for an excellent introduction to the different types of documentation. Also see [producing OSS: "documentation"](https://producingoss.com/en/getting-started.html#documentation) for good rules of thumb 
 for documenting open source software.
 
 ## Structure
 
 * Keep documentation lines shorter than 120 characters.
 * Don't duplicate: Search for existing places to put your documentation. Do you really require a new page, or just a new paragraph of text somewhere?
-* Use PHPDoc in source code: Leave low level technical documentation to code comments within PHP, in [PHPDoc](http://en.wikipedia.org/wiki/PHPDoc) format. 
+* Use PHPDoc in source code: Leave low level technical documentation to code comments within PHP, in [PHPDoc](https://en.wikipedia.org/wiki/PHPDoc) format. 
 * API and developer guides are two forms of source code documentation that complement each other.
 * API documentation should provide context, ie, the "bigger picture", by referring to developer guides inside your PHPDoc.
 * Make your documentation easy to find: Documentation is useful only when it is interlinked so please make sure your contribution doesn't become an inaccessible island. At the very least, put a link to your index page in the same folder. A link to your page can also appear
@@ -125,17 +125,16 @@ Code for a Warning box:
 [/warning]
 ```
 
-See [markdown extra documentation](http://michelf.com/projects/php-markdown/extra/#html) for more restrictions
+See [markdown extra documentation](https://michelf.com/projects/php-markdown/extra/#html) for more restrictions
 on placing HTML blocks inside Markdown.
 
 ## Translating documentation
 
 Documentation is kept alongside the source code, typically in a module subdirectory like `framework/docs/en/`. Each language has its own subfolder, which can duplicate parts of or the entire body of documentation. German documentation would, for example, live in `framework/docs/de/`. The 
 [docsviewer](https://github.com/silverstripe/silverstripe-docsviewer) module that drives 
-[docs.silverstripe.org](http://docs.silverstripe.org) automatically resolves these subfolders into a language dropdown.
+[docs.silverstripe.org](https://docs.silverstripe.org) automatically resolves these subfolders into a language dropdown.
 
 ## Further reading
 
-* [Writing great documentation (jacobian.org)](http://jacobian.org/writing/great-documentation/)
-* [How tech writing sucks: Five sins](http://www.slash7.com/articles/2006/11/15/tech-writing-the-five-sins)
-* [What is good documentation?](http://www.techscribe.co.uk/techw/whatis.htm)
+* [Writing great documentation (jacobian.org)](https://jacobian.org/writing/great-documentation/)
+* [How tech writing sucks: Five sins](https://www.slash7.com/articles/2006/11/15/tech-writing-the-five-sins)

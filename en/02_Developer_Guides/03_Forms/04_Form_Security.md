@@ -77,9 +77,9 @@ $form->setFormMethod('POST', false);
 Silverstripe CMS has no built-in protection for detailing with bots, captcha or other spam protection methods. This 
 functionality is available as an additional [Spam Protection](https://github.com/silverstripe/silverstripe-spamprotection) 
 module if required. The module provides an consistent API for allowing third-party spam protection handlers such as 
-[Recaptcha](http://www.google.com/recaptcha/intro/) and [Mollom](https://mollom.com/) to work within the `Form` API. 
+[Recaptcha](https://www.google.com/recaptcha/intro/) to work within the `Form` API. 
 
-## Data disclosure through HTTP Caching (since 4.2.0)
+## Data disclosure through HTTP Caching
 
 Forms, and particularly their responses, can contain sensitive or user-specific data. 
 Forms can prepopulate submissions when a form is redisplayed with validation errors,

@@ -8,7 +8,7 @@ icon: code-branch
 
 ## Scope of the policy
 
-This policy applies to all [Silverstripe CMS commercially supported modules](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/).
+This policy applies to all [Silverstripe CMS commercially supported modules](/project_governance/supported_modules/).
 
 Community modules are not covered by this policy. Modules in the `silverstripe` github organisation that are not commercially supported are updated on a best effort basis.
 

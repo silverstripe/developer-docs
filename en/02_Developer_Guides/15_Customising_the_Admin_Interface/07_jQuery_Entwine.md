@@ -8,10 +8,10 @@ iconBrand: js
 [notice]
 The following documentation regarding jQuery and Entwine does not apply to React components or sections powered by React.
 If you're developing new functionality in React powered sections please refer to
-[ReactJS in Silverstripe CMS](./extend_cms_interface.md#reactjs-in-silverstripe).
+[React, Redux, and GraphQL](/developer_guides/customising_the_admin_interface/reactjs_redux_and_graphql/).
 [/notice]
 
-jQuery Entwine was originally written by Hamish Friedlander.
+jQuery Entwine was originally written by [Hamish Friedlander](https://github.com/hafriedlander/jquery.entwine).
 
 Entwine tries to provide a new model of code organisation - a replacement for Object Oriented programming that is
 focused on adding functions to groups of DOM elements based on the structure and contents of those DOM elements. It's a

@@ -3,6 +3,7 @@ title: PHP coding conventions
 summary: The code style guidelines we use in our open source software
 iconBrand: php
 ---
+
 # PHP Coding Conventions
 
 This document provides guidelines for code formatting and documentation
@@ -16,7 +17,7 @@ If you are unsure about a specific standard, imitate existing SilverStripe code.
 
 ## PSR-2
 
-Our goal is [PSR-2 Coding Standards](http://www.php-fig.org/psr/psr-2/) compliance.
+Our goal is [PSR-2 Coding Standards](https://www.php-fig.org/psr/psr-2/) compliance.
 Since this affects existing APIs, some details like method casing will be iterated on in the next releases.
 For example, many static methods will need to be changed from lower underscore to lower camel casing. 
  
@@ -27,7 +28,7 @@ except when necessitated by third party conventions (e.g using PHP's `Serializab
 
 ## Configuration Variables
 
-SilverStripe's [Config API]() can read its defaults from variables declared as `private static` on classes.
+Silverstripe CMS's [Config API](/developer_guides/configuration/configuration/) can read its defaults from variables declared as `private static` on classes.
 As opposed to other variables, these should be declared as lower case with underscores.
 
 
@@ -41,7 +42,7 @@ class MyClass
 ## Prefer identical (===) comparisons over equality (==)
 
 Where possible, use type-strict identical comparisons instead of loosely typed equality comparisons.
-Read more in the PHP documentation for [comparison operators](http://php.net/manual/en/language.operators.comparison.php) and [object comparison](http://php.net/manual/en/language.oop5.object-comparison.php).
+Read more in the PHP documentation for [comparison operators](https://php.net/manual/en/language.operators.comparison.php) and [object comparison](https://php.net/manual/en/language.oop5.object-comparison.php).
 
 
 ```php
@@ -92,8 +93,8 @@ public function getTitle()
 
 ## Comments
 
-Use [phpdoc](http://phpdoc.org/) syntax before each definition (see [tutorial](http://manual.phpdoc.org/HTMLSmartyConverter/HandS/phpDocumentor/tutorial_phpDocumentor.quickstart.pkg.html)
-and [tag overview](http://manual.phpdoc.org/HTMLSmartyConverter/HandS/phpDocumentor/tutorial_tags.pkg.html)).
+Use [phpdoc](https://phpdoc.org/) syntax before each definition (see [tutorial](https://manual.phpdoc.org/HTMLSmartyConverter/HandS/phpDocumentor/tutorial_phpDocumentor.quickstart.pkg.html)
+and [tag overview](https://manual.phpdoc.org/HTMLSmartyConverter/HandS/phpDocumentor/tutorial_tags.pkg.html)).
 
  * Methods should include at least `@param` and `@return`.
  * Include a blank line after the description.
@@ -180,7 +181,7 @@ are single quoted.
 MyClass::get()->where("\"Title\" = 'my title'");
 ```
 
-Use [ANSI SQL](http://en.wikipedia.org/wiki/SQL#Standardization) format where possible.
+Use [ANSI SQL](https://en.wikipedia.org/wiki/SQL#Standardization) format where possible.
 
 ## Secure Development
 

@@ -45,7 +45,7 @@ Now you should be able to build your database by running this command:
 vendor/bin/sake dev/build
 ```
 
-Your website should be available on your domain now (e.g. `http://localhost`). The CMS login can be accessed at `/admin`.
+Your website should be available on your domain now (e.g. `https://www.example.com`). The CMS login can be accessed at `/admin` (e.g. `http://www.example.com/admin`).
 
 For more information on how to maintain your installation or install projects, check
 out [Using Silverstripe with Composer](composer).

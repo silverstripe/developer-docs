@@ -32,10 +32,10 @@ For long-lived server instances, this can become a capacity issue over time - se
 
 ## Configuration
 
-We are using the [PSR-16](http://www.php-fig.org/psr/psr-16/) standard ("SimpleCache")
+We are using the [PSR-16](https://www.php-fig.org/psr/psr-16/) standard ("SimpleCache")
 for caching, through the [symfony/cache](https://symfony.com/doc/current/components/cache.html) library.
 
-Note that this library describes usage of [PSR-6](http://www.php-fig.org/psr/psr-6/) by default,
+Note that this library describes usage of [PSR-6](https://www.php-fig.org/psr/psr-6/) by default,
 though Silverstripe wraps these in a PSR-16 interface using the [Psr16Cache](https://github.com/symfony/cache/blob/6.1/Psr16Cache.php) class.
 
 Cache objects are configured via YAML
@@ -80,7 +80,7 @@ service doesn't support this. See "Invalidation" for alternative strategies.
 
 ## Usage
 
-Cache objects follow the [PSR-16](http://www.php-fig.org/psr/psr-16/) class interface.
+Cache objects follow the [PSR-16](https://www.php-fig.org/psr/psr-16/) class interface.
 
 
 ```php
@@ -188,10 +188,10 @@ interface. Use this interface to trigger `clear()` on your caches.
 Silverstripe CMS tries to identify the most performant cache available on your system
 through the [DefaultCacheFactory](api:SilverStripe\Core\Cache\DefaultCacheFactory) implementation:
 
- * `PhpFilesAdapter` (PHP with [opcache](http://php.net/manual/en/book.opcache.php) enabled).
-     This cache has relatively low [memory defaults](http://php.net/manual/en/opcache.configuration.php#ini.opcache.memory-consumption).
+ * `PhpFilesAdapter` (PHP with [opcache](https://php.net/manual/en/book.opcache.php) enabled).
+     This cache has relatively low [memory defaults](https://php.net/manual/en/opcache.configuration.php#ini.opcache.memory-consumption).
      We recommend increasing it for large applications, or enabling the
-     [file_cache fallback](http://php.net/manual/en/opcache.configuration.php#ini.opcache.file-cache)
+     [file_cache fallback](https://php.net/manual/en/opcache.configuration.php#ini.opcache.file-cache)
  * `ApcuAdapter` (requires APC) with a `FilesystemAdapter` fallback (for larger cache volumes)
  * `FilesystemAdapter` if none of the above is available
  
@@ -205,8 +205,8 @@ Different adapters will require different constructor arguments.
 We've written factories for the most common cache scenarios:
 `FilesystemCacheFactory`, `MemcachedCacheFactory` and `ApcuCacheFactory`.
 
-Example: Configure core caches to use [memcached](http://www.danga.com/memcached/),
-which requires the [memcached PHP extension](http://php.net/memcached),
+Example: Configure core caches to use [memcached](https://www.danga.com/memcached/),
+which requires the [memcached PHP extension](https://php.net/memcached),
 and takes a `MemcachedClient` instance as a constructor argument.
 
 
