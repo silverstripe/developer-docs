@@ -163,12 +163,19 @@ SilverStripe\Core\Injector\Injector:
   LogFileHandler:
     class: Monolog\Handler\StreamHandler
     constructor:
-      - "../silverstripe.log"
+      - "/var/www/silverstripe.log"
       - "info"
 ```
 
-The log file will be relative to the main index.php file path (default: inside public/), so "../silverstripe.log" will
-create a file in your project root.
+[warning]
+The log file path must be an absolute file path, as relative paths may behave differently between CLI and HTTP requests. If you want to use a _relative_ path, you can use the `SS_ERROR_LOG` environment variable to declare a file path that is relative to your project root:
+
+```sh
+SS_ERROR_LOG="./silverstripe.log"
+```
+
+You don't need any of the yaml configuration above if you are using the `SS_ERROR_LOG` environment variable - but you can use a combination of the environment variable and yaml configuration if you want to configure multiple error log files.
+[/warning]
 
 The `info` argument provides the minimum level to start logging at.
 
@@ -231,7 +238,7 @@ SilverStripe\Core\Injector\Injector:
   LogFileHandler:
     class: Monolog\Handler\StreamHandler
     constructor:
-      - "../silverstripe.log"
+      - "/var/www/silverstripe.log"
       - "notice"
     properties:
       Formatter: '%$Monolog\Formatter\HtmlFormatter'
