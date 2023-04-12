@@ -55,7 +55,7 @@ SilverStripe\Core\Injector\Injector:
   ErrorLogFileHandler:
     class: Monolog\Handler\StreamHandler
     constructor:
-      - "../silverstripe.log" # an absolute path, or a path relative to the index.php file (usually inside the public/ directory)
+      - "var/www/silverstripe.log"
       - "warning" # warning is the level deprecation warnings are logged as
   Psr\Log\LoggerInterface.errorhandler:
     calls:
@@ -63,7 +63,15 @@ SilverStripe\Core\Injector\Injector:
 ```
 
 [notice]
-You will need to make sure the user running the php process has write access to the log file, wherever you choose to put it.
+The log file path must be an absolute file path, as relative paths may behave differently between CLI and HTTP requests. If you want to use a _relative_ path, you can use the `SS_ERROR_LOG` environment variable to declare a file path that is relative to your project root:
+
+```sh
+SS_ERROR_LOG="./silverstripe.log"
+```
+
+You don't need any of the yaml configuration above if you are using the `SS_ERROR_LOG` environment variable - but you can use a combination of the environment variable and yaml configuration if you want to configure multiple error log files.
+
+You will also need to make sure the user running the php process has write access to the log file, wherever you choose to put it.
 [/notice]
 
 See [Configuring error logging](/developer_guides/debugging/error_handling/#configuring-error-logging) to learn about other ways you can handle error logs.
