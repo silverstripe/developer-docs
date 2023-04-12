@@ -441,24 +441,47 @@ Requirements::set_write_js_to_body(false);
 
 ## Direct resource urls
 
-In templates, you can use the `$resourcePath()` or `$resourceURL()` helper methods to inject links to
-resources directly. If you want to link to resources within a specific module you can use 
-the `vendor/module:some/path/to/file.jpg` syntax.
+In templates, you can use the [`$themedResourceURL()`](api:SilverStripe\View\ThemeResourceLoader::themedResourceURL()) or [`$resourceURL()`](api:SilverStripe\Core\Manifest\ModuleResourceLoader::resourceURL()) helper methods to inject links to
+resources directly.
 
-E.g.
+If you want to get a resource using cascading themes, use `$themedResourceURL()`:
 
 ```ss
-<div class="loading">
-    <img src="$resourceURL('silverstripe/admin:client/dist/images/spinner.gif')" />
-</div>
+<img src="$themedResourceURL('images/my-image.jpg')">
+<img src="$themedResourceURL('images')/$Image.jpg">
 ```
 
-In PHP you can directly resolve these urls using the `ModuleResourceLoader` helper.
+If you want to get a resource for a _specific_ theme or from somewhere that is not a theme (your app directory or a module), use `$resourceURL()`:
+
+```ss
+<img src="$resourceURL('app/images/my-image.jpg')">
+<img src="$resourceURL('my/module:images/my-image.jpg')">
+<img src="$resourceURL('themes/simple/images/my-image.jpg')">
+<img src="$resourceURL('themes/simple/images')/$Image.jpg">
+```
+
+[hint]
+Notice the `vendor/module:some/path/to/file.jpg` syntax (used to get a resource from a specific module) is only valid for the `$resourceURL()` helper method. It won't work for `themedResourceURL()`.
+[/hint]
+
+### Resource URLs or filepaths from a PHP context
+
+In PHP you can directly resolve urls and file paths for resources using the [`ModuleResourceLoader`](api:SilverStripe\Core\Manifest\ModuleResourceLoader) and [`ThemeResourceLoader`](api:SilverStripe\View\ThemeResourceLoader) helpers.
 
 ```php
-$file = ModuleResourceLoader::singleton()
-  ->resolveURL('silverstripe/admin:client/dist/images/spinner.gif');
+use SilverStripe\Core\Manifest\ModuleResourceLoader;
+use SilverStripe\View\ThemeResourceLoader;
+
+// Get the URL or relative file path for an image in the silverstripe/admin module
+$fileUrl = ModuleResourceLoader::singleton()->resolveURL('silverstripe/admin:client/dist/images/spinner.gif');
+$filePath = ModuleResourceLoader::singleton()->resolvePath('silverstripe/admin:client/dist/images/spinner.gif');
+
+// Get the URL or relative file path for an image in a theme, using cascading themes
+$themeFileUrl = ThemeResourceLoader::themedResourceURL('images/spinner.gif');
+$themeFilePath = ThemeResourceLoader::inst()->findThemedResource('images/spinner.gif');
 ```
+
+You can also get file paths specifically for javascript and css files using the [`findThemedJavascript()`](api:SilverStripe\Core\Manifest\ModuleResourceLoader::findThemedJavascript()) and [`findThemedCss()`](api:SilverStripe\Core\Manifest\ModuleResourceLoader::findThemedCss()) methods.
 
 ## Related Lessons
 * [Creating your first theme](https://www.silverstripe.org/learn/lessons/v4/creating-your-first-theme-1)
