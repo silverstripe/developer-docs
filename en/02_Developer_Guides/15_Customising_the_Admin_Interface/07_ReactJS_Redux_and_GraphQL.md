@@ -905,7 +905,6 @@ SilverStripe\GraphQL\Manager:
               read:
                 paginate: false
                 name: readNotes
-              create: true
 ```
 
 [hint]
@@ -920,15 +919,16 @@ Finally, let's make a really simple container app which holds a header and our n
 
 ```js
 import React from 'react';
-import { inject } from 'lib/Injector';
 import Notes from './components/Notes';
 
-const App = ({ ListComponent }) => (
+const App = () => (
   <div>
     <h3>Notes</h3>
     <Notes />
   </div>
 );
+
+export default App;
 ```
 
 **my-module/client/src/index.js**
@@ -955,8 +955,8 @@ Injector.ready(() => {
 
     onunmatch: function() {
       ReactDOM.unmountComponentAtNode(this[0]);
-    }
-  })
+    },
+  });
 });
 ```
 
@@ -1153,11 +1153,11 @@ Since almost everything is in `Injector` now, we need to update our mounting log
 **my-module/client/src/index.js**
 
 ```js
-import { render } from 'react-dom';
+import ReactDOM from 'react-dom';
 import React from 'react';
 import registerDependencies from './boot/registerDependencies';
 import { ApolloProvider } from 'react-apollo';
-import Injector, { InjectorProvider, provideInjector, inject } from 'lib/Injector';
+import Injector, { provideInjector } from 'lib/Injector';
 import App from './App';
 
 registerDependencies();
@@ -1173,12 +1173,16 @@ Injector.ready(() => {
 
   $('#notes-app').entwine({
     onmatch() {
-      render(
+      ReactDOM.render(
         <MyAppWithInjector />,
         this[0]
-      )
-    }
-  })
+      );
+    },
+
+    onunmatch: function() {
+      ReactDOM.unmountComponentAtNode(this[0]);
+    },
+  });
 });
 ```
 
@@ -1224,7 +1228,7 @@ SilverStripe\GraphQL\Schema\Schema:
 ```yml
 App\Model\Note:
   fields:
-    Priority: true
+    priority: true
 ```
 
 ##### Graphql 3 {#applying-extensions-gql-v3}
@@ -1335,7 +1339,7 @@ Now, let's apply all these transformations, and we'll use the `after` property t
 **app/client/src/boot.js**
 
 ```js
-import Injector, { injectGraphql } from 'lib/Injector';
+import Injector from 'lib/Injector';
 import transformNotesListItem from './transformNotesListItem';
 import transformReadNotes from './transformReadNotes';
 
@@ -1405,7 +1409,7 @@ export default inject(['NotesList', 'NoteAddForm'])(App);
 
 Next, add a mutation template to attach to the form.
 
-**my-module/cient/src/state/createNote.js**
+**my-module/client/src/state/createNote.js**
 
 ```js
 import { graphqlTemplates } from 'lib/Injector';
@@ -1428,11 +1432,8 @@ const mutation = {
     }
   },
   templateName: CREATE,
-  singularName: 'Note',
+  singularName: 'Note', // For graphql v3 this needs to be "AppNote"
   pagination: false,
-  params: {
-    input: 'CreateNoteInput!', // For graphql v3 use 'AppNoteCreateInputType!'
-  },
   fields: [
     'content',
     'id'
@@ -1476,9 +1477,12 @@ SilverStripe\GraphQL\Manager:
             #...
             operations:
               #...
-              create:
-                name: createNote
+              create: true
 ```
+
+[notice]
+Unlike with the read query, the injector isn't able to handle mutations with custom names.
+[/notice]
 
 Lastly, let's just register all this with `Injector`.
 
@@ -1486,8 +1490,8 @@ Lastly, let's just register all this with `Injector`.
 
 ```js
 //...
-import AddForm from './components/AddForm';
-import createNote from './state/createNote';
+import AddForm from '../components/AddForm';
+import createNote from '../state/createNote';
 
 const registerDependencies = () => {
   //...
@@ -1575,7 +1579,7 @@ All we've done here is overridden the `props` setting in the `CreateNote` apollo
 
 Now we just need to register these transforms, and we're done!
 
-**app/client/src/index.js**
+**app/client/src/boot.js**
 
 ```js
 //...
