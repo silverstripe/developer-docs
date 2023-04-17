@@ -5,34 +5,41 @@ summary: A brief look at the definition of a Controller, creating actions and ho
 
 # Introduction to Controllers
 
-The following example is for a simple [Controller](api:SilverStripe\Control\Controller) class. When building off the Silverstripe CMS you will
+The following example is for a simple [`Controller`](api:SilverStripe\Control\Controller) class. When building off the Silverstripe CMS you will
 subclass the base `Controller` class.
+
+[info]
+If you're using the `cms` module and dealing with [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) records then for your custom page controllers you
+would extend [`ContentController`](api:SilverStripe\CMS\Controllers\ContentController) or `PageController`.
+[/info]
 
 **app/src/controllers/TeamController.php**
 
 ```php
+namespace App\Controller;
+
+use App\Model\Team;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 
 class TeamController extends Controller 
 {
-        
     private static $allowed_actions = [
         'players',
-        'index'
     ];
-    
-    public function index(HTTPRequest $request) 
-    {
-        // ..
-    }
 
     public function players(HTTPRequest $request) 
     {
-        print_r($request->allParams());
+        $this->renderWith(Team::class . '_PlayerList');
     }
 }
 ```
+
+[warning]
+When choosing names for actions, avoid using the same name you've used for relations on the model the controller represents. If you have relations with the same name as controller actions, templates rendered for that controller which refer to the relation won't render as expected - they will attempt to render the action where you expect to be using the relation.
+
+For example if the controller above was for a `Team` model which had a `Players` relation, the action should not also be named `players`. Something like `showPlayers` would be more appropriate.
+[/warning]
 
 ## Routing
 
@@ -40,51 +47,64 @@ We need to define the URL that this controller can be accessed on. In our case, 
 at `https://www.example.com/teams/` and the `players` custom action is at `https://www.example.com/team/players/`.
 
 [info]
-If you're using the `cms` module with and dealing with `Page` objects then for your custom `Page Type` controllers you 
-would extend `ContentController` or `PageController`. You don't need to define the routes value as the `cms` handles 
-routing.
+If you're extending `ContentController` or `PageController` for your `SiteTree` records you don't need to define the routes value as the `cms` handles
+routing for those.
 [/info]
-
-[alert]
-Make sure that after you have modified the `routes.yml` file, that you clear your Silverstripe CMS caches using `?flush=1`.
-[/alert]
 
 **app/_config/routes.yml**
 
 ```yml
 ---
 Name: approutes
-After: framework/_config/routes#coreroutes
+After: '#coreroutes'
 ---
 SilverStripe\Control\Director:
   rules:
-    'teams//$Action/$ID/$Name': 'TeamController'
+    'teams//$Action/$ID/$Name': 'App\Controller\TeamController'
 ```
+
+[alert]
+Make sure that after modifying the `routes.yml` file you clear your Silverstripe CMS caches using `?flush=1`.
+[/alert]
 
 For more information about creating custom routes, see the [Routing](routing) documentation.
 
+For information about how to get a URL (e.g. to use in templates) for a given controller action, see [Getting the URL for a controller action](#link) below.
+
 ## Actions
 
-Controllers respond by default to an `index` method. You don't need to define this method (as it's assumed) but you
-can override the `index()` response to provide custom data back to the [Template and Views](../templates). 
+Actions in controllers are specific routes which are accessible via HTTP or CLI requests. They are often backed by a method, though a method does not need to be declared so long as there
+is a template available to render for the given action.
 
-[notice]
-It is standard in Silverstripe CMS for your controller actions to be `lowercasewithnospaces`
-[/notice]
+Controllers respond by default to an `index` action. You don't need to implement this action as a method nor declare it as in `allowed_actions`, but you
+can implement the `index()` method and return custom data to be used in the appropriate template (see [Template and Views](../templates)).
 
-Action methods can return one of four main things:
+Action methods can return one of four things:
 
-* an array. In this case the values in the array are available in the templates and the controller completes as usual by returning a [HTTPResponse](api:SilverStripe\Control\HTTPResponse) with the body set to the current template.
-* `HTML`. Silverstripe CMS will wrap the `HTML` into a `HTTPResponse` and set the status code to 200.
-* an [HTTPResponse](api:SilverStripe\Control\HTTPResponse) containing a manually defined `status code` and `body`.
-* an [HTTPResponse_Exception](api:SilverStripe\Control\HTTPResponse_Exception). A special type of response which indicates an error. By returning the exception, the execution pipeline can adapt and display any error handlers.
+1. an array. The appropriate template will be rendered, using the values in the array you provided. The rendered result will be set as the body for the current [`HTTPResponse`](api:SilverStripe\Control\HTTPResponse) object.
+2. a string (e.g. JSON or HTML markup). The string will be set as the body for the current `HTTPResponse` object.
+3. an `HTTPResponse`. This can either be a new response or `$this->getResponse()`.
+4. `$this` or `$this->customise()`. This will render the controller using the appropriate template and set the rendered result as the body for the current `HTTPResponse`.
+
+[hint]
+
+- returning `$this` is the equivalent of returning an empty array.
+- returning `$this->customise()` is the equivalent of returning an array with data.
+
+[/hint]
+
+See [templates](#templates) below for information about declaring what template to use in the above scenarios.
+
+A controller action can also throw an [`HTTPResponse_Exception`](api:SilverStripe\Control\HTTPResponse_Exception).
+This is a special exception that indicates that a specific error HTTP code should be used in the response.
+By throwing this exception, the execution pipeline can adapt and use any error handlers (e.g. via the [silverstripe/errorpage](https://github.com/silverstripe/silverstripe-errorpage/) module).
 
 **app/src/controllers/TeamController.php**
 
 ```php
 /**
  * Return some additional data to the current response that is waiting to go out, this makes $Title set to 
- * 'MyTeamName' and continues on with generating the response.
+ * 'My Team Name' and continues on with generating the response.
  */
 public function index(HTTPRequest $request) 
 {
@@ -94,7 +114,7 @@ public function index(HTTPRequest $request)
 }
 
 /**
- * We can manually create a response and return that to ignore any previous data.
+ * We can manually create a response and return that to ignore any previous data or modifications to the request.
  */
 public function someaction(HTTPRequest $request) 
 {
@@ -130,13 +150,11 @@ public function htmlaction()
  */
 public function ajaxaction() 
 {
-    $this->getResponse()->setBody(json_encode([
-        'json' => true
-    ]));
+    $this->getResponse()->addHeader('Content-type', 'application/json');
 
-    $this->getResponse()->addHeader("Content-type", "application/json");
-
-    return $this->getResponse().
+    return json_encode([
+        'json' => true,
+    ]);
 }
 ```
 
@@ -144,46 +162,103 @@ For more information on how a URL gets mapped to an action see the [Routing](rou
 
 ## Security
 
-See the [Access Controller](access_control) documentation.
+See the [Access Control](access_control) documentation.
 
 ## Templates
 
-Controllers are automatically rendered with a template that makes their name. Our `TeamsController` would be rendered
-with a `TeamsController.ss` template. Individual actions are rendered in `TeamsController_{actionname}.ss`. 
+The template to use for a given action is determined in the following order:
 
-If a template of that name does not exist, then Silverstripe CMS will fall back to the `TeamsController.ss` then to 
-`Controller.ss`.
+1. If a template has been explicitly declared for the action in the `templates` property, it will be used.
+2. If a template has been explicitly declared for the "index" action in the `templates` property, it will be used (regardless of what action is being rendered).
+3. If the `template` property has been set at all, its value will be used.
+4. If a template exists with the name of this class or any of its ancestors, suffixed with the name of the action name, it will be used.
+    - e.g. for the `App\Control\TeamController` example, the "showPlayers" action would look for `templates/App/Control/TeamController_showPlayers.ss` and `templates/SilverStripe/Control/Controller_showPlayers.ss`.
+    - Note that the "index" action skips this step.
+5. If a template exists with the name of this class or any of its ancestors (with no suffix), it will be used.
+    - e.g. for the `App\Control\TeamController` example, it would look for `templates/App/Control/TeamController.ss` and `templates/SilverStripe/Control/Controller.ss`.
 
-Controller actions can use `renderWith` to override this template selection process as in the previous example with 
-`htmlaction`. `MyCustomTemplate.ss` would be used rather than `TeamsController`.
+[note]
+Subclasses of `ContentController` additionally check for templates named similarly to the model the controller represents - for example a `HomePageController` class which represents a `HomePage` model will look for `HomePage_{action}.ss` after checking `HomePageController_{action}.ss`.
+[/note]
+
+You can declare templates to be used for an action by setting the `templates` array. The key should be the name of the action,
+and the value should be a template name, or array of template names in cascading precedence.
+
+```php
+class TeamController extends Controller 
+{
+    protected $templates = [
+        'showPlayers' => 'TemplateForPlayers',
+    ];
+
+    private static $allowed_actions = [
+        'showPlayers',
+    ];
+}
+```
+
+[warning]
+The `templates` property is _not_ a configuration property, so if you declare it directly as in the above example you will
+override any templates declared in parent classes. If you want to keep template declarations from parent classes, you could
+apply new templates in a constructor like so:
+
+```php
+class TeamController extends SomeParentController 
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this->templates['showPlayers'] => 'TemplateForPlayers';
+    }
+}
+```
+
+[/warning]
+
+As mentioned in [Actions](#actions) above, controller actions can return a string or `HTTPResponse` to bypass this template selection process.
 
 For more information about templates, inheritance and how to render into views, See the 
 [Templates and Views](../templates) documentation.
 
-## Link
+## Getting the URL for a controller action {#link}
 
-Each controller should define a `Link()` method. This should be used to avoid hard coding your routing in views,
-as well as give other features in Silverstripe CMS the ability to influence link behaviour.
-
-**app/src/controllers/TeamController.php**
+Each controller should declare the `url_segment` configuration property, using the non-variable portion of that controller's routing rule.
 
 ```php
-public function Link($action = null) 
+class TeamController extends Controller 
 {
-    // Construct link with graceful handling of GET parameters
-    $link = Controller::join_links('teams', $action);
-    
-    // Allow Versioned and other extension to update $link by reference.
-    $this->extend('updateLink', $link, $action);
-    
-    return $link;
+    private static $url_segment = 'teams';
 }
-``` 
+```
 
-## Connecting Pages to Controllers
-By default, a controller for a page type must reside in the same namespace as its page. If you find that your controllers are in a different namespace then you'll need to override SiteTree::getControllerName().
+You can then use the [`Link()`](api:SilverStripe\Control\RequestHandler::Link()) method to get a relative URL for your controller:
+
+```php
+$indexLink = $teamController::Link();
+$playersActionLink = $teamController::Link('players');
+```
+
+You can of course also use `$Link` in a template.
+
+[notice]
+If you have more complex logic for determining the link for your controller, you can override the `Link()` method - in that case you should
+be sure to invoke the `updateLink` extension method so that extensions can make changes as necessary: `$this->extend('updateLink', $link, $action);`
+[/notice]
+
+## Connecting Pages to ContentControllers
+
+By default, a `SiteTree` subclass will be automatically associated with a controller which is in the same
+namespace, and is named the same but suffixed with `Controller`. For example, `App\Page\HomePage`
+will be associated with a `App\Page\HomePageController` if such a class exists.
+
+If there is no controller for a specific page class, that page's ancestors will be checked until a suitable
+controller is found.
+
+If you find that your controllers are in a different namespace then you'll need to define the correct
+controller in the `controller_name` configuration property.
 
 Example controller:
+
 ```php
 namespace App\Controller;
 
@@ -199,6 +274,7 @@ class TeamPageController extends Controller
 ```
 
 Example page:
+
 ```php
 namespace App\Page;
 
@@ -207,16 +283,14 @@ use Page;
 
 class TeamPage extends Page
 {
-    public function getControllerName()
-    {
-        return TeamPageController::class;
-    }
+    private static $controller_name = TeamPageController::class;
 }
 ```
-You'd now be able to access methods of the controller in the pages template
 
-```html
-<!-- TeamPage.ss -->
+You'd now be able to access methods of the controller in the page's template
+
+```ss
+<%-- TeamPage.ss --%>
 <p>{$getExample}</p>
 ```
 
