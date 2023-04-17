@@ -140,14 +140,14 @@ In case you want to retain the main CMS structure (which is recommended),
 just create your own "Content" template (e.g. `MyCMSController_Content.ss`),
 which is in charge of rendering the main content area apart from the CMS menu.
 
-Depending on the complexity of your layout, you'll also need to overload the
+Depending on the complexity of your layout, you'll also need to override the
 "EditForm" template (e.g. `MyCMSController_EditForm.ss`), e.g. to implement
 a tabbed form which only scrolls the main tab areas, while keeping the buttons at the bottom of the frame.
 This requires manual assignment of the template to your form instance, see [CMSMain::getEditForm()](api:SilverStripe\CMS\Controllers\CMSMain::getEditForm()) for details.
 
 Often its useful to have a "tools" panel in between the menu and your content,
 usually occupied by a search form or navigational helper.
-In this case, you can either overload the full base template as described above.
+In this case, you can either override the full base template as described above.
 To avoid duplicating all this template code, you can also use the special [LeftAndMain::Tools()](api:SilverStripe\Admin\LeftAndMain::Tools()) and
 [LeftAndMain::EditFormTools()](api:SilverStripe\Admin\LeftAndMain::EditFormTools()) methods available in `LeftAndMain`.
 These placeholders are populated by auto-detected templates,

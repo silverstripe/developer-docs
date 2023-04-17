@@ -22,9 +22,10 @@ The Silverstripe CMS framework already places certain indexes for you by default
 - The `ClassName` column if your model inherits from `DataObject`
 - All relationships defined in the model have indexes for their `has_one` entity (for `many_many` relationships 
 this index is present on the associative entity).
+- All fields used in `default_sort` configuration
 
 ## Defining an index
-Indexes are represented on a `DataObject` through the `DataObject::$indexes` array which maps index names to a 
+Indexes are represented on a `DataObject` through the `DataObject.indexes` configuration property which maps index names to a 
 descriptor. There are several supported notations:
 
 ```php
@@ -72,11 +73,6 @@ class MyTestObject extends DataObject
 }
 ```
 
-[alert]
-Please note that if you have previously used the removed `value` key to define an index's contents, Silverstripe CMS will
-now throw an error. Use `columns` instead.
-[/alert]
-
 ## Complex/Composite Indexes
 For complex queries it may be necessary to define a complex or composite index on the supporting object. To create a 
 composite index, define the fields in the index order as a comma separated list. 
@@ -95,9 +91,6 @@ other columns. If this is indexed, smaller and reasonably unique it might be fas
 ## Index Creation/Destruction
 Indexes are generated and removed automatically during a `dev/build`. Caution if you're working with large tables and 
 modify an index as the next `dev/build` will `DROP` the index, and then `ADD` it. 
-
-Note that `default_sort` fields automatically become database indexes as this provides significant performance
-benefits.
 
 ## API Documentation
 

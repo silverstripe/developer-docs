@@ -321,7 +321,7 @@ public function getCMSFields()
 
 ## Extending extensions {#extendingextensions}
 
-Extension classes can be overloaded using the Injector, if you want to modify the way that an extension in one of
+Extension classes can be overridden using the Injector, if you want to modify the way that an extension in one of
 your modules works:
 
 ```yaml

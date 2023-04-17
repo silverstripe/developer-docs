@@ -57,7 +57,7 @@ any content written to the cache in the _draft_ reading mode isn’t accidentall
 Please read the [versioned cache segmentation](#versioned-cache-segmentation) section for more information.
 [/alert]
 
-Cache objects are instantiated through a [CacheFactory](SilverStripe\Core\Cache\CacheFactory),
+Cache objects are instantiated through a [CacheFactory](api:SilverStripe\Core\Cache\CacheFactory),
 which determines which cache adapter is used (see "Adapters" below for details).
 This factory allows us you to globally define an adapter for all cache instances.  
 

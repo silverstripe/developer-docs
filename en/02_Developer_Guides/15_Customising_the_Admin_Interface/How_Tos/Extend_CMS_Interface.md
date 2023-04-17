@@ -18,7 +18,7 @@ simple checkbox.
 For a deeper introduction to the inner workings of the CMS, please refer to our
 guide on [CMS Architecture](/developer_guides/customising_the_admin_interface/cms_architecture).
 
-## Overload a CMS template
+## Override a CMS template
 
 If you place a template with an identical name into your application template
 directory (usually `app/templates/`), it'll take priority over the built-in

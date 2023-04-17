@@ -8,10 +8,10 @@ summary: Add versioning to your database content through the Versioned extension
 Database content in Silverstripe CMS can be "staged" before its publication, as well as track all changes through the
 lifetime of a database record.
 
-It is most commonly applied to pages in the CMS (the `SiteTree` class). Draft content edited in the CMS can be different
-from published content shown to your website visitors.
+Versioning in Silverstripe CMS is handled through the [`Versioned`](api:SilverStripe\Versioned\Versioned) extension class. As an [`DataExtension`](api:SilverStripe/ORM/DataExtension) it is possible to be applied to any [`DataObject`](api:SilverStripe\ORM\DataObject) subclass. The extension class will automatically update read and write operations performed via the ORM because it implements the [`augmentSQL()`](api:SilverStripe/ORM/DataExtension::augmentSql()) extension hook method.
 
-Versioning in Silverstripe CMS is handled through the [Versioned](api:SilverStripe\Versioned\Versioned) class. As a [DataExtension](api:SilverStripe\ORM\DataExtension) it is possible to be applied to any [DataObject](api:SilverStripe\ORM\DataObject) subclass. The extension class will automatically update read and write operations done via the ORM via the `augmentSQL` database hook.
+The `Versioned` extension is applied to pages in the CMS (the [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) class) - along with some other core `DataObject` models such as files - by default. Draft content edited in the CMS can be different
+from published content shown to your website visitors.
 
 [notice]
 There are two complementary modules that improve content editor experience around "owned" nested objects (e.g. elemental blocks).
@@ -24,26 +24,33 @@ You can check them out on github:
 The first one adds extra metadata to versions about object parents at the moment of version creation.
 The second module extends CMS History UI adding control over nested objects.
 
-![](../../_images/snapshot-admin.png)
-
-*Example screenshot from versioned-snapshot-admin*
+Here is an example screenshot from `silverstripe/versioned-snapshot-admin`:
+![a screenshot of the versioned-snapshot-admin module's "history" interface showing version history of data relations](../../_images/snapshot-admin.png)
 [/notice]
 
 ## Understanding versioning concepts
 
-This section discusses how Silverstripe CMS implements versioning and related high level concepts without digging into technical details.
+This section discusses how Silverstripe CMS implements versioning and related high level concepts without digging into technical details. For the technical part, skip to [Implementing a versioned DataObject](#implementing-a-versioned-dataobject) below.
 
 ### Stages
 
-In most cases, you'll want to have one polished version of a `Page` visible to the general public while your editors might be working off a draft version. Silverstripe CMS handles this through the concept of _stage_.
+In most cases, you'll want to have one polished version of a `Page` visible to the general public while your editors might be making additional changes on a draft version. Silverstripe CMS handles this through the concept of _stages_.
 
-By default, adding the `Versioned` extension to a DataObject will create 2 stages:
-* "Stage" for tracking draft content
-* "Live" for tracking content publicly visible.
+By default, adding the `Versioned` extension to a `DataObject` will create 2 stages:
+* "Stage" for tracking draft content (aka "draft")
+* "Live" for tracking content publicly visible (aka "published").
+
+[info]
+Yes, the draft stage is called the "Stage" stage. In this documentation we'll try to differentiate between the stage named "Stage" and the concept of a stage by giving the named stage a capital S and putting quotes around it - but in some cases we'll just refer to it as "draft" because often that's the more intuitive way to think of it.
+[/info]
 
 Publishing a versioned `DataObject` is equivalent to copying the version from the "Stage" stage to the "Live" stage.
 
-You can disable stages if your DataObject doesn't require a published version. This will allow you to keep track of all changes that have been applied to a DataObject and who made them.
+If you just want to keep track of the version history of a model's records but you don't need to separate draft and published versions, you can apply the `Versioned` extension to your `DataObject` without stages. This will allow you to keep track of all changes that have been applied to a DataObject and who made them.
+
+[hint]
+The `Versioned` class has a `Versioned::DRAFT` constant to refer to the "Stage" stage, and `Versioned::LIVE` to refer to the "Live" stage. It can be useful to use those in your PHP code when you need to refer to the stages.
+[/hint]
 
 ### Ownership and relations between DataObjects {#ownership}
 
@@ -53,29 +60,30 @@ are published along with it. Unless this is done, site content can appear incorr
 For instance, a page which has a list of rotating banners will require them to be published
 whenever that page is.
 
-This is solved through the Ownership API, which declares a two-way relationship between
-objects along database relations. This relationship is similar to many_many/belongs_many_many
-and has_one/has_many, however it relies on a pre-existing relationship to function.
+This is solved through the Ownership API, which declares that one model "owns" the models in a given existing relationship for the purposes of versioning and staging.
+It relies on a pre-existing relationship to function.
 
 #### Cascade publishing
 
 If an object "owns" other objects, you'll usually want to publish the child objects when the parent object gets published. If those child objects themselves own other objects, you'll want the grand-children to be published along with the parent.
 
-Silverstripe CMS makes this possible by using the concept of _cascade publishing_. You can choose to recursively publish an object. When an object is recursively published – either through a user action or through code – all other records it owns that implement the Versioned extension will automatically be published. Publication will also cascade to children of children and so on.
+Silverstripe CMS makes this possible by using the concept of _cascade publishing_. You can choose to recursively publish an object. When an object is recursively published – either through a user action or through code – all other records it owns that implement the `Versioned` extension will automatically be published. Publication will also cascade to children of children and so on.
 
 A non-recursive publish operation is also available if you want to publish a new version of a object without cascade publishing all its children.
 
 [alert]
 Declaring ownership implies publish permissions on owned objects.
-Built-in controllers using cascading publish operations check canPublish()
+Built-in controllers using cascading publish operations check `canPublish()`
 on the owner, but not on the owned object.
 [/alert]
 
 #### Ownership of unversioned object
 
-An unversioned object can own other versioned object. An unversioned object can be configured to automatically publish children versioned objects on save.
+An unversioned object can own a versioned object.
 
-An unversioned object can also be owned by a versioned object. This can be used to recursively publish _children-of-children_ object without requiring the intermediate relationship to go through a versioned object. This behavior can be helpful if you wish to group multiple versioned objects together.
+An unversioned object can be configured to automatically publish owned versioned objects on save.
+
+An unversioned object can also be owned by a versioned object. This can be used to recursively publish _children-of-children_ objects without requiring the intermediate relationship to go through a versioned object. This behavior can be helpful if you wish to group multiple versioned objects together.
 
 #### Ownership through media insertion in content
 
@@ -89,10 +97,10 @@ Sometimes, multiple pages or records may be related in organic ways that cannot 
 
 For example, your editors may be about to launch a new contest through their website. They've drafted a page to promote the contest, another page with the rules and conditions, a registration page for users to sign up, some promotional images, new sponsor records, etc. All this content needs to become visible simultaneously.
 
-Changes to many objects can be grouped together using the [`ChangeSet`](api:SilverStripe\Versioning\ChangeSet) object. In the CMS, editors can manage `ChangeSet`s through the "Campaign" section, if the `silverstripe/campaign-admin` module is installed). By grouping a series of content changes together as cohesive unit, content editors can bulk publish an entire body of content all at once, which affords them much more power and control over interdependent content types.
+Changes to many objects can be grouped together using the [`ChangeSet`](api:SilverStripe\Versioning\ChangeSet) object. In the CMS, editors can manage `ChangeSet`s through the "Campaign" section (if the `silverstripe/campaign-admin` module is installed). By grouping a series of content changes together as a cohesive unit, content editors can bulk publish an entire body of content all at once, which affords them much more power and control over interdependent content types.
 
 Records can be added to a changeset in the CMS by using the "Add to campaign" button
-that is available on the edit forms of all pages and files. Programmatically, this is done by creating a `SilverStripe\Versioned\ChangeSet` object and invoking its `addObject(DataObject $record)` method.
+that is available on the edit forms of all pages and files. Programmatically, this is done by creating a `ChangeSet` object and invoking its [`addObject(DataObject $record)`](api:SilverStripe\Versioning\ChangeSet::addObject()) method.
 
 [info]
 DataObjects can be added to more than one ChangeSet.
@@ -112,12 +120,15 @@ It is possible for an item to be included both implicitly and explicitly in a ch
 
 ## Implementing a versioned DataObject
 
-This section explains how to take a regular DataObject and add versioning to it.
+This section explains how to take a regular `DataObject` and add versioning to it.
 
 ### Applying the Versioned extension to your DataObject
 
+Adding versioning to a `DataObject` model is as easy as applying the [`Versioned`](api:SilverStripe\Versioned\Versioned) extension to it, either via PHP or YAML configuration. This will apply versioning _with stages_, meaning you can have a draft and a published version of your records.
+
 ```php
-<?php
+namespace App\Model;
+
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\ORM\DataObject;
 
@@ -129,12 +140,17 @@ class MyStagedModel extends DataObject
 }
 ```
 
+```yaml
+App\Model\MyStagedModel:
+  extensions:
+    - SilverStripe\Versioned\Versioned
+```
+
 Alternatively, staging can be disabled, so that only versioned changes are tracked for your model. This
 can be specified by using the `.versioned` service variant that provides only version history, and no
 staging.
 
 ```php
-<?php
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
 
@@ -146,8 +162,14 @@ class VersionedModel extends DataObject
 }
 ```
 
+```yaml
+App\Model\MyStagedModel:
+  extensions:
+    - SilverStripe\Versioned\Versioned.versioned
+```
+
 [notice]
-The extension is automatically applied to the `SiteTree` class. For more information on extensions see
+The `Versioned` extension is automatically applied to the `SiteTree` class. For more information on extensions see
 [extending](/developer_guides/extending/) and the [Configuration](/developer_guides/configuration/) documentation.
 [/notice]
 
@@ -156,16 +178,199 @@ Versioning only works if you are adding the extension to the base class. That is
 of `DataObject`. Adding this extension to children of the base class will have unpredictable behaviour.
 [/warning]
 
+#### Versioning a many_many relation
+
+If you want to track versions of `many_many` relationships, you can do so using the ["through" setting](/developer_guides/model/relations/#many-many-through) on a `many_many` definition. This setting allows you to specify a custom `DataObject` through which to map the `many_many` relation. As such, it is possible to version your `many_many` data by versioning a "through" `DataObject`. For example:
+
+```php
+use SilverStripe\ORM\DataObject;
+
+class Product extends DataObject
+{
+    private static $db = [
+        'Title' => 'Varchar(100)',
+        'Price' => 'Currency',
+    ];
+
+    private static $many_many = [
+        'Categories' => [
+            'through' => 'ProductCategory',
+            'from' => 'Product',
+            'to' => 'Category',
+        ],
+    ];
+}
+```
+
+```php
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Versioned\Versioned;
+
+class ProductCategory extends DataObject
+{
+    private static $db = [
+        'SortOrder' => 'Int',
+    ];
+
+    private static $has_one = [
+        'Product' => Product::class,
+        'Category'=> Category::class,
+    ];
+
+    private static $extensions = [
+        Versioned::class,
+    ];
+}
+```
+
+### Controlling permissions to versioned DataObjects {#permissions}
+
+By default, `Versioned` will come out of the box with security extensions which restrict the visibility of objects in Draft ("Stage") or Archive viewing mode.
+
+[alert]
+As is standard practice, user code should always invoke `canView()` on any object before
+rendering it. DataLists do not filter on `canView()` automatically, so this must be
+done via user code. This can be achieved either by wrapping `<% if $canView %>;` in
+your template, or by implementing your visibility check in PHP.
+[/alert]
+
+#### Version specific _can_ methods {#permission-methods}
+
+Versioned DataObjects get additional permission check methods to verify what operation a `Member` is allowed to perform:
+
+* [`canPublish()`](api:SilverStripe\Versioned\Versioned::canPublish()): Determines if a given `Member` is allowed to publish the record
+* [`canUnpublish()`](api:SilverStripe\Versioned\Versioned::canUnpublish()) Determines if a given `Member` is allowed to unpublish the record
+* [`canArchive()`](api:SilverStripe\Versioned\Versioned::canArchive()) Determines if a given `Member` is allowed to archive the record
+* [`canViewStage()`](api:SilverStripe\Versioned\Versioned::canViewStage()) Determines if a given `Member` can view the latest version of this record on a specific stage. Beware that this is _not_ invoked when calling `canView()`. If you want to affect the result of regular `canView()` checks, implement `canViewVersioned()` instead.
+* [`canViewVersioned()`](api:SilverStripe\Versioned\Versioned::canViewVersioned()) Provides additional can view checks for versioned records. This is called by `canView()` and should not be called directly.
+
+These methods accept an optional `Member` argument. If not provided, they will assume you want to check the permission against the current `Member`. When performing a version operation on behalf of a `Member`, you'll probably want to use these methods to confirm they are authorised.
+
+[warning]
+Like with the base `can` permission checks, these checks are _not_ performed automatically when invoking the associated action via PHP. i.e. if you call `publishSingle()` on a record in your own code, Silverstripe CMS will _not_ check if the currently authenticated user has permission to publish the record. Make sure you are performing permission checks by calling these `can` methods before invoking the associated actions.
+[/warning]
+
+```php
+$record = MyRecord::get()->byID(99);
+if ($record->canPublish()) {
+    $record->publishRecursive();
+}
+```
+
+The `canViewStage()` method can be used to check if a Member can view a specific stage of a record. It should be invoked by user code to check if a record is visible in the given stage.
+
+```php
+use SilverStripe\Versioned\Versioned;
+
+// Check if `$member` can view the Live version of $record.
+$record->canViewStage(Versioned::LIVE, $member);
+
+// Check if `$member` can view the "Stage" version of $record.
+$record->canViewStage(Versioned::DRAFT, $member);
+
+// Both parameters are optional. This is equivalent to calling the method with Versioned::LIVE and
+// Security::getCurrentUser();
+$record->canViewStage();
+```
+
+For the `can` methods that all `DataObject` models have, see [Model-Level Permissions](permissions).
+
+#### Customising permissions for a versioned DataObject
+
+`Versioned` record visibility can be customised in one of the following ways by editing your code:
+
+ * Override the `canViewVersioned()` method in your `DataObject` subclass. Make sure that this returns `true`, or
+   `false` if the user is not allowed to view this object in the current viewing mode.
+ * Override the `canView()` method to override the method visibility completely, regardless of what stage is being viewed.
+
+E.g.
+
+```php
+use SilverStripe\Versioned\Versioned;
+use SilverStripe\Security\Permission;
+use SilverStripe\ORM\DataObject;
+
+class MyObject extends DataObject
+{
+    private static $extensions = [
+        Versioned::class,
+    ];
+
+    public function canViewVersioned($member = null)
+    {
+        // Check if site is live
+        $mode = $this->getSourceQueryParam('Versioned.mode');
+        $stage = $this->getSourceQueryParam('Versioned.stage');
+        if ($mode === 'stage' && $stage === Versioned::LIVE) {
+            return true;
+        }
+
+        // Only admins can view non-live records
+        return Permission::checkMember($member, 'ADMIN');
+    }
+}
+```
+
+If you want to control permissions of an object in an extension, you can also implement
+one of the below extension hook methods in your `Extension` subclass:
+
+ * `canView()` to update the record's `canView` permissions
+ * `canViewNonLive()` to update the visibility of this object only in non-live mode specifically.
+
+Note that unlike `canViewVersioned()`, the `canViewNonLive()` method will
+only be invoked if the object is in a non-published state.
+
+E.g.
+
+```php
+use SilverStripe\Security\Permission;
+use SilverStripe\ORM\DataExtension;
+
+class MyObjectExtension extends DataExtension
+{
+    public function canViewNonLive($member = null)
+    {
+        if (!Permission::check($member, 'DRAFT_STATUS')) {
+            return false;
+        }
+
+        // Defer to the result of the main canViewVersioned() permission checks
+        return null;
+    }
+}
+```
+
+If none of the above checks are overridden, visibility will be determined by the
+permissions in the `non_live_permissions` configuration on the target model class.
+
+E.g.
+
+```php
+use SilverStripe\Versioned\Versioned;
+use SilverStripe\ORM\DataObject;
+
+class MyObject extends DataObject
+{
+    private static $extensions = [
+        Versioned::class,
+    ];
+
+    private static $non_live_permissions = [
+        'ADMIN',
+    ];
+}
+```
+
+Versioned applies no additional permissions to `canEdit` or `canCreate`, and such
+these permissions should be implemented as per standard unversioned DataObjects.
 
 ### Defining ownership between related versioned DataObjects
 
-You can use the `owns` static private property on a DataObject to specify which relationships are ownership relationships. The `owns` property should be defined on the _owner_ DataObject.
+You can use the `owns` configuration property on a `DataObject` to specify which relationships are ownership relationships. The `owns` property should be defined on the _owner_ `DataObject`.
 
 For example, let's say you have a `MyPage` page type that displays banners containing an image. Each `MyPage` owns many `Banners`, which in turn owns an `Image`.
 
-
 ```php
-<?php
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Assets\Image;
 use SilverStripe\ORM\DataObject;
@@ -176,28 +381,51 @@ class MyPage extends Page
     private static $has_many = [
         'Banners' => Banner::class
     ];
+
     private static $owns = [
         'Banners'
     ];
 }
+
 class Banner extends DataObject
 {
     private static $extensions = [
         Versioned::class
     ];
+
     private static $has_one = [
         'Parent' => MyPage::class,
         'Image' => Image::class,
     ];
+
     private static $owns = [
         'Image'
     ];
 }
 ```
 
-If a `MyPage` gets published, all its related `Banners` will also be published, which will cause all `Image` DataObjects to be published.
+If a `MyPage` record gets published, all its related `Banners` will also be published, which will cause all related `Image` records to be published.
 
-Note that ownership cannot be used with polymorphic relations. E.g. has_one to non-type specific `DataObject`.
+Note that this relationship is for publishing specifically, and is not affected by unpublishing or archiving the owner record. To ensure unpublish and archive actions affect owned records, `cascade_deletes` must be used. See [Cascading deletions](relations/#cascading-deletions) for more information about this interaction.
+
+```php
+class MyPage extends Page
+{
+    private static $has_many = [
+        'Banners' => Banner::class
+    ];
+
+    private static $cascade_deletes = [
+        'Banners'
+    ];
+}
+```
+
+You must declare both `owns` and `cascade_deletes` if you want all publish, unpublish, and archive actions to carry through.
+
+[info]
+Note that ownership cannot be used with polymorphic relations (i.e. `has_one` to non-type specific `DataObject`).
+[/info]
 
 #### Unversioned DataObject ownership
 
@@ -205,12 +433,11 @@ Ownership can be used with non-versioned DataObjects, as the necessary functiona
 by the versioned object through the [`RecursivePublishable`](api:SilverStripe\Versioned\RecursivePublishable) extension which is
 applied to all objects.
 
-However, it is important to note that even when saving un-versioned objects, it is necessary to use
-`->publishRecursive()` to trigger a recursive publish.
+However, it is important to note that even when saving un-versioned objects, it is necessary to explicitly call
+`publishRecursive()` to trigger a recursive publish.
 
 The `owns` feature works the same regardless of whether these objects are versioned, so you can use any combination of
-versioned or unversioned dataobjects. You only need to call `->publishRecursive()` on the top most
-object in the tree.
+versioned or unversioned dataobjects. You only need to call `publishRecursive()` on the specific record for which you are saving changes.
 
 #### DataObject ownership with custom relations
 
@@ -226,7 +453,6 @@ that can be used to traverse between each, and then by ensuring you configure bo
 E.g.
 
 ```php
-<?php
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\ORM\DataObject;
 
@@ -235,22 +461,27 @@ class MyParent extends DataObject
     private static $extensions = [
         Versioned::class
     ];
+
     private static $owns = [
         'ChildObjects'
     ];
+
     public function ChildObjects()
     {
         return MyChild::get();
     }
 }
+
 class MyChild extends DataObject
 {
     private static $extensions = [
         Versioned::class
     ];
+
     private static $owned_by = [
         'Parent'
     ];
+
     public function Parent()
     {
         return MyParent::get()->first();
@@ -258,51 +489,64 @@ class MyChild extends DataObject
 }
 ```
 
-#### DataObject ownership in HTML content
+#### Image ownership in HTML content via the WYSIWYG editor {#wysiwyg-image-ownership}
 
 If you are using [`DBHTMLText`](api:SilverStripe\ORM\FieldType\DBHTMLText) or [`DBHTMLVarchar`](api:SilverStripe\ORM\FieldType\DBHTMLVarchar) fields in your `DataObject::$db` definitions,
 it's likely that your authors can insert images into those fields via the CMS interface.
+
 These images are usually considered to be owned by the `DataObject`, and should be published alongside it.
+
 The ownership relationship is tracked through an `[image]` [shortcode](/developer-guides/extending/shortcodes),
 which is automatically transformed into an `<img>` tag at render time. In addition to storing the image path,
-the shortcode references the database identifier of the `Image` object.
+the shortcode references the database identifier of the `Image` object and ensures it's published appropriately.
 
 ### Controlling how CMS users interact with versioned DataObjects
 
-By default the versioned module includes a `VersionedGridfieldDetailForm` that extends gridfield with versioning support for DataObjects.
+The versioned module includes a [`VersionedGridfieldDetailForm`](api:SilverStripe\Versioned\VersionedGridFieldDetailForm) extension which provides versioning support for DataObjects edited in a [`GridField`](api:SilverStripe\Forms\GridField\GridField). This is applied to [`GridFieldDetailForm`](api:SilverStripe\Forms\GridField\GridFieldDetailForm) by default.
 
-You can disable this on a per-model basis using the following code:
+You can disable this on a per-model basis by setting the `versioned_gridfield_extensions` configuration property to false. You can do that in PHP:
 
 ```php
-<?php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
-class MyBanner extends DataObject {
+
+class MyBanner extends DataObject
+{
     private static $versioned_gridfield_extensions = false;
 }
 ```
 
-This can be manually enabled for a single `GridField`, alternatively, by setting the following option on the
-`GridFieldDetailForm` component.
+Or via yaml configuration:
+
+```yaml
+App\Model\MyBanner:
+  versioned_gridfield_extensions: false
+```
+
+This can also be manually enabled for a single `GridField` by passing the `VersionedGridFieldItemRequest` class name to the [`setItemRequestClass()`](api:SilverStripe\Forms\GridField\GridFieldConfig::setItemRequestClass()) method on a [`GridFieldConfig`](api:SilverStripe\Forms\GridField\GridFieldConfig) instance.
 
 ```php
-<?php
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Versioned\VersionedGridFieldItemRequest;
+
 class Page extends SiteTree
 {
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
+
         $config = GridFieldConfig_RelationEditor::create();
         $config
             ->getComponentByType(GridFieldDetailForm::class)
             ->setItemRequestClass(VersionedGridFieldItemRequest::class);
         $gridField = GridField::create('Items', 'Items', $this->Items(), $config);
         $fields->addFieldToTab('Root.Items', $gridField);
+
         return $fields;
     }
 }
@@ -312,90 +556,126 @@ class Page extends SiteTree
 
 This section deals with specialised operations that can be performed on versioned DataObjects.
 
-### Reading latest versions by stage
+### Reading versions by stage
 
-By default, all records are retrieved from the "Draft" stage (so the `MyRecord` table in our example). You can
-explicitly request a certain stage through various getters on the `Versioned` class.
+By default, all records are retrieved from the "Stage" (aka draft) stage, which pulls from the same database table you would be using if there were no stages or versions at all.
+
+You can explicitly request a specific stage through various static methods on the `Versioned` class.
 
 ```php
-<?php
 use SilverStripe\Versioned\Versioned;
 
 // Fetching multiple records
-$stageRecords = Versioned::get_by_stage('MyRecord', Versioned::DRAFT);
-$liveRecords = Versioned::get_by_stage('MyRecord', Versioned::LIVE);
+$stageRecords = Versioned::get_by_stage(MyRecord::class, Versioned::DRAFT);
+$liveRecords = Versioned::get_by_stage(MyRecord::class, Versioned::LIVE);
 
 // Fetching a single record
-$stageRecord = Versioned::get_by_stage('MyRecord', Versioned::DRAFT)->byID(99);
-$liveRecord = Versioned::get_by_stage('MyRecord', Versioned::LIVE)->byID(99);
+$stageRecord = Versioned::get_by_stage(MyRecord::class, Versioned::DRAFT)->byID(99);
+$liveRecord = Versioned::get_by_stage(MyRecord::class, Versioned::LIVE)->byID(99);
 ```
+
+You can also use [`Versioned::withVersionedMode()`](api:SilverStripe\Versioned\Versioned::withVersionedMode()) in conjunction with [`Versioned::set_stage()`](api:SilverStripe\Versioned\Versioned::set_stage()) to temporarily change what stage is being used for queries.
+
+```php
+use SilverStripe\Versioned\Versioned;
+
+$liveRecords = Versioned::withVersionedMode(function() {
+    // Set the reading mode we want - note we don't have to set it back afterwards, that will be done for us automatically.
+    Versioned::set_stage(Versioned::LIVE);
+    // Return the result so we can assign it to the `$liveRecords` variable.
+    return MyRecord::get();
+});
+```
+
+You can use `Versioned::set_stage()` outside of calls to `Versioned::withVersionedMode()`, but you _must_ remember to set the reading mode back to what is was before you started, or you risk unexpected side effects. The only exception to this is if you explicitly want the rest of the request execution to be performed with a given reading mode (e.g. if a given action on a controller must be explicitly completely executed ina  given stage).
+
+```php
+use SilverStripe\Versioned\Versioned;
+
+// Temporarily store the current mode before setting the mode we want to use
+$oldMode = Versioned::get_reading_mode();
+Versioned::set_stage(Versioned::LIVE);
+
+$liveRecords = MyRecord::get();
+
+// Don't forget to set the mode back afterwards!
+Versioned::set_reading_mode($oldMode);
+```
+
+[info]
+`Versioned::set_stage(Versioned::LIVE)` is the equivalent of `Versioned::set_reading_mode('Stage.' . Versioned::LIVE)`.
+[/info]
+
+[hint]
+Note that in the above examples we just return the `DataList` without executing it. We don't need to execute the query, the reading mode is attached to the `DataList` as soon as it's created via the [`augmentDataQueryCreation()`](api:SilverStripe\Versioned\Versioned::augmentDataQueryCreation()) extension hook implementation.
+[/hint]
 
 ### Reading historical versions
 
 The above commands will just retrieve the latest version of its respective stage for you, but not older versions stored
-in the `<class>_versions` tables.
+in the `<originalTable>_versions` tables  (see [How versioned DataObjects are tracked in the database](#versions-in-the-database)).
 
 ```php
-<?php
 use SilverStripe\Versioned\Versioned;
-$historicalRecord = Versioned::get_version('MyRecord', <record-id>, <version-id>);
+
+// the "id" parameter is the ID of the record, and the "version" parameter is the specific version number to fetch
+$historicalRecord = Versioned::get_version(MyRecord::class, id: 5, version: 6);
 ```
 
+The record is retrieved as a regular `DataObject` record with its values set to the values it had when that version was originally saved.
+
 [alert]
-The record is retrieved as a `DataObject`, but saving back modifications via `write()` will create a new version,
-rather than modifying the existing one.
+Saving modifications via `write()` will create a _new_ version, rather than modifying the existing one.
 [/alert]
 
-In order to get a list of all versions for a specific record, we need to generate specialized [Versioned_Version](api:SilverStripe\Versioned\Versioned_Version)
+In order to get a list of all versions for a specific record, we get the record version data as specialized [`Versioned_Version`](api:SilverStripe\Versioned\Versioned_Version)
 objects, which expose the same database information as a `DataObject`, but also include information about when and how
 a record was published.
 
 ```php
-<?php
 $record = MyRecord::get()->byID(99); // stage doesn't matter here
 $versions = $record->allVersions();
-echo $versions->First()->Version; // instance of Versioned_Version
+$version = $versions->First()->Version; // instance of Versioned_Version
 ```
 
 ### Writing changes to a versioned DataObject
 
-When you call the `write()` method on a versioned DataObject, this will transparently create a new version of this DataObject in the _Stage_ stage.
+When you call the `write()` method on a versioned `DataObject` record, this will transparently create a new version of the record in the "Stage" stage.
 
-To write your changes without creating new version, call [writeWithoutVersion()](api:SilverStripe\Versioned\Versioned::writeWithoutVersion()) instead.
+To write your changes without creating new version, call [`writeWithoutVersion()`](api:SilverStripe\Versioned\Versioned::writeWithoutVersion()) instead.
+
 ```php
-<?php
-
 $record = MyRecord::get()->byID(99); // This will retrieve the latest draft version of record ID 99.
 echo $record->Version; // This will output the version ID. Let's assume it's 13.
 
 
 $record->Title = "Foo Bar";
 $record->write(); // This will create a new version of record ID 99.
-echo $record->Version; // Will output 14.
+echo $record->Version; // Will output 14 (because a new version was created).
 
 $record->Title = "FOO BAR";
-$record->writeWithoutVersion();
-echo $record->Version; // Will still output 14.
+$record->writeWithoutVersion(); // This will edit the latest version of record ID 99.
+echo $record->Version; // Will still output 14 (because we edited the existing version).
 ```
 
-Similarly, an "unpublish" operation does the reverse, and removes a record from a specific stage.
+An "unpublish" operation _removes_ that record from the "Live" stage.
 
 ### Publishing a versioned DataObject
 
-There's two main methods used to publish a versioned DataObject:
-* `publishSingle()` publishes this record to live from the draft
-* `publishRecursive()` publishes this record, and any dependent objects this record may refer to.
+There's two main methods used to publish a versioned `DataObject` record:
 
-In most regular cases, you'll want to use `publishRecursive`.
+* [`publishSingle()`](api:SilverStripe\Versioned\Versioned::writeWithoutVersion()) publishes _only_ this record to live from the draft
+* [`publishRecursive()`](api:SilverStripe\Versioned\RecursivePublishable::publishRecursive()) publishes this record and any dependent objects this record may refer to.
 
-`publishRecursive` can be called on unversioned DataObject as well if they implement the `RecursivePublishable` extension.
+In most regular cases, you'll want to use `publishRecursive()`.
+
+`publishRecursive()` can be called on unversioned `DataObject` as well, since the `RecursivePublishable` extension is applied to `DataObject` by default.
 
 ```php
-<?php
 $record = MyRecord::get()->byID(99);
 $record->MyField = 'changed';
 
-// Will create a new revision in Stage. Editors will be able to see this revision, but not visitors to the website.
+// Will create a new revision in "Stage". Editors will be able to see this revision, but unauthenticated visitors to the website will not see it.
 $record->write();
 
 // This will publish the changes so they are visible publicly.
@@ -404,56 +684,58 @@ $record->publishRecursive();
 
 ### Unpublishing and archiving a versioned DataObject
 
-Archiving and unpublishing are similar operations, both will prevent a versioned DataObject from being publicly accessible. Archiving will also remove the record from the _Stage_ stage; other ORMs may refer to this concept as _soft-deletion_.
+Archiving and unpublishing are similar operations, both will prevent a versioned DataObject from being publicly accessible. Archiving will also remove the record from the "Stage" stage; other ORMs may refer to this concept as _soft-deletion_.
 
-Use `doUnpublish()` to unpublish an item. Simply call `delete()` to archive an item. The SilverStripe ORM doesn't allow you to _hard-delete_ versioned DataObjects.
+Both of these operations create a new entry in the relevant `_Versions` table with the `WasDeleted` column set to `1` (see [How versioned DataObjects are tracked in the database](#versions-in-the-database)).
+
+Call [`doUnpublish()`](api:SilverStripe\Versioned\Versioned::doUnpublish()) to unpublish an item. Either call [`doArchive()`](api:SilverStripe\Versioned\Versioned::doArchive()) or simply call `delete()` to archive an item. The SilverStripe ORM doesn't allow you to _hard-delete_ versioned DataObjects. Instead they are simply removed from all stages, but all version history is retained. This allowed you to restore archived records later on, if you want to.
 
 ```php
-<?php
 $record = MyRecord::get()->byID(99);
 
 // Visitors to the site won't be able to see this record anymore, but editors can still edit it and re-publish it.
 $record->doUnpublish();
 
 
-// Editors won't be able to see this record anymore, but it will still be in the database and may be restore.
+// Editors won't be able to see this record anymore, but its version history will still be in the database and may be restored.
 $record->delete();
+// or
+$record->doArchive();
 ```
 
 Note that `doUnpublish()` and `doArchive()` do not work recursively. If you wish to unpublish or archive dependants records, you have to do it manually.
 
 ### Rolling back to an older version
-Rolling back allows you to return a DataObject to a previous state. You can rollback a single DataObject using the `rollbackSingle()` method. You can also rollback all dependent records using the `rollbackRecursive()` method.
+
+Rolling back allows you to return a record to a previous state. You can rollback a single record using the [`rollbackSingle()`](api:SilverStripe\Versioned\Versioned::rollbackSingle()) method. You can also rollback all dependent records using the [`rollbackRecursive()`](api:SilverStripe\Versioned\Versioned::rollbackRecursive()) method.
 
 Both `rollbackSingle()` and `rollbackRecursive()` expect a single argument, which may be a specific version ID or a stage name.
 
 ```php
-<?php
 use SilverStripe\Versioned\Versioned;
 
 $record = MyRecord::get()->byID(99);
 
-// This will take the current live version of a record - and all it's associated DataObjects - and copy it to the
+// This will take the current live version of a record - and all it's associated (owned) records - and copy it to the
 // "Stage" stage. This is equivalent to dismissing any draft work and reverting to what was last published.
 $record->rollbackRecursive(Versioned::LIVE);
 
-// This will restore a specific version of the record to "Stage" without affecting any owned DataObjects.
+// This will restore a specific version of the record to "Stage" without affecting any owned records.
 $versionToRestore = 10;
 $record->rollbackSingle($versionToRestore);
 
-// The live version of the record won't be affected unless you publish you're rolled back record.
+// The live version of the record won't be affected unless you publish the record again.
 $record->publishRecursive();
 ```
 
-Note that internally, rolling back a DataObject creates a new version identical of the restored version ID. For example,
-if the live version of `$record` is 10 and the staged version is 13, rolling back to live will create a version 14 in _Stage_ that is identical to version 10.
+Note that internally, rolling back a record creates a new version identical to the restored version. For example,
+if the live version of `$record` is #10 and the staged version is #13, rolling back to live will create a version #14 in "Stage" that is identical to version #10.
 
 ### Restoring an archived version
 
-Archived records can still be retrieved using `get_including_deleted()`. This will include archived as well as current records. You can use the `isArchived()` method to determine if a record is archived or not. Calling the `write()` method on an archived record will restore it to the _Stage_ stage.
+Archived records can still be retrieved using `get_including_deleted()`. This will include archived as well as current records. You can use the `isArchived()` method to determine if a record is archived or not. Calling the `write()` method on an archived record will restore it to the "Stage" stage.
 
 ```php
-<?php
 use MyRecord;
 use SilverStripe\Versioned\Versioned;
 
@@ -466,6 +748,8 @@ foreach ($allMyRecords as $myRecord)
     }
 }
 ```
+
+If you already know a specific record was archived and want to restor it, you can also use the `rollbackRecursive()` and `rollbackSingle()` methods - but you still have to get a hold of the archived record using `get_including_deleted()` first.
 
 ## Interacting with ChangeSet
 
@@ -503,72 +787,26 @@ Each item in the ChangeSet stores `VersionBefore` and `VersionAfter` fields. As 
 
 These topics are targeted towards more advanced use cases that might require developers to extend the behavior of versioning.
 
-### How versioned DataObjects are tracked in the database
+### How versioned DataObjects are tracked in the database {#versions-in-the-database}
 
-Depending on whether staging is enabled, one or more new tables will be created for your records. `<class>_versions`
+Depending on whether staging is enabled, one or more new tables will be created for your records. `<originalTable>_Versions`
 is always created to track historic versions for your model. If staging is enabled this will also create a new
-`<class>_Live` table once you've rebuilt the database.
+`<originalTable>_Live` table once you've rebuilt the database.
 
 [notice]
-Note that the "Stage" naming has a special meaning here, it will leave the original table name unchanged, rather than
-adding a suffix.
+Note that the "Stage" stage doesn't get its own table - instead, the original table represents the "Stage" stage.
 [/notice]
 
- * `MyRecord` table: Contains staged data
- * `MyRecord_Live` table: Contains live data
- * `MyRecord_Versions` table: Contains a version history (new record created on each save)
+ * `MyRecord` table: Contains "Stage" (draft) data
+ * `MyRecord_Live` table: Contains "Live" (published) data
+ * `MyRecord_Versions` table: Contains a version history (new row created on each save, publish, unpublish, archive, and rollback event)
 
-Similarly, any subclass you create on top of a versioned base will trigger the creation of additional tables, which are
+Similarly, any subclass you create of a versioned `DataObject` will trigger the creation of additional tables, which are
 automatically joined as required:
 
- * `MyRecordSubclass` table: Contains only staged data for subclass columns
- * `MyRecordSubclass_Live` table: Contains only live data for subclass columns
+ * `MyRecordSubclass` table: Contains only "Stage" (draft) data for subclass columns
+ * `MyRecordSubclass_Live` table: Contains only "Live" (published) data for subclass columns
  * `MyRecordSubclass_Versions` table: Contains only version history for subclass columns
-
-Because `many_many` relationships create their own sets of records on their own tables, representing content changes to a DataObject, they can therefore be versioned. This is done using the ["through" setting](https://docs.silverstripe.org/en/4/developer_guides/model/relations/#many-many-through-relationship-joined-on-a-separate-dataobject) on a `many_many` definition. This setting allows you to specify a custom DataObject through which to map the `many_many` relation. As such, it is possible to version your `many_many` data by versioning a "through" dataobject. For example:
-
-```php
-<?php
-use SilverStripe\ORM\DataObject;
-
-class Product extends DataObject
-{
-    private static $db = [
-        'Title' => 'Varchar(100)',
-        'Price' => 'Currency',
-    ];
-
-    private static $many_many = [
-        'Categories' => [
-            'through' => 'ProductCategory',
-            'from' => 'Product',
-            'to' => 'Category',
-        ],
-    ];
-}
-```
-
-```php
-<?php
-use SilverStripe\ORM\DataObject;
-use SilverStripe\Versioned\Versioned;
-
-class ProductCategory extends DataObject
-{
-    private static $db = [
-        'SortOrder' => 'Int',
-    ];
-
-    private static $has_one = [
-        'Product' => Product::class,
-        'Category'=> Category::class,
-    ];
-
-    private static $extensions = [
-        Versioned::class,
-    ];
-}
-```
 
 ### Writing custom queries to retrieve versioned DataObject
 
@@ -578,15 +816,14 @@ multiple tables across an inherited table scheme (see [Versioned::augmentSQL()](
 Example: Get the first 10 live records, filtered by creation date:
 
 ```php
-<?php
 use SilverStripe\Versioned\Versioned;
-$records = Versioned::get_by_stage('MyRecord', Versioned::LIVE)->limit(10)->sort('Created', 'ASC');
+$records = Versioned::get_by_stage(MyRecord::class, Versioned::LIVE)->limit(10)->sort('Created', 'ASC');
 ```
 
 ### Controlling what stage is displayed in the front end
 
-The current stage for each request is determined by `VersionedHTTPMiddleware` before any controllers initialize, through
-`Versioned::choose_site_stage()`. It checks for a `stage` GET parameter, so you can force a draft stage by appending
+The current stage for each request is determined by [`VersionedHTTPMiddleware`](api:SilverStripe\Versioned\VersionedHTTPMiddleware) before any controllers initialize, through
+[`Versioned::choose_site_stage()`](api:SilverStripe\Versioned\Versioned::choose_site_stage()). It checks for a `stage` GET parameter, so you can force a "Stage" (draft) stage by appending
 `?stage=Stage` to your request.
 
 The current stage setting is not "sticky" in the session.
@@ -596,20 +833,26 @@ this is automatically the case for `DataObject` links, controller links and form
 Note that this behaviour applies for unversioned objects as well, since the views
 these are presented in might still contain dependent objects that are versioned.
 
-You can opt for a session base stage setting through the `Versioned.use_session` setting.
-Warning: This can lead to leaking of unpublished information, if a live URL is viewed in draft mode,
+You can opt for a session base stage setting through the `Versioned.use_session` configuration property.
+
+[warning]
+Settin `Versioned.use_session` can lead to leaking unpublished information, e.g. if a live URL is viewed in draft mode,
 and the result is cached due to aggressive cache settings (not varying on cookie values).
+[/warning]
 
 *app/src/MyObject.php*
 
 ```php
-<?php
+namespace App\Model;
+
+use App\Controller\MyObjectController;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Control\Controller;
 
-class MyObject extends DataObject {
+class MyObject extends DataObject
+{
 
     private static $extensions = [
         Versioned::class
@@ -617,12 +860,13 @@ class MyObject extends DataObject {
 
     public function Link()
     {
-        return Injector::inst()->get(MyObjectController::class)->Link($this->ID);
+        return $this->getController()->Link($this->ID);
     }
 
     public function CustomLink()
     {
         $link = Controller::join_links('custom-route', $this->ID, '?rand=' . rand());
+        // Calls VersionedStateExtension->updateLink() which ensures the correct stage is included if necessary
         $this->extend('updateLink', $link); // updates $link by reference
         return $link;
     }
@@ -630,7 +874,12 @@ class MyObject extends DataObject {
     public function LiveLink()
     {
         // Force live link even when current view is in draft mode
-        return Controller::join_links(Injector::inst()->get(MyObjectController::class)->Link($this->ID), '?stage=Live');
+        return Controller::join_links($this->getController()->Link($this->ID), '?stage=Live');
+    }
+
+    public function getController()
+    {
+        return Injector::inst()->get(MyObjectController::class);
     }
 }
 ```
@@ -638,7 +887,9 @@ class MyObject extends DataObject {
 *app/src/MyObjectController.php*
 
 ```php
-<?php
+namespace App\Controller;
+
+use App\Model\MyObject;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 
@@ -663,7 +914,7 @@ class MyObjectController extends Controller
         $link = Controller::join_links('my-objects', $action);
 
         // Allow Versioned and other extension to update $link by reference.
-        // Calls VersionedStateExtension->updateLink().
+        // Calls VersionedStateExtension->updateLink() which ensures the correct stage is included if necessary
         $this->extend('updateLink', $link, $action);
 
         return $link;
@@ -676,7 +927,7 @@ class MyObjectController extends Controller
 ```yaml
 SilverStripe\Control\Director:
   rules:
-    'my-objects/$ID': 'MyObjectController'
+    'my-objects/$ID': 'App\Controller\MyObjectController'
 ```
 
 [alert]
@@ -685,144 +936,6 @@ authenticated to view it. As with any other controller logic, please use `DataOb
 permissions, and avoid exposing unpublished content to your users.
 [/alert]
 
-### Controlling permissions to versioned DataObjects
-
-By default, `Versioned` will come out of the box with security extensions which restrict the visibility of objects in Draft (stage) or Archive viewing mode.
-
-[alert]
-As is standard practice, user code should always invoke `canView()` on any object before
-rendering it. DataLists do not filter on `canView()` automatically, so this must be
-done via user code. This can be achieved either by wrapping `<% if $canView %>;` in
-your template, or by implementing your visibility check in PHP.
-[/alert]
-
-#### Version specific _can_ methods
-
-Versioned DataObjects get additional permission check methods to verify what operation a Member is allowed to perform:
-* `canPublish()`
-* `canUnpublish()`
-* `canArchive()`
-* `canViewVersioned()`.
-
-These methods accept an optional Member argument. If not provided, they will assume you want to check the permission against the current Member. When performing a version operation on behalf of a Member, you'll probably want to use these methods to confirm they are authorised,
-
-```php
-<?php
-use SilverStripe\Security\Security;
-
-$record = MyRecord::get()->byID(99);
-$member = Security::getCurrentUser();
-if ($record->canPublish($member)) {
-    $record->publishRecursive();
-}
-
-```
-
-There's also a `canViewStage()` method which can be used to check if a Member can access a specific stage.
-
-```php
-<?php
-use SilverStripe\Versioned\Versioned;
-
-// Check if `$member` can view the Live version of $record.
-$record->canViewStage(Versioned::LIVE, $member);
-
-// Check if `$member` can view the Stage version of $record.
-$record->canViewStage(Versioned::DRAFT, $member);
-
-// Both parameters are optional. This is equivalent to calling the method with Versioned::LIVE and
-// Security::getCurrentUser();
-$record->canViewStage();
-```
-
-#### Customising permissions for a versioned DataObject
-
-`Versioned` object visibility can be customised in one of the following ways by editing your user code:
-
- * Override the `canViewVersioned` method in your code. Make sure that this returns true or
-   false if the user is not allowed to view this object in the current viewing mode.
- * Override the `canView` method to override the method visibility completely.
-
-E.g.
-
-```php
-<?php
-use SilverStripe\Versioned\Versioned;
-use SilverStripe\Security\Permission;
-use SilverStripe\ORM\DataObject;
-
-class MyObject extends DataObject
-{
-    private static $extensions = [
-        Versioned::class,
-    ];
-
-    public function canViewVersioned($member = null)
-    {
-        // Check if site is live
-        $mode = $this->getSourceQueryParam("Versioned.mode");
-        $stage = $this->getSourceQueryParam("Versioned.stage");
-        if ($mode === 'Stage' && $stage === 'Live') {
-            return true;
-        }
-
-        // Only admins can view non-live objects
-        return Permission::checkMember($member, 'ADMIN');
-    }
-}
-```
-
-If you want to control permissions of an object in an extension, you can also use
-one of the below extension points in your `DataExtension` subclass:
-
- * `canView` to update the visibility of the object's `canView`
- * `canViewNonLive` to update the visibility of this object only in non-live mode.
-
-Note that unlike canViewVersioned, the canViewNonLive method will
-only be invoked if the object is in a non-published state.
-
-E.g.
-
-```php
-<?php
-use SilverStripe\Security\Permission;
-use SilverStripe\ORM\DataExtension;
-
-class MyObjectExtension extends DataExtension
-{
-    public function canViewNonLive($member = null)
-    {
-        return Permission::check($member, 'DRAFT_STATUS');
-    }
-}
-```
-
-If none of the above checks are overridden, visibility will be determined by the
-permissions in the `TargetObject.non_live_permissions` config.
-
-E.g.
-
-```php
-<?php
-use SilverStripe\Versioned\Versioned;
-use SilverStripe\ORM\DataObject;
-
-class MyObject extends DataObject
-{
-    private static $extensions = [
-        Versioned::class,
-    ];
-    private static $non_live_permissions = ['ADMIN'];
-}
-```
-
-Versioned applies no additional permissions to `canEdit` or `canCreate`, and such
-these permissions should be implemented as per standard unversioned DataObjects.
-
-### Page Specific Operations
-
-Since the `Versioned` extension is primarily used for page objects, the underlying `SiteTree` class has some additional helpers.
-
 #### Templates Variables
 
 In templates, you don't need to worry about this distinction. The `$Content` variable contains the published content by
@@ -830,11 +943,20 @@ default, and previews draft content only if explicitly requested (e.g. by the "p
 to force a specific stage, we recommend the `Controller->init()` method for this purpose, for example:
 
 **app/src/MyController.php**
+
 ```php
-public function init()
+namespace App\Controller;
+
+use SilverStripe\Control\Controller;
+use SilverStripe\Versioned\Versioned;
+
+class MyController extends Controller
 {
-    parent::init();
-    Versioned::set_stage(Versioned::DRAFT);
+    public function init()
+    {
+        parent::init();
+        Versioned::set_stage(Versioned::DRAFT);
+    }
 }
 ```
 
@@ -842,20 +964,21 @@ public function init()
 
 Silverstripe CMS will usually call these low level methods for you. However if you have specialised needs, you may call them directly.
 
-To move a saved version from one stage to another, call [writeToStage(stage)](api:SilverStripe\Versioned\Versioned::writeToStage()) on the object. This is used internally to publish DataObjects.
+To move a saved version from one stage to another, call [`writeToStage()`](api:SilverStripe\Versioned\Versioned::writeToStage()) on the object, passing in the stage you want to write to. This is used internally to publish DataObjects.
 
-`copyVersionToStage($versionID, $stage)` allows you to restore a previous version to a specific stage. This is used internally when performing a rollback.
+[`copyVersionToStage()`](api:SilverStripe\Versioned\Versioned::copyVersionToStage()) allows you to copy a specific version to a specific stage. This is used internally when performing a rollback, copying whichever version you're rolling back to into the "Stage" stage.
 
 The current stage is stored as global state on the `Versioned` object. It is usually modified by controllers, e.g. when a preview is initialized. But it can also be set and reset temporarily to force a specific operation to run on a certain stage.
 
 ```php
-<?php
 $origMode = Versioned::get_reading_mode(); // save current mode
 $obj = MyRecord::getComplexObjectRetrieval(); // returns 'Live' records
 Versioned::set_reading_mode(Versioned::DRAFT); // temporarily overwrite mode
 $obj = MyRecord::getComplexObjectRetrieval(); // returns 'Stage' records
 Versioned::set_reading_mode($origMode); // reset current mode
 ```
+
+See [Reading versions by stage](#reading-versions-by-stage) for more about using reading modes.
 
 ## Using the history viewer
 
