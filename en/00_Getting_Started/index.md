@@ -6,7 +6,7 @@ icon: rocket
 
 ## Server Requirements
 
-Silverstripe requires PHP 7.1 or newer. It runs on many webservers and databases, but is most commonly served using
+Silverstripe requires PHP 7.4 or newer. It runs on many webservers and databases, but is most commonly served using
 Apache and MySQL/MariaDB.
 
 If you are setting up your own environment, you'll need to consider a few configuration settings such as URL rewriting

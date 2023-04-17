@@ -12,7 +12,7 @@ the server to update templates, website logic, and perform upgrades or maintenan
 
 ## PHP
 
-* PHP >=7.4
+* PHP >=7.4, <=8.1
 * PHP extensions: `ctype`, `dom`, `fileinfo`, `hash`, `intl`, `mbstring`, `session`, `simplexml`, `tokenizer`, `xml`
 * PHP configuration: `memory_limit` with at least `48M`
 * PHP extension for image manipulation: Either `gd` or `imagick`
@@ -300,7 +300,6 @@ table may be of use:
 
 | Silverstripe CMS Version | PHP Version | More information |
 | ------------------------ | ----------- | ---------------- |
-| 5.0 +                    | 8.1 - 8.2   | Unreleased       |
 | 4.11 +                   | 7.4 - 8.1   | [changelog](/Changelogs/4.11.0#php81) |
 | 4.10                     | 7.3 - 8.0   | [changelog](/Changelogs/4.10.0#phpeol) |
 | 4.5 - 4.9                | 7.1 - 7.4   | [blog post](https://www.silverstripe.org/blog/our-plan-for-ending-php-5-6-support-in-silverstripe-4/) |

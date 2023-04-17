@@ -57,14 +57,9 @@ The format for that situation is always the same, with increasing complexity if 
 nesting `GridField`s. For the below examples it is assumed you aren't using nested
 `GridField`s.
 
-If your object belongs to a page, you can safely get away with returning `null` or an empty
-string, as it won't be used. You can choose to return a valid edit link, but because of the
-complexity of the way these links are generated it would be difficult to do so in a general,
-reusable way.
-
 [hint]
 As of Silverstripe CMS 4.12.0, you can
-[use CMSEditLinkExtension](/developer_guides/model/data_model_and_orm/managing_records#getting-an-edit-link).
+[use CMSEditLinkExtension](/developer_guides/model/managing_records#getting-an-edit-link).
 
 ```php
 namespace MyProject\Model;
@@ -149,7 +144,9 @@ class Product extends DataObject implements CMSPreviewable
 
     public function PreviewLink($action = null)
     {
-        return null;
+        $link = null;
+        $this->extend('updatePreviewLink', $link, $action);
+        return $link;
     }
 
     public function CMSEditLink()
@@ -186,11 +183,13 @@ public function PreviewLink($action = null)
         return null;
     }
     $admin = MyAdmin::singleton();
-    return Controller::join_links(
+    $link = Controller::join_links(
         $admin->getLinkForModelClass(static::class),
         'cmsPreview',
         $this->ID
     );
+    $this->extend('updatePreviewLink', $link, $action);
+    return $link;
 }
 ```
 
@@ -203,11 +202,13 @@ public function PreviewLink($action = null)
         return null;
     }
     $admin = MyAdmin::singleton();
-    return Controller::join_links(
+    $link = Controller::join_links(
         $admin->Link(str_replace('\\', '-', $this->ClassName)),
         'cmsPreview',
         $this->ID
     );
+    $this->extend('updatePreviewLink', $link, $action);
+    return $link;
 }
 ```
 
@@ -272,6 +273,7 @@ themes whilst rendering out the preview content.
 
 ```php
 use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\View\Requirements;
 use SilverStripe\View\SSViewer;
 
 class MyAdmin extends ModelAdmin 
@@ -300,18 +302,65 @@ class MyAdmin extends ModelAdmin
             return $this->httpError(404);
         }
 
-        // Include use of a front-end theme temporarily.
+        // Include use of a front-end theme temporarily and clear any CMS requirements.
         $oldThemes = SSViewer::get_themes();
         SSViewer::set_themes(SSViewer::config()->get('themes'));
+        Requirements::clear();
+
+        // Render the preview content
+        // Note that if your template is an include and relies on global css or js, you should
+        // use the Requirements API here to include those
         $preview = $obj->forTemplate();
 
-        // Make sure to set back to backend themes.
+        // Make sure to set back to backend themes and restore CMS requirements.
         SSViewer::set_themes($oldThemes);
+        Requirements::restore();
 
         return $preview;
     }
 }
 ```
+
+[hint]
+If the css or js you have added via [the Requirements API](/developer_guides/templates/requirements/#php-requirements-api)
+aren't coming through, you may need to add `<head>` and `<body>` tags to the markup. It may not be appropriate to do this in
+your main template (you don't want two `<body>` tags on a page that includes the template), so you might need a preview wrapper
+template, like so:
+
+**themes/mytheme/templates/PreviewBase.ss**
+```ss
+<!DOCTYPE html>
+<html>
+<%-- head tag is needed for css to be injected --%>
+<head></head>
+<%-- body tag is needed for javascript to be injected --%>
+<body>
+    <%-- these two divs are just here to comply with styling from the simple theme, replace them with your own theme markup --%>
+    <div class="main"><div class="inner typography line">
+        $Preview
+    </div></div>
+</body>
+</html>
+```
+
+**in app/src/Admin/MyAdmin.php**
+```php
+public function cmsPreview()
+{
+    //... ommitted for brevity
+
+    // Add in global css/js that would normally be added in the page base template (as needed)
+    Requirements::themedCSS('client/dist/css/style.css');
+    // Render the preview content
+    $preview = $obj->forTemplate();
+    // Wrap preview in proper html, body, etc so Requirements are used
+    $preview = SSViewer::create('PreviewBase')->process(ArrayData::create(['Preview' => $preview]));
+
+    //... ommitted for brevity
+}
+```
+
+[/hint]
 
 ### Enabling preview for DataObjects which belong to a page
 If the `DataObject` you want to preview belongs to a specific page, for example
@@ -401,7 +450,9 @@ class Product extends DataObject implements CMSPreviewable
 
     public function PreviewLink($action = null)
     {
-        return null;
+        $link = null;
+        $this->extend('updatePreviewLink', $link, $action);
+        return $link;
     }
 
     public function CMSEditLink()
@@ -435,17 +486,18 @@ page's frontend URL.
 ```php
 public function PreviewLink($action = null)
 {
+    $link = null
     if (!$this->isInDB()) {
-        return null;
+        return $link;
     }
     // Let the page know it's being previewed from a DataObject edit form (see Page::MetaTags())
     $action = $action . '?DataObjectPreview=' . mt_rand();
     // Scroll the preview straight to where the object sits on the page.
     if ($page = $this->ProductPage()) {
         $link = $page->Link($action) . '#' . $this->getAnchor();
-        return $link;
     }
-    return null;
+    $this->extend('updatePreviewLink', $link, $action);
+    return $link;
 }
 ```
 
