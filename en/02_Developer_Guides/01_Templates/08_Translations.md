@@ -26,9 +26,7 @@ string wherever `{name}` appears in that string. In this case, it is assigning a
 
 `site="Foobar.com"` assigns a literal value to another named placeholder, `site`.
 
-## Related
-
-* [i18n](../i18n)
+See the [i18n documentation](../i18n) (particularly the [Usage in Template Files](../i18n#usage-in-template-files) section) for more information.
 
 ## API Documentation
 

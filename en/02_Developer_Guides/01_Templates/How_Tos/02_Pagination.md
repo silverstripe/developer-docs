@@ -5,9 +5,9 @@ summary: Break up the result of a database query into multiple pages
 
 # How to Create a Paginated List
 
-In order to create a paginated list, create a method on your controller that first creates a `SS_List` that contains
-all your record, then wraps it in a [PaginatedList](api:SilverStripe\ORM\PaginatedList) object. The `PaginatedList` object should also passed the 
-[HTTPRequest](api:SilverStripe\Control\HTTPRequest) object so it can read the current page information from the "?start=" GET var.
+In order to create a paginated list, create a method on your controller that first creates a [`SS_List`](api:SilverStripe\ORM\SS_List) that contains
+all your records (e.g. [via the ORM](/developer_guides/model/data_model_and_orm/#querying-data)), then wraps it in a [`PaginatedList`](api:SilverStripe\ORM\PaginatedList) object. The `PaginatedList` constructor should also be passed the
+[`HTTPRequest`](api:SilverStripe\Control\HTTPRequest) object so it can read the current page information from the `?start=` GET var.
 
 The `PaginatedList` will automatically set up query limits and read the request for information.
 
@@ -86,13 +86,15 @@ when using custom lists.
 ```php
 use SilverStripe\ORM\PaginatedList;
 
-$myPreLimitedList = Page::get()->limit(10);
+$myPreLimitedList = Page::get()->limit(10, $somePageOffset);
 
 $pages = new PaginatedList($myPreLimitedList, $this->getRequest());
 $pages->setLimitItems(false);
 ```
 
-## Setting the limit of items
+## Setting the number of items per page
+
+By default, the `PaginatedList` includes 10 items per page. You can change this by calling [`setPageLength()`](api:SilverStripe\ORM\PaginatedList::setPageLength()).
 
 ```php
 $pages = new PaginatedList(Page::get(), $this->getRequest());
@@ -104,10 +106,13 @@ list.
 
 ## Template Variables {#variables}
 
+Note that this is not an exhaustive list, as any public method on `PaginatedList` can be called from the template.
+
 | Variable | Description |
 | -------- | -------- |
 | `$MoreThanOnePage` | Returns true when we have a multi-page list, restricted with a limit. |
-| `$NextLink`, `$PrevLink` | They will return blank if there's no appropriate page to go to, so `$PrevLink` will return blank when you're on the first page. |
+| `$NextLink`, `$PrevLink` | Link to the next and previous page of items respectively. They will return blank if there's no appropriate page to go to, so `$PrevLink` will return blank when you're on the first page. |
+| `$FirstLink`, `$LastLink` | Link to the fist and last page of items respectively. |
 | `$CurrentPage` | Current page iterated on. |
 | `$TotalPages` | The actual (limited) list of records, use in an inner loop |
 | `$FirstItem` | Returns the number of the first item being displayed on the current page. This is useful for things like “displaying 10-20”. | 
@@ -126,5 +131,3 @@ list.
 ## API Documentation
 
 * [PaginatedList](api:SilverStripe\ORM\PaginatedList)
-
-

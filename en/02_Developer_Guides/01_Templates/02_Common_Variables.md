@@ -17,37 +17,35 @@ scope, and you can specify additional static methods to be available globally in
 [notice]
 Want a quick way of knowing what scope you're in? Try putting `$ClassName` in your template. You should see a string
 such as `Page` of the object that's in scope. The methods you can call on that object then are any functions, database
-properties or relations on the `Page` class, `PageController` class as well as anything from their subclasses **or**
-extensions.
+properties or relations on the `Page` class, `PageController` class as well as anything from their parent classes and
+any extensions applied to them.
 [/notice]
 
 Outputting these variables is only the start, if you want to format or manipulate them before adding them to the template
 have a read of the [Formatting, Modifying and Casting Variables](casting) documentation.
 
 [alert]
-Some of the following only apply when you have the `CMS` module installed. If you're using the `Framework` alone, this
+Some of the following only apply when you have the `silverstripe/cms` module installed. If you're using `silverstripe/framework` alone, this
 functionality may not be included.
 [/alert]
-
 
 ## Base Tag
 
 ```ss
 <head>
     <% base_tag %>
-
-    ..
+    ...
 </head>
 ```
 
 The `<% base_tag %>` placeholder is replaced with the HTML base element. Relative links within a document (such as
-`<img src="someimage.jpg" alt="">` ) will become relative to the URI specified in the base tag. This ensures the
+`<img src="someimage.jpg" alt="">`) will become relative to the URI specified in the base tag. This ensures the
 browser knows where to locate your site’s images and css files.
 
 It renders in the template as `<base href="https://www.example.com" /><!--[if lte IE 6]></base><![endif]-->`
 
 [alert]
-A `<% base_tag %>;` is nearly always required or assumed by Silverstripe CMS to exist.
+A `<% base_tag %>` is nearly always required or assumed by Silverstripe CMS to exist.
 [/alert]
 
 ## CurrentMember
@@ -83,14 +81,14 @@ If `MenuTitle` is left blank by the CMS author, it'll just default to the value 
 $Content
 ```
 
-It returns the database content of the `Content` property. With the CMS Module, this is the value of the WYSIWYG editor
+It returns the database content of the `Content` field. For subclasses of [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree), this is the value of the WYSIWYG editor
 but it is also the standard for any object that has a body of content to output.
 
 [info]
 Please note that this database content can be "versioned", meaning that draft content edited in the CMS can be different
 from published content shown to your website visitors. In templates, you don't need to worry about this distinction.
 
-The `$Content` variable contains the published content by default,and only preview draft content if explicitly
+The `$Content` variable contains the published content by default, and only preview draft content if explicitly
 requested (e.g. by the "preview" feature in the CMS) (see the [versioning documentation](/../model/versioning) for
 more details).
 [/info]
@@ -98,20 +96,21 @@ more details).
 ### SiteConfig: Global settings
 
 [notice]
-`SiteConfig` is a module that is bundled with the CMS. If you wish to include `SiteConfig` in your framework only
-web pages, you'll need to install it via composer.
+`SiteConfig` comes from an optional module that is bundled with the CMS. If you wish to include `SiteConfig` in your framework only
+web pages, you'll need to install `silverstripe/siteconfig` via composer.
 [/notice]
 
 ```ss
 $SiteConfig.Title
 ```
 
-The [SiteConfig](../configuration/siteconfig) object allows content authors to modify global data in the CMS, rather
+The [`SiteConfig`](api:SilverStripe\SiteConfig\SiteConfig) object allows content authors to modify global data in the CMS, rather
 than PHP code. By default, this includes a Website title and a Tagline.
 
 `SiteConfig` can be extended to hold other data, for example a logo image which can be uploaded through the CMS or
 global content such as your footer content.
 
+See the [`SiteConfig` documentation](../configuration/siteconfig) for more information.
 
 ## Meta Tags
 
@@ -192,16 +191,16 @@ public function MetaComponents()
 <a href="$Link">..</a>
 ```
 
-All objects that could be accessible in Silverstripe CMS should define a `Link` method and an `AbsoluteLink` method. Link
-returns the relative URL for the object and `AbsoluteLink` outputs your full website address along with the relative
+All objects that could be accessible via a public HTTP request in Silverstripe CMS should define a `Link()` method and an `AbsoluteLink()` method. `Link()`
+returns the relative URL for the object and `AbsoluteLink()` outputs your full website address along with the relative
 link.
 
 ```ss
+<%-- prints /about-us/offices/ --%>
 $Link
-<!-- returns /about-us/offices/ -->
 
+<%-- prints https://www.example.com/about-us/offices/ --%>
 $AbsoluteLink
-<!-- returns https://www.example.com/about-us/offices/ -->
 ```
 
 ### Linking Modes
@@ -232,38 +231,40 @@ An example for checking for `current` or `section` is as follows:
 
 **Additional Utility Method**
 
- * `$InSection(page-url)`: This if block will pass if we're currently on the page-url page or one of its children.
+ * `$InSection('<page-url-segment>')`: This if block will pass if we're currently on the page-url page or one of its children.
 
 ```ss
-<% if $InSection(about-us) %>
+<% if $InSection('about-us') %>
     <p>You are viewing the about us section</p>
 <% end_if %>
 ```
 
 ### URLSegment
 
-This returns the part of the URL of the page you're currently on. For example on the `/about-us/offices/` web page the
-`URLSegment` will be `offices`. `URLSegment` cannot be used to generate a link since it does not output the full path.
+This returns the part of the URL segment of the page you're currently on. For example on the `/about-us/offices/` web page the
+`URLSegment` will be `offices`. `URLSegment` cannot easily be used to generate a link since it does not output the full path.
 It can be used within templates to generate anchors or other CSS classes.
 
 ```ss
+<%-- prints <div id="section-offices"> --%>
 <div id="section-$URLSegment">
-
+    ...
 </div>
-
-<!-- returns <div id="section-offices"> -->
 ```
 
 ## ClassName
 
-Returns the class of the current object in [scope](syntax#scope) such as `Page` or `HomePage`. The `$ClassName` can be
-handy for a number of uses. A common use case is to add to your `<body>` tag to influence CSS styles and JavaScript
+Returns the class of the current object in scope ([see "scope" in the syntax section](syntax#scope)) such as `Page` or `App\PageTypes\HomePage`.
+
+Note that this is backed by [`DBClassName`](SilverStripe\ORM\FieldType\DBClassName), which means you can use the methods in that class from your template
+(e.g. `$ClassName.ShortName` prints `HomePage` instead of `App\PageTypes\HomePage`).
+
+The `$ClassName` can be handy for a number of uses. A common use case is to add to your `<body>` tag to influence CSS styles and JavaScript
 behavior based on the page type used:
 
 ```ss
-<body class="$ClassName">
-
-<!-- returns <body class="HomePage">, <body class="BlogPage"> -->
+<%-- prints <body class="HomePage">, or <body class="BlogPage"> --%>
+<body class="$ClassName.ShortName">
 ```
 
 ## Children Loops
@@ -277,6 +278,8 @@ behavior based on the page type used:
 Will loop over all Children records of the current object context. Children are pages that sit under the current page in
 the `CMS` or a custom list of data. This originates in the `Versioned` extension's `getChildren` method.
 
+See [Looping Over Lists](syntax#looping-over-lists) for more information about looping in general.
+
 [alert]
 For doing your website navigation most likely you'll want to use `$Menu` since its independent of the page
 context.
@@ -285,7 +288,7 @@ context.
 ### ChildrenOf
 
 ```ss
-<% loop $ChildrenOf(<my-page-url>) %>
+<% loop $ChildrenOf('<my-page-url-segment>') %>
 
 <% end_loop %>
 ```
@@ -294,6 +297,11 @@ Will create a list of the children of the given page, as identified by its `URLS
 because it's not dependent on the context of the current page. For example, it would allow you to list all staff member
 pages underneath a "staff" holder on any page, regardless if its on the top level or elsewhere.
 
+[notice]
+Because variables can't be passed into method calls from templates (see [Syntax > Variables](syntax#variables)), this requires you to hardcode some value into your template - which means you must ensure you have a page added in the CMS with that url-segment
+
+A more robust way to implement this would be to add a helper method in your page controller which dynamically gets the appropriate page (if one exists).
+[/notice]
 
 ### AllChildren
 
@@ -324,12 +332,12 @@ Pages with the `ShowInMenus` property set to `false` will be filtered out.
 ## Access to a specific Page
 
 ```ss
-<% with $Page(my-page) %>
+<% with $Page('my-page') %>
     $Title
 <% end_with %>
 ```
 
-Page will return a single page from site, looking it up by URL.
+Page will return a single page from site, looking it up by its `URLSegment` field.
 
 ## Access to Parent and Level Pages
 
@@ -342,7 +350,7 @@ Page will return a single page from site, looking it up by URL.
 ```
 
 Will return a page in the current path, at the level specified by the numbers. It is based on the current page context,
-looking back through its parent pages. `Level(1)` being the top most level.
+looking back through its parent pages. `$Level(1)` being the top most level.
 
 For example, imagine you're on the "bob marley" page, which is three levels in: "about us > staff > bob marley".
 
@@ -353,18 +361,18 @@ For example, imagine you're on the "bob marley" page, which is three levels in: 
 ### Parent
 
 ```ss
-<!-- given we're on 'Bob Marley' in "about us > staff > bob marley" -->
+<%-- given we're on 'Bob Marley' in "about us > staff > bob marley" --%>
 
+<%-- prints 'staff' --%>
 $Parent.Title
-<!-- returns 'staff' -->
 
+<%-- prints 'about us' --%>
 $Parent.Parent.Title
-<!-- returns 'about us' -->
 ```
 
 ## Navigating Scope
 
-See [scope](syntax#scope).
+See [scope](syntax#scope) in the syntax documentation.
 
 ## Breadcrumbs
 
@@ -378,21 +386,15 @@ While you can achieve breadcrumbs through the `$Level(<level>)` control manually
 $Breadcrumbs
 ```
 
+There are a number of arguments that can be passed in - see [SiteTree::Breadcrumbs()](api:SilverStripe\CMS\Model\SiteTree::Breadcrumbs()) for usage.
+
 By default, it uses the template defined in `templates/BreadcrumbsTemplate.ss`
 of the `silverstripe/cms` module.
 
-```ss
-<% if $Pages %>
-    <% loop $Pages %>
-        <% if $Last %>$Title.XML<% else %><a href="$Link">$MenuTitle.XML</a> &raquo;<% end_if %>
-    <% end_loop %>
-<% end_if %>
-```
-
 [info]
 To customise the markup that `$Breadcrumbs` generates, copy `templates/BreadcrumbsTemplate.ss`
- from the `silverstripe/cms` module to your theme (e.g.: `themes/you-theme/templates/BreadcrumbsTemplate.ss`).
- Modify the newly copied template and flush your Silverstripe CMS cache.
+from the `silverstripe/cms` module to your theme (e.g.: `themes/your-theme/templates/BreadcrumbsTemplate.ss`).
+Modify the newly copied template and flush your Silverstripe CMS cache.
 [/info]
 
 ## SilverStripeNavigator
@@ -414,7 +416,8 @@ $Form
 ```
 
 A page will normally contain some content and potentially a form of some kind. For example, the log-in page has a
-Silverstripe CMS log-in form. If you are on such a page, the `$Form` variable will contain the HTML content of the form.
+Silverstripe CMS log-in form. If you are on such a page (and the form is implements in a method called `Form()` or `getForm()`),
+the `$Form` variable will contain the HTML content of the form.
 Placing it just below `$Content` is a good default.
 
 
