@@ -837,7 +837,7 @@ Here's what that might look like:
 ```js
 import React from 'react';
 import gql from 'graphql-tag';
-import { graphql } from 'react-apollo';
+import { graphql } from '@apollo/client/react/hoc';
 
 export const Notes = ({ notes }) => (
   <ul className="notes">
@@ -869,8 +869,6 @@ export default NotesWithData;
 
 Next we'll expose the model to GraphQL:
 
-#### Graphql v4 {#build-extensible-gql-app-v4}
-
 **my-module/_config/graphql.yml**
 
 ```yml
@@ -896,29 +894,6 @@ App\Model\Note:
         paginateList: false
 ```
 
-#### Graphql v3 {#build-extensible-gql-app-v3}
-
-**my-module/_config/graphql.yml**
-
-```yml
-# Tell graphql how to scaffold the schema for our model inside the admin schema
-SilverStripe\GraphQL\Manager:
-  schemas:
-    admin:
-      scaffolding:
-        types:
-          App\Model\Note:
-            fields: [ id, content ]
-            operations:
-              read:
-                paginate: false
-                name: readNotes
-```
-
-[hint]
-Graphql v3 uses the first part of the model class's namespace in the default query/mutation names - so with a class `App\Model\Note` the default read operation would be `readAppNotes`. The example above has overridden the default name to keep it consistent with Graphql v4 behaviour.
-[/hint]
-
 #### Define the app
 
 Finally, let's make a really simple container app which holds a header and our notes component, and inject it into the DOM using entwine.
@@ -941,9 +916,9 @@ export default App;
 
 **my-module/client/src/index.js**
 ```js
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import React from 'react';
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from '@apollo/client';
 import Injector from 'lib/Injector';
 import App from './App';
 
@@ -952,21 +927,32 @@ Injector.ready(() => {
 
   // Assuming you've got some element in the DOM with the id "notes-app"
   $('#notes-app').entwine({
+    ReactRoot: null,
+
     onmatch() {
-      ReactDOM.render(
+      const root = createRoot(this[0]);
+      this.setReactRoot(root);
+      root.render(
         <ApolloProvider client={apolloClient} store={store}>
           <App />
-        </ApolloProvider>,
-        this[0]
+        </ApolloProvider>
       )
     },
 
     onunmatch: function() {
-      ReactDOM.unmountComponentAtNode(this[0]);
+      const root = this.getReactRoot();
+      if (root) {
+        root.unmount();
+        this.setReactRoot(null);
+      }
     },
   });
 });
 ```
+
+[info]
+`this[0]` is how we get the underlying DOM element that the jQuery object is wrapping. We can't pass `this` directly into the `createRoot()` function because react doesn't know how to deal with a jQuery object wrapper. See [the jQuery documentation](https://api.jquery.com/Types/#jQuery) for more information about that syntax.
+[/info]
 
 The `silverstripe/admin` module provides `apolloClient` and `store` objects in the global namespace to be shared by other modules. We'll make use of those, and create our own app wrapped in `<ApolloProvider />`.
 
@@ -1161,10 +1147,10 @@ Since almost everything is in `Injector` now, we need to update our mounting log
 **my-module/client/src/index.js**
 
 ```js
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import React from 'react';
 import registerDependencies from './boot/registerDependencies';
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from '@apollo/client';
 import Injector, { provideInjector } from 'lib/Injector';
 import App from './App';
 
@@ -1180,15 +1166,20 @@ Injector.ready(() => {
   const MyAppWithInjector = provideInjector(MyApp);
 
   $('#notes-app').entwine({
+    ReactRoot: null,
+
     onmatch() {
-      ReactDOM.render(
-        <MyAppWithInjector />,
-        this[0]
-      );
+      const root = createRoot(this[0]);
+      this.setReactRoot(root);
+      root.render(<MyAppWithInjector />);
     },
 
     onunmatch: function() {
-      ReactDOM.unmountComponentAtNode(this[0]);
+      const root = this.getReactRoot();
+      if (root) {
+        root.unmount();
+        this.setReactRoot(null);
+      }
     },
   });
 });
@@ -1215,8 +1206,6 @@ App\Model\Note:
     - MyOtherApp\Extension\NoteExtension
 ```
 
-##### Graphql 4 {#applying-extensions-gql-v4}
-
 Remember, this example is in a project which is customising the schema from the previous example, so we still have to tell graphql where to find our schema modifications.
 
 If you're following along, you could declare a different folder than before within the same project so you can see how the schema definitions merge together into a single schema.
@@ -1237,20 +1226,6 @@ SilverStripe\GraphQL\Schema\Schema:
 App\Model\Note:
   fields:
     priority: true
-```
-
-##### Graphql 3 {#applying-extensions-gql-v3}
-
-**app/_config/graphql.yml**
-
-```yml
-SilverStripe\GraphQL\Manager:
-  schemas:
-    admin:
-      scaffolding:
-        types:
-          App\Model\Note:
-            fields: [ priority ]
 ```
 
 #### Creating transforms
@@ -1431,7 +1406,7 @@ const mutation = {
           mutate({
             variables: {
               input: {
-                content, // For graphql v3 this needs to start with a capital letter, i.e. Content: content
+                content,
               }
             }
           });
@@ -1440,7 +1415,7 @@ const mutation = {
     }
   },
   templateName: CREATE,
-  singularName: 'Note', // For graphql v3 this needs to be "AppNote"
+  singularName: 'Note',
   pagination: false,
   fields: [
     'content',
@@ -1451,15 +1426,9 @@ const mutation = {
 export default mutation;
 ```
 
-[notice]
-With graphql v3, the field names in the input object have to start with capital letters, and the input _type_ can't easily be overridden - it's always the first part of your namespace, then the class name, then "CreateInputType". So assuming your model's fully qualified classname is `App\Model\Note`, the input type is `AppNoteCreateInputType`.
-[/notice]
-
 It looks like a lot of code, but if you're familiar with Apollo mutations, this is pretty standard. The supplied `mutate()` function gets mapped to a prop - in this case `onAdd`, which the `AddForm` component is configured to invoke. We've also supplied the `singularName` as well as the template `CREATE` for the `createNote` scaffolded mutation.
 
 And make sure we're exposing the mutation in our graphql schema:
-
-#### Graphql 4 {#extensible-mutations-gql-v4}
 
 **my-module/_graphql/models.yml**
 
@@ -1470,27 +1439,6 @@ App\Model\Note:
     #...
     create: true
 ```
-
-#### Graphql 3 {#extensible-mutations-gql-v3}
-
-**my-module/_config/graphql.yml**
-
-```yml
-SilverStripe\GraphQL\Manager:
-  schemas:
-    admin:
-      scaffolding:
-        types:
-          App\Model\Note:
-            #...
-            operations:
-              #...
-              create: true
-```
-
-[notice]
-Unlike with the read query, the injector isn't able to handle mutations with custom names.
-[/notice]
 
 Lastly, let's just register all this with `Injector`.
 
@@ -1566,7 +1514,7 @@ const transformCreateNote = (manager) => {
         variables: {
           input: {
             // Don't forget to keep the content variable in here!
-            content, // In GraphQL v3 these must both start with capital letters (i.e. `Content: content` and `Priority: priority`)
+            content,
             priority,
           }
         }
