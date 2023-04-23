@@ -116,7 +116,7 @@ Silverstripe core environment variables are listed here, though you're free to d
 | `SS_USE_BASIC_AUTH`| Baseline protection for requests handled by Silverstripe. Usually requires additional security measures for comprehensive protection. See [Environment Types](/developer_guides/debugging/environment_types) for caveats.|
 | `SS_SEND_ALL_EMAILS_TO`| If you define this constant, all emails will be redirected to this address.|
 | `SS_SEND_ALL_EMAILS_FROM`| If you define this constant, all emails will be sent from this address.|
-| `SS_ERROR_LOG` | Relative path to the log file. |
+| `SS_ERROR_LOG` | Relative path to the log file (see [Logging and Error Handling](/developer_guides/debugging/error_handling/#logging-to-a-file)). |
 | `SS_PROTECTED_ASSETS_PATH` | Path to secured assets - defaults to ASSETS_PATH/.protected |
 | `SS_DATABASE_MEMORY` | Used for SQLite3 DBs |
 | `SS_TRUSTED_PROXY_IPS` | IP address or CIDR range to trust proxy headers from. If left blank no proxy headers are trusted. Can be set to 'none' (trust none) or '*' (trust all) |
