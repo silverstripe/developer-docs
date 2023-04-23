@@ -87,7 +87,7 @@ database and discarded at the end of the test.
 
 [notice]
 The `fixture_file` property can be path to a file, or an array of strings pointing to many files. The path must be 
-absolute from your website's root folder.
+absolute from your project root folder.
 [/notice]
 
 The second part of our class is the `testURLGeneration` method. This method is our test. When the test is executed, 

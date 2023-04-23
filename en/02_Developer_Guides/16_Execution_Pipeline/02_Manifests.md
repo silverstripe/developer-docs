@@ -27,7 +27,7 @@ interface provided by [php-fig/cache](https://github.com/php-fig/cache).
 
 ## Traversing the Filesystem
 
-Since manifests usually extract their information from files in the webroot,
+Since manifests usually extract their information from files in the project root,
 they require a powerful traversal tool: [FileFinder](api:SilverStripe\Assets\FileFinder).
 The class provides filtering abilities for files and folders, as well as
 callbacks for recursive traversal. Each manifest has its own implementation,
@@ -55,9 +55,13 @@ as well as [ClassInfo](api:SilverStripe\Core\ClassInfo). Some useful commands of
 
 In the absence of a generic module API, it is also the primary way to identify
 which modules are installed, through [ClassManifest::getModules()](api:SilverStripe\Core\Manifest\ClassManifest::getModules()).
-A module is defined as a toplevel folder in the webroot which contains
-either a `_config.php` file, or a `_config/` folder. Modules can be specifically
+All modules contain either a `_config.php` file, or a `_config/` folder. Modules can be specifically
 excluded from manifests by creating a blank `_manifest_exclude` file in the module folder.
+
+Modules can either be:
+
+* a toplevel folder in the project root, or
+* a third-party package installed via composer (i.e. in the `vendor/` directory).
 
 By default, the finder implementation will exclude any classes stored in files within
 a `tests/` folder, unless tests are executed.

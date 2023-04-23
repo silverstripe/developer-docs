@@ -501,7 +501,7 @@ for instructions on how to secure the assets folder against malicious script exe
 
 ### Don't run Silverstripe in the webroot
 
-Silverstripe routes all execution through a [`public/` subfolder](/getting_started/directory_structure))
+Silverstripe routes all execution through a [`public/` subfolder](/getting_started/directory_structure)
 by default. This enables you to keep application code and configuration outside of webserver routing.
 
 ```

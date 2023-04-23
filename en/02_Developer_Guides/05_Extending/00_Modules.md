@@ -35,7 +35,7 @@ with [Composer](../../getting_started/composer).
 
 Each module has a unique identifier, consisting of a vendor prefix and name. For example, the "blog" module has the
 identifier `silverstripe/blog` as it is published by *silverstripe*. To install, use the following command executed in
-the root folder:
+the project root folder:
 
 ```bash
 composer require silverstripe/blog *@stable
