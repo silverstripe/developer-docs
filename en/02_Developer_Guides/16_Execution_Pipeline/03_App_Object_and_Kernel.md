@@ -70,9 +70,8 @@ The role of the application is to:
 The HTTPApplication provides a specialised application implementation for handling HTTP Requests.
 This class provides basic support for HTTP Middleware, such as [ErrorControlChainMiddleware](api:SilverStripe\Core\Startup\ErrorControlChainMiddleware).
 
-The `index.php` file in your project root contains the default application implementation.
+The `index.php` file in your web root contains the default application implementation.
 You can customise it as required.
-
 
 ```php
 

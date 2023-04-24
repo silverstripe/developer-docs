@@ -7,7 +7,7 @@ icon: dollar-sign
 # Environment Variables
 
 Environment specific variables like database connection details, API keys and other server configuration should be kept 
-outside the application code in a separate `.env` file. This file is stored in the web root and 
+outside the application code in a separate `.env` file. This file is stored outside of the web root (i.e. not in the `/public/` folder) and 
 kept out of version control for security reasons.
 
 For more information see our docs on [Environment Management](../../getting_started/environment_management/).

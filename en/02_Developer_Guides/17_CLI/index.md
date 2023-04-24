@@ -13,7 +13,7 @@ The main entry point for any command line execution is `cli-script.php` in the f
 For example, to run a database rebuild from the command line, use this command:
 
 ```bash
-cd your-webroot/
+cd your-project-root/
 php vendor/silverstripe/framework/cli-script.php dev/build
 ```
 
@@ -38,7 +38,7 @@ when running the command php -v, then you may not have php-cli installed so sake
 `sake` can be invoked using `./vendor/bin/sake`. For easier access, copy the `sake` file into `/usr/bin/sake`.
 
 ```
-cd your-webroot/
+cd your-project-root/
 sudo ./vendor/bin/sake installsake
 ```
 
@@ -136,7 +136,7 @@ sake -stop MyProcess
 ```
 
 [notice]
-`sake` stores `pid` and log files in the site root directory.
+`sake` stores `pid` and log files in the project root directory.
 [/notice]
 
 ## Arguments
@@ -144,7 +144,7 @@ sake -stop MyProcess
 Parameters can be added to the command. All parameters will be available in `$_GET` array on the server.
 
 ```bash
-cd your-webroot/
+cd your-project-root/
 php vendor/silverstripe/framework/cli-script.php myurl myparam=1 myotherparam=2
 ```
 
