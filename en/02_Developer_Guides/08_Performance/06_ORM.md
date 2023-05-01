@@ -3,13 +3,30 @@ title: ORM Performance
 summary: Configuration and tips for improving ORM performance
 ---
 
-## ORM Performance
+# ORM Performance
 
-### Indexes
+## Indexes
 
 You can define indexes for your ORM queries using the `$indexes` configuration property in your `DataObject` subclasses. See the [Indexes](/developer_guides/model/indexes) section for more information.
 
-### Skipping check and repair during dev/build {#skip-check-and-repair}
+### TreeDropdownField SearchFilter configuration {#treedropdownfield}
+
+The [`TreeDropdownField`](api:SilverStripe\Forms\TreeDropdownField) uses a [`PartialMatchFilter`](api:SilverStripe\ORM\Filters\PartialMatchFilter) by default to match against records. Indexes aren't effective when this filter is used, so you may find this field is slow with large datasets.
+
+You can configure the field to use a different filter (such as [`StartsWithFilter`](api:SilverStripe\ORM\Filters\StartsWithFilter)) using the `TreeDropdownField.search_filter` configuration property:
+
+```yml
+SilverStripe\Forms\TreeDropdownField:
+  search_filter: 'StartsWith'
+```
+
+[hint]
+A very common use of `TreeDropdownField` is the "Insert Link" feature in the TinyMCE WYSIWYG. Setting this configuration to use another filter and adding an index on `Title` and `MenuTitle` for [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) can significantly improve performance.
+[/hint]
+
+See [SearchFilter Modifiers](/developer_guides/model/searchfilters/) for more information about search filters.
+
+## Skipping check and repair during dev/build {#skip-check-and-repair}
 
 When you run `dev/build`, there is a step that checks the integrity of the database tables (via `CHECK TABLE`) and repairs issues (via `REPAIR TABLE`) if possible.
 
