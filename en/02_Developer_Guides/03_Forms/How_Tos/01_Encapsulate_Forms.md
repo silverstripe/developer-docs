@@ -27,7 +27,10 @@ use SilverStripe\CMS\Controllers\ContentController;
 
 class PageController extends ContentController 
 {
-    
+    private static $allowed_actions = [
+        'SearchForm',
+    ];
+
     public function SearchForm() 
     {
         $fields = new FieldList(
@@ -53,30 +56,33 @@ class PageController extends ContentController
                 NumericField::create('Maximum', 'Maximum')
             )
         );
-        
+
         $actions = new FieldList(
             FormAction::create('doSearchForm', 'Search')
         );
-        
+
         $required = new RequiredFields([
             'Type'
         ]);
 
-        $form = new Form($this, 'SearchForm', $fields, $actions, $required);
+        $form = new Form($this, __FUNCTION__, $fields, $actions, $required);
         $form->setFormMethod('GET');
-        
+
         $form->addExtraClass('no-action-styles');
         $form->disableSecurityToken();
-        $form->loadDataFrom($_REQUEST);
-    
+
         return $form;
     }
-}
 
+    public function doSearchForm(array $data, Form $form)
+    {
+        // Do something with the data, return results, or redirect
+    }
+}
 ```
 
-Now that is a bit of code to include on our controller and generally makes the file look much more complex than it 
-should be. Good practice would be to move this to a subclass and create a new instance for your particular controller.
+That's quite a lot of code to include on our controller and generally makes the file look much more complex than it
+should be. Good practice would be to move this to a `Form` subclass and create a new instance for your particular controller.
 
 **app/src/forms/SearchForm.php**
 
@@ -93,11 +99,9 @@ use SilverStripe\Forms\Form;
 
 class SearchForm extends Form 
 {
-
     /**
      * Our constructor only requires the controller and the name of the form
      * method. We'll create the fields and actions in here.
-     *
      */
     public function __construct($controller, $name) 
     {
@@ -142,16 +146,22 @@ class SearchForm extends Form
     
         $this->addExtraClass('no-action-styles');
         $this->disableSecurityToken();
-        $this->loadDataFrom($_REQUEST);
+    }
+
+    /**
+     * This method could be on the controller, but putting it here means we get the same
+     * behaviour regardless of which controller uses this form.
+     */
+    public function doSearchForm(array $data, Form $form)
+    {
+        // Do something with the data, return results, or redirect
     }
 }
-
 ```
 
 Our controller will now just have to create a new instance of this form object. Keeping the file light and easy to read.
 
 **app/src/Page.php**
-
 
 ```php
 use SearchForm;
@@ -159,19 +169,16 @@ use SilverStripe\CMS\Controllers\ContentController;
 
 class PageController extends ContentController 
 {
-    
     private static $allowed_actions = [
         'SearchForm',
     ];
     
     public function SearchForm() 
     {
-        return new SearchForm($this, 'SearchForm');
+        return new SearchForm($this, __FUNCTION__);
     }
 }
 ```
-
-Form actions can also be defined within your `Form` subclass to keep the entire form logic encapsulated.
 
 ## Related Documentation
 
@@ -180,4 +187,3 @@ Form actions can also be defined within your `Form` subclass to keep the entire 
 ## API Documentation
 
 * [Form](api:SilverStripe\Forms\Form)
-

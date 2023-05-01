@@ -65,7 +65,7 @@ $Title
 $MenuTitle
 ```
 
-Most objects within Silverstripe CMS will respond to `$Title` (i.e they should have a `Title` database field or at least a
+Most objects within Silverstripe CMS will respond to `$Title` (i.e.they should have a `Title` database field or at least a
 `getTitle()` method).
 
 The CMS module in particular provides two fields to label a page: `Title` and `MenuTitle`. `Title` is the title

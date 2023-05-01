@@ -10,8 +10,7 @@ icon: random
 when certain fields cannot be edited due to permissions. Creating the form is done the same way and markup is similar, 
 `readonly` mode converts the `input`, `select` and `textarea` tags to static HTML elements like `span`.
 
-To make an entire [Form](api:SilverStripe\Forms\Form) read-only.
-
+To make an entire [Form](api:SilverStripe\Forms\Form) read-only:
 
 ```php
 use SilverStripe\Forms\Form;
@@ -20,8 +19,7 @@ $form = new Form(..);
 $form->makeReadonly();
 ```
 
-To make all the fields within a [FieldList](api:SilverStripe\Forms\FieldList) read-only (i.e to make fields read-only but not buttons).
-
+To make all the fields within a [FieldList](api:SilverStripe\Forms\FieldList) read-only (i.e.to make fields read-only but not buttons):
 
 ```php
 use SilverStripe\Forms\FieldList;
@@ -30,8 +28,7 @@ $fields = new FieldList(..);
 $fields = $fields->makeReadonly();
 ```
 
-To make a [FormField](api:SilverStripe\Forms\FormField) read-only you need to know the name of the form field or call it direct on the object
-
+To make an individual [FormField](api:SilverStripe\Forms\FormField) read-only you need to know the name of the form field or call it directly on the object:
 
 ```php
 use SilverStripe\Forms\TextField;
@@ -51,6 +48,9 @@ $field->setReadonly(true);
 $fields = new FieldList(
     $field
 );
+
+// Or,
+$fields->dataFieldByName('myField')->setReadonly(true);
 ```
 
 ## Disabled FormFields

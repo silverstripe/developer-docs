@@ -9,10 +9,6 @@ iconBrand: wpforms
 The HTML `Form` is the most used way to interact with a user. Silverstripe CMS provides classes to generate forms through 
 the [Form](api:SilverStripe\Forms\Form) class, [FormField](api:SilverStripe\Forms\FormField) instances to capture data and submissions through [FormAction](api:SilverStripe\Forms\FormAction).
 
-[notice]
-See the [Introduction to frontend forms](https://www.silverstripe.org/learn/lessons/v4/introduction-to-frontend-forms-1) lesson for a step by step process of creating a `Form`
-[/notice]
-
 ## Creating a Form
 
 Creating a [Form](api:SilverStripe\Forms\Form) has the following signature.
@@ -22,12 +18,12 @@ Creating a [Form](api:SilverStripe\Forms\Form) has the following signature.
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FieldList;
 
-$form = new Form(
+$form = Form::create(
     $controller, // the Controller to render this form on 
     $name, // name of the method that returns this form on the controller
-    FieldList $fields, // list of FormField instances 
-    FieldList $actions, // list of FormAction instances
-    $required // optional use of RequiredFields object
+    $fields, // list of FormField instances 
+    $actions, // list of FormAction instances
+    $validator // optional Validator - usually a RequiredFields object
 );
 ```
 
@@ -51,17 +47,17 @@ class PageController extends ContentController
     
     public function HelloForm()
     {
-        $fields = new FieldList(
+        $fields = FieldList::create(
             TextField::create('Name', 'Your Name')
         );
 
-        $actions = new FieldList(
+        $actions = FieldList:create(
             FormAction::create('doSayHello')->setTitle('Say hello')
         );
 
-        $required = new RequiredFields('Name');
+        $required = RequiredFields::create('Name');
 
-        $form = new Form($this, 'HelloForm', $fields, $actions, $required);
+        $form = Form::create($this, __FUNCTION__, $fields, $actions, $required);
 
         return $form;
     }
@@ -83,8 +79,10 @@ $HelloForm
 ```
 
 [info]
-The examples above use `FormField::create()` instead of the  `new` operator (`new FormField()`). These are functionally 
-equivalent, but allows PHP to chain operations like `setTitle()` without assigning the field instance to a temporary 
+The examples above use `FormField::create()` instead of the  `new` operator (`new FormField()`). This is best practice,
+as it allows you to use [dependency injection](/developer_guides/extending/injector/) to replace the actual class being used at runtime.
+
+As an extra incentive, it also allows you to chain operations like `setTitle()` without assigning the field instance to a temporary
 variable.
 [/info]
 
@@ -94,18 +92,19 @@ submits the `HelloForm` from your `contact-us` page the form submission will go 
 the [FormAction](api:SilverStripe\Forms\FormAction). The URL is known as the `$controller` instance will know the 'contact-us' link and we provide 
 `HelloForm` as the `$name` of the form. `$name` **needs** to match the method name.
 
-Because the `HelloForm()` method will be the location the user is taken to, it needs to be handled like any other 
+Because the `HelloForm()` method will be the location the user is taken to when submitting the form, it needs to be handled like any other
 controller action. To grant it access through URLs, we add it to the `$allowed_actions` array.
 
 ```php
 private static $allowed_actions = [
     'HelloForm'
 ];
-
 ```
 
+See [URL Handlers](/developer_guides/controllers/routing/#url-handlers) for more information about handling controller actions.
+
 [notice]
-Form actions (`doSayHello`), on the other hand, should _not_ be included in `$allowed_actions`; these are handled 
+Form actions (`doSayHello()`), on the other hand, should _not_ be included in `$allowed_actions`; these are handled
 separately through [Form::httpSubmission()](api:SilverStripe\Forms\Form::httpSubmission()).
 [/notice]
 
@@ -116,7 +115,8 @@ Fields in a [Form](api:SilverStripe\Forms\Form) are represented as a single [Fie
 Some common examples are [TextField](api:SilverStripe\Forms\TextField) or [DropdownField](api:SilverStripe\Forms\DropdownField). 
 
 ```php
-SilverStripe\Forms\TextField::create($name, $title, $value);
+use SilverStripe\Forms\TextField;
+TextField::create($name, $title, $value);
 ```
 
 [info]
@@ -343,7 +343,9 @@ validating its' own data value.
 For more information, see the [Form Validation](validation) documentation.
 
 ```php
-$validator = new SilverStripe\Forms\RequiredFields([
+use SilverStripe\Forms\RequiredFields;
+
+$validator = new RequiredFields([
     'Name',
     'Email'
 ]);
