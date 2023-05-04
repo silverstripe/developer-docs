@@ -142,11 +142,11 @@ SilverStripe\Assets\File:
     psd: 'Adobe Photoshop File'
 ```
 
-## Modifying files
+## Renaming and moving files
 
 In order to move or rename a file you can simply update the `Name` property, or assign the `ParentID` to a new
 folder. Please note that these modifications are made simply on the draft stage, and will not be copied
-to live until a publish is made (either on this object, or cascading from a parent).
+to live until a publish is made via the CMS (either on this object, or cascading from a parent).
 
 When files are renamed using the ORM, all file variants are automatically renamed at the same time.
 
@@ -159,6 +159,25 @@ if ($file) {
   // to 'newname.jpg' and 'newname__variant.jpg' respectively
   $file->Name = 'newname.jpg';
   $file->write();
+}
+```
+
+Note that you can cause the file to be moved immediately by [setting the Versioned reading mode](api:SilverStripe\Versioned\Versioned::set_reading_mode()) to draft temporarily.
+
+```php
+use SilverStripe\Assets\File;
+use SilverStripe\Versioned\Versioned;
+
+$file = File::get()->filter('Name', 'oldname.jpg')->first();
+if ($file) {
+  // The below will immediately move 'oldname.jpg' and 'oldname__variant.jpg'
+  // to 'newname.jpg' and 'newname__variant.jpg' respectively
+  $file->Name = 'newname.jpg';
+  Versioned::withVersionedMode(function() use ($file) {
+    Versioned::set_reading_mode('Stage.' . Versioned::DRAFT);
+    $file->write();
+    $file->publishSingle();
+  });
 }
 ```
 
@@ -257,11 +276,11 @@ See [Versioned: Ownership](/developer_guides/model/versioning#ownership) for det
 
 ### Avoid exclusive relationships
 
-Due to the shared nature of assets, it is not recommended to assign any 1-to-many (or exclusive 1-to-1) relationship
+Due to the shared nature of assets, it is not recommended to assign any one-to-many (or exclusive one-to-one) relationship
 between any objects and a File. E.g. a Page has_many File, or Page belongs_to File.
 
 
-Instead it is recommended to use either a Page has_one File for many-to-1 (or 1-to-1) relationships, or
+Instead it is recommended to use either a Page has_one File for many-to-one (or one-to-one) relationships, or
 Page many_many File for many-to-many relationships.
 
 ### Unpublishing assets

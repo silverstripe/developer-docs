@@ -30,5 +30,5 @@ icon: graduation-cap
 ## Help: If you get stuck
 
 * [The Tips & Tricks forum](https://forum.silverstripe.org/c/tips): Review some existing solutions to common problems.
-* [Silverstripe CMS Community](http://www.silverstripe.org/community/): Join our community chat via Slack, or ask a question
+* [Silverstripe CMS Community](https://www.silverstripe.org/community/): Join our community chat via Slack, or ask a question
   on Stack Overflow.

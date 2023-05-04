@@ -85,7 +85,7 @@ class MyAdmin extends ModelAdmin
 ```
 
 This will automatically add a new menu entry to the Silverstripe CMS UI entitled `My Product Admin` and logged in
-users will be able to upload and manage `Product` and `Category` instances through http://yoursite.com/admin/products.
+users will be able to upload and manage `Product` and `Category` instances through `https://www.example.com/admin/products`.
 
 [alert]
 After defining these classes, make sure you have rebuilt your Silverstripe CMS database and flushed your cache.
@@ -117,7 +117,7 @@ class MyAdmin extends ModelAdmin
         // This format can be used to customise the URL segment for this Model. This can
         // be useful if you do not want the fully qualified class name of the Model to
         // appear in the URL. It can also be used to have the same Model appear more than
-        // once, allowing you to create custom views. (Only available in SS4.7+)
+        // once, allowing you to create custom views.
         'product-category' => [
             'dataClass' => Category::class,
             'title' => 'Product categories'
@@ -143,7 +143,7 @@ class MyAdmin extends ModelAdmin
 
 ### Edit links for records
 
-As of Silverstripe CMS 4.12.0 it is trivial to get links to the edit form for managed records.
+It is trivial to get links to the edit form for managed records.
 
 ```php
 $admin = MyAdmin::singleton();
@@ -319,7 +319,6 @@ class MyAdmin extends ModelAdmin
             // We don't manage models without a price here, so we can't provide an edit link for them.
             return '';
         }
-        // This method is only available from 4.12.0 onwards
         return parent::getCMSEditLinkForManagedDataObject($obj);
     }
 }
@@ -372,12 +371,7 @@ If you wish to provided a tailored esperience for CMS users, you can directly in
 
 Extensions applied to a ModelAdmin can also use the `updateGridField` and `updateGridFieldConfig` hooks.
 
-[hint]
-`getGridField()`, `getGridFieldConfig()`, `updateGridField` and `updateGridFieldConfig` are only available on 
-Silverstripe CMS 4.6 and above.
-[/hint]
-
-To alter how the results are displayed (via [GridField](api:SilverStripe\Forms\GridField\GridField)), you can also overload the `getEditForm()` method. For
+To alter how the results are displayed (via [GridField](api:SilverStripe\Forms\GridField\GridField)), you can also override the `getEditForm()` method. For
 example, to add a new component.
 
 ### Overriding the methods on ModelAdmin
@@ -483,7 +477,7 @@ MyAdmin:
 
 ### Altering a ModelAdmin using only `getEditForm()`
 
-If you're developing against a version of Silverstripe CMS prior to 4.6, your only option is to override `getEditForm()`. This requires a bit more work to access the GridField and GridFieldConfig instances.
+This requires a bit more work to access the GridField and GridFieldConfig instances, but it can be useful for advanced modifications for the edit form.
 
 **app/src/MyAdmin.php**
 

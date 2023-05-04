@@ -20,16 +20,12 @@ Please register a free translator account to get started, even if you just feel 
 
 ## The online translation tool
 
-We provide a GUI for translations through [transifex.com](http://transifex.com).  If you don't have an account yet, 
+We provide a GUI for translations through [transifex.com](https://transifex.com).  If you don't have an account yet, 
 please follow the links there to sign up.  Select a project from the 
-[list of translatable modules](https://www.transifex.com/accounts/profile/silverstripe/) and start translating online!
+[list of translatable modules](https://www.transifex.com/silverstripe/) and start translating online!
 
-For all modules listed there, we automatically import new master strings as they get committed to the various code 
-bases (via a nightly task), so you're always translating on the latest and greatest version. 
-
-You can check the last successful push of the translation master strings in our 
-[public continuous integration server](http://teamcity.silverstripe.com/viewType.html?buildTypeId=bt112) 
-(select "log in as guest").
+For all modules listed there, we regularly import new strings as they get committed to the various code 
+bases, so you're always translating on the latest and greatest version. 
 
 ## FAQ
 
@@ -46,9 +42,9 @@ on github, you can create a fork, edit the files, and send back your pull reques
 
 ### How do I translate substituted strings? (e.g. '%s' or '{my-variable}')
 
-You don't have to - if the english master-string reads 'Hello %s', your german translation would be 'Hallo %s'. Strings 
+You don't have to - if the english string reads 'Hello %s', your german translation would be 'Hallo %s'. Strings 
 prefixed by a percentage-sign are automatically replaced by silverstripe with dynamic content. See 
-http://php.net/sprintf for details. The newer `{my-variable}` format works the same way, but makes its intent clearer, 
+https://php.net/sprintf for details. The newer `{my-variable}` format works the same way, but makes its intent clearer, 
 and allows reordering of placeholders in your translation.
 
 ### Do I need to convert special characters (e.g. HTML-entities)?
@@ -62,7 +58,7 @@ Currently translated entities are not directly factored into code (for security 
 you can't see them straight away. 
 
 It is strongly encouraged that you check your translation this way, as its a good way to double check your translation 
-works in the right context. Please use our `[daily-builds](http://www.silverstripe.org/daily-builds/)` for your local 
+works in the right context. Please use our [`daily-builds`](https://www.silverstripe.org/daily-builds/) for your local 
 installation, to ensure you're looking at the most up to date interface. See "Download Translations" above to find out 
 how to retrieve the latest translation files.
 
@@ -74,13 +70,13 @@ releases. If the interface changes in a non-trivial fashion, the new translation
 as well.
 
 Example: We renamed the "Security" menu title to "Users" in our 3.0 release. As it would confuse users of older versions
-unnecessarily, we should be using a new entity name for this, and avoid the change propagating to an older SilverStripe 
+unnecessarily, we should use a _new_ entity name for this, and avoid the change propagating to an older SilverStripe 
 version.
 
 ### How do I change my interface language?
 
-Once you've logged into the CMS, you should see the text "Hi <your name>" near the top left, you can click this to edit 
-your profile ([direct link](http://localhost/admin/myprofile/)). You can then set the "interface language" from a 
+Once you've logged into the CMS, you should see the text "Hi `<your name>`" near the top left, you can go to
+`https://www.example.com/admin/myprofile/` to edit your profile. You can then set the "interface language" from a
 dropdown which automatically includes all found translations (based on the files in the `/lang` folders).
 
 ### I've found a piece of untranslatable text
@@ -93,7 +89,7 @@ to the forum.
 
 Once you've built a translation-enabled module, you can run the "textcollector" on your local installation for this 
 specific module (see [i18n](../developer_guides/i18n)). This should find all calls to `_t()` in php and template files, and generate 
-a new lang file with the default locale (path: <mymodule>/lang/en.yml). Upload this file to the online translation 
+a new lang file with the default locale (path: `<mymodule>/lang/en.yml`). Upload this file to the online translation 
 tool, and wait for your translators to do their magic!
 
 ### What about right-to-left (RTL) languages (e.g. Arabic)?
@@ -137,7 +133,7 @@ This also applies for any modules staying compatible with SilverStripe 2.x.
 
 ## Contact
 
-Get in touch with translators on our [community Slack](http://silverstripe.org/slack) - please join the `#translations` 
+Get in touch with translators on our [community Slack](https://silverstripe.org/slack) - please join the `#translations` 
 channel. For generic translation and Transifex questions you might like to use 
 [Stack Overflow](https://stackoverflow.com/search?q=transifex). Alternatively you can start a discussion on 
 [our forum](https://forum.silverstripe.org).
@@ -146,5 +142,4 @@ channel. For generic translation and Transifex questions you might like to use
 
  * [i18n](/developer_guides/i18n): Developer-level documentation of Silverstripe's i18n capabilities
  * [Translation Process](translation_process): Information about managing translations for the core team and/or module maintainers.
- * [translatable](https://github.com/silverstripe/silverstripe-translatable): DataObject-interface powering the website-content translations
- * `["Translatable ModelAdmin" module](http://silverstripe.org/translatablemodeladmin-module/)`: An extension which allows translations of DataObjects inside ModelAdmin
+ * [tractorcow/silverstripe-fluent](https://github.com/tractorcow/silverstripe-fluent): Simple Silverstripe CMS localisation

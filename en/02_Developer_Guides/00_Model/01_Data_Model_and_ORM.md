@@ -6,7 +6,7 @@ icon: database
 
 # Introduction to the Data Model and ORM
 
-Silverstripe uses an [object-relational mapping](http://en.wikipedia.org/wiki/Object-relational_mapping) to represent its
+Silverstripe uses an [object-relational mapping](https://en.wikipedia.org/wiki/Object-relational_mapping) (aka "ORM") to represent its
 information.
 
 *  Each database table maps to a PHP class.
@@ -14,7 +14,7 @@ information.
 *  Each database column maps to a property on a PHP object.
 
 All data tables in Silverstripe CMS are defined as subclasses of [DataObject](api:SilverStripe\ORM\DataObject). The [DataObject](api:SilverStripe\ORM\DataObject) class represents a
-single row in a database table, following the ["Active Record"](http://en.wikipedia.org/wiki/Active_record_pattern)
+single row in a database table, following the ["Active Record"](https://en.wikipedia.org/wiki/Active_record_pattern)
 design pattern. Database Columns are defined as [Data Types](/developer_guides/model/data_types_and_casting) in the static `$db` variable
 along with any [relationships](relations) defined as `$has_one`, `$has_many`, `$many_many` properties on the class.
 
@@ -27,11 +27,14 @@ use SilverStripe\ORM\DataObject;
 
 class Player extends DataObject 
 {
+    private static $table_name = 'Player';
+
     private static $db = [
         'PlayerNumber' => 'Int',
         'FirstName' => 'Varchar(255)',
         'LastName' => 'Text',
-        'Birthday' => 'Date'
+        'Birthday' => 'Date',
+        'Status' => 'Varchar(255)',
     ];
 }
 ```
@@ -39,10 +42,21 @@ class Player extends DataObject
 This `Player` class definition will create a database table `Player` with columns for `PlayerNumber`, `FirstName` and
 so on. After writing this class, we need to regenerate the database schema.
 
+[hint]
+You can technically omit the `table_name` property, and a default table name will be created based on the fully qualified class name - but this can result in table names that are too long for the database engine to handle. We recommend that you _always_ explicitly declare a table name for your models.
+
+See more in [Mapping classes to tables with `DataObjectSchema`](#mapping-classes-to-tables) below.
+[/hint]
+
 ## Generating the Database Schema
 
 After adding, modifying or removing `DataObject` subclasses, make sure to rebuild your Silverstripe CMS database. The
-database schema is generated automatically by visiting the URL http://www.yoursite.com/dev/build while authenticated as an administrator.
+database schema is generated automatically by visiting `/dev/build` (e.g. `https://www.example.com/dev/build`) in your browser
+while authenticated as an administrator, or by running `sake dev/build` on the command line (see [Command Line Interface](/developer_guides/cli/) to learn more about `sake`).
+
+[info]
+In "dev" mode, you do not need to be authenticated to run `/dev/build`. See [Environment Types](/developer_guides/debugging/environment_types) for more information.
+[/info]
 
 This script will analyze the existing schema, compare it to what's required by your data classes, and alter the schema
 as required.
@@ -50,49 +64,28 @@ as required.
 It will perform the following changes:
 
 * Create any missing tables
-* Create any missing fields
+* Create any missing field columns
 * Create any missing indexes
 * Alter the field type of any existing fields
-* Rename any obsolete tables that it previously created to _obsolete_(tablename)
+* Rename any obsolete tables that it previously created to `_obsolete_tablename` (e.g. `_obsolete_player`)
+  * Obsolete tables are only renamed if the `DataObject` model which owns the table has no need for the table (e.g. no fields are declared for the model, and it is a subclass of some other `DataObject`).
 
 It **won't** do any of the following
 
 * Delete tables
-* Delete fields
+* Delete field columns
 * Rename any tables that it doesn't recognize. This allows other applications to coexist in the same database, as long as
   their table names don't match a Silverstripe CMS data class.
 
-
-[notice]
-You need to be logged in as an administrator to perform this command, unless your site is in [dev mode](../debugging),
-or the command is run through [CLI](../cli).
-[/notice]
-
-When rebuilding the database schema through the [ClassLoader](api:SilverStripe\Core\Manifest\ClassLoader) the following additional properties are
+When rebuilding the database schema through the [ClassLoader](api:SilverStripe\Core\Manifest\ClassLoader) the following additional fields are
 automatically set on the `DataObject`.
 
-*  ID: Primary Key. This will use the database's built-in auto-numbering system on the base table, and apply the same ID to all subclass tables.
-*  ClassName: An enumeration listing this data-class and all of its subclasses.
-*  Created: A date/time field set to the creation date of this record
-*  LastEdited: A date/time field set to the date this record was last edited through `write()`
+*  `ID`: Primary Key. This will use the database's built-in auto-numbering system on the base table, and apply the same ID to all subclass tables.
+*  `ClassName`: An enumeration listing this data-class and all of its subclasses. The value is the actual `DataObject` subclass used to write the record.
+*  `Created`: A date/time field set to the creation date (i.e. when it was first written to the database) of this record
+*  `LastEdited`: A date/time field set to the date this record was last edited through `write()`
 
-**app/src/Player.php**
-
-```php
-use SilverStripe\ORM\DataObject;
-
-class Player extends DataObject 
-{
-    private static $db = [
-        'PlayerNumber' => 'Int',
-        'FirstName' => 'Varchar(255)',
-        'LastName' => 'Text',
-        'Birthday' => 'Date'
-    ];
-}
-```
-
-Generates the following `SQL`.
+The table creation SQL statement for our `Player` model above looks like this:
 
 ```sql
 CREATE TABLE `Player` (
@@ -104,6 +97,7 @@ CREATE TABLE `Player` (
     `FirstName` varchar(255) DEFAULT NULL,
     `LastName` mediumtext,
     `Birthday` datetime DEFAULT NULL,
+    `Status` varchar(255) DEFAULT NULL,
 
     PRIMARY KEY (`ID`),
     KEY `ClassName` (`ClassName`)
@@ -112,24 +106,25 @@ CREATE TABLE `Player` (
 
 ## Creating Data Records
 
-A new instance of a [DataObject](api:SilverStripe\ORM\DataObject) can be created using the `new` syntax.
+A new instance of a [DataObject](api:SilverStripe\ORM\DataObject) can be created using the `new` keyword.
 
 ```php
 $player = new Player();
 ```
 
-Or, a better way is to use the `create` method.
+However, a better way is to use the `create()` method.
 
 ```php
 $player = Player::create();
 ```
 
-[notice]
-Using the `create()` method provides chainability, which can add elegance and brevity to your code, e.g. `Player::create()->write()`. More importantly, however, it will look up the class in the [Injector](../extending/injector) so that the class can be overridden by [dependency injection](http://en.wikipedia.org/wiki/Dependency_injection).
-[/notice]
+[hint]
+Using the `create()` method provides chainability (known as a "fluent API" or "[fluent interface](https://en.wikipedia.org/wiki/Fluent_interface)"), which can add elegance and brevity to your code, e.g. `Player::create(['FirstName' => 'Sam'])->write()`.
 
+More importantly, however, it will look up the class in the [Injector](api:SilverStripe\Core\Injector\Injector) so that the class can be overridden by [dependency injection](../extending/injector). For this reason, instantiating records using the `new` keyword is considered bad practice.
+[/hint]
 
-Database columns and properties can be set as class properties on the object. The Silverstripe CMS ORM handles the saving
+Database columns (aka fields) can be set as class properties on the object. The Silverstripe CMS ORM handles the saving
 of the values through a custom `__set()` method.
 
 ```php
@@ -153,48 +148,75 @@ $id = $player->write();
 
 ## Querying Data
 
-With the `Player` class defined we can query our data using the `ORM` or Object-Relational Model. The `ORM` provides
+With the `Player` class defined we can query our data using the ORM. The ORM provides
 shortcuts and methods for fetching, sorting and filtering data from our database.
 
 ```php
-$players = Player::get();
 // returns a `DataList` containing all the `Player` objects.
+$players = Player::get();
 
+// returns the first and last `Player` record in the list, respectively.
+$firstPlayer = $players->first();
+$lastPlayer = $players->last();
+
+// returns a single `Player` record that has the ID of 2.
 $player = Player::get()->byID(2);
-// returns a single `Player` object instance that has the ID of 2.
-
-echo $player->ID;
-// returns the players 'ID' column value
-
-echo $player->dbObject('LastEdited')->Ago();
-// calls the `Ago` method on the `LastEdited` property.
+$player = Playet::get_by_id(2);
 ```
 
-The `ORM` uses a "fluent" syntax, where you specify a query by chaining together different methods.  Two common methods
+[hint]
+All of the above methods to get a single record will return `null` if there is no record to return.
+[/hint]
+
+[info]
+`DataObject::get()->byID()` and `DataObject::get_by_id()` achieve similar results, though the object returned by `DataObject::get_by_id()` is cached against a `static` property within `DataObject`.
+[/info]
+
+The ORM uses a "fluent" syntax, where you specify a query by chaining together different methods.  Two common methods
 are `filter()` and `sort()`:
 
 ```php
-$members = Player::get()->filter([
-    'FirstName' => 'Sam'
-])->sort('Surname');
-
 // returns a `DataList` containing all the `Player` records that have the `FirstName` of 'Sam'
-
+$members = Player::get()->filter([
+    'FirstName' => 'Sam',
+])->sort('Surname');
 ```
 
-[info]
-Provided `filter` values are automatically escaped and do not require any escaping.
-[/info]
+There's a lot more to filtering and sorting, so make sure to keep reading.
 
 [info]
-`DataObject::get()->byID()` and `DataObject::get_by_id()` achieve similar results, but the object returned by `DataObject::get_by_id()` is cached against a `static` property within `DataObject`.
-
-`DataObject::get_by_id()` is a legacy ORM method, and it is recommended that you use `DataObject::get()->byID()` wherever possible
+Values passed in to the `filter()` and `sort()` methods are automatically escaped and do not require any additional escaping. This makes it easy to safely filter/sort records by user input.
 [/info]
+
+### Querying data when you have a record
+
+When you have a `DataObject` record, it already has all of its database field data attached to it. You can get those values without triggering further database queries.
+
+[notice]
+This does not apply to relations, which are always lazy loaded. See the [Relations between Records](relations) documentation for more information.
+[/notice]
+
+```php
+$player = Player::get()->byID(2);
+
+// returns the players' `ID` field value
+$id = $player->ID;
+
+// gets the `LastEdited` field value in its default format
+$lastEdited = $player->LastEdited;
+// calls the `Ago` method on the `LastEdited` field.
+$timeSinceLastEdit = $player->dbObject('LastEdited')->Ago();
+```
+
+All database fields have a default value format which you can retrieve by treating the field as a class property - but there are also other formats available depending on the field type. You'll learn more about those in the [Data Types and Casting](data_types_and_casting) section - but the important thing to know is that you can get the `DBField` instance for a field by calling `dbObject('FieldName')` on the record - and that `DBField` instance will have different methods on it depending on the data type that let you access different formats of the field's value.
 
 ## Lazy Loading
 
-The `ORM` doesn't actually execute the [SQLSelect](api:SilverStripe\ORM\Queries\SQLSelect) until you iterate on the result with a `foreach()` or `<% loop %>`.
+The ORM doesn't actually execute the [SQLSelect](api:SilverStripe\ORM\Queries\SQLSelect) query until you iterate on the result (e.g. with a `foreach()` or `<% loop %>`).
+
+[hint]
+Some convenience methods (e.g. [`column()`](api:SilverStripe\ORM\DataList::column()) or aggregator methods like [`min()`](api:SilverStripe\ORM\DataList::min())) will also execute the query.
+[/hint]
 
 It's smart enough to generate a single efficient query at the last moment in time without needing to post-process the
 result set in PHP. In `MySQL` the query generated by the ORM may look something like this
@@ -224,7 +246,7 @@ echo $players->Count();
 
 ## Looping over a list of objects
 
-`get()` returns a `DataList` instance. You can loop over `DataList` instances in both PHP and templates.
+[`get()`](api:SilverStripe\ORM\DataObject::get()) returns a [`DataList`](api:SilverStripe\ORM\DataList) instance. You can loop over `DataList` instances in both PHP and templates.
 
 ```php
 $players = Player::get();
@@ -234,35 +256,21 @@ foreach($players as $player) {
 }
 ```
 
-Notice that we can step into the loop safely without having to check if `$players` exists. The `get()` call is robust, and will at worst return an empty `DataList` object. If you do want to check if the query returned any records, you can use the `exists()` method, e.g.
+Notice that we can step into the loop safely without having to check if `$players` exists. The `get()` call is robust, and will at worst return an empty `DataList` object. But if you do want to check if the query returned any records, you can use the `exists()` method, e.g.
 
 ```php
 $players = Player::get();
 
-if($players->exists()) {
+if ($players->exists()) {
     // do something here
 }
 ```
 
+[hint]
+While you could use `if ($players->Count() > 0)` for this condition, the `exists()` method uses an `EXISTS` SQL query, which is more performant.
+[/hint]
+
 See the [Lists](lists) documentation for more information on dealing with [SS_List](api:SilverStripe\ORM\SS_List) instances.
-
-## Returning a single DataObject
-
-There are a couple of ways of getting a single DataObject from the ORM. If you know the ID number of the object, you
-can use `byID($id)`:
-
-```php
-$player = Player::get()->byID(5);
-```
-
-`get()` returns a [DataList](api:SilverStripe\ORM\DataList) instance. You can use operations on that to get back a single record.
-
-```php
-$players = Player::get();
-
-$first = $players->first();
-$last = $players->last();
-```
 
 ## Sorting
 
@@ -291,7 +299,7 @@ However you might have several entries with the same `FirstName` and would like 
 ```php
 $players = Players::get()->sort([
     'FirstName' => 'ASC',
-    'LastName'=>'ASC'
+    'LastName' => 'ASC'
 ]);
 ```
 
@@ -299,8 +307,12 @@ You can also sort randomly. Using the `DB` class, you can get the random sort me
 
 ```php
 $random = DB::get_conn()->random(); 
-$players = Player::get()->sort($random);
+$players = Player::get()->orderBy($random);
 ```
+
+[warning]
+Note that we've used the `orderBy()` method here. This is because `sort()` doesn't allow sorting by raw SQL, which is necessary to use a random sort. Be careful whenever you use the `orderBy()` method to ensure you don't pass in any values you can't trust.
+[/warning]
 
 ## Filtering Results
 
@@ -308,45 +320,51 @@ The `filter()` method filters the list of objects that gets returned.
 
 ```php
 $players = Player::get()->filter([
-    'FirstName' => 'Sam'
+    'FirstName' => 'Sam',
 ]);
 ```
 
-Each element of the array specifies a filter.  You can specify as many filters as you like, and they **all** must be
+Each element of the array specifies a filter. You can specify as many filters as you like, and they **all** must be
 true for the record to be included in the result.
 
 The key in the filter corresponds to the field that you want to filter and the value in the filter corresponds to the
 value that you want to filter to.
 
-So, this would return only those players called "Sam Minnée".
+So, this would return only those players called "Sam Minnée":
 
 ```php
+// SELECT * FROM Player WHERE FirstName = 'Sam' AND LastName = 'Minnée'
 $players = Player::get()->filter([
     'FirstName' => 'Sam',
     'LastName' => 'Minnée',
 ]);
-
-// SELECT * FROM Player WHERE FirstName = 'Sam' AND LastName = 'Minnée'
 ```
 
-There is also a shorthand way of getting Players with the FirstName of Sam.
+There is also a shorthand way of getting Players with a specific value for any given field:
 
 ```php
 $players = Player::get()->filter('FirstName', 'Sam');
 ```
 
-Or if you want to find both Sam and Sig.
+Or if you want to find both Sam and Sig:
 
 ```php
-$players = Player::get()->filter(
-    'FirstName', ['Sam', 'Sig']
-);
-
 // SELECT * FROM Player WHERE FirstName IN ('Sam', 'Sig')
+$players = Player::get()->filter('FirstName', ['Sam', 'Sig']);
 ```
 
-You can use [SearchFilters](searchfilters) to add additional behavior to your `filter` command rather than an
-exact match.
+You can use an array of values when passing an array of filters in as the first argument as well, e.g:
+
+```php
+// SELECT * FROM Player WHERE FirstName = 'Sam' AND LastName in ('Minnée', 'Carter')
+$players = Player::get()->filter([
+    'FirstName' => 'Sam',
+    'LastName' => 'Minnée',
+]);
+```
+
+You can use a `SearchFilter` to add additional behavior to your `filter` command rather than an
+exact match. See [SearchFilter Modifiers](searchfilters) for more information.
 
 ```php
 $players = Player::get()->filter([
@@ -360,26 +378,25 @@ $players = Player::get()->filter([
 Use the `filterAny()` method to match multiple criteria non-exclusively (with an "OR" disjunctive),
 
 ```php
+// SELECT * FROM Player WHERE ("FirstName" = 'Sam' OR "Age" = '17')
 $players = Player::get()->filterAny([
     'FirstName' => 'Sam',
     'Age' => 17,
 ]);
-
-// SELECT * FROM Player WHERE ("FirstName" = 'Sam' OR "Age" = '17')
 ```
 
 You can combine both conjunctive ("AND") and disjunctive ("OR") statements.
 
 ```php
+// SELECT * FROM Player WHERE ("LastName" = 'Minnée' AND ("FirstName" = 'Sam' OR "Age" in ('17', '18')))
 $players = Player::get()
     ->filter([
         'LastName' => 'Minnée',
     ])
     ->filterAny([
         'FirstName' => 'Sam',
-        'Age' => 17,
+        'Age' => [17, 18],
     ]);
-// SELECT * FROM Player WHERE ("LastName" = 'Minnée' AND ("FirstName" = 'Sam' OR "Age" = '17'))
 ```
 
 You can use [SearchFilters](searchfilters) to add additional behavior to your `filterAny` command.
@@ -393,37 +410,34 @@ $players = Player::get()->filterAny([
 
 ### Filtering by null values
 
-Since null values in SQL are special, they are non-comparable with other values, certain filters will add
-`IS NULL` or `IS NOT NULL` predicates automatically to your query. As per ANSI SQL-92, any comparison
+Since null values in SQL are special, they are non-comparable with other values. Certain filters will add
+`IS NULL` or `IS NOT NULL` predicates automatically to your query. As per [ANSI SQL-92](https://en.wikipedia.org/wiki/SQL-92), any comparison
 condition against a field will filter out nulls by default. Therefore, it's necessary to include certain null
 checks to ensure that exclusion filters behave predictably.
 
 For instance, the below code will select only values that do not match the given value, including nulls.
 
-
 ```php
-$players = Player::get()->filter('FirstName:not', 'Sam');
 // ... WHERE "FirstName" != 'Sam' OR "FirstName" IS NULL
 // Returns rows with any value (even null) other than Sam
+$players = Player::get()->filter('FirstName:not', 'Sam');
 ```
 
 If null values should be excluded, include the null in your check.
 
-
 ```php
-$players = Player::get()->filter('FirstName:not', ['Sam', null]);
 // ... WHERE "FirstName" != 'Sam' AND "FirstName" IS NOT NULL
 // Only returns non-null values for "FirstName" that aren't Sam.
-// Strictly the IS NOT NULL isn't necessary, but is included for explicitness
+// Strictly the IS NOT NULL isn't necessary in the resulting query, but is included for explicitness
+$players = Player::get()->filter('FirstName:not', ['Sam', null]);
 ```
 
 It is also often useful to filter by all rows with either empty or null for a given field.
 
-
 ```php
-$players = Player::get()->filter('FirstName', [null, '']);
 // ... WHERE "FirstName" == '' OR "FirstName" IS NULL
 // Returns rows with FirstName which is either empty or null
+$players = Player::get()->filter('FirstName', [null, '']);
 ```
 
 ### Filtering by aggregates
@@ -444,74 +458,78 @@ $teams = Team::get()->filter('Players.Avg(PointsScored):GreaterThan', 15);
 $teams = Team::get()->filter('Players.Sum(PointsScored):LessThan', 300);
 ```
 
+[hint]
+The above examples are using "dot notation" to get the aggregations of the `Players` relation on the `Teams` model. See [Relations between Records](relations) to learn more.
+[/hint]
+
 ### filterByCallback
 
-It is also possible to filter by a PHP callback, this will force the data model to fetch all records and loop them in
-PHP, thus `filter()` or `filterAny()` are to be preferred over `filterByCallback()`.
+It is possible to filter by a PHP callback using the [`filterByCallback()`](api:SilverStripe\ORM\DataList::filterByCallback()) method. This will force the data model to fetch all records and loop them in
+PHP which will be much worse for performance, thus `filter()` or `filterAny()` are to be preferred over `filterByCallback()`.
 
 [notice]
 Because `filterByCallback()` has to run in PHP, it has a significant performance tradeoff, and should not be used on large recordsets.
 
-`filterByCallback()` will always return  an `ArrayList`.
+`filterByCallback()` will always return an `ArrayList`.
 [/notice]
 
-The first parameter to the callback is the item, the second parameter is the list itself. The callback will run once
-for each record, if the callback returns true, this record will be added to the list of returned items.
+The first parameter to the callback is the record, the second parameter is the list itself. The callback will run once
+for each record. The callback must return a boolean value. If the callback returns true, the current record will be included in the list of returned items.
 
-The below example will get all `Players` aged over 10.
+The below example will get all `Player` records aged over 10.
 
 ```php
-$players = Player::get()->filterByCallback(function($item, $list) {
-    return ($item->Age() > 10);
+$players = Player::get()->filterByCallback(function($record, $list) {
+    return ($record->Age() > 10);
 });
 ```
 
 ### Exclude
 
-The `exclude()` method is the opposite to the filter in that it removes entries from a list.
+The [`exclude()`](api:SilverStripe\ORM\DataList::exclude()) method is the opposite to `filter()` in that it determines which entries to _exclude_ from a list, where `filter()` determines which to _include_.
 
 ```php
-$players = Player::get()->exclude('FirstName', 'Sam');
-
 // SELECT * FROM Player WHERE FirstName != 'Sam'
+$players = Player::get()->exclude('FirstName', 'Sam');
 ```
 
-Remove both Sam and Sig..
+Exclude both Sam and Sig.
 
 ```php
 $players = Player::get()->exclude([
-    'FirstName' => ['Sam','Sig']
+    'FirstName' => ['Sam', 'Sig']
 ]);
 ```
 
-`Exclude` follows the same pattern as filter, so for removing only Sam Minnée from the list:
+`exclude()` follows the same pattern as filter, so for excluding anyone with both the first name "Sam" and the last name "Minnée" from the list:
 
 ```php
+// SELECT * FROM Player WHERE (FirstName != 'Sam' OR LastName != 'Minnée')
 $players = Player::get()->exclude([
     'FirstName' => 'Sam',
     'Surname' => 'Minnée',
 ]);
-
-// SELECT * FROM Player WHERE (FirstName != 'Sam' OR LastName != 'Minnée')
 ```
 
-Removing players with *either* the first name of Sam or the last name of Minnée requires multiple `->exclude` calls:
+Removing players with *either* the first name of "Sam" or the last name of "Minnée" requires multiple `exclude()` calls - or simply using the `excludeAny()` method:
 
 ```php
-$players = Player::get()->exclude('FirstName', 'Sam')->exclude('Surname', 'Minnée');
-
 // SELECT * FROM Player WHERE FirstName != 'Sam' AND LastName != 'Minnée'
+$players = Player::get()->exclude('FirstName', 'Sam')->exclude('Surname', 'Minnée');
+$players = Player::get()->excludeAny([
+    'FirstName' => 'Sam',
+    'Surname' => 'Minnée',
+]);
 ```
 
-And removing Sig and Sam with that are either age 17 or 43.
+And removing any named "Sig" or "Sam" with that are either age 17 or 43.
 
 ```php
+// SELECT * FROM Player WHERE ("FirstName" NOT IN ('Sam','Sig) OR "Age" NOT IN ('17', '43'));
 $players = Player::get()->exclude([
     'FirstName' => ['Sam', 'Sig'],
     'Age' => [17, 43]
 ]);
-
-// SELECT * FROM Player WHERE ("FirstName" NOT IN ('Sam','Sig) OR "Age" NOT IN ('17', '43'));
 ```
 
 You can use [SearchFilters](searchfilters) to add additional behavior to your `exclude` command.
@@ -529,17 +547,16 @@ You can subtract entries from a [DataList](api:SilverStripe\ORM\DataList) by pas
 
 ```php
 $sam = Player::get()->filter('FirstName', 'Sam');
-$players = Player::get();
-
-$noSams = $players->subtract($sam);
+$noSams = Player::get()->subtract($sam);
 ```
 
-Though for the above example it would probably be easier to use `filter()` and `exclude()`. A better use case could be
-when you want to find all the members that does not exist in a Group.
+Though for the above example it would probably be easier to use `filter()` and `exclude()` directly on the final list. A better use case could be
+when you want to find all the members that do not exist in a Group.
 
 ```php
-// ... Finding all members that does not belong to $group.
+// ... Finding all members that do not belong to $group.
 use SilverStripe\Security\Member;
+// Assuming we have some `Group` $group:
 $otherMembers = Member::get()->subtract($group->Members());
 ```
 
@@ -554,28 +571,24 @@ $members = Member::get()->limit(5);
 
 `limit()` accepts two arguments, the first being the amount of results you want returned, with an optional second
 parameter to specify the offset, which allows you to tell the system where to start getting the results from. The
-offset, if not provided as an argument, will default to 0.
+offset, if not provided as an argument, will default to 0 (i.e. start with the first result).
 
 ```php
 // Return 10 members with an offset of 4 (starting from the 5th result).
 $members = Member::get()->sort('Surname')->limit(10, 4);
 ```
 
-[alert]
-Note that the `limit` argument order is different from a MySQL LIMIT clause.
-[/alert]
+### Mapping classes to tables with `DataObjectSchema` {#mapping-classes-to-tables}
 
-### Mapping classes to tables with DataObjectSchema
-
-Note that in most cases, the underlying database table for any DataObject instance will be the same as the class name.
-However in cases where dealing with namespaced classes, especially when using DB schema which don't support
-slashes in table names, it is necessary to provide an alternate mapping.
+Note that by default, the underlying database table for any `DataObject` instance will be the same as the class name.
+However, relying on this default behaviour can result in table names that are too long for the database engine to support.
+We recommend explicitly declaring a table name for each `DataObject` subclass you create.
 
 For instance, the below model will be stored in the table name `BannerImage`
 
-
 ```php
 namespace SilverStripe\BannerManager;
+
 use SilverStripe\ORM\DataObject;
 
 class BannerImage extends DataObject 
@@ -586,7 +599,7 @@ class BannerImage extends DataObject
 
 Note that any model class which does not explicitly declare a `table_name` config option will have a name
 automatically generated for them. In the above case, the table name would have been
-`SilverStripe\BannerManager\BannerImage`
+`SilverStripe_BannerManager_BannerImage`
 
 When creating raw SQL queries that contain table names, it is necessary to ensure your queries have the correct
 table. This functionality can be provided by the [DataObjectSchema](api:SilverStripe\ORM\DataObjectSchema) service, which can be accessed via
@@ -595,21 +608,20 @@ equivalent version.
 
 Methods which return class names:
 
-* `tableClass($table)` Finds the class name for a given table. This also handles suffixed tables such as `Table_Live`.
-* `baseDataClass($class)` Returns the base data class for the given class.
-* `classForField($class, $field)` Finds the specific class that directly holds the given field
+* [`tableClass($table)`](api:SilverStripe\ORM\DataObjectSchema::tableClass()) - Finds the class name for a given table. This also handles suffixed tables such as `Table_Live` (see [Versioning](versioning)).
+* [`baseDataClass($class)`](api:SilverStripe\ORM\DataObjectSchema::baseDataClass()) - Returns the base data class for the given class.
+* [`classForField($class, $field)`](api:SilverStripe\ORM\DataObjectSchema::classForField()) - Finds the specific class that directly holds the given field
 
 Methods which return table names:
 
-* `tableName($class)` Returns the table name for a given class or object.
-* `baseDataTable($class)` Returns the base data class for the given class.
-* `tableForField($class, $field)` Finds the specific class that directly holds the given field and returns the table.
+* [`tableName($class)`](api:SilverStripe\ORM\DataObjectSchema::tableName()) - Returns the table name for a given class or object.
+* [`baseDataTable($class)`](api:SilverStripe\ORM\DataObjectSchema::baseDataTable()) - Returns the base data class for the given class.
+* [`tableForField($class, $field)`](api:SilverStripe\ORM\DataObjectSchema::tableForField()) - Finds the specific class that directly holds the given field and returns the table.
 
 Note that in cases where the class name is required, an instance of the object may be substituted.
 
 For example, if running a query against a particular model, you will need to ensure you use the correct
 table and column.
-
 
 ```php
 use SilverStripe\ORM\Queries\SQLSelect;
@@ -628,10 +640,10 @@ public function countDuplicates($model, $fieldToCheck)
 ### Raw SQL
 
 Occasionally, the system described above won't let you do exactly what you need to do. In these situations, we have
-methods that manipulate the SQL query at a lower level.  When using these, please ensure that all table and field names
-are escaped with double quotes, otherwise some DB backends (e.g. PostgreSQL) won't work.
+methods that manipulate the SQL query at a lower level. When using these, please ensure that all table and field names
+are escaped with double quotes, otherwise some database backends (e.g. [PostgreSQL](https://github.com/silverstripe/silverstripe-postgresql)) won't work.
 
-Under the hood, query generation is handled by the [DataQuery](api:SilverStripe\ORM\DataQuery) class. This class does provide more direct access
+Under the hood, query generation is handled by the [DataQuery](api:SilverStripe\ORM\DataQuery) class. This class provides more direct access
 to certain SQL features that `DataList` abstracts away from you.
 
 In general, we advise against using these methods unless it's absolutely necessary. If the ORM doesn't do quite what
@@ -657,57 +669,72 @@ You can specify a join with the `innerJoin` and `leftJoin` methods.  Both of the
 // Without an alias
 $members = Member::get()
     ->leftJoin("Group_Members", "\"Group_Members\".\"MemberID\" = \"Member\".\"ID\"");
+$members = Member::get()
+    ->innerJoin("Group_Members", "\"Group_Members\".\"MemberID\" = \"Member\".\"ID\"");
 
+// With an alias "Rel"
+$members = Member::get()
+    ->leftJoin("Group_Members", "\"Rel\".\"MemberID\" = \"Member\".\"ID\"", "Rel");
 $members = Member::get()
     ->innerJoin("Group_Members", "\"Rel\".\"MemberID\" = \"Member\".\"ID\"", "Rel");
 ```
 
 [alert]
-Passing a *$join* statement will filter results further by the JOINs performed against the foreign table. It will
-**not** return the additionally joined data.
+Using a join will _filter_ results further by the JOINs performed against the foreign table. It will
+**not return** the additionally joined data. For the examples above, we're still only selecting values for the fields
+on the `Member` class table.
 [/alert]
 
 ### Default Values
 
-Define the default values for all the `$db` fields. This example sets the "Status"-column on Player to "Active"
-whenever a new object is created.
+Define the default values for all the `$db` fields. This example sets the `Status` column on Player to "Active"
+whenever a new record is created.
 
 ```php
 use SilverStripe\ORM\DataObject;
 
 class Player extends DataObject 
 {
-
+    // ...
     private static $defaults = [
-        "Status" => 'Active',
+        'Status' => 'Active',
     ];
 }
 ```
 
-[notice]
-Note: Alternatively you can set defaults directly in the database-schema (rather than the object-model). See
-[Data Types and Casting](/developer_guides/model/data_types_and_casting) for details.
-[/notice]
+See [Default Values and Records](/developer_guides/model/how_tos/dynamic_default_fields/) for more about setting default values and records.
 
 ## Subclasses
 
-Inheritance is supported in the data model: separate tables will be linked together, the data spread across these
-tables. The mapping and saving logic is handled by Silverstripe CMS , you don't need to worry about writing SQL most of the
+Inheritance is supported in the data model. Separate tables will be linked together, the data spread across these
+tables depending on which class declares them. The mapping and saving logic is handled by Silverstripe CMS - you don't need to worry about writing SQL most of the
 time.
 
 For example, suppose we have the following set of classes:
 
 ```php
-use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\ORM\DataObject;
 
-class Page extends SiteTree 
+class Product extends DataObject 
 {
+    private static $table_name = 'Product';
 
-}
-class NewsPage extends Page 
-{
     private static $db = [
-        'Summary' => 'Text'
+        'SKU' => 'Text'
+    ];
+}
+
+class DigitalProduct extends Product
+{
+    private static $table_name = 'Product_Digital';
+}
+
+class Computer extends DigitalProduct
+{
+    private static $table_name = 'Product_Digital_Computer';
+
+    private static $db = [
+        'IsPreBuilt' => 'Boolean',
     ];
 }
 ```
@@ -715,43 +742,43 @@ class NewsPage extends Page
 The data for the following classes would be stored across the following tables:
 
 ```yml
-SilverStripe\CMS\Model\SiteTree:
+Product:
   ID: Int
-  ClassName: Enum('SiteTree', 'Page', 'NewsPage')
+  ClassName: Enum('Sport', 'BallSport', 'Tennis')
   Created: Datetime
   LastEdited: Datetime
-  Title: Varchar
-  Content: Text
-NewsPage:
+  SKU: Text
+Product_Digital_Computer:
   ID: Int
-  Summary: Text
+  IsPreBuilt: 'Boolean'
 ```
+
+[hint]
+Note that because `DigitalProduct` doesn't define any new fields it doesn't need its own table. We should still declare a `$table_name` though - who knows if this model might have its own table created in the future (e.g. if we add fields to it later on).
+[/hint]
 
 Accessing the data is transparent to the developer.
 
 ```php
-$news = NewsPage::get();
+$products = Computer::get();
 
-foreach($news as $article) {
-    echo $article->Title;
+foreach($products as $product) {
+    echo $product->SKU;
 }
 ```
 
 The way the ORM stores the data is this:
 
-*  "Base classes" are direct sub-classes of [DataObject](api:SilverStripe\ORM\DataObject).  They are always given a table, whether or not they have
-   special fields.  This is called the "base table". In our case, `SiteTree` is the base table.
+*  "Base classes" are direct sub-classes of [DataObject](api:SilverStripe\ORM\DataObject). They are always given a table, whether or not they declare
+   their own fields. This is called the "base table". In our case, `Product` is the base table.
+*  The base table's `ClassName` field is set to class of the given record. The column is an enumeration of all
+   subclasses of the base class (including the base class itself).
+*  Each subclass of the base object will also be given its own table *as long as it has custom fields*. In the
+   example above, `DigitalProduct` didn't define any new fields, so an extra table would be redundant.
+*  In all the tables, `ID` is the primary key. A matching `ID` number is used for all parts of a particular record:
+   record #2 in the `Product` table refers to the same object as record #2 in the `Product_Digital_Computer` table.
 
-*  The base table's ClassName field is set to class of the given record.  It's an enumeration of all possible
-   sub-classes of the base class (including the base class itself).
-
-*  Each sub-class of the base object will also be given its own table, *as long as it has custom fields*.  In the
-   example above, NewsSection didn't have its own data, so an extra table would be redundant.
-
-*  In all the tables, ID is the primary key.  A matching ID number is used for all parts of a particular record:
-   record #2 in Page refers to the same object as record #2 in [SiteTree](api:SilverStripe\CMS\Model\SiteTree).
-
-To retrieve a news article, Silverstripe CMS joins the [SiteTree](api:SilverStripe\CMS\Model\SiteTree), [Page](api:SilverStripe\CMS\Model\SiteTree\Page) and NewsPage tables by their ID fields.
+To retrieve a `Computer` record, Silverstripe CMS joins the `Product` and `Product_Digital_Computer` tables by their `ID` columns.
 
 ## Related Lessons
 * [Introduction to the ORM](https://www.silverstripe.org/learn/lessons/v4/introduction-to-the-orm-1)

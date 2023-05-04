@@ -39,12 +39,13 @@ i18n::set_locale('ca_AD'); // Setting to Catalan (Andorra)
 ```
 
 Once we set a locale, all the calls to the translator function will return strings according to the set locale value, if
-these translations are available. See [unicode.org](http://unicode.org/cldr/data/diff/supplemental/languages_and_territories.html) 
+these translations are available. See [unicode.org's Language-Territory Information](https://unicode-org.github.io/cldr-staging/charts/38/supplemental/language_territory_information.html) 
 for a complete listing of available locales.
 
-The `i18n` logic doesn't set the PHP locale via [setlocale()](http://php.net/setlocale).
+The `i18n` logic doesn't set the PHP locale via [`setlocale()`](https://php.net/setlocale).
 Localisation methods in Silverstripe CMS rely on explicit locale settings as documented below.
-If you rely on PHP's built-in localisation such as [strftime()](http://php.net/strftime),
+If you rely on PHP's built-in localisation such as [`date()`](https://www.php.net/manual/en/function.date.php)
+or [`IntlDateFormatter::format()`](https://www.php.net/manual/en/intldateformatter.format.php),
 please only change locale information selectively. Setting `LC_ALL` or `LC_NUMERIC` will cause issues with Silverstripe CMS
 operations such as decimal separators in database queries.
 
@@ -52,23 +53,22 @@ operations such as decimal separators in database queries.
 
 As you set the locale you can also get the current value, just by calling [i18n::get_locale()](api:SilverStripe\i18n\i18n::get_locale()).
 
-### Declaring the content language in HTML		{#declaring_the_content_language_in_html}
+### Declaring the content language in HTML {#declaring_the_content_language_in_html}
 
 To let browsers know which language they're displaying a document in, you can declare a language in your template.
 
-
 ```html
-//'Page.ss' (HTML)
+<!-- 'Page.ss' (HTML) -->
 <html lang="$ContentLocale">
 
-//'Page.ss' (XHTML)
+<!-- 'Page.ss' (XHTML) -->
 <html lang="$ContentLocale" xml:lang="$ContentLocale" xmlns="http://www.w3.org/1999/xhtml">
 ```
 
 Setting the `<html>` attribute is the most commonly used technique. There are other ways to specify content languages
-(meta tags, HTTP headers), explained in this [w3.org article](http://www.w3.org/International/tutorials/language-decl/).
+(meta tags, HTTP headers), explained in this [w3.org article](https://www.w3.org/International/tutorials/language-decl/).
 
-You can also set the [script direction](http://www.w3.org/International/questions/qa-scripts),
+You can also set the [script direction](https://www.w3.org/International/questions/qa-scripts),
 which is determined by the current locale, in order to indicate the preferred flow of characters
 and default alignment of paragraphs and tables to browsers.
 
@@ -92,15 +92,15 @@ i18n::config()
     ->set('time_format', 'HH:mm');
 ```
 
-Localization in Silverstripe CMS uses PHP's [intl extension](http://php.net/intl).
-Formats for it's [IntlDateFormatter](http://php.net/manual/en/class.intldateformatter.php)
+Localization in Silverstripe CMS uses PHP's [intl extension](https://www.php.net/intl).
+Formats for it's [IntlDateFormatter](https://www.php.net/manual/en/class.intldateformatter.php)
 are defined in [ICU format](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#simpledateformat),
-not PHP's built-in [date()](http://nz.php.net/manual/en/function.date.php).
+not PHP's built-in [date()](https://www.php.net/manual/en/function.date.php).
 
 These settings are not used for CMS presentation.
 Users can choose their own locale, which determines the date format
 that gets presented to them. Currently this is a mix of PHP defaults (for readonly `DateField` and `TimeField`),
-browser defaults (for `DateField` on browsers supporting HTML5), and [Moment.JS](http://momentjs.com/)
+browser defaults (for `DateField` on browsers supporting HTML5), and [Moment.JS](https://momentjs.com/)
 client-side logic (for `DateField` polyfills and other readonly dates and times).
 
 ### Adding locales
@@ -129,13 +129,13 @@ are replaced with their base characters, `pâté` becomes `pate`.
 
 It is advisable to set the `SS_Transliterator.use_iconv` setting to true via config for systems
 which have `iconv` extension enabled and configured.
-See [the php documentation on iconv](http://php.net/manual/en/book.iconv.php) for more information.
+See [the php documentation on iconv](https://www.php.net/manual/en/book.iconv.php) for more information.
 
 In order to allow for so called "multibyte" characters outside of the ASCII subset,
 limit the character filtering in the underlying configuration setting,
 by setting `URLSegmentFilter.default_use_transliterator` to `false` in your YAML configuration.
 
-Please refer to [W3C: Introduction to IDN and IRI](http://www.w3.org/International/articles/idn-and-iri/) for more details.
+Please refer to [W3C: Introduction to IDN and IRI](https://www.w3.org/International/articles/idn-and-iri/) for more details.
 
 ### i18n in Form Fields
 
@@ -193,7 +193,7 @@ i18n also supports locale-respective pluralisation rules. Many languages have mo
 unlike English which has two only; One for the singular, and another for any other number.
 
 More information on what forms these plurals can take for various locales can be found on the
-[CLDR documentation](http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html)
+[CLDR documentation](https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html)
 
 The ability to pluralise strings is provided through the `i18n::_t` method when supplied with a
 `{count}` argument and `|` pipe-delimiter provided with the default string.
@@ -263,10 +263,6 @@ _t(__CLASS__ . '.GREETING', 'Welcome!');
 
 #### Usage in Template Files
 
-[hint]
-The preferred template syntax has changed somewhat since [version 2.x](http://doc.silverstripe.org/framework/en/2.4/topics/i18n#usage-2).
-[/hint]
-
 In `.ss` template files, instead of `_t(params)` the syntax `<%t params %>` is used. The syntax for passing parameters to the function is quite different to
 the PHP version of the function.
 
@@ -276,13 +272,13 @@ the PHP version of the function.
 
 
 ```ss
-// Simple string translation
+<%-- Simple string translation --%>
 <%t Namespace.Entity "String to translate" %>
 
-// Using injection to add variables into the translated strings (note that $Name and $Greeting must be available in the current template scope).
+<%-- Using injection to add variables into the translated strings (note that $Name and $Greeting must be available in the current template scope). --%>
 <%t Header.Greeting "Hello {name} {greeting}" name=$Name greeting=$Greeting %>
 
-// Plurals follow the same convention, required a `|` and `{count}` in the default string
+<%-- Plurals follow the same convention, required a `|` and `{count}` in the default string --%>
 <%t MyObject.PLURALS 'An item|{count} items' count=$Count %>
 ```
 
@@ -301,13 +297,13 @@ otherwise it won't pick up locale changes.
 
 ## Collecting text
 
-To collect all the text in code and template files we have just to visit: `http://localhost/dev/tasks/i18nTextCollectorTask`
+To collect all the text in code and template files we have just to visit: `https://www.example.com/dev/tasks/i18nTextCollectorTask`
 
-Text collector will then read the files, build the master string table for each module where it finds calls to the
+Text collector will then read the files, build the string table for each module where it finds calls to the
 underscore function, and tell you about the created files and any possible entity redeclaration.
 
 If you want to run the text collector for just one module you can use the 'module' parameter: 
-`http://localhost/dev/tasks/i18nTextCollectorTask/?module=cms`
+`https://www.example.com/dev/tasks/i18nTextCollectorTask/?module=cms`
 
 [hint]
 You'll need to install PHPUnit to run the text collector (see [testing-guide](/developer_guides/testing)).
@@ -351,11 +347,11 @@ There are a few special cases:
 ## Language definitions
 
 Each module can have one language table per locale, stored by convention in the `lang/` subfolder.
-The translation is powered by [Zend_Translate](http://framework.zend.com/manual/current/en/modules/zend.i18n.translating.html),
+The translation is powered by [Zend_Translate](https://framework.zend.com/manual/current/en/modules/zend.i18n.translating.html),
 which supports different translation adapters, dealing with different storage formats.
 
 By default, Silverstripe CMS uses a YAML format which is loaded via the
-[symfony/translate](http://symfony.com/doc/current/translation.html)  library.
+[symfony/translate](https://symfony.com/doc/current/translation.html) library.
 
 Example: framework/lang/en.yml (extract)
 
@@ -413,9 +409,9 @@ Requirements::add_i18n_javascript('vendor/module:path/to/lang');
 ###  Translation Tables in JavaScript
 
 Translation tables are automatically included as required, depending on the configured locale in `i18n::get_locale()`.
-As a fallback for partially translated tables we always include the master table (`en.js`) as well.
+As a fallback for partially translated tables we always include the dist table (`en.js`) as well.
 
-Master Table (`<my-module-dir>/javascript/lang/en.js`)
+Dist Table (`<my-module-dir>/javascript/lang/en.js`)
 
 
 ```js
@@ -437,9 +433,7 @@ ss.i18n.addDictionary('de', {
 });
 ```
 
-For most core modules, these files are generated by a
-[build task](https://github.com/silverstripe/silverstripe-buildtools/blob/master/src/GenerateJavascriptI18nTask.php),
-with the actual source files in a JSON
+For most core modules, these files are generated by a build task, with the actual source files in a JSON
 format which can be processed more easily by external translation providers (see `javascript/lang/src`).
 
 ### Basic Usage
@@ -496,5 +490,3 @@ alert(ss.i18n.inject(
 
  * [Help to translate](../../contributing/translations) - Instructions for online collaboration to translate core
  * [Help to translate](../../contributing/translation_process) - Instructions for adding translation to your own modules
- * [http://www.i18nguy.com/](http://www.i18nguy.com/)
- * [balbus.tk i18n notes](http://www.balbuss.com/internationalize/)

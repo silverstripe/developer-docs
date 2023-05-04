@@ -9,43 +9,45 @@ icon: sitemap
 ## Theme types
 
 Templates in Silverstripe CMS are bundled into one of two groups:
- - Default Templates, such as those provided in `mymodule/templates` folder.
- - Theme templates, such as those provided in `themes/mytheme/templates` folders.
+
+- default Templates, such as those provided in `vendor/silverstripe/framework/templates/` or `app/templates/` folders
+- theme templates, such as those provided in `themes/mytheme/templates/` folders.
 
 The default templates provide basic HTML formatting for elements such as Forms, Email, or RSS Feeds, and provide a
-generic base for web content to be built on.
+generic base for web content to be built on. They are also used to generate markup for many sections of the CMS.
 
 ## Template types and locations
 
-Typically all templates within one of the above locations will be nested in a folder deterministically through
-the fully qualified namespace of the underlying class, and an optional `type` specifier to segment template types.
-Basic template types include `Layout` and `Includes`, and a less commonly used `Content` type.
+Often templates will have the same name as the class they are used to render. So, your `Page` class will
+be rendered with the `templates/Page.ss` template.
 
-For instance, a class `SilverStripe\Blog\BlogPage` will have a default template of type `Layout`
-in the folder `vendor/silverstripe/blog/templates/SilverStripe/Blog/Layout/BlogPage.ss`.
+When the class has a namespace, the namespace will be interpreted as a subfolder within the `templates` path.
+For example, the class `SilverStripe\Control\Controller` will be rendered with the
+`templates/SilverStripe/Control/Controller.ss` template.
 
-Note: The optional `type`, if specified, will require a nested folder at the end of the parent namespace
-(`SilverStripe\Blog`) to the class, but before the filename (`BlogPage`).
+If you are using template "types" like `Layout` or `Includes`, these are just folders which you need
+to append to your template file location (e.g. `templates/Layout/Page.ss` and `templates/SilverStripe/Control/Layout/Controller.ss` in the examples above).
 
-Templates not backed by any class can exist in any location, but must always be referred to in code
-by the full path (from the `templates` folder onwards).
+Note however that when using the `<% include %>` template tag, you don't reference the `Includes/` folder. So for a template located at `templates/SilverStripe/Blog/Includes/BlogSideBar.ss` you would include it as `<% include SilverStripe\Blog\BlogSideBar %>`
+
+When choosing templates to use, unless a file has been explicitly declared, SilverStripe CMS will look through all of the relevant templates until it finds a match.
+In the CMS, the priority order is determined by the `LeftAndMain.admin_themes` configuration array, which includes all of the default templates but typically _excludes_ theme templates. On the front-end, it is determined by the `SSViewer.themes` configuration array. See [Cascading themes](#cascading-themes) for more information.
 
 ### Nested Layouts through `$Layout` type
 
-Silverstripe CMS has basic support for nested layouts through a fixed template variable named `$Layout`. It's used for 
-storing top level template information separate to individual page layouts.
+Silverstripe CMS has basic support for nested layouts through a fixed template variable named `$Layout`. It's used for
+keeping individual page layouts separate from top level template information (where you'll put your `<head>` and top-level nagivation, etc).
 
-When `$Layout` is found within a root template file (one in `templates`), Silverstripe CMS will attempt to fetch a child 
+When `$Layout` is found within a root template file (ie. a template file directly in `templates/`), Silverstripe CMS will attempt to fetch a child
 template from the `templates/<namespace>/Layout/<class>.ss` path, where `<namespace>` and `<class>` represent
-the class being rendered. It will do a full sweep of your modules, core and custom code as it 
-would if it was looking for a new root template, as well as looking down the class hierarchy until
+the class being rendered. It will check for templates matching the current classname first, and if none are found it will search up the class hierarchy until
 it finds a template.
 
-This is better illustrated with an example. Take for instance our website that has two page types `Page` and `HomePage`.
+This is better illustrated with an example. Take for instance our website that has two page types `Page` and `App\PageTypes\HomePage`.
 
 Our site looks mostly the same across both templates with just the main content in the middle changing. The header, 
 footer and navigation will remain the same and we don't want to replicate this work across more than one spot. The 
-`$Layout` function allows us to define the child template area which can be overridden.
+`$Layout` template variable allows us to define the child template area which wil be replaced with the relevant Layout template.
 
 **app/templates/Page.ss**
 
@@ -68,42 +70,40 @@ footer and navigation will remain the same and we don't want to replicate this w
 **app/templates/Layout/Page.ss**
 
 ```ss
-<p>You are on a $Title page</p>
+<p>You are on a $ClassName.ShortName page</p>
 
 $Content
 ```
 
-**app/templates/Layout/HomePage.ss**
+**app/templates/App/PageTypes/Layout/HomePage.ss**
 
 ```ss
 <h1>This is the homepage!</h1>
 
-<blink>Hi!</blink>
+<strong>Hi!</strong>
 ```
-
-If your classes have a namespace, the Layout folder will be found inside of the appropriate namespaced folder.
-
-For example, the layout template for `SilverStripe\Control\Controller` will be
-found at `templates/SilverStripe/Control/Layout/Controller.ss`.
 
 ## Cascading themes
 
-Within each theme or templates folder, a specific path representing a template can potentially be found. As
-there may be multiple instances of any matching path for a template across the set of all themes, a cascading
-search is done in order to determine the resolved template for any specified string.
+There are potentially multiple themes, and definitely multiple modules with `template/` directories, in a typical
+Silverstripe project. Across all of these template directories, there could be multiple file paths matching any
+given template name.
+For this reason, a cascading search is done to determine the resolved template for any specified template name.
 
 In order to declare the priority for this search, themes can be declared in a cascading fashion in order
 to determine resolution priority. This search is based on the following three configuration values:
 
- - `SilverStripe\View\SSViewer.themes` - The list of all themes in order of priority (highest first).
+- `SilverStripe\View\SSViewer.themes` - The list of all themes in order of priority (highest first).
    This includes the default set via `$default` as a theme set. This config is normally set by the web
    developer.
- - `SilverStripe\Core\Manifest\ModuleManifest.module_priority` - The list of modules within which `$default`
+  - Note: In the admin panel (aka the CMS aka the backend), `SilverStripe\Admin\LeftAndMain.admin_themes` is used instead.
+    It explicitly _does not_ include front-end themes.
+- `SilverStripe\Core\Manifest\ModuleManifest.project` - The name of the `$project` module, which
+   defaults to `app`.
+- `SilverStripe\Core\Manifest\ModuleManifest.module_priority` - The list of modules within which `$default`
    theme templates should be sorted, in order of priority (highest first). This config is normally set by
    the module author, and does not normally need to be customised. This includes the `$project` and
    `$other_modules` placeholder values.
- - `SilverStripe\Core\Manifest\ModuleManifest.project` - The name of the `$project` module, which
-   defaults to `app`.
 
 ### ThemeResourceLoader
 
@@ -116,13 +116,14 @@ For each path the loader will search in this order:
  - If a theme is a set (declared with the `$` prefix, e.g. `$default`) it will perform a nested search within 
    that set.
  - When searching the `$default` set, all modules will be searched in the order declared via the `module_priority`
-   config, interpolating keys `$project` and `$other_modules` as necessary.
+   config, interpolating keys `$project` and `$other_modules` as necessary. By default, your project's templates should
+   be checked before any vendor modules.
  - When the first template is found, it will be immediately returned, and will not continue to search. 
 
 ### Declaring themes
 
 All themes can be enabled and sorted via the `SilverStripe\View\SSViewer.themes` config value. For reference
-on what syntax styles you can use for this value please see the [themes configuration](./themes) documentation.
+on what syntax styles you can use for this value please see the [Configuring themes](./themes#configuring-themes) documentation.
 
 Basic example:
 
@@ -159,21 +160,28 @@ SilverStripe\Core\Manifest\ModuleManifest:
     - myvendor/mymodule
 ```
 
-In this example, our module has applied its priority lower than framework modules, meaning template lookup
-will only defer to our modules templates folder if not found elsewhere.
+In this example, your module has applied its priority _lower_ than the framework and "other" modules, meaning template lookup
+will only defer to your modules templates folder if not found elsewhere.
+
+You can use `Before` to declare that your module should take precedence over other modules' templates.
 
 ### Declaring project
 
-The default project structure contains an `app/` folder,
-which also acts as as a module in terms of template priorities.
-See [Directory Structure](/../getting_started/directory_structure)
-to find out how to rename this folder.
+The default project structure contains an `app/` folder, which (if you used `silverstripe/installer` to generate your project)
+is automatically declared as the "project" via the `SilverStripe\Core\Manifest\ModuleManifest.project` configuration property.
+It effectively acts as as a module in terms of template priorities, so declaring it explicitly as the project means it can be handled
+specially.
+
+For example, in the `ModuleManifest.module_priority` configuration mentioned above, the `$project` placeholder value is used to
+represent the project in the priorty order.
+
+See [Directory Structure](/getting_started/directory_structure) to find out how to declare a folder with some arbitrary name as the project.
 
 ### About module "names"
 
 Module names are derived from their local `composer.json` files using the following precedence:
 * The value of the `name` attribute in `composer.json`
-* The value of `extras.installer_name` in `composer.json`
+* The value of `extras.installer-name` in `composer.json`
 * The basename of the directory that contains the module
 
 ## Related Lessons

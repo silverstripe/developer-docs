@@ -9,7 +9,7 @@ icon: sitemap
 ## Overview
 
 The CMS tree for viewing hierarchical structures (mostly pages) is powered
-by the [jstree](http://jstree.com) library. It is configured through
+by the [jstree](https://jstree.com) library. It is configured through
 `client/src/legacy/LeftAndMain.Tree.js` in the `silverstripe/admin` module, as well as some
 HTML5 metadata generated on its container (see the `data-hints` attribute).
 
@@ -107,7 +107,7 @@ class HomePage extends Page
 }
 ```
 
-The CMS uses an icon set from [Fontastic](http://fontastic.me/). New icons may be [requested](https://github.com/silverstripe/silverstripe-admin/issues/new) and added to the [core icon set](https://silverstripe.github.io/silverstripe-pattern-lib/?selectedKind=Admin%2FIcons&selectedStory=Icon%20reference&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook%2Factions%2Factions-panel). The benefit of having icons added to the core set is that you can use icons more consistently across different modules allowing every module to use a different icon with the same style.
+The CMS uses an icon set from [Fontastic](https://fontastic.me/). New icons may be [requested](https://github.com/silverstripe/silverstripe-admin/issues/new) and added to the [core icon set](https://silverstripe.github.io/silverstripe-pattern-lib/?selectedKind=Admin%2FIcons&selectedStory=Icon%20reference&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook%2Factions%2Factions-panel). The benefit of having icons added to the core set is that you can use icons more consistently across different modules allowing every module to use a different icon with the same style.
 
 You can also add your own icon by specifying an image path to override the Fontastic icon set:
 

@@ -13,8 +13,6 @@ This page outlines those who are part of the Core Committer team and outlines th
 ## Core Committer team
 
 * [Aaron Carlino](https://github.com/unclecheese/)
-* [Chris Joe](https://github.com/flamerohr/)
-* [Daniel Hensby](https://github.com/dhensby)
 * [Garion Herman](https://github.com/cheddam)
 * [Guy Marriott](https://github.com/ScopeyNZ)
 * [Guy Sartorelli](https://github.com/GuySartorelli)

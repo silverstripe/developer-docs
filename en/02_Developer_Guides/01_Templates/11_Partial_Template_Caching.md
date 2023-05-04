@@ -4,13 +4,12 @@ summary: Cache a section of a template Reduce rendering time with cached templat
 icon: tags
 ---
 
-## Partial template caching
+# Partial template caching
 
 Partial template caching is a feature that allows caching of rendered portions of templates. Cached content
-is fetched from a [cache backend](../performance/caching), instead of being regenerated repeatedly.
+is fetched from a [cache backend](../performance/caching), instead of being regenerated for every request.
 
-
-### Base syntax
+## Base syntax
 
 ```ss
 <% cached $CacheKey if $CacheCondition %>
@@ -21,14 +20,15 @@ is fetched from a [cache backend](../performance/caching), instead of being rege
 This is not a definitive example of the syntax, but it shows the most common use case.
 
 [note]
-See also [Complete Syntax definition](#complete-syntax-defintition) section
+See also the [Complete syntax definition](#complete-syntax-definition) section
 [/note]
 
-The key parts are `$CacheKey`, `$CacheCondition` and `$CacheableContent`.  
+The key parts are `$CacheKey` and `$CacheCondition`.
 The following sections explain every one of them in more detail.
 
+`$CacheableContent` is just any regular template content, including raw markup, templating syntax, etc.
 
-#### $CacheKey
+### $CacheKey
 
 Defines a unique key for the cache storage.
 
@@ -36,13 +36,13 @@ Defines a unique key for the cache storage.
 Avoid heavy computations in `$CacheKey` as it is evaluated for every template render.
 [/warning]
 
-The formal definition is
- - Optional list of template expressions delimited by comma
-
-The syntax is
+The syntax is an optional list of template expressions delimited by commas:
 
 ```ss
 <% cached [$key1[, $key2[, ...[, $keyN]]]] ... %>
+
+<%-- e.g: --%>
+<% cached $UniqueKey, $CurrentMember.ID, $MyHasOne.ID %>
 ```
 
 The final value is concatenated by the Template Engine into a string. When doing so, Template Engine
@@ -67,7 +67,7 @@ Here is how it works in detail:
    ```yml
    # app/_config/view.yml
    SilverStripe\View\SSViewer:
-     global_key: '$CurrentReadingMode, $CurrentUser.ID, $Locale'
+     global_key: '$CurrentReadingMode, $CurrentUser.ID, $CurrentLocale'
    ```
 
 2. Block hash
@@ -77,7 +77,7 @@ Here is how it works in detail:
    This is done at the template compilation stage, so
    the compiled version of the template contains the hash precalculated.
 
-   `Block hash` main purpose is to invalidate cache when template itself changes.
+   The main purpose of the block hash is to invalidate cache when the template itself changes.
 
 3. `$CacheKey` hash
 
@@ -91,15 +91,13 @@ Here is how it works in detail:
    Even if `$CacheKey` is omitted, `SilverStripe\View\SSViewer::$global_key` and `Block hash` values are still
    getting used to generate cache key for the caching backend storage.  
 
-[note]
-##### Cache key calculated in controller
+#### Cache key calculated in controller
 
 If your caching logic is complex or re-usable, you can define a method on your controller to generate a cache key 
 fragment.
 
 For example, a block that shows a collection of rotating slides needs to update whenever the relationship 
 `Page::$many_many = ['Slides' => 'Slide']` changes. In `PageController`:
-
 
 ```php
 public function SliderCacheKey() 
@@ -109,7 +107,7 @@ public function SliderCacheKey()
         $this->ID,
         // identify which objects are in the list and their sort order
         implode('-', $this->Slides()->Column('ID')),
-        // works for both has_many and many_many relationships
+        // identify if any objects are updated - works for both has_many and many_many relationships
         $this->Slides()->max('LastEdited')
     ];
     return implode('-_-', $fragments);
@@ -118,44 +116,39 @@ public function SliderCacheKey()
 
 Then reference that function in the cache key:
 
-
 ```ss
-<% cached $SliderCacheKey if ... %>
+<% cached $SliderCacheKey %>
 ```
-[/note]
 
-
-#### $CacheCondition
+### $CacheCondition
 
 Defines if caching is required for the block.
 
-Condition is optional and if omitted, `true` is implied.
+The condition is optional and if omitted, `true` is implied.
 
-If the value is `false`, the block skips `$CacheKey` evaluation completely, does not lookup
+If the condition resolves to `false`, the block skips `$CacheKey` evaluation completely, does not lookup
 the data in the cache storage, neither preserve any data in the storage.
 The template within the block keeps working as is, same as it would do without
 `<% cached %>` block surrounding it.
 
 Although `$CacheCondition` is optional, it is highly recommended. For example,
-if you use `$DataObject->ID` as your `$CacheKey`, you may use
-`$DataObject->ID > 0` as the condition.
+if you use `$ID` as your `$CacheKey`, you may use `$ID > 0` (or simply `$isInDB`) as the condition.
 
-Without it:
-  - your cache backend will always be queried for cache (for every template render)
-  - your cache backend may be cluttered with redundant and useless data
+```ss
+<% cached $ID if $ID > 0 %>
+```
 
+Without a condition:
+
+- your cache backend will always be queried for cache (for every template render)
+- your cache backend may be cluttered with redundant and useless data
 
 [warning]
 The `$CacheCondition` value is evaluated on every template render and should be as lightweight as possible.
+If you need a complex condition, it may be sensible to calculate the condition in `onBeforeWrite()` for your model and store the result in the database.
 [/warning]
 
-
-#### $CacheableContent
-
-The content block may contain any usual template syntax.
-
-
-### Cache storage
+## Cache storage
 
 The cache storage may be re-configured via `Psr\SimpleCache\CacheInterface.cacheblock` key for [Injector](../extending/injector).  
 By default, it is initialised by `SilverStripe\Core\Cache\DefaultCacheFactory` with the following parameters:
@@ -164,7 +157,7 @@ By default, it is initialised by `SilverStripe\Core\Cache\DefaultCacheFactory` w
 - `defaultLifetime: 600`
 
 [note]
-The defaultLifetime 600 means every cache record expires in 10 minutes.  
+The defaultLifetime is in seconds, so a value of `600` means every cache record expires in 10 minutes.  
 If you have good `$CacheKey` and `$CacheCondition` implementations, you may want to tune these settings to
 improve performance.
 [/note]
@@ -173,7 +166,6 @@ Example below shows how to set partial cache expiry to one hour.
 
 ```yaml
 # app/_config/cache.yml
-
 ---
 Name: app-cache
 After:
@@ -182,47 +174,56 @@ After:
 SilverStripe\Core\Injector\Injector:
   Psr\SimpleCache\CacheInterface.cacheblock:
     constructor:
-      namespace: "cacheblock"
       defaultLifetime: 3600
 ```
 
-See [Execution pipeline: Manifests](/developer_guides/execution_pipeline/manifests) for storage of compiled templates.
+See [Execution pipeline: Manifests](/developer_guides/execution_pipeline/manifests) for information about how compiled templates are stored.
 
-### Nested cached blocks
+## Nested cached blocks
 
 Every nested cache block is processed independently.
 
 Let's consider the following example:
+
 ```ss
 <% cached $PageKey %>
-  <!-- Header -->
-  <% cached $BodyKey %> <!-- Body --> <% end_cached %>
-  <!-- Footer -->
+  <%-- Header goes here --%>
+
+  <% cached $BodyKey %>
+    <%-- Body goes here --%>
+  <% end_cached %>
+
+  <%-- Footer goes here --%>
 <% end_cached %>
 ```
 
 The template processor will transparently flatten the structure into something similar to the following pseudo-code:
 
 ```ss
-<% cached $PageKey %><!-- Header --><% end_block %>
-<% cached $BodyKey %><!-- Body --><% end_cached %>
-<% cached $PageKey %><!-- Footer --><% end_cached %>
+<% cached $PageKey %><%-- Header goes here --%><% end_cached %>
+<% cached $BodyKey %><%-- Body goes here --%><% end_cached %>
+<% cached $PageKey %><%-- Footer goes here --%><% end_cached %>
 ```
 
 [note]
 `$PageKey` is used twice, but evaluated only once per render because of [template object caching](caching/#object-caching).
+If the body section should also be cached with the same requirements as the header and footer sections, it may make sense to use `<% cached $PageKey, $BodyKey %>`.
 [/note]
 
+## Uncached
 
-### Uncached
-
-The tag `<% uncached %> ... <% end_uncached %>` disables caching for its content.  
+The tag `<% uncached %> ... <% end_uncached %>` disables caching for its content.
+In this example, the body content is not cached, but the header and footer sections are.
 
 ```ss
 <% cached $PageKey %>
-  <!-- Header -->
-  <% uncached %><!-- Body --><% end_uncached %>
-  <!-- Footer -->
+  <%-- Header goes here --%>
+
+  <% uncached %>
+    <%-- Body goes here --%>
+  <% end_uncached %>
+
+  <%-- Footer goes here --%>
 <% end_cached %>
 ```
 
@@ -235,7 +236,7 @@ those will not have any effect on the parent template caching blocks.
 [/warning]
 
 
-### Nesting in LOOP and IF blocks
+## Nesting in LOOP and IF blocks
 
 Currently, a cache block cannot be included in `if` and `loop` blocks.  
 The template engine will throw an error letting you know if you've done this.
@@ -245,33 +246,33 @@ You may often get around this using aggregates or by un-nesting the block.
 
 E.g.
 
-```
+```ss
 <% cached $LastEdited %>
   <% loop $Children %>
-      <% cached $LastEdited %>
+      <% cached $Up.LastEdited, $LastEdited %>
           $Name
       <% end_cached %>
   <% end_loop %>
 <% end_cached %>
 ```
 
-Might be re-written as something like that:
+Might be re-written (and more efficient) as something like this:
 
-```
+```ss
 <% cached $LastEdited %>
-    <% cached $AllChildren.max('LastEdited') %>
+    <% cached $LastEdited, $AllChildren.max('LastEdited') %>
         <% loop $Children %>
             $Name
         <% end_loop %>
     <% end_cached %>
 <% end_cached %>
 ```
+
 [/note]
 
+## Unless (syntax sugar)
 
-### Unless (syntax sugar)
-
-`if` keyword may be swapped with keyword `unless`, which inverts the boolean value evaluation.
+The `if` keyword may be swapped with the `unless` keyword, which inverts the boolean value evaluation.
 
 The two following forms produce the same result
 
@@ -287,8 +288,7 @@ The two following forms produce the same result
 <% end_cached %>
 ```
 
-
-### Complete Syntax definition
+## Complete Syntax definition
 
 ```ss
 <% [un]cached [$CacheKey[, ...]] [(if|unless) $CacheCondition] %>
@@ -296,8 +296,7 @@ The two following forms produce the same result
 <% end_[un]cached %>
 ```
 
-
-### Examples
+## Examples
 
 ```ss
 <% cached %>
@@ -338,16 +337,14 @@ The two following forms produce the same result
 
 ```ss
 <% cached 'contentblock', $LastEdited, $CurrentMember.ID if $CurrentMember && not $CurrentMember.isAdmin %>
-  <!--
+  <%--
        Hash of this content block is also included
        into the final Cache Key value along with
        SilverStripe\View\SSViewer::$global_key
-  -->
+  --%>
   <% uncached %>
       This text is always dynamic (never cached)
   <% end_uncached %>
-  <!--
-       This bit is cached again
-  -->
+  <%-- This bit is cached again --%>
 <% end_cached %>
 ```

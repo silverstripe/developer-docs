@@ -12,20 +12,19 @@ the server to update templates, website logic, and perform upgrades or maintenan
 
 ## PHP
 
-* PHP >=8.1
+* PHP >=8.1, <=8.2
 * PHP extensions: `ctype`, `dom`, `fileinfo`, `hash`, `intl`, `mbstring`, `session`, `simplexml`, `tokenizer`, `xml`
 * PHP configuration: `memory_limit` with at least `48M`
 * PHP extension for image manipulation: Either `gd` or `imagick`
 * PHP extension for a database connector (e.g. `mysql`)
 
-Use [phpinfo()](http://php.net/manual/en/function.phpinfo.php) to inspect your configuration.
+Use [phpinfo()](https://php.net/manual/en/function.phpinfo.php) to inspect your configuration.
 
 Silverstripe CMS tracks the official [PHP release support timeline](https://www.php.net/supported-versions.php). When a PHP version reaches end-of-life, Silverstripe CMS drops support for it in the next minor release.
 
 ## Database
 
-* MySQL >=5.6 (
-  built-in, [commercially supported](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/))
+* MySQL >=5.6 (built-in, [commercially supported](/project_governance/supported_modules/))
 * PostgreSQL ([third party module](https://addons.silverstripe.org/add-ons/silverstripe/postgresql), community
   supported)
 * SQL Server ([third party module](https://addons.silverstripe.org/add-ons/silverstripe/mssql), community supported)
@@ -33,35 +32,32 @@ Silverstripe CMS tracks the official [PHP release support timeline](https://www.
 
 ### Default MySQL Collation
 
-In Silverstripe CMS Recipe 4.7 and later, new projects default to the `utf8mb4_unicode_ci` collation when running
+New projects default to the `utf8mb4_unicode_ci` collation when running
 against MySQL, which offers better support for multi-byte characters such as emoji. However, this may cause issues
 related to Varchar fields exceeding the maximum indexable size:
 
-- MySQL 5.5 and lower cannot support indexes larger than 768 bytes (192 characters)
 - MySQL 5.6 supports larger indexes (3072 bytes) if the `innodb_large_prefix` setting is enabled (but not by default)
 - MySQL 5.7 and newer have `innodb_large_prefix` enabled by default
 - MariaDB ~10.1 matches MySQL 5.6's behaviour, >10.2 matches 5.7's.
 
 You can rectify this issue by upgrading MySQL, enabling the `innodb_large_prefix` setting if available, or reducing the
-size of affected fields. If none of these solutions are currently suitable, you can remove the new collation
-configuration from `app/_config/mysite.yml` to default back to the previous default collation.
-
-Existing projects that upgrade to Recipe 4.7.0 will unintentionally adopt this configuration change. Recipe 4.7.1 and
-later are unaffected. See [the release notes](/changelogs/4.7.0/#default-mysql-collation-updated) for more information.
+size of affected fields. If none of these solutions are currently suitable, you can remove the collation
+configuration from `app/_config/mysite.yml` to default back to the legacy default collation.
 
 ### Connection mode (sql_mode) when using MySQL server >=5.7.5
 
 In MySQL versions >=5.7.5, the `ANSI` sql_mode setting behaves differently and includes the `ONLY_FULL_GROUP_BY`
 setting. It is generally recommended to leave this setting as-is because it results in deterministic SQL. However, for
 some advanced cases, the sql_mode can be configured on the database connection via the configuration API (
-see `MySQLDatabase::$sql_mode` for more details.) This setting is only available in Silverstripe CMS 4.7 and later.
+see `MySQLDatabase::$sql_mode` for more details.)
 
- ### MySQL/MariaDB Int width in schema
+### MySQL/MariaDB Int width in schema
 
 MySQL 8.0.17 stopped reporting the width attribute for integers while MariaDB did not change its behaviour.
 This results in constant rebuilding of the schema when MySQLSchemaManager expects a field to look like e.g.
-`INT(8)` and MySQL server reports it simply as `INT`. MySQLSchemaManager has been updated to detect the MySQL
+`INT(8)` and MySQL server reports it simply as `INT`. MySQLSchemaManager attempts to detect the MySQL
 server implementation and act accordingly. In cases when auto-detection fails, you can force the desired behaviour like this:
+
 ```yml
 SilverStripe\ORM\Connect\MySQLSchemaManager:
     schema_use_int_width: true # or false when INT widths should be ignored
@@ -77,14 +73,12 @@ regardless of your webserver setup.
 
 ### Public webroot
 
-The webroot of your webserver should be configured to the `public/` subfolder. Projects created prior to Silverstripe CMS
-4.1 might be using the main project folder as the webroot. In this case, you are responsible for ensuring access to
-system files such as configuration in `*.yml` is protected from public access. We strongly recommend switching to more
-secure hosting via the `public/`. See [4.1.0 upgrading guide](/changelogs/4.1.0).
+The webroot of your webserver should be configured to the `public/` subfolder. Anything in the `public/` directory should
+be considered publicly accessible unless there are explicit webserver rules to prevent access (such as for [protected assets](#secure-assets)).
 
 ### Filesystem permissions
 
-During runtime, Silverstripe CMS needs read access for the webserver user to your base path (including your webroot). It
+During runtime, Silverstripe CMS needs read access for the webserver user to your webroot. It
 also needs write access for the webserver user to the following locations:
 
 * `public/assets/`: Used by the CMS and other logic to [store uploads](/developer_guides/files/file_storage)
@@ -92,17 +86,13 @@ also needs write access for the webserver user to the following locations:
   [Manifests](/developer_guides/execution_pipeline/manifests), [Object Caching](/developer_guides/performance/caching)
   and [Partial Template Caching](/developer_guides/templates/partial_template_caching).
   See [Environment Management](/getting_started/environment_management).
-* `.graphql-generated`: silverstripe/graphql version 4 introduces this directory. This is where your schema is
+* `.graphql-generated`: silverstripe/graphql uses this directory. This is where your schema is
   stored once it [has been built](/developer_guides/graphql/getting_started/building_the_schema). Best practice
   is to create it ahead of time, but if the directory doesn't exist and your project root is writable, the graphql
   module will create it for you.
-* `public/_graphql`: silverstripe/graphql version 4 introduces this directory. It's used for
+* `public/_graphql`: silverstripe/graphql uses this directory. It's used for
   [schema introspection](/developer_guides/graphql/tips_and_tricks#schema-introspection). You should treat this folder
   the same way you treat the `.graphql-generated` folder.
-
-[info]
-If you are still using silverstripe/graphql 3.x, you do not need the `.graphql-generated` or `public/_graphql` directories.
-[/info]
 
 If you aren't explicitly [packaging](#building-packaging-deployment)
 your Silverstripe CMS project during your deployment process, additional write access may be required to generate supporting
@@ -122,7 +112,8 @@ via `public/assets/.htaccess`. The file is generated dynamically during the `dev
 Additionally, access is whitelisted by file extension through a dynamically generated whitelist based on
 the `File.allowed_extensions` setting
 (see [File Security](/developer_guides/files/file_security#file-types)). This whitelist uses the same defaults
-configured through file upload through Silverstripe CMS, so is considered a second line of defence.
+configured through file upload through Silverstripe CMS, so is considered a second line of defence. If you do not
+use apache to serve your website you should find out what equivalent configuration you need to set for your webserver.
 
 ### Secure Assets {#secure-assets}
 
@@ -132,16 +123,18 @@ special `.protected/` folder (defaulting to `public/assets/.protected/`).
 
 Requests to files in the `.protected/` folder are routed to PHP by default when using Apache,
 through `public/assets/.htaccess`. If you are using another webserver, please follow our guides to ensure a secure
-setup. See [Developer Guides: File Security](/developer_guides/files/file_security) for details.
+setup. See the [other webservers](#other-webservers) section and
+[Developer Guides: File Security](/developer_guides/files/file_security) for details.
 
 For additional security, we recommend moving the `.protected/` folder out of `public/assets/`. This removes the
 possibility of a misconfigured webserver accidentally exposing these files under URL paths, and forces read access via
 PHP.
 
-This can be configured via [.env](/getting_started/environment_management) variable, relative to the `index.php`
-location.
+This can be configured via [.env](/getting_started/environment_management) variable, relative to the `public/`
+directory.
 
-```
+```bash
+# This will be inside your project root, along-side the public/ directory
 SS_PROTECTED_ASSETS_PATH="../.protected/"
 ```
 
@@ -169,12 +162,12 @@ Silverstripe CMS to be included in the package, or generated on the fly on each 
 The easiest way to ensure this is to commit auto generated files to source control. If those changes are considered too
 noisy, here's some pointers for auto-generated files to trigger and include in a deployment package:
 
-* `public/_resources/`: Frontend assets copied from the (inaccessible) `vendor/` folder
+* `public/_resources/`: Frontend resources copied from the (inaccessible) `vendor/` folder
   via [silverstripe/vendor-plugin](https://github.com/silverstripe/vendor-plugin).
-  See [Templates: Requirements](/developer_guides/templates/requirements#exposing-assets-webroot).
+  See [Templates: Requirements](/developer_guides/templates/requirements#exposing-resources-webroot).
 * `.graphql-generated/` and `public/_graphql/`: Schema and type definitions required by CMS and any GraphQL API endpoint.
   Generated by
-  [silverstripe/graphql v4](https://github.com/silverstripe/silverstripe-graphql). See
+  [silverstripe/graphql](https://github.com/silverstripe/silverstripe-graphql). See
   [building the schema](/developer_guides/graphql/getting_started/building_the_schema) and
   [deploying the schema](/developer_guides/graphql/getting_started/deploying_the_schema).
 * Various recipes create default files in `app/` and `public/` on `composer install`
@@ -199,7 +192,7 @@ worker pools for long-running downloads.
 ### URL Rewriting
 
 Silverstripe CMS expects URL paths to be rewritten to `public/index.php`. For Apache, this is preconfigured
-through `.htaccess` files, and expects using the `mod_rewrite` module. By default, these files are located
+through `.htaccess` files, and requires using the `mod_rewrite` module. By default, the relevant configuration files are located
 in `public/.htaccess` and `public/assets/.htaccess`.
 
 ### HTTP Headers
@@ -213,15 +206,13 @@ and [Developer Guides: File Security](/developer_guides/files/file_security) for
 
 Silverstripe CMS relies on the `Host` header to construct URLs such as "reset password" links, so you'll need to ensure that
 the systems hosting it only allow valid values for this header.
-See [Developer Guide: Security - Request hostname forgery](/developer_guides/security/secure_coding#request-hostname-forgery)
-.
+See [Developer Guide: Security - Request hostname forgery](/developer_guides/security/secure_coding#request-hostname-forgery).
 
 ### CDNs and other Reverse Proxies
 
 If your Silverstripe CMS site is hosted behind multiple HTTP layers, you're in charge of controlling which forwarded headers
 are considered valid, and which IPs can set them.
-See [Developer Guide: Security - Request hostname forgery](/developer_guides/security/secure_coding#request-hostname-forgery)
-.
+See [Developer Guide: Security - Request hostname forgery](/developer_guides/security/secure_coding#request-hostname-forgery).
 
 ### Symlinks
 
@@ -251,7 +242,7 @@ static error pages that bypass PHP execution when those pages are published in t
 are located in `public/assets/error-404.html` and `public/assets/error-500.html`. The default `public/.htaccess` file is
 configured to have Apache serve those pages based on their HTTP status code.
 
-### Other webservers (Nginx, IIS, Lighttpd)
+### Other webservers (Nginx, IIS, Lighttpd) {#other-webservers}
 
 Serving through webservers other than Apache requires more manual configuration, since the defaults configured
 through `.htaccess` don't apply. Please apply the considerations above to your webserver to ensure a secure hosting
@@ -262,9 +253,7 @@ There are various community supported installation instructions for different en
 see [Nginx webserver configuration](https://forum.silverstripe.org/t/nginx-webserver-configuration/2246).
 
 Silverstripe CMS is known to work with Microsoft IIS, and generates `web.config` files by default
-(
-see [Microsoft IIS and SQL Server configuration](https://forum.silverstripe.org/t/microsoft-iis-webserver-and-sql-server-support/2245))
-.
+(see [Microsoft IIS and SQL Server configuration](https://forum.silverstripe.org/t/microsoft-iis-webserver-and-sql-server-support/2245)).
 
 Additionally, there are community supported guides for installing Silverstripe CMS on various environments:
 
@@ -279,31 +268,31 @@ Additionally, there are community supported guides for installing Silverstripe C
 
 ### Email
 
-Silverstripe CMS uses SwiftMailer to send email messages. New installations setup with silverstripe/installer are configured to use a `sendmail` found in `/usr/sbin/sendmail` or another location specified via configuration. Alternatively email can be configured to use SMTP or other mail transports instead of sendmail.
+Silverstripe CMS uses [symfony/mailer](https://github.com/symfony/mailer) to send email messages. [silverstripe/framework](https://github.com/silverstripe/silverstripe-framework) is configured to use a `sendmail` binary (usually found in `/usr/sbin/sendmail`). Alternatively [email can be configured](/developer_guides/email/) to use SMTP or other mail transports instead of sendmail.
 
 You _must_ ensure emails are being sent from your _production_ environment. You can do this by testing that the ***Lost password*** form available at `/Security/lostpassword` sends an email to your inbox, or with the following code snippet that can be run via a `SilverStripe\Dev\BuildTask`:
 
 ```php
-$email = new SilverStripe\Control\Email\Email('no-reply@mydomain.com', 'myuser@gmail.com', 'My test subject', 'My email body text');
+$email = SilverStripe\Control\Email\Email::create('no-reply@mydomain.com', 'myuser@gmail.com', 'My test subject', 'My email body text');
 $email->send();
 ```
 
 Using the code snippet above also tests that the ability to set the "from" address is working correctly.
 
-See the [email section](/developer_guides/email) for further details, including how to set the administrator "from" email address, change the `sendmail` binary location and how to use SMTP or other mail transports instead of sendmail.
+See the [email section](/developer_guides/email) for further details, including how to set the administrator "from" email address, change the `sendmail` binary location, and how to use SMTP or other mail transports instead of sendmail.
 
 ## PHP Requirements for older Silverstripe CMS releases {#php-support}
 
 Silverstripe CMS's PHP support has changed over time and if you are looking to upgrade PHP on your Silverstripe CMS site, this
 table may be of use:
 
-| Silverstripe CMS Version | PHP Version | More information |
-| ------------------------ | ----------- | ---------------- |
-| 5.0 +                    | 8.1 - 8.2   | Unreleased       |
-| 4.11 +                   | 7.4 - 8.1   | [changelog](/Changelogs/4.11.0#php81) |
-| 4.10                     | 7.3 - 8.0   | [changelog](/Changelogs/4.10.0#phpeol) |
-| 4.5 - 4.9                | 7.1 - 7.4   | [blog post](https://www.silverstripe.org/blog/our-plan-for-ending-php-5-6-support-in-silverstripe-4/) |
-| 4.0 - 4.4                | 5.6 - 7.4   |                   |
+| Silverstripe CMS Version | PHP Version |
+| ------------------------ | ----------- |
+| 5.0 +                    | 8.1 - 8.2   |
+| 4.11 +                   | 7.4 - 8.1   |
+| 4.10                     | 7.3 - 8.0   |
+| 4.5 - 4.9                | 7.1 - 7.4   |
+| 4.0 - 4.4                | 5.6 - 7.4   |
 
 From Silverstripe CMS 5 onwards, the [Silverstripe CMS major release policy](/project_governance/major_release_policy#php-support-commitments) guides which PHP versions are supported by which Silverstripe CMS release.
 
@@ -315,7 +304,7 @@ These settings ensure support for the latest 2 versions of major browsers, plus 
 
 You can use [browserlist's "check compatible browsers" tool](https://browsersl.ist/#q=defaults) to see specifically which versions of which browsers are supported by these settings.
 
-Silverstripe CMS works well across Windows, Linux, and Mac operating systems.
+Silverstripe CMS works well across Windows, Linux, and Mac operating systems - though it is worth noting that most of our development and testing is done in Linux environments.
 
 ## End user requirements
 

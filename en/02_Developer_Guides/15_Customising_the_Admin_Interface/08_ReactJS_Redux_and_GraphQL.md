@@ -13,10 +13,10 @@ declaratively using data structures.
 Even within sections that are _not_ primarily rendered in react, several React components may be injected into the DOM.
 
 There are some several members of this ecosystem that all work together to provide a dyanamic UI. They include:
-* [ReactJS](https://facebook.github.io/react/) - A Javascript UI library
-* [Redux](http://redux.js.org/) - A state manager for Javascript
-* [GraphQL](http://graphql.org/) - A query language for your API
-* [Apollo](https://www.apollodata.com/) - A framework for using GraphQL in your application
+* [ReactJS](https://react.dev/) - A Javascript UI library
+* [Redux](https://redux.js.org/) - A state manager for Javascript
+* [GraphQL](https://graphql.org/) - A query language for your API
+* [Apollo Client](https://www.apollographql.com/apollo-client) - A framework for using GraphQL in your application
 
 All of these pillars of the frontend application can be customised, giving you more control over how the admin interface looks, feels, and behaves.
 
@@ -99,7 +99,7 @@ engine.
 
 ## GraphQL and Apollo
 
-[GraphQL](http://graphql.org/learn/) is a strictly-typed query language that allows you to describe what data you want to fetch from your API. Because it is based on types, it is self-documenting and predictable. Further, it's structure lends itself nicely to fetching nested objects. Here is an example of a simple GraphQL query:
+[GraphQL](https://graphql.org/learn/) is a strictly-typed query language that allows you to describe what data you want to fetch from your API. Because it is based on types, it is self-documenting and predictable. Further, it's structure lends itself nicely to fetching nested objects. Here is an example of a simple GraphQL query:
 
 ```graphql
 query GetUser($ID: Int!) {
@@ -140,16 +140,16 @@ The above query is almost self-descriptive. It gets a user by ID, returns his or
 }
 ```
 
-On its own, GraphQL offers nothing functional, as it's just a query language. You still need a service that will invoke queries and map their results to UI. For that, Silverstripe CMS uses an implementation of [Apollo](http://dev.apollodata.com/) that works with React.
+On its own, GraphQL offers nothing functional, as it's just a query language. You still need a service that will invoke queries and map their results to UI. For that, Silverstripe CMS uses an implementation of [Apollo Client](https://www.apollographql.com/docs/react/) that works with React.
 
 ## For more information
 
 This documentation will stop short of explaining React, Redux, and GraphQL/Apollo in-depth, as there is much better
 documentation available all over the web. We recommend:
-* [The Official React Tutorial](https://facebook.github.io/react/tutorial/tutorial.html)
-* [Build With React](http://buildwithreact.com/tutorial)
+* [The Official React Tutorial](https://react.dev/learn)
+* [Build With React](https://buildwithreact.com/tutorial)
 * [Getting Started with Redux](https://egghead.io/courses/getting-started-with-redux)
-* [The React Apollo docs](http://dev.apollodata.com/react/)
+* [The React Apollo docs](https://www.apollographql.com/docs/react/)
 * [GraphQL in Silverstripe](/developer_guides/graphql/)
 
 ## Build tools and using Silverstripe React components {#using-cms-react-components}
@@ -617,7 +617,7 @@ API using several helper methods, including:
 
 [info]
 For a complete list of props that are available to update on a `Field` object,
-see http://redux-form.com/6.8.0/docs/api/Field.md/#props-you-can-pass-to-field-
+see https://redux-form.com/8.3.0/docs/api/field.md/#props-you-can-pass-to-field-
 [/info]
 
 [notice]
@@ -635,7 +635,7 @@ In addition to mutation methods, several readonly methods are available on `Form
 
 ### Adding validation to a form
 
-Validation for React-rendered forms is handled by the [redux-form](http://redux-form.com) package. You can inject your own middleware to add custom validation rules using the `updater.form.addValidation()` function.
+Validation for React-rendered forms is handled by the [redux-form](https://redux-form.com) package. You can inject your own middleware to add custom validation rules using the `updater.form.addValidation()` function.
 
 ```js
 Injector.transform(
@@ -665,10 +665,7 @@ The `addValidation()` function takes a callback, with an instance of `FormValida
 
 ## Using Injector to customise Redux state data
 
-Before starting this tutorial, you should become familiar with the concepts of [Immutability](https://www.sitepoint.com/immutability-javascript/) and [Redux](http://redux.js.org).
-
-The examples use [Spread in object literals](http://redux.js.org/docs/recipes/UsingObjectSpreadOperator.html) which is at this moment in Stage 3 Proposal. If you're more comfortable with using
- the `Object.assign()` API that shouldn't present any problems and should work the same.
+Before starting this tutorial, you should become familiar with the concepts of [Immutability](https://www.sitepoint.com/immutability-javascript/) and [Redux](https://redux.js.org).
 
 For example:
 ```js
@@ -695,7 +692,7 @@ As you can see, we use the `reducer()` function on the `update` object to augmen
 
 ### Using Redux dev tools
 
-It is important to learn the basics of [Redux dev tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en), so that you can find out what ACTIONS and payloads to intercept and modify in your Transformer should target.
+It is important to learn the basics of [Redux dev tools](https://github.com/reduxjs/redux-devtools/tree/main/extension#installation), so that you can find out what ACTIONS and payloads to intercept and modify in your Transformer should target.
 
 Most importantly, it helps to understand the "Action" sub-tab on the right panel (bottom if your dev tools is small), as this will be the data your Transformer will most likely receive, pending other transformers that may run before/after your one.
 
@@ -840,7 +837,7 @@ Here's what that might look like:
 ```js
 import React from 'react';
 import gql from 'graphql-tag';
-import { graphql } from 'react-apollo';
+import { graphql } from '@apollo/client/react/hoc';
 
 export const Notes = ({ notes }) => (
   <ul className="notes">
@@ -872,8 +869,6 @@ export default NotesWithData;
 
 Next we'll expose the model to GraphQL:
 
-#### Graphql v4 {#build-extensible-gql-app-v4}
-
 **my-module/_config/graphql.yml**
 
 ```yml
@@ -899,30 +894,6 @@ App\Model\Note:
         paginateList: false
 ```
 
-#### Graphql v3 {#build-extensible-gql-app-v3}
-
-**my-module/_config/graphql.yml**
-
-```yml
-# Tell graphql how to scaffold the schema for our model inside the admin schema
-SilverStripe\GraphQL\Manager:
-  schemas:
-    admin:
-      scaffolding:
-        types:
-          App\Model\Note:
-            fields: [ id, content ]
-            operations:
-              read:
-                paginate: false
-                name: readNotes
-              create: true
-```
-
-[hint]
-Graphql v3 uses the first part of the model class's namespace in the default query/mutation names - so with a class `App\Model\Note` the default read operation would be `readAppNotes`. The example above has overridden the default name to keep it consistent with Graphql v4 behaviour.
-[/hint]
-
 #### Define the app
 
 Finally, let's make a really simple container app which holds a header and our notes component, and inject it into the DOM using entwine.
@@ -931,22 +902,23 @@ Finally, let's make a really simple container app which holds a header and our n
 
 ```js
 import React from 'react';
-import { inject } from 'lib/Injector';
 import Notes from './components/Notes';
 
-const App = ({ ListComponent }) => (
+const App = () => (
   <div>
     <h3>Notes</h3>
     <Notes />
   </div>
 );
+
+export default App;
 ```
 
 **my-module/client/src/index.js**
 ```js
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import React from 'react';
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from '@apollo/client';
 import Injector from 'lib/Injector';
 import App from './App';
 
@@ -955,21 +927,32 @@ Injector.ready(() => {
 
   // Assuming you've got some element in the DOM with the id "notes-app"
   $('#notes-app').entwine({
+    ReactRoot: null,
+
     onmatch() {
-      ReactDOM.render(
+      const root = createRoot(this[0]);
+      this.setReactRoot(root);
+      root.render(
         <ApolloProvider client={apolloClient} store={store}>
           <App />
-        </ApolloProvider>,
-        this[0]
+        </ApolloProvider>
       )
     },
 
     onunmatch: function() {
-      ReactDOM.unmountComponentAtNode(this[0]);
-    }
-  })
+      const root = this.getReactRoot();
+      if (root) {
+        root.unmount();
+        this.setReactRoot(null);
+      }
+    },
+  });
 });
 ```
+
+[info]
+`this[0]` is how we get the underlying DOM element that the jQuery object is wrapping. We can't pass `this` directly into the `createRoot()` function because react doesn't know how to deal with a jQuery object wrapper. See [the jQuery documentation](https://api.jquery.com/Types/#jQuery) for more information about that syntax.
+[/info]
 
 The `silverstripe/admin` module provides `apolloClient` and `store` objects in the global namespace to be shared by other modules. We'll make use of those, and create our own app wrapped in `<ApolloProvider />`.
 
@@ -1164,11 +1147,11 @@ Since almost everything is in `Injector` now, we need to update our mounting log
 **my-module/client/src/index.js**
 
 ```js
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import React from 'react';
 import registerDependencies from './boot/registerDependencies';
-import { ApolloProvider } from 'react-apollo';
-import Injector, { InjectorProvider, provideInjector, inject } from 'lib/Injector';
+import { ApolloProvider } from '@apollo/client';
+import Injector, { provideInjector } from 'lib/Injector';
 import App from './App';
 
 registerDependencies();
@@ -1183,13 +1166,22 @@ Injector.ready(() => {
   const MyAppWithInjector = provideInjector(MyApp);
 
   $('#notes-app').entwine({
+    ReactRoot: null,
+
     onmatch() {
-      render(
-        <MyAppWithInjector />,
-        this[0]
-      )
-    }
-  })
+      const root = createRoot(this[0]);
+      this.setReactRoot(root);
+      root.render(<MyAppWithInjector />);
+    },
+
+    onunmatch: function() {
+      const root = this.getReactRoot();
+      if (root) {
+        root.unmount();
+        this.setReactRoot(null);
+      }
+    },
+  });
 });
 ```
 
@@ -1214,8 +1206,6 @@ App\Model\Note:
     - MyOtherApp\Extension\NoteExtension
 ```
 
-##### Graphql 4 {#applying-extensions-gql-v4}
-
 Remember, this example is in a project which is customising the schema from the previous example, so we still have to tell graphql where to find our schema modifications.
 
 If you're following along, you could declare a different folder than before within the same project so you can see how the schema definitions merge together into a single schema.
@@ -1235,21 +1225,7 @@ SilverStripe\GraphQL\Schema\Schema:
 ```yml
 App\Model\Note:
   fields:
-    Priority: true
-```
-
-##### Graphql 3 {#applying-extensions-gql-v3}
-
-**app/_config/graphql.yml**
-
-```yml
-SilverStripe\GraphQL\Manager:
-  schemas:
-    admin:
-      scaffolding:
-        types:
-          App\Model\Note:
-            fields: [ priority ]
+    priority: true
 ```
 
 #### Creating transforms
@@ -1346,7 +1322,7 @@ Now, let's apply all these transformations, and we'll use the `after` property t
 **app/client/src/boot.js**
 
 ```js
-import Injector, { injectGraphql } from 'lib/Injector';
+import Injector from 'lib/Injector';
 import transformNotesListItem from './transformNotesListItem';
 import transformReadNotes from './transformReadNotes';
 
@@ -1416,7 +1392,7 @@ export default inject(['NotesList', 'NoteAddForm'])(App);
 
 Next, add a mutation template to attach to the form.
 
-**my-module/cient/src/state/createNote.js**
+**my-module/client/src/state/createNote.js**
 
 ```js
 import { graphqlTemplates } from 'lib/Injector';
@@ -1430,7 +1406,7 @@ const mutation = {
           mutate({
             variables: {
               input: {
-                content, // For graphql v3 this needs to start with a capital letter, i.e. Content: content
+                content,
               }
             }
           });
@@ -1441,9 +1417,6 @@ const mutation = {
   templateName: CREATE,
   singularName: 'Note',
   pagination: false,
-  params: {
-    input: 'CreateNoteInput!', // For graphql v3 use 'AppNoteCreateInputType!'
-  },
   fields: [
     'content',
     'id'
@@ -1453,15 +1426,9 @@ const mutation = {
 export default mutation;
 ```
 
-[notice]
-With graphql v3, the field names in the input object have to start with capital letters, and the input _type_ can't easily be overridden - it's always the first part of your namespace, then the class name, then "CreateInputType". So assuming your model's fully qualified classname is `App\Model\Note`, the input type is `AppNoteCreateInputType`.
-[/notice]
-
 It looks like a lot of code, but if you're familiar with Apollo mutations, this is pretty standard. The supplied `mutate()` function gets mapped to a prop - in this case `onAdd`, which the `AddForm` component is configured to invoke. We've also supplied the `singularName` as well as the template `CREATE` for the `createNote` scaffolded mutation.
 
 And make sure we're exposing the mutation in our graphql schema:
-
-#### Graphql 4 {#extensible-mutations-gql-v4}
 
 **my-module/_graphql/models.yml**
 
@@ -1473,32 +1440,14 @@ App\Model\Note:
     create: true
 ```
 
-#### Graphql 3 {#extensible-mutations-gql-v3}
-
-**my-module/_config/graphql.yml**
-
-```yml
-SilverStripe\GraphQL\Manager:
-  schemas:
-    admin:
-      scaffolding:
-        types:
-          App\Model\Note:
-            #...
-            operations:
-              #...
-              create:
-                name: createNote
-```
-
 Lastly, let's just register all this with `Injector`.
 
 **my-module/client/src/boot/registerDependencies.js**
 
 ```js
 //...
-import AddForm from './components/AddForm';
-import createNote from './state/createNote';
+import AddForm from '../components/AddForm';
+import createNote from '../state/createNote';
 
 const registerDependencies = () => {
   //...
@@ -1565,7 +1514,7 @@ const transformCreateNote = (manager) => {
         variables: {
           input: {
             // Don't forget to keep the content variable in here!
-            content, // In GraphQL v3 these must both start with capital letters (i.e. `Content: content` and `Priority: priority`)
+            content,
             priority,
           }
         }
@@ -1586,7 +1535,7 @@ All we've done here is overridden the `props` setting in the `CreateNote` apollo
 
 Now we just need to register these transforms, and we're done!
 
-**app/client/src/index.js**
+**app/client/src/boot.js**
 
 ```js
 //...

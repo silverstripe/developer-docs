@@ -5,6 +5,11 @@ summary: Learn how to add default values to your models
 
 # Default Values and Records
 
+[hint]
+This page is about defining default values and records in your model class, which only affects _new_ records. You can set defaults directly in the database-schema, which affects _existing_ records as well. See
+[Data Types and Casting](/developer_guides/model/data_types_and_casting/#default-values) for details.
+[/hint]
+
 ## Static Default Values
 The [DataObject::$defaults](api:SilverStripe\ORM\DataObject::$defaults) array allows you to specify simple static values to be the default values when a record is created.
 
@@ -27,7 +32,7 @@ class Dog extends DataObject
 ## Dynamic Default Values
 
 In many situations default values need to be dynamically calculated. In order to do this, the
-[DataObject::populateDefaults()](api:SilverStripe\ORM\DataObject::populateDefaults()) method will need to be overloaded.
+[DataObject::populateDefaults()](api:SilverStripe\ORM\DataObject::populateDefaults()) method will need to be overridden.
 
 This method is called whenever a new record is instantiated, and you must be sure to call the method on the parent
 object!
@@ -45,24 +50,38 @@ public function populateDefaults()
 }
 ```
 
-It's also possible to get the data from any other source, or another object, just by using the usual data retrieval
-methods. For example:
+[hint]
+This method is called very early in the process of instantiating a new record, before any relations are set for it. If you want to set values based on, for example, a `has_one` relation called `Parent`, you can do that by implementing [`onBeforeWrite()`](/developer_guides/model/extending_dataobjects/#onbeforewrite) or a [setter method](/developer_guides/model/data_types_and_casting/#overriding) - for example:
 
 ```php
-/**
- * This method combines the Title of the parent object with the Title of this
- * object in the FullTitle field.
- */
-public function populateDefaults() 
+public function onBeforeWrite()
 {
-    if($parent = $this->Parent()) {
-        $this->FullTitle = $parent->Title . ': ' . $this->Title;
-    } else {
-        $this->FullTitle = $this->Title;
+    // Only do this if the record hasn't been written to the database yet (optional)
+    if (!$this->isInDb()) {
+        $parent = $this->Parent();
+        // Set the FullTitle based on the parent, if one exists
+        if ($parent->exists()) {
+            $this->FullTitle = $parent->Title . ': ' . $this->Title;
+        } else {
+            $this->FullTitle = $this->Title;
+        }
     }
-    parent::populateDefaults();
+}
+
+// or
+
+public function setFullTitle($value): static
+{
+    $parent = $this->Parent();
+    // Set the FullTitle based on the parent, if one exists
+    if ($parent->exists()) {
+        $value = $parent->Title . ': ' . $value;
+    }
+    return $this->setField('FullTitle', $value);
 }
 ```
+
+[/hint]
 
 ## Static Default Records
 The [DataObject::$default_records](api:SilverStripe\ORM\DataObject::$default_records) array allows you to specify default records created on dev/build.
@@ -82,5 +101,28 @@ class Region extends DataObject
         ['Title' => 'Coromandel'],
         ['Title' => 'Waikato'],
     ];
+}
+```
+
+## Dynamic Default Records
+
+Just like default values, there are times when you want your default _records_ to have some dynamic value or to be created only under certain conditions. To achive this, override the
+[DataObject::requireDefaultRecords()](api:SilverStripe\ORM\DataObject::requireDefaultRecords()) method.
+
+```php
+use SilverStripe\Control\Director;
+
+//...
+
+public function requireDefaultRecords()
+{
+    // Require the base defaults first - that way the records we create below won't interfere with any declared in $default_records
+    parent::requireDefaultRecords();
+
+    // Make some record only if we're in dev mode and we don't have any of the current class yet.
+    if (Director::isDev() && !DataObject::get_one(static::class)) {
+        $record = static::create(['Date' => date('Y-m-d')]);
+        $record->write();
+    }
 }
 ```

@@ -50,9 +50,9 @@ MIME type validation also uses a whitelist of allowed MIME types.
 
 ### Enabling MIME type validation
 
-You need to install the `silverstripe/mimevalidator` module in your project to enable MIME type validation. If your project uses `silverstripe/recipe-core` 4.6.0 or greater, or any version of the Common Web Platform, the `silverstripe/mimevalidator` module will already be installed and enabled.
+You need to install the `silverstripe/mimevalidator` module in your project to enable MIME type validation. If your project has `silverstripe/recipe-core` as a dependency, the `silverstripe/mimevalidator` module will already be installed and enabled.
 
-Look at the `app/_config/mimevalidator.yml` to view the default configuration.
+Look at the `app/_config/mimevalidator.yml` file to view the default configuration.
 
 You can explicitly require the module by running this command
 

@@ -13,7 +13,7 @@ customise those fields as required.
 
 ## Form Fields
 
-An example is `DataObject`, Silverstripe CMS will automatically create your CMS interface so you can modify what you need.
+An example is `DataObject`, Silverstripe CMS will automatically create your CMS interface so you can modify what you need, without having to define all of your form fields from scratch.
 
 ```php
 use SilverStripe\ORM\DataObject;
@@ -37,6 +37,10 @@ class MyDataObject extends DataObject
 }
 ```
 
+[hint]
+It is typically considered a good practice to wrap your modifications in a call to [`beforeUpdateCMSFields()`](api:SilverStripe\ORM\DataObject::beforeUpdateCMSFields()) - the `updateCMSFields()` extension hook is already triggered by `parent::getCMSFields()`, so this is how you ensure any new fields are added before extensions update your fieldlist.
+[/hint]
+
 To fully customise your form fields, start with an empty FieldList.
 
 ```php
@@ -52,13 +56,18 @@ public function getCMSFields()
             )
         )
     );
+
+    $this->extend('updateCMSFields', $fields);
     
     return $fields;
 }
 ```
 
-You can also alter the fields of built-in and module `DataObject` classes through your own 
-[DataExtension](/developer_guides/extending/extensions), and a call to `DataExtension->updateCMSFields`.
+[hint]
+It is good practice to invoke the `updateCMSFields()` extension hook afterward, so that extensions in modules can apply their functionality to your field list.
+[/hint]
+
+You can also alter the fields of built-in and module `DataObject` classes by implementing `updateCMSFields()` in [your own Extension](/developer_guides/extending/extensions).
 
 [info]
 `FormField` scaffolding takes [`$field_labels` config](#field-labels) into account as well.
@@ -89,7 +98,7 @@ class MyDataObject extends DataObject
 
 ### General search field
 
-Tabular views such as `GridField` or `ModalAdmin` include a search bar. As of Silverstripe CMS 4.12, the search bar will search across all of your searchable fields by default. It will return a match if the search terms appear in any of the searchable fields.
+Tabular views such as `GridField` or `ModelAdmin` include a search bar. The search bar will search across all of your searchable fields by default. It will return a match if the search terms appear in any of the searchable fields.
 
 #### Exclude fields from the general search
 
@@ -114,7 +123,7 @@ class MyDataObject extends DataObject
 By default the general search field uses the name "q". If you already use that field name or search query in your [SearchContext](/developer_guides/search/searchcontext), you can change this to whatever name you prefer either globally or per class:
 
 [hint]
-If you set `general_search_field_name` to any empty string, general search will be disabled entirely. Instead, the first field in your searchable fields configuration will be used, which was the default behaviour prior to Silverstripe CMS 4.12.
+If you set `general_search_field_name` to any empty string, general search will be disabled entirely. Instead, the first field in your searchable fields configuration will be used.
 [/hint]
 
 **Globally change the general search field name via yaml config**
@@ -315,10 +324,10 @@ class Player extends DataObject
 
 ### Searching many db fields on a single search field
 
-Use a single search field that matches on multiple database fields with `'match_any'`. This also supports specifying a field and a filter, though it is not necessary to do so.
+Use a single search field that matches on multiple database fields with `'match_any'`. This also supports specifying a `FormField` and a filter, though it is not necessary to do so.
 
 [alert]
-If you don't specify a field, you must use the name of a real database field instead of a custom name so that a default field can be determined.
+If you don't specify a `FormField`, you must use the name of a real database field as the array key instead of a custom name so that a default field class can be determined.
 [/alert]
 
 ```php
@@ -435,6 +444,8 @@ class MyDataObject extends DataObject
 In order to re-label any summary fields, you can use the `$field_labels` static. This will also affect the output of `$object->fieldLabels()` and `$object->fieldLabel()`.
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
@@ -444,7 +455,7 @@ class MyDataObject extends DataObject
     ];
     
     private static $has_one = [
-        'HeroImage' => 'Image',
+        'HeroImage' => Image::class,
     ];
     
     private static $summary_fields = [
@@ -458,6 +469,45 @@ class MyDataObject extends DataObject
     ];
 }
 ```
+
+### Localisation {#field-label-localisation}
+
+For any fields _not_ defined in `$field_labels`, labels can be localised by defining the name prefixed by the type of field (e.g `db_`, `has_one_`, etc) in your localisation yaml files:
+
+[info]
+The class name should be the class that defined the field or relationship.
+[/info]
+
+**`app/lang/en.yml`**
+
+```yml
+en:
+  App\Model\MyDataObject:
+    db_Name: "Name"
+    has_one_HeroImage: "Hero Image"
+```
+
+[notice]
+For relations (such as `has_one_HeroImage` above), this field label applies to the scaffolded form field (an `UploadField` for files, a tab for `has_many`/`many_many`, etc). It does _not_ apply to summary or searchable fields with dot notation.
+[/notice]
+
+Labels you define in `$field_labels` _won't_ be overridden by localisation strings. To make those localisable, you will need to override the [`fieldLabels()`](api:SilverStripe\ORM\DataObject) method and explicitly localise those labels yourself:
+
+```php
+public function fieldLabels($includerelations = true)
+{
+    $labels = parent::fieldLabels($includerelations);
+    $customLabels = static::config()->get('field_labels');
+
+    foreach ($customLabels as $name => $label) {
+        $labels[$name] = _t(__CLASS__ . '.' . $name, $label);
+    }
+
+    return $labels;
+}
+```
+
+See the [i18n section](/developer_guides/i18n) for more about localisation.
 
 ## Related Documentation
 

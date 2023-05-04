@@ -44,7 +44,7 @@ the `(modulename)/tests` directory.
 
 Test case classes should end with `Test` (e.g `PageTest`) and test methods must start with `test` (e.g `testMyMethod`).
 
-Ensure you [import](http://php.net/manual/en/language.namespaces.importing.php#example-252) any classes you need for the test, including `SilverStripe\Dev\SapphireTest` or `SilverStripe\Dev\FunctionalTest`.
+Ensure you [import](https://php.net/manual/en/language.namespaces.importing.php#example-252) any classes you need for the test, including `SilverStripe\Dev\SapphireTest` or `SilverStripe\Dev\FunctionalTest`.
 [/info]
 
 A Silverstripe CMS unit test is created by extending one of two classes, [SapphireTest](api:SilverStripe\Dev\SapphireTest) or [FunctionalTest](api:SilverStripe\Dev\FunctionalTest). 
@@ -57,7 +57,7 @@ you want to test a `Controller`, `Form` or anything that requires a web page.
 you gain the ability to load and test web pages on the site. 
 
 `SapphireTest` in turn, extends `PHPUnit\Framework\TestCase`. For more information on `PHPUnit\Framework\TestCase` see 
-the [PHPUnit](http://www.phpunit.de) documentation. It provides a lot of fundamental concepts that we build on in this 
+the [PHPUnit](https://www.phpunit.de) documentation. It provides a lot of fundamental concepts that we build on in this 
 documentation.
 [/info]
 
@@ -87,7 +87,6 @@ needs.
 
 
 ```xml
-
 <phpunit bootstrap="vendor/silverstripe/framework/tests/bootstrap.php" colors="true">
     <testsuites>
         <testsuite name="Default">

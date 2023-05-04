@@ -13,7 +13,7 @@ The main entry point for any command line execution is `cli-script.php` in the f
 For example, to run a database rebuild from the command line, use this command:
 
 ```bash
-cd your-webroot/
+cd your-project-root/
 php vendor/silverstripe/framework/cli-script.php dev/build
 ```
 
@@ -38,7 +38,7 @@ when running the command php -v, then you may not have php-cli installed so sake
 `sake` can be invoked using `./vendor/bin/sake`. For easier access, copy the `sake` file into `/usr/bin/sake`.
 
 ```
-cd your-webroot/
+cd your-project-root/
 sudo ./vendor/bin/sake installsake
 ```
 
@@ -55,7 +55,7 @@ command line, it has no way of knowing.
 You can use the `SS_BASE_URL` environment variable to specify this.
 
 ```
-SS_BASE_URL="http://localhost/base-url"
+SS_BASE_URL="https://www.example.com/base-url"
 ```
 
 ### Usage
@@ -136,7 +136,7 @@ sake -stop MyProcess
 ```
 
 [notice]
-`sake` stores `pid` and log files in the site root directory.
+`sake` stores `pid` and log files in the project root directory.
 [/notice]
 
 ## Arguments
@@ -144,7 +144,7 @@ sake -stop MyProcess
 Parameters can be added to the command. All parameters will be available in `$_GET` array on the server.
 
 ```bash
-cd your-webroot/
+cd your-project-root/
 php vendor/silverstripe/framework/cli-script.php myurl myparam=1 myotherparam=2
 ```
 
@@ -156,7 +156,7 @@ vendor/bin/sake myurl "myparam=1&myotherparam=2"
 
 ## Running Regular Tasks With Cron
 
-On a UNIX machine, you can typically run a scheduled task with a [cron job](http://en.wikipedia.org/wiki/Cron). Run
+On a UNIX machine, you can typically run a scheduled task with a [cron job](https://en.wikipedia.org/wiki/Cron). Run
 `BuildTask` in Silverstripe CMS as a cron job using `sake`.
 
 The following will run `MyTask` every minute.

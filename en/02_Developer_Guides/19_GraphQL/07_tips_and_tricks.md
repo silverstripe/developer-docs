@@ -98,10 +98,10 @@ SilverStripe\Core\Injector\Injector:
     class: SilverStripe\GraphQL\PersistedQuery\HTTPProvider
     properties:
      schemaMapping:
-       default: 'http://example.com/myqueries.json'
+       default: 'https://www.example.com/myqueries.json'
 ```
 
-A flat file at the URL `http://example.com/myqueries.json` should contain something like:
+A flat file at the URL `https://www.example.com/myqueries.json` should contain something like:
 
 ```json
 {"someUniqueID":"query{readMembers{Name+Email}}"}
@@ -124,7 +124,7 @@ The queries are hardcoded into the configuration.
 
 To access a persisted query, simply pass an `id` parameter in the request in lieu of `query`.
 
-`GET http://example.com/graphql?id=someID`
+`GET https://www.example.com/graphql?id=someID`
 
 [notice]
 Note that if you pass `query` along with `id`, an exception will be thrown.
@@ -162,7 +162,7 @@ This feature is experimental, and has not been thoroughly evaluated for security
 
 ## Schema introspection {#schema-introspection}
 
-Some GraphQL clients such as [Apollo](http://apollographql.com) require some level of introspection
+Some GraphQL clients such as [Apollo Client](https://www.apollographql.com/apollo-client) require some level of introspection
 into the schema. The [`SchemaTranscriber`](api:SilverStripe\GraphQL\Schema\Services\SchemaTranscriber)
 class will persist this data to a static file in an event
 that is fired on completion of the schema build. This file can then be consumed by a client side library

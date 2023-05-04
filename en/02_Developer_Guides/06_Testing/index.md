@@ -3,23 +3,19 @@ title: Testing
 summary: Deploy robust applications by bundling Unit and Behavior tests with your application code and modules.
 ---
 
-# Unit and Integration Testing
-
-For behaviour testing in Silverstripe CMS, check out [Silverstripe CMS Behat Documentation](https://github.com/silverstripe-labs/silverstripe-behat-extension/).
+# Testing with Silverstripe CMS
 
 ## Introduction
 
 The Silverstripe CMS core contains various features designed to simplify the process of creating and managing automated tests.
 
-Silverstripe CMS uses [PHPUnit](http://www.phpunit.de) for unit tests, and the framework contains features to simplify the
+Silverstripe CMS uses [PHPUnit](https://www.phpunit.de) for unit tests, and the framework contains features to simplify the
 process of creating and managing tests.
 
 If you're more familiar with unit testing, but want a refresher of some of the concepts and terminology, you can browse
 the [Testing Glossary](testing_glossary). To get started now, follow the installation instructions below.
 
-If you are familiar with PHP coding but new to unit testing then check out Mark's presentation [Getting to Grips with Silverstripe CMS Testing](http://www.slideshare.net/maetl/getting-to-grips-with-silverstripe-testing).
-
-You should also read over the [PHPUnit manual](http://www.phpunit.de/manual/current/en/). It provides a lot of
+You should also read over the [PHPUnit manual](https://docs.phpunit.de/en/9.6/). It provides a lot of
 fundamental concepts that we build on in this documentation.
 
 ## Running Tests
@@ -35,7 +31,7 @@ Tests are run from the commandline, in your webroot folder:
  * `vendor/bin/phpunit vendor/silverstripe/framework/tests/filesystem/FolderTest.php`: Run a specific test 
  * `vendor/bin/phpunit vendor/silverstripe/framework/tests '' flush=1`: Run tests with optional request parameters (note the empty second argument)
 
-Check the PHPUnit manual for all available [command line arguments](http://www.phpunit.de/manual/current/en/textui.html).
+Check the PHPUnit manual for all available [command line arguments](https://docs.phpunit.de/en/9.6/textui.html).
 
 On Linux or OSX, you can avoid typing the full path on every invocation by adding `vendor/bin` 
 to your `$PATH` definition in the shell profile (usually `~/.profile`): `PATH=./vendor/bin:$PATH`
@@ -52,7 +48,7 @@ vendor/bin/phpunit vendor/silverstripe/framework/tests '' flush=1
 
 ## Generating a Coverage Report
 
-PHPUnit can generate a code coverage report ([docs](http://www.phpunit.de/manual/current/en/code-coverage-analysis.html))
+PHPUnit can generate a code coverage report ([docs](https://docs.phpunit.de/en/9.6/code-coverage-analysis.html))
 which shows you how much of your logic is executed by your tests. This is very useful to determine gaps in tests.
 
 ```bash
@@ -78,7 +74,7 @@ some `thirdparty/` directories add the following to the `phpunit.xml` configurat
 
 ## Configuration
 
-The `phpunit` executable can be configured by [command line arguments](http://www.phpunit.de/manual/current/en/textui.html) 
+The `phpunit` executable can be configured by [command line arguments](https://docs.phpunit.de/en/9.6/textui.html) 
 or through an XML file. File-based configuration has
 the advantage of enforcing certain rules across test executions (e.g. excluding files from code coverage reports), and
 of course this information can be version controlled and shared with other team members.
@@ -88,7 +84,7 @@ Silverstripe CMS comes with a default `phpunit.xml.dist` that you can use as a s
 file.
 
 There's nothing stopping you from creating multiple XML files (see the `--configuration` flag in
-[PHPUnit documentation](http://www.phpunit.de/manual/current/en/textui.html)). For example, you could have a
+[PHPUnit documentation](https://docs.phpunit.de/en/9.6/textui.html)). For example, you could have a
 `phpunit-unit-tests.xml` and `phpunit-functional-tests.xml` file (see below).
 
 ### Database Permissions

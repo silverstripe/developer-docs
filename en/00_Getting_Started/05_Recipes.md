@@ -23,12 +23,12 @@ Silverstripe CMS is powered by a system of components in the form of Composer pa
 
 By design, modules tend to be small and serve a specific function. You may need to combine many modules to achieve a wider goal. 
 
-For example, the `silverstripe/blog` module by itself simply allows you to create blog posts. It does not include all the features you could want in a blog, like a comment system or widgets to display related content.
+For example, the [`silverstripe/blog`](https://github.com/silverstripe/silverstripe-blog) module by itself simply allows you to create blog posts. It does not include all the features you could want in a blog, like a comment system or widgets to display related content.
 
-The `silverstripe/recipe-blog` recipe installs `silverstripe/blog` module, but also:
-- `silverstripe/widgets` and `silverstripe/content-widget` to display widgets
-- `silverstripe/comments` and `silverstripe/comment-notifications` to allow the management of comments on blog post
-- `silverstripe/spamprotection` and `silverstripe/akismet` to provide basic SPAM protection on comments.
+The [`silverstripe/recipe-blog`](https://github.com/silverstripe/recipe-blog) recipe installs `silverstripe/blog` module, but also:
+- [`silverstripe/widgets`](https://github.com/silverstripe/silverstripe-widgets) and [`silverstripe/content-widget`](https://github.com/silverstripe/silverstripe-content-widget) to display widgets
+- [`silverstripe/comments`](https://github.com/silverstripe/silverstripe-comments) and [`silverstripe/comment-notifications`](https://github.com/silverstripe/comment-notifications) to allow the management of comments on blog post
+- [`silverstripe/spamprotection`](https://github.com/silverstripe/silverstripe-spamprotection) to provide basic SPAM protection on comments.
 
 ## Finding recipes for Silverstripe CMS
 
@@ -38,7 +38,7 @@ The Silverstripe CMS project maintains a number of recipes. Some third parties a
 
 ## Releasing supported recipes
 
-When we announce a new release of Silverstripe CMS and publish a changelog for it, we refer to a new set of _Recipe_ versions, which include new versions of some or all of their associated Modules. The easiest way to keep up to date with new Silverstripe CMS releases is to depend on one of the core Recipes:
+When we announce a new release of Silverstripe CMS and publish a changelog for it, we refer to a new set of _recipe_ versions, which include new versions of some or all of their associated Modules. The easiest way to keep up to date with new Silverstripe CMS releases is to depend on one of the core Recipes:
 
 - [`silverstripe/recipe-core`](https://packagist.org/packages/silverstripe/recipe-core): Contains only the base
   framework, without the admin UI or CMS features.
@@ -46,7 +46,7 @@ When we announce a new release of Silverstripe CMS and publish a changelog for i
   the admin UI and CMS features. We recommend specifying this recipe in your dependencies.
 - [`silverstripe/installer`](https://packagist.org/packages/silverstripe/installer): Includes `recipe-cms`, and adds a
   default theme for the front-end of your site. We recommend creating new projects based on this recipe (
-  via `composer create-project silverstripe/installer myproject ^4`).
+  via `composer create-project silverstripe/installer myproject ^5`).
 
 When determining whether you are running the latest version of Silverstripe CMS, it is easier to refer to the Recipe
 version than the individual Module versions, which may not align with Recipe versions. You can use Packagist to find

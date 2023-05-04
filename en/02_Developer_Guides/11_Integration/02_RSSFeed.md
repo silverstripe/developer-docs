@@ -120,7 +120,7 @@ class Player extends DataObject
 
     public function AbsoluteLink() 
     {
-        // assumes players can be accessed at yoursite.com/players/2
+        // assumes players can be accessed at www.example.com/players/2
 
         return Controller::join_links(
             Director::absoluteBaseUrl(),

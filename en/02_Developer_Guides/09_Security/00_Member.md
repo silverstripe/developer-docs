@@ -59,9 +59,9 @@ SilverStripe\Core\Injector\Injector:
 
 Note that if you want to look this class-name up, you can call `Injector::inst()->get('Member')->ClassName`
 
-## Overloading getCMSFields()
+## Overriding getCMSFields()
 
-If you overload the built-in public function getCMSFields(), then you can change the form that is used to view & edit member
+If you override the built-in public function getCMSFields(), then you can change the form that is used to view & edit member
 details in the newsletter system.  This function returns a [FieldList](api:SilverStripe\Forms\FieldList) object.  You should generally start by calling
 parent::getCMSFields() and manipulate the [FieldList](api:SilverStripe\Forms\FieldList) from there.
 

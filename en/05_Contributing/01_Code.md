@@ -33,40 +33,50 @@ We ask for this so that the ownership in the license is clear and unambiguous, a
 
 1. Install the project through composer. The process is described in detail in "[Installation through Composer](../getting_started/composer#contributing)".
 
- 		composer create-project --keep-vcs silverstripe/installer ./your-website-folder 4.0.x-dev
+    ```bash
+    composer create-project --keep-vcs silverstripe/installer ./your-website-folder 5.0.x-dev
+    ```
 
 1. Add a new "upstream" remote to the module you want to contribute to (e.g. `cms`). 
 This allows you to track the original repository for changes, and rebase/merge your fork as required.
 Use your Github user name for which you created the fork in Step 1.
 
-		cd framework
-		git remote rename origin upstream
-		git branch --set-upstream-to upstream
-		git remote add -f origin git://github.com/<your-github-user>/silverstripe-framework.git
+    ```bash
+    cd framework
+    git remote rename origin upstream
+    git branch --set-upstream-to upstream
+    git remote add -f origin git://github.com/<your-github-user>/silverstripe-framework.git
+    ```
 
 1. [Branch for new issue and develop on issue branch](code#branch-for-new-issue-and-develop-on-issue-branch)
 
-		# verify current branch 'base' then branch and switch
-		cd framework
-		git status
-		git checkout -b <your-branch-name>
+    ```bash
+    # verify current branch 'base' then branch and switch
+    cd framework
+    git status
+    git checkout -b <your-branch-name>
+    ```
 
 1. As time passes, the upstream repository accumulates new commits. Keep your working copy's branch and issue branch up to date by periodically running a `composer update`.
 As a first step, make sure you have committed all your work, then temporarily switch over to the `master` branch while updating.
 Alternatively, you can use [composer "repositories"](https://getcomposer.org/doc/05-repositories.md#vcs),
 but we've found that dramatically slows down any updates. You may need to [resolve conflicts](https://help.github.com/articles/resolving-merge-conflicts-after-a-git-rebase/).
 
-		(cd framework && git checkout master)
-		composer update
-		(cd framework && git checkout <your-branch-name>) 
-		(cd framework && git rebase upstream/master)
+    ```bash
+    cd framework && git checkout master
+    composer update
+    cd framework && git checkout <your-branch-name>
+    cd framework && git rebase upstream/master
+    ```
 
 1. When development is complete, run another update, and consider [squashing your commits](https://help.github.com/articles/using-git-rebase-on-the-command-line/)
 
 1. Push your branch to your GitHub fork 
 
-		cd framework
-		git push origin <your-branch-name>
+    ```bash
+    cd framework
+    git push origin <your-branch-name>
+    ```
 
 1. Issue pull request on GitHub.  Visit your forked repository on gitHub.com and click the "Create Pull Request" button next to the new branch.
 
@@ -78,7 +88,7 @@ there are any problems they will follow up with you, so please ensure they have 
 
 ### Picking the right version
 
-The Silverstripe CMS project follows the [Semantic Versioning](http://semver.org) (SemVer) specification for releases. 
+The Silverstripe CMS project follows the [Semantic Versioning](https://semver.org) (SemVer) specification for releases. 
 It clarifies what to expect from different releases, and also guides you in choosing the right branch to base your pull request on.
 
 If you are unsure what branch your pull request should go to, consider asking in the GitHub issue that you address with your patch, or
@@ -203,7 +213,7 @@ After you have edited the file, GitHub will offer to create a pull request for y
 We try to maintain a consistent record of descriptive commit messages. 
 Most importantly: Keep the first line short, and add more detail below.
 This ensures commits are easy to browse, and look nice on github.com
-(more info about [proper git commit messages](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)).
+(more info about [proper git commit messages](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)).
 
 Our [changelog](https://docs.silverstripe.org/en/changelogs/) generation tool relies upon commit prefixes (tags)
 to categorize the patches accordingly and produce more readable output. Prefixes are usually a single case-insensitive word,

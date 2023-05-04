@@ -74,7 +74,7 @@ This process is usually started once someone [reports a security issue](issues_a
 - Publish the security advisory release page on silverstripe.org.
 - Publish the security advisory on GitHub. This will also publish the CVE.
 - Respond to the issue reporter with a link to the security advisory on the same discussion thread (cc security@silverstripe.org).
-- Open a pull request to [https://github.com/FriendsOfPHP/security-advisories/tree/master/silverstripe](https://github.com/FriendsOfPHP/security-advisories/tree/master/silverstripe) repository.
+- Open a pull request to the [FriendsOfPHP/security-advisories](https://github.com/FriendsOfPHP/security-advisories) repository.
 - Move the issue to "Done" in the [project board](https://github.com/silverstripe-security/security-issues/projects/1)
 
 ### Creating a GitHub security advisory

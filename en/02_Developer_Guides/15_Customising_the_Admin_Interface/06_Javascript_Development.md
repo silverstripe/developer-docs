@@ -9,27 +9,23 @@ iconBrand: js
 The following document is an advanced guide on building rich javascript interactions within the Silverstripe CMS and
 a list of our best practices for contributing and modifying the core javascript framework.
 
-## ES6 and build tools
-The remainder of this tutorial is written in [ECMAScript 6](http://es6-features.org/#Constants), or _ES6_
-for short. This is the new spec for Javascript (currently ES5) that is as of this writing
-only partially implemented in modern browsers. Because it doesn't yet enjoy vast native support,
-it has to be [transpiled](https://www.stevefenton.co.uk/2012/11/compiling-vs-transpiling/) in order to work
-in a browser. This transpiling can be done using a variety of toolchains, but the basic
- principle is that a browser-ready, ES5 version of your code is generated in your dev
- environment as part of your workflow.
-   
-   As stated above, there are many ways to solve the problem of transpiling. The toolchain
-   we use in core Silverstripe CMS modules includes:
-   * [Babel](http://babeljs.io) (ES6 transpiler)
-   * [Webpack](http://webpack.js.org) (Module bundler)
+## Build tools
+
+Silverstripe's javascript is transpiled, meaning it goes through a transformative process that takes our original source code
+and outputs javascript that is more efficient, smaller in overall file size, and works on a wider range of browsers.
+
+There are many ways to solve the problem of transpiling. The toolchain we use in core Silverstripe CMS modules includes:
+
+* [Babel](https://babeljs.io) (transpiler)
+* [Webpack](https://webpack.js.org) (Module bundler)
+
+## jQuery, jQuery UI and jQuery.entwine: Our libraries of choice
 
 [notice]
 The following documentation regarding jQuery, jQueryUI and Entwine does not apply to React components or sections powered by React.
 If you're developing new functionality in React powered sections please refer to
 [ReactJS, Redux, and GraphQL](./reactjs_redux_and_graphql).
 [/notice]
-
-## jQuery, jQuery UI and jQuery.entwine: Our libraries of choice
 
 We predominantly use [jQuery](https://jquery.com) as our abstraction library for DOM related programming, within the
 Silverstripe CMS and certain framework aspects.

@@ -10,8 +10,7 @@ Silverstripe CMS tries to keep its resource usage within the documented limits
 (see the [server requirements](../../getting_started/server_requirements)).
 
 These limits are defined through `memory_limit` and `max_execution_time` in the PHP configuration. They can be 
-overwritten through `ini_set()`, unless PHP is running with the [Suhoshin Patches](http://www.hardened-php.net/)
-or in "[safe mode](http://php.net/manual/en/features.safe-mode.php)".
+overwritten through `ini_set()`.
 
 [alert]
 Most shared hosting providers will have maximum values that can't be altered.

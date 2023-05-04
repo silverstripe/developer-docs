@@ -16,16 +16,16 @@ Check our [requirements](/getting_started/server_requirements) documentation.
 
 ## Tools and libraries
 
-Styles are written in the [SCSS language](http://sass-lang.com/).
+Styles are written in the [SCSS language](https://sass-lang.com/).
 We use [Bootstrap 4](https://getbootstrap.com/) styles where possible.
 
 ## Conventions
 
 We follow the [AirBnB CSS Conventions](https://github.com/airbnb/css)
-and the [BEM](http://getbem.com/) methodology (block-element-modifier).
+and the [BEM](https://getbem.com/) methodology (block-element-modifier).
 
 Because we use [Bootstrap 4](https://getbootstrap.com/) which
-does not follow [BEM](http://getbem.com/) naming convention there will be
+does not follow [BEM](https://getbem.com/) naming convention there will be
 a lot of places where class names voilate BEM.
 However, please note that they are not a indicator of how to name classes.
 Use BEM conventions where possible.
@@ -60,7 +60,7 @@ via `yarn lint` (see [Build Tooling](/contributing/build_tooling)).
 
 Most graphics used in the CMS are vector based, and stored as generated
 webfonts in `admin/client/src/font`, which also contains a HTML reference.
-The webfonts are generated through the [Fontastic](http://app.fontastic.me) service.
+The webfonts are generated through the [Fontastic](https://app.fontastic.me) service.
 If you need new icons to be added, please ping us on Github.  
 
 ## Legacy conventions

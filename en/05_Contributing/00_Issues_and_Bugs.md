@@ -66,13 +66,13 @@ Review our [Managing Security Guidelines](managing_security_issues) guidelines t
 
 ## Sharing your Opinion
 
-* [forum.silverstripe.org](http://forum.silverstripe.org): Forums on silverstripe.org
+* [forum.silverstripe.org](https://forum.silverstripe.org): Forums on silverstripe.org
 * [All issues across modules](https://www.silverstripe.org/community/contributing-to-silverstripe/github-all-core-issues)
 
 ## Identifying issues and pull request relevant to your own project {#identifying-issues}
 
 Our [issue browser](https://silverstripe-github-issues.now.sh/) can be helpful to identify known issues and pending pull requests in
-[supported modules](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/).
+[supported modules](/project_governance/supported_modules/).
 But you're usually only running some of these modules, and others
 from the [wider module ecosystem](https://addons.silverstripe.org).
 

@@ -54,7 +54,7 @@ class PageController implements PermissionProvider
 
 
 This can then be used to add a dropdown for permission codes to the security panel.  `Permission::get_all_codes()` will be
-a helper method that will call `providePermissions()` on every applicable class, and collate the resuls into a single
+a helper method that will call `providePermissions()` on every applicable class, and collate the results into a single
 dropdown.
 
 ## Default use

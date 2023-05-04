@@ -16,7 +16,7 @@ that's embedded into your page templates through the `$Form` placeholder.
 Since it's embedded into your own site styling and behaviour,
 it can require adjustments to your particular context. 
 
-Starting with Silverstripe CMS 4.5, the view logic may be handled through the
+The view logic may be handled through the
 [silverstripe/login-forms](https://github.com/silverstripe/silverstripe-login-forms) module (if present).
 
 ## Controllers
@@ -52,7 +52,7 @@ When a new Silverstripe CMS site is created for the first time, it may be necess
 CMS access for the first time. Silverstripe CMS provides a default admin configuration system, which allows a username
 and password to be configured for a single special user outside of the normal membership system.
 
-It is advisable to configure this user in your `.env` file inside of the web root, as below:
+It is advisable to configure this user in your `.env` file inside of the project root, as below:
 
 ```
 # Configure a default username and password to access the CMS on all sites in this environment.
