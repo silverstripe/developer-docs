@@ -302,11 +302,28 @@ To collect all the text in code and template files we have just to visit: `https
 Text collector will then read the files, build the string table for each module where it finds calls to the
 underscore function, and tell you about the created files and any possible entity redeclaration.
 
-If you want to run the text collector for just one module you can use the 'module' parameter: 
-`https://www.example.com/dev/tasks/i18nTextCollectorTask/?module=cms`
+If you want to run the text collector for just one module you can use the 'module' parameter:
+`https://www.example.com/dev/tasks/i18nTextCollectorTask/?module=silverstripe%2Fcms`
+
+You can also run the text collector against multiple specific modules by separating the module names with a comma:
+`https://www.example.com/dev/tasks/i18nTextCollectorTask/?module=silverstripe%2Fcms,silverstripe%2Fframework`
+
+[info]
+The `%2F` in `silverstripe%2Fcms` is a `/` which has been encoded for use in a URL in a non-ambiguous way.
+[/info]
+
+The text collector also collects text for themes - if you want to run text collection on a specific theme, reference the theme
+with prefix `themes:`, e.g:
+`https://www.example.com/dev/tasks/i18nTextCollectorTask/?module=themes:my-theme`
 
 [hint]
-You'll need to install PHPUnit to run the text collector (see [testing-guide](/developer_guides/testing)).
+You can also run this task via the command line using sake, e.g:
+
+```sh
+sake dev/tasks/i18nTextCollectorTask module=themes:my-theme,silverstripe/framework
+```
+
+See [the sake documentation](/developer_guides/cli/) for details about using sake.
 [/hint]
 
 ## Module Priority
