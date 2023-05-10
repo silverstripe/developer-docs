@@ -1,7 +1,7 @@
 ---
 title: Managing Security Issues
 summary: This document highlights how the Silverstripe CMS security team handles security issues.
-iconBrand: shield-alt
+icon: shield-alt
 ---
 
 # Managing Security Issues
