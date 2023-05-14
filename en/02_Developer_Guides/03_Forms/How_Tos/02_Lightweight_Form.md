@@ -11,10 +11,13 @@ sometimes produce markup which is unnecessarily bloated.
 
 For example, a basic search form. We want to use the [Form](api:SilverStripe\Forms\Form) API to handle the form but we may want to provide a 
 totally custom template to meet our needs. To do this, we'll provide the class with a unique template through 
-`setTemplate`.
+[`setTemplate()`](api:SilverStripe\Forms\Form::setTemplate()).
+
+[info]
+If you just want to change the template for a given form field instead, you can call [`setTemplate()`](api:SilverStripe\Forms\FormField::setTemplate()) on the individual field.
+[/info]
 
 **app/src/Page.php**
-
 
 ```php
 public function SearchForm() 
@@ -27,7 +30,7 @@ public function SearchForm()
         FormAction::create('doSearch', 'Search')
     );
 
-    $form = new Form($this, 'SearchForm', $fields, $actions);
+    $form = new Form($this, __FUNCTION__, $fields, $actions);
     $form->setTemplate('SearchForm');
 
     return $form;
@@ -35,7 +38,6 @@ public function SearchForm()
 ```
 
 **app/templates/Includes/SearchForm.ss**
-
 
 ```ss
 <form $FormAttributes>
@@ -55,5 +57,3 @@ properties on [Form](api:SilverStripe\Forms\Form) such as `$Fields` and `$Action
 [notice]
 To understand more about Scope or the syntax for custom templates, read the [Templates](../../templates) guide.
 [/notice]
-
-

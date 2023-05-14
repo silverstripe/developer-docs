@@ -7,7 +7,7 @@ icon: paint-brush
 # Themes
 
 Themes can be used to kick start your Silverstripe CMS projects, can be stored outside of your application code and your
-application can provide multiple unique themes (i.e a mobile theme).
+application can provide multiple unique themes (i.e.a mobile theme).
 
 ## Downloading
 

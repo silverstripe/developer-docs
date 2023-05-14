@@ -9,9 +9,9 @@ Silverstripe CMS's [FormScaffolder](api:SilverStripe\Forms\FormScaffolder) can a
 CMS and other scaffolded interfaces, it will output [TabSet](api:SilverStripe\Forms\TabSet) and [Tab](api:SilverStripe\Forms\Tab) objects and use jQuery Tabs to split 
 parts of the data model. 
 
-[notice]
+[info]
 All interfaces within the CMS such as [ModelAdmin](api:SilverStripe\Admin\ModelAdmin) and [LeftAndMain](api:SilverStripe\Admin\LeftAndMain) use tabbed interfaces by default.
-[/notice]
+[/info]
 
 When dealing with tabbed forms, modifying the fields in the form has a few differences. Each [Tab](api:SilverStripe\Forms\Tab) will be given a
 name, and normally they all exist under the `Root` [TabSet](api:SilverStripe\Forms\TabSet).

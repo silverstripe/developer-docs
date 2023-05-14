@@ -50,6 +50,7 @@ doesn't necessarily have any visible styling.
 ## Files
 
  * [FileField](api:SilverStripe\Forms\FileField): Simple file upload dialog.
+ * [UploadField](api:SilverStripe\AssetAdmin\Forms\UploadField): More sophisticated react-based file upload field. Only available with `silverstripe/asset-admin`.
 
 ## Relations
 
@@ -65,6 +66,6 @@ doesn't necessarily have any visible styling.
  * [DatalessField](api:SilverStripe\Forms\DatalessField) - Base class for fields which add some HTML to the form but don't submit any data or
 save it to the database.
  * [HeaderField](api:SilverStripe\Forms\HeaderField): Renders a simple HTML header element.
- * [HiddenField](api:SilverStripe\Forms\HiddenField) - Renders a hidden input field.
+ * [HiddenField](api:SilverStripe\Forms\HiddenField): Renders a hidden input field.
  * [LabelField](api:SilverStripe\Forms\LabelField): Simple label tag. This can be used to add extra text in your forms.
  * [LiteralField](api:SilverStripe\Forms\LiteralField): Renders arbitrary HTML into a form.
