@@ -6,13 +6,12 @@ icon: laptop-code
 
 # SiteConfig
 
-The `SiteConfig` module provides a generic interface for managing site-wide settings or functionality which is used 
+The `silverstripe/siteconfig` module provides a generic interface for managing site-wide settings or functionality which is used
 throughout the site. Out of the box, this includes setting the site name and site-wide access.
 
 ## Accessing variables
 
-`SiteConfig` options can be accessed from any template by using the $SiteConfig variable.
-
+`SiteConfig` options can be accessed from any template by using the `$SiteConfig` variable.
 
 ```ss
 $SiteConfig.Title 
@@ -25,54 +24,49 @@ $SiteConfig.Tagline
 
 To access variables in the PHP:
 
-
 ```php
 use Silverstripe\SiteConfig\SiteConfig;
 
 $config = SiteConfig::current_site_config(); 
 
+// prints "Website Name"
 echo $config->Title;
-
-// returns "Website Name"
 ```
 
 ## Extending SiteConfig
 
-To extend the options available in the panel, define your own fields via a [DataExtension](api:SilverStripe\ORM\DataExtension).
+To extend the options available in the panel, define your own fields via an [`Extension`](api:SilverStripe\Core\Extension).
 
 **app/src/extensions/CustomSiteConfig.php**
 
-
 ```php
+namespace App\Extension;
+
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class CustomSiteConfig extends DataExtension 
+class CustomSiteConfig extends Extension 
 {
-    
     private static $db = [
-        'FooterContent' => 'HTMLText'
+        'FooterContent' => 'HTMLText',
     ];
 
     public function updateCMSFields(FieldList $fields) 
     {
-        $fields->addFieldToTab("Root.Main", 
-            new HTMLEditorField("FooterContent", "Footer Content")
-        );
+        $fields->addFieldToTab('Root.Main', HTMLEditorField::create('FooterContent', 'Footer Content'));
     }
 }
 ```
 
-Then activate the extension.
+Then apply the extension.
 
 **app/_config/app.yml**
-
 
 ```yml
 Silverstripe\SiteConfig\SiteConfig:
   extensions:
-    - CustomSiteConfig
+    - App\Extension\CustomSiteConfig
 ```
 
 [notice]
@@ -81,7 +75,7 @@ You may also need to reload the screen with a `?flush=1` i.e.`https://www.exampl
 [/notice]
 
 You can define as many extensions for `SiteConfig` as you need. For example, if you're developing a module and want to
-provide the users a place to configure settings then the `SiteConfig` panel is the place to go it.
+provide the users a place to configure site-wide settings then the `SiteConfig` panel is the place to go it.
 
 ## API Documentation
 
