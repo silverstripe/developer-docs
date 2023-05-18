@@ -25,6 +25,7 @@ For more information about what your `composer.json` file should include, consul
 {
   "name": "my-vendor/my-module",
   "description": "One-liner describing your module",
+  "type": "silverstripe-vendormodule",
   "homepage": "https://github.com/my-vendor/my-module",
   "keywords": ["silverstripe", "some-tag", "some-other-tag"],
   "license": "BSD-3-Clause",
@@ -60,27 +61,17 @@ For more information about what your `composer.json` file should include, consul
 
 Once your module is published online with a service like github.com or bitbucket.com, submit the repository to 
 [Packagist](https://packagist.org/) to have the module accessible to developers. It'll automatically get picked
-up by [addons.silverstripe.org](https://addons.silverstripe.org/) website due to the `silverstripe` keyword in the file.
+up by [addons.silverstripe.org](https://addons.silverstripe.org/) website due to the `silverstripe-vendormodule`
+type in the file.
 
 Note that Silverstripe CMS modules have the following distinct characteristics:
 
- - Silverstripe CMS can hook in to the composer installation process by declaring `type: silverstripe-vendormodule`.
+ - Silverstripe CMS modules can be differentiated programatically from other packages by declaring `type: silverstripe-vendormodule`.
  - Any folder which should be exposed to the public webroot must be declared in the `extra.expose` config.
    These paths will be automatically rewritten to public urls which don't directly serve files from the `vendor`
    folder. For instance, `vendor/my-vendor/my-module/client` will be rewritten to
-   `_resources/my-vendor/my-module/client`.
- - Any module which uses the folder expose feature must require `silverstripe/vendor-plugin` in order to
-   support automatic rewriting and linking. For more information on this plugin you can see the
-   [silverstripe/vendor-plugin github page](https://github.com/silverstripe/vendor-plugin).
-
-Linking to resources in vendor modules uses exactly the same syntax as non-vendor modules. For example,
-this is how you would require a script in this module:
-
-```php
-use SilverStripe\View\Requirements;
-
-Requirements::javascript('my-vendor/my-module:client/js/script.js');
-```
+   `_resources/my-vendor/my-module/client`. See [Exposing static resources](/developer_guides/templates/requirements/#exposing-static-resources)
+   for more details about this.
 
 ## Releasing versions
 
