@@ -1,6 +1,6 @@
 ---
 title: Composer
-summary: What is composer and how to use it with Silverstripe CMS
+summary: What is Composer and how to use it with Silverstripe CMS
 ---
 
 # Using Silverstripe CMS with Composer
@@ -15,12 +15,16 @@ Before installing Composer you should ensure your system has the version control
 system [Git installed](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git). Composer uses Git to check out
 the code dependencies you need to run your Silverstripe CMS website from the code repositories maintained on GitHub.
 
-Next, [install composer](https://getcomposer.org/download/). For our documentation we assume the `composer` command is
+Next, [install Composer](https://getcomposer.org/download/). For our documentation we assume the `composer` command is
 installed globally. You should now be able to run the command:
 
 ```bash
 composer help
 ```
+
+[info]
+If you already have Composer installed, make sure it is composer 2 by running `composer --version`. If you're running Composer 1, run [`composer self-update`](https://getcomposer.org/doc/03-cli.md#self-update-selfupdate). You may also want to check out the [upgrade guide for Composer 1.x to 2.0](https://getcomposer.org/upgrade/UPGRADE-2.0.md).
+[/info]
 
 ## Create a new site
 
@@ -32,12 +36,12 @@ composer create-project silverstripe/installer my-project
 ```
 
 [hint]
-With the above command, `my-project` is the path (relative to your current working directory) where composer will create the project.
+With the above command, `my-project` is the path (relative to your current working directory) where Composer will create the project.
 
 For example, on OSX, you might want to create a project as a sub-directory of `~/Sites`. You could do that by running `cd ~/Sites` before
 the above command.
 
-If that directory doesn't exist, composer will create it for you.
+If that directory doesn't exist, Composer will create it for you.
 [/hint]
 
 If you want to get additional fixtures for testing, such as behat and phpunit configuration, an
@@ -51,14 +55,14 @@ lightweight install.
 This will get all the code that you need. As long as your web server and database are up and running, you can now
 visit the site in your web browser and the installation process will be completed.
 
-You can also specify a constraint to download explicit versions or set boundary conditions for what versions composer is allowed to install.
+You can also specify a constraint to download explicit versions or set boundary conditions for what versions Composer is allowed to install.
 For example, this will download the latest patch of the `4.13` release:
 
 ```bash
 composer create-project silverstripe/installer ./my-project ^4.13
 ```
 
-Learn more about composer constraints in [the official composer documentation](https://getcomposer.org/doc/articles/versions.md#writing-version-constraints)
+Learn more about Composer constraints in [the official composer documentation](https://getcomposer.org/doc/articles/versions.md#writing-version-constraints)
 
 When `create-project` is used with a release version like above, it will try to get the code from archives instead of
 creating git repositories. If you're planning to contribute to Silverstripe CMS,
@@ -114,7 +118,7 @@ version constraints.
 
 ## Deploying projects with Composer
 
-When deploying projects with composer, you could just push the code and run `composer update`. This, however, is risky.
+When deploying projects with Composer, you could just push the code and run `composer update`. This, however, is risky.
 In particular, if you were referencing development dependencies and a change was made between your testing and your
 deployment to production, you would end up deploying untested code. Not cool!
 
@@ -140,7 +144,7 @@ read [Should I commit the dependencies in my vendor directory?](https://getcompo
 
 ## Dev Environments for Contributing Code {#contributing}
 
-So you want to contribute to Silverstripe CMS? Fantastic! You can do this with composer too. You have to tell composer three
+So you want to contribute to Silverstripe CMS? Fantastic! You can do this with Composer too. You have to tell Composer three
 things in order to be able to do this:
 
 - Keep the full git repository information
@@ -243,10 +247,10 @@ comes with silverstripe/installer may also explicitly state it requires the stab
 is to ensure that when developers are getting started, running `composer update` won't upgrade their project to an
 unstable version
 
-However it is relatively easy to tell composer to use development versions. Not only is this required if you want to
+However it is relatively easy to tell Composer to use development versions. Not only is this required if you want to
 contribute back to the Silverstripe CMS project, it also allows you to get fixes and API changes early.
 
-This is a two step process. First you get composer to start a project based on the latest unstable
+This is a two step process. First you get Composer to start a project based on the latest unstable
 silverstripe/installer
 
 ```bash
@@ -292,7 +296,7 @@ This is how you do it:
 }
 ```
 
-* **Install the module as you would normally.** Use the regular composer commands - there are no special flags to use a
+* **Install the module as you would normally.** Use the regular Composer commands - there are no special flags to use a
   fork. Your fork will be used in place of the package version, so long as it meets the dependency version constraint.
 
 ```bash
@@ -363,25 +367,6 @@ the ["Aliases" chapter of the Composer documentation](https://getcomposer.org/do
 
 ## FAQ
 
-### Error "The requested package silverstripe/framework 1.0.0 could not be found"
-
-Composer needs hints about the base package version, either by using `composer create-project`
-as described above, or by checking out the `silverstripe-installer` project directly from version control. In order to
-use Composer on archive downloads from silverstripe.org, or other unversioned sources, an advanced workaround is to set
-the `COMPOSER_ROOT_VERSION` before every command
-([details](https://getcomposer.org/doc/03-cli.md#composer-root-version))
-
-### How do I convert an existing module to using Composer?
-
-Simply decide on a [unique name and vendor prefix](https://packagist.org/about#naming-your-package), create a `composer.json`, and either
-commit it or send a pull request to the module author. Look at existing modules like
-the [silverstripe/blog](https://github.com/silverstripe/silverstripe-blog/blob/4/composer.json) module for good examples on
-what this file should contain. It's important that for modules and themes, the file contains a custom "type" to declare it as a
-`silverstripe-vendormodule` or `silverstripe-theme` (
-see [custom installers](https://getcomposer.org/doc/articles/custom-installers.md)).
-
-Then register the module on [packagist.org](https://packagist.org).
-
 ### How should I name my module?
 
 Follow the packagist.org advice on choosing a [unique name and vendor prefix](https://packagist.org/about#naming-your-package). Please don't
@@ -397,11 +382,11 @@ in the `composer.json` (`"type": "silverstripe-theme"`), which triggers their in
 Themes should not have any PHP code in them - if your theme needs some PHP code to function correctly, add that PHP code
 to a separate module and include it as a dependency in the theme's `composer.json` file.
 
-### Do I need composer on my live server?
+### Do I need Composer on my live server?
 
-It depends on your deployment process. If you copy or rsync files to your live server, the process stays the same. If
-the live server hosts a git repository checkout, which is updated to push a newer version, you'll also need to
-run `composer install` afterwards. We recommend looking
+It depends on your deployment process. If you copy or rsync files to your live server, you won't need Composer on the live server. If
+the live server hosts a git repository checkout, which is updated to push a newer version, you'll need to
+run `composer install` checking out the code. We recommend looking
 into [Composer "lock" files](https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file) for this purpose.
 
 ### Can I keep using Downloads, Subversion Externals or Git Submodules?
@@ -409,7 +394,7 @@ into [Composer "lock" files](https://getcomposer.org/doc/01-basic-usage.md#compo
 Composer is more than just a file downloader. It comes with additional features such as
 [autoloading](https://getcomposer.org/doc/01-basic-usage.md#autoloading)
 and [scripts](https://getcomposer.org/doc/articles/scripts.md)
-which some modules will start relying on. Please check the module README for specific installation instructions.
+which some modules rely on. You really should be using Composer to manage your PHP dependencies.
 
 ### I don't want to get development versions of everything!
 
