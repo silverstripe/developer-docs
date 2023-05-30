@@ -121,7 +121,7 @@ $object = Injector::inst()->get(MyClassName::class);
 This allows you to concisely override classes in Silverstripe core or other third-party Silverstripe code.
 
 [info]
-When overriding other configuration beware the [order that configuration is applied](../configuration/#configuration-values). You may have to use the [Before/After](../configuration/#before-after-priorities) syntax to apply your override.
+When overriding other configuration beware the [order that configuration is applied](../configuration/#configuration-values). You may have to use the [Before/After](../configuration/#before-after-rules) syntax to apply your override.
 [/info]
 
 ### Special YML Syntax

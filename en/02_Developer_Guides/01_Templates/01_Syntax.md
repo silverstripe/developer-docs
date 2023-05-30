@@ -449,7 +449,7 @@ For more information on formatting and casting variables see [Formatting, Modify
 ## Scope
 
 In the `<% loop %>` section, we saw an example of two **scopes**. Outside the `<% loop %>...<% end_loop %>`, we were in 
-the scope of the top level `Page`. But inside the loop, we were in the scope of an item in the list (i.e the `Child`).
+the scope of the top level `Page`. But inside the loop, we were in the scope of an item in the list (i.e.the `Child`).
 
 The scope determines where the value comes from when you refer to a variable. Typically the outer scope of a `Page.ss` 
 layout template is the [PageController](api:SilverStripe\CMS\Controllers\ContentController\PageController) that is currently being rendered. 

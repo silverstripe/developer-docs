@@ -123,6 +123,10 @@ Silverstripe core environment variables are listed here, though you're free to d
 | `SS_DATABASE_PREFIX`|   A prefix to add to the database name.|
 | `SS_DATABASE_NAME` | The database name. If not set, `SS_DATABASE_CHOOSE_NAME` must be set instead. |
 | `SS_DATABASE_CHOOSE_NAME`| Boolean/Int. If defined, then the system will choose a default database name for you. The database name will be "SS_" followed by the name of the folder into which you have installed Silverstripe.<br />If `SS_DATABASE_CHOOSE_NAME` is an integer greater than one, then an ancestor folder will be used for the  database name. This is handy for a site that's hosted from `/sites/examplesite/www` or `/buildbot/allmodules-2.3/build`. If it's `2`, the parent folder will be chosen; if it's `3` the grandparent, and so on.<br /><br />Ignored if `SS_DATABASE_NAME` is set.|
+| `SS_DATABASE_SSL_KEY` | Absolute path to SSL key file (optional - but if set, `SS_DATABASE_SSL_CERT` must also be set) |
+| `SS_DATABASE_SSL_CERT` | Absolute path to SSL certificate file (optional - but if set, `SS_DATABASE_SSL_KEY` must also be set) |
+| `SS_DATABASE_SSL_CA` | Absolute path to SSL Certificate Authority bundle file (optional) |
+| `SS_DATABASE_SSL_CIPHER` | Custom SSL cipher for database connections (optional) |
 | `SS_DATABASE_TIMEZONE`| Set the database timezone to something other than the system timezone.
 | `SS_DEPRECATION_ENABLED` | Enable deprecation notices for this environment. `SS_ENVIRONMENT_TYPE` must be set to `dev` for deprecation notices to show. See [Deprecations](/upgrading/deprecations/) for more information. |
 | `SS_DEPRECATION_SHOW_HTTP` | Include deprecation warnings in HTTP responses if `SS_ENVIRONMENT_TYPE` is true. Defaults to false. |

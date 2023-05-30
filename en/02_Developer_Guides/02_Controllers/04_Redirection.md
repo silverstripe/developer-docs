@@ -12,7 +12,7 @@ HTTP header.
 **app/src/Page.php**
 
 ```php
-// redirect to Page::goherenow(), i.e on the contact-us page this will redirect to /contact-us/goherenow/
+// redirect to Page::goherenow(), i.e.on the contact-us page this will redirect to /contact-us/goherenow/
 $this->redirect($this->Link('goherenow'));
 
 // redirect to the URL on www.example.com/goherenow/ assuming your website is hosted at www.example.com (note the leading slash)

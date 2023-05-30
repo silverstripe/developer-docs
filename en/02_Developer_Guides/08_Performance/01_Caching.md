@@ -154,6 +154,10 @@ you need to be careful with resources here (e.g. filesystem space).
 
 
 ```yml
+---
+Name: my-project-cache
+After: '#corecache'
+---
 SilverStripe\Core\Injector\Injector:
   Psr\SimpleCache\CacheInterface.cacheblock:
     constructor:

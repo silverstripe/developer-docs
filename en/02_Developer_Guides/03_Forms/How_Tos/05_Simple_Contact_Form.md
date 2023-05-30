@@ -10,6 +10,13 @@ In this how-to, we'll explain how to set up a specific page type
 holding a contact form, which submits a message via email.
 Let's start by defining a new `ContactPage` page type:
 
+```php
+use Page;
+
+class ContactPage extends Page 
+{
+}
+```
 
 ```php
 use SilverStripe\Forms\FieldList;
@@ -18,15 +25,12 @@ use SilverStripe\Forms\EmailField;
 use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\Form;
-use Page;
 use PageController;
 
-class ContactPage extends Page 
-{
-}
 class ContactPageController extends PageController 
 {
     private static $allowed_actions = ['Form'];
+
     public function Form() 
     { 
         $fields = new FieldList( 
@@ -40,7 +44,6 @@ class ContactPageController extends PageController
         return new Form($this, 'Form', $fields, $actions); 
     }
 }
-
 ```
 
 To create a form, we instantiate a `Form` object on a function on our page controller. We'll call this function `Form()`. You're free to choose this name, but it's standard practice to name the function `Form()` if there's only a single form on the page.
@@ -126,10 +129,10 @@ class ContactPageController extends PageController
 ```
 
 [hint]
-	Caution: This form is prone to abuse by spammers,
-	since it doesn't enforce a rate limitation, or checks for bots.
-	We recommend to use a validation service like the ["recaptcha" module](https://www.silverstripe.org/spam-protection-module)
-	for better security.
+Caution: This form is prone to abuse by spammers,
+since it doesn't enforce rate limitation and doesn't implement any checks for bots.
+We recommend to use a validation service like the ["recaptcha" module](https://github.com/silverstripe/silverstripe-spamprotection)
+for better security.
 [/hint]
 
 Any function that receives a form submission takes two arguments: the data passed to the form as an indexed array, and the form itself. In order to extract the data, you can either use functions on the form object to get the fields and query their values, or just use the raw data in the array. In the example above, we used the array, as it's the easiest way to get data without requiring the form fields to perform any special transformations.
@@ -139,7 +142,7 @@ This data is used to create an email, which you then send to the address you cho
 The final thing we do is return a 'thank you for your feedback' message to the user. To do this we override some of the methods called in the template by returning an array. We return the HTML content we want rendered instead of the usual CMS-entered content, and we return false for Form, as we don't want the form to render.
 
 
-##How to add form validation
+## How to add form validation
 
 All forms have some basic validation built in – email fields will only let the user enter email addresses, number fields will only accept numbers, and so on. Sometimes you need more complicated validation, so you can define your own validation by extending the Validator class.
 

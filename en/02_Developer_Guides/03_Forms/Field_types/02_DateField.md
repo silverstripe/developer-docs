@@ -92,10 +92,6 @@ $dateField->setDescription(_t(
 $dateField->setAttribute('placeholder', $dateField->getDateFormat());
 ```
 
-[notice]
-Fields scaffolded through [DataObject::scaffoldCMSFields()](api:SilverStripe\ORM\DataObject::scaffoldCMSFields()) automatically have a description attached to them.
-[/notice]
-
 ## API Documentation
 
 * [DateField](api:SilverStripe\Forms\DateField)

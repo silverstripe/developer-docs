@@ -142,7 +142,7 @@ database field (TeamID).
 Also be aware the target of a relationship must be defined before it is referenced, for example the `hurricanes` team must appear in the fixture file before the line `Team: =>Team.hurricanes`.
 [/hint]
 
-This style of relationship declaration can be used for any type of relationship (i.e `has_one`, `has_many`, `many_many`).
+This style of relationship declaration can be used for any type of relationship (i.e.`has_one`, `has_many`, `many_many`).
 
 We can also declare the relationships conversely. Another way we could write the previous example is:
 

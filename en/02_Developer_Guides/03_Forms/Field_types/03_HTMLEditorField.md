@@ -10,7 +10,7 @@ Editing and formatting content is the bread and butter of every content manageme
 has a tight integration with our preferred editor library, [TinyMCE](https://www.tiny.cloud/docs/tinymce/6/).
 
 On top of the base functionality, we use our own insertion dialogs to ensure you can effectively select and upload 
-files. In addition to the markup managed by TinyMCE, we use [shortcodes](/developer_guides/extending/shortcodes) to store 
+files. We also use [shortcodes](/developer_guides/extending/shortcodes) to store 
 information about inserted images or media elements.
 
 The framework comes with a [HTMLEditorField](api:SilverStripe\Forms\HTMLEditor\HTMLEditorField) form field class which encapsulates most of the required
@@ -44,12 +44,12 @@ class MyObject extends DataObject
 
 By default, a config named 'cms' is used in any new [HTMLEditorField](api:SilverStripe\Forms\HTMLEditor\HTMLEditorField).
 
-If you have created your own [HtmlEditorConfig](api:SilverStripe\Forms\HTMLEditor\HtmlEditorConfig) and would like to use it,
-you can call `HtmlEditorConfig::set_active('myConfig')` and all subsequently created [HTMLEditorField](api:SilverStripe\Forms\HTMLEditor\HTMLEditorField)
+If you have created your own [HTMLEditorConfig](api:SilverStripe\Forms\HTMLEditor\HTMLEditorConfig) and would like to use it,
+you can call [`HTMLEditorConfig::set_active('myConfig')`](api:SilverStripe\Forms\HTMLEditor\HTMLEditorConfig::set_active()) and all subsequently created `HTMLEditorField` instances
 will use the configuration with the name 'myConfig'.
 
-You can also specify which [HtmlEditorConfig](api:SilverStripe\Forms\HTMLEditor\HtmlEditorConfig) to use on a per field basis via the construct argument.
-This is particularly useful if you need different configurations for multiple [HTMLEditorField](api:SilverStripe\Forms\HTMLEditor\HTMLEditorField) on the same page or form.
+You can also specify which `HTMLEditorConfig` to use on a per field basis via the construct argument.
+This is particularly useful if you need different configurations for multiple `HTMLEditorField` on the same page or form.
 
 
 ```php
@@ -80,34 +80,39 @@ In the above example, the 'Content' field will use the default 'cms' config whil
 ## Configuration
 
 To keep the JavaScript editor configuration manageable and extensible, we've wrapped it in a PHP class called 
-[HtmlEditorConfig](api:SilverStripe\Forms\HTMLEditor\HtmlEditorConfig). The class comes with its own defaults, which are extended through the [Configuration API](../../configuration)
+[HTMLEditorConfig](api:SilverStripe\Forms\HTMLEditor\HTMLEditorConfig). The class comes with its own defaults, which are extended through the [Configuration API](../../configuration)
 in the framework (and the `cms` module in case you've got that installed).
 
-There can be multiple configs, which should always be created / accessed using [HtmlEditorConfig::get()](api:SilverStripe\Forms\HTMLEditor\HtmlEditorConfig::get()). You can 
-then set the currently active config using `set_active()`.
-
-[info]
-[/info]
+There can be multiple configs, which should always be created / accessed using [HTMLEditorConfig::get()](api:SilverStripe\Forms\HTMLEditor\HTMLEditorConfig::get()). You can 
+then set the currently active config using `HTMLEditorConfig::set_active()`.
 
 [notice]
-Currently the order in which the `_config.php` files are executed depends on the module directory names. Execution 
-order is alphabetical, so if you set a TinyMCE option in the `aardvark/_config.php`, this will be overridden in 
-`vendor/silverstripe/framework/admin/_config.php` and your modification will disappear.
+The order in which the `_config.php` files are executed depends on the module names. Execution 
+order is alphabetical, so if you set a TinyMCE option in the `aardvark/_config.php` (i.e. the module name is simply `aardvark`),
+this will be overridden in `vendor/silverstripe/admin/_config.php` (because the module name is `silverstripe/admin`) and your modification will disappear.
 [/notice]
 
 ## Adding and removing capabilities
 
 In its simplest form, the configuration of the editor includes adding and removing buttons and plugins.
 
-You can add plugins to the editor using the Framework's [HtmlEditorConfig::enablePlugins()](api:SilverStripe\Forms\HTMLEditor\HtmlEditorConfig::enablePlugins()) method. This will
+You can add plugins to the editor using the Framework's [TinyMCEConfig::enablePlugins()](api:SilverStripe\Forms\HTMLEditor\TinyMCEConfig::enablePlugins()) method. This will
 transparently generate the relevant underlying TinyMCE code.
+
+[hint]
+The `enablePlugins()` method is implemented on `TinyCMEConfig`, which is a subclass of `HTMLEditorConfig`. This is true of most of the configuration methods used in this documentation. We've done an explicit `instanceof` check here for correctness, but in reality unless your project introduces an alternative WYSIWYG editor, you can safely omit that check. The remaining examples in this documentation will omit the check.
+[/hint]
 
 **app/_config.php**
 
 ```php
-use SilverStripe\Forms\HTMLEditor\HtmlEditorConfig;
+use SilverStripe\Forms\HTMLEditor\HTMLEditorConfig;
+use SilverStripe\Forms\HTMLEditor\TinyMCEConfig;
 
-HtmlEditorConfig::get('cms')->enablePlugins('emoticons');
+$editorConfig = HTMLEditorConfig::get('cms');
+if ($editorConfig instanceof TinyMCEConfig) {
+    $editorConfig->enablePlugins('emoticons');
+}
 ```
 
 [notice]
@@ -121,7 +126,7 @@ configuration. Here is an example of adding a `ssmacron` button after the `charm
 **app/_config.php**
 
 ```php
-HtmlEditorConfig::get('cms')->insertButtonsAfter('charmap', 'ssmacron');
+HTMLEditorConfig::get('cms')->insertButtonsAfter('charmap', 'ssmacron');
 ```
 
 Buttons can also be removed:
@@ -129,11 +134,11 @@ Buttons can also be removed:
 **app/_config.php**
 
 ```php
-HtmlEditorConfig::get('cms')->removeButtons('tablecontrols', 'blockquote', 'hr');
+HTMLEditorConfig::get('cms')->removeButtons('tablecontrols', 'blockquote', 'hr');
 ```
 
 [notice]
-Internally [HtmlEditorConfig](api:SilverStripe\Forms\HTMLEditor\HtmlEditorConfig) uses the TinyMCE's `toolbar` option to configure these. See the 
+Internally `HTMLEditorConfig` uses the TinyMCE's `toolbar` option to configure these. See the 
 [TinyMCE documentation of this option](https://www.tiny.cloud/docs/tinymce/6/toolbar-configuration-options/#toolbar)
 for more details.
 [/notice]
@@ -151,7 +156,7 @@ from the HTML source by the editor.
 
 ```php
 // Add start and type attributes for <ol>, add <embed> with all attributes.
-HtmlEditorConfig::get('cms')->setOption(
+HTMLEditorConfig::get('cms')->setOption(
     'extended_valid_elements',
     'img[class|src|alt|title|hspace|vspace|width|height|align|name|usemap|data*],' .
     'iframe[src|name|width|height|align|frameborder|marginwidth|marginheight|scrolling],' .
@@ -169,12 +174,12 @@ of the existing option value, you can call `getOption()`, modify the returned va
 
 ```php
 // Add start and type attributes for <ol>, add <embed> with all attributes - without redeclaring everything else
-$editor = HtmlEditorConfig::get('cms');
+$editor = HTMLEditorConfig::get('cms');
 $validElements = $editor->getOption('extended_valid_elements') . ',' .
     'embed[src|type|pluginspage|width|height|autoplay],' .
     'ol[start|type]';
 $validElements = str_replace('iframe[', 'iframe[data-*|');
-$editor->setOption( 'extended_valid_elements', $validElements);
+$editor->setOption('extended_valid_elements', $validElements);
 ```
 
 [notice]
@@ -182,22 +187,31 @@ The default setting for the CMS's `extended_valid_elements` we are overriding he
 `vendor/silverstripe/admin/_config.php`.
 [/notice]
 
-## Writing custom plugins
+## Enabling custom plugins
 
 It is also possible to add custom plugins to TinyMCE, for example toolbar buttons.
-You can enable them through [HtmlEditorConfig::enablePlugins()](api:SilverStripe\Forms\HTMLEditor\HtmlEditorConfig::enablePlugins()):
+You can enable them through [TinyMCEConfig::enablePlugins()](api:SilverStripe\Forms\HTMLEditor\TinyMCEConfig::enablePlugins()):
 
 **app/_config.php**
 
 ```php
-HtmlEditorConfig::get('cms')->enablePlugins(['myplugin' => '../../../app/javascript/myplugin/editor_plugin.js']);
+HTMLEditorConfig::get('cms')->enablePlugins(['myplugin' => 'app/javascript/myplugin/editor_plugin.js']);
 ```
+
+[hint]
+The path for the plugin file must be one of the following:
+
+- `null` (if the plugin being enabled is a built-in plugin)
+- a path, relative to your `_resources/` directory, to the plugin file
+- a `ModuleResource` instance representing the plugin javascript file (see `silverstripe/admin`'s `_config.php` file for examples)
+- an absolute URL (e.g. for a third-party plugin to be fetched from a CDN).
+[/hint]
 
 You can learn how to [create a plugin](https://www.tiny.cloud/docs/tinymce/6/creating-a-plugin/) from the TinyMCE documentation.
 
 ## Image and media insertion
 
-The [HtmlEditorField](api:SilverStripe\Forms\HTMLEditor\HtmlEditorField) API also handles inserting images and media files into the managed HTML content. It can be 
+The [HTMLEditorField](api:SilverStripe\Forms\HTMLEditor\HTMLEditorField) API also handles inserting images and media files into the managed HTML content. It can be 
 used both for referencing files on the webserver filesystem (through the [File](api:SilverStripe\Assets\File) and [Image](api:SilverStripe\Assets\Image) APIs), as well 
 as hotlinking files from the web. 
 
@@ -225,10 +239,10 @@ You can edit the image size pre-sets for an individual configuration with this c
 
 ```php
 <?php
-use SilverStripe\Forms\HTMLEditor\HtmlEditorConfig;
+use SilverStripe\Forms\HTMLEditor\HTMLEditorConfig;
 use SilverStripe\Forms\HTMLEditor\TinyMCEConfig;
 
-HtmlEditorConfig::get('cms')->setOption('image_size_presets', [
+HTMLEditorConfig::get('cms')->setOption('image_size_presets', [
     [
         'width' => 300,
         'text' => 'Small fit',
@@ -256,7 +270,7 @@ representation of files just by referencing a website URL. For example, a conten
 video just by knowing its URL, as opposed to dealing with manual HTML code.
 
 oEmbed powers the "Insert from web" feature available through 
-[HtmlEditorField](api:SilverStripe\Forms\HTMLEditor\HtmlEditorField). Internally this service is provided
+[HTMLEditorField](api:SilverStripe\Forms\HTMLEditor\HTMLEditorField). Internally this service is provided
 by the [embed](https://github.com/oscarotero/Embed) library.
 
 To disable oembed you will need to follow the below to remove the plugin from tinymce, as well
@@ -271,7 +285,7 @@ SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
 ```
 
 ```php
-HtmlEditorConfig::get('cms')->disablePlugins('ssembed');
+HTMLEditorConfig::get('cms')->disablePlugins('ssembed');
 ```
 
 Use the following config if you need to send outbound requests through a proxy:
@@ -289,7 +303,7 @@ SilverStripe\Core\Injector\Injector:
 
 ## Limiting oembed URLs
 
-HtmlEditorField can have whitelists set on both the scheme (default http & https) and domains allowed when
+HTMLEditorField can have whitelists set on both the scheme (default http & https) and domains allowed when
 inserting files for use with oembed.
 
 This is performed through the config variables on the 
@@ -320,7 +334,7 @@ This allows a white or blacklist to be applied to schema, domain, or port (if pr
 both blacklist and whitelist need to match, and are only ignored if the rules are empty for any
 of the above values.
 
-By default live sites (SS_ENVIRONMENT_TYPE="live") will not attempt to resolve oembed urls that
+By default live sites (see [environment types](/developer_guides/debugging/environment_types/)) will not attempt to resolve oembed urls that
 point to localhost to protect your site from cross site request forgery.
 
 ### Doctypes
@@ -332,104 +346,97 @@ In case you want to adhere to the stricter xhtml format (for example rendering s
 use the following configuration:
 
 ```php
-HtmlEditorConfig::get('cms')->setOption('element_format', 'xhtml');
+HTMLEditorConfig::get('cms')->setOption('element_format', 'xhtml');
 ```
 
 By default, TinyMCE and Silverstripe CMS will generate valid HTML5 markup, but it will strip out many HTML5 tags like 
 `<article>` or `<figure>`. If you plan to use those, add them to the 
-[valid_elements](https://www.tinymce.com/wiki.php/Configuration:valid_elements) configuration setting.
+[valid_elements](https://www.tiny.cloud/docs/tinymce/6/content-filtering/#valid_elements) configuration setting.
 
 Also, the [HTMLValue](api:SilverStripe\View\Parsers\HTMLValue) API underpinning the HTML processing parses the markup into a temporary object tree 
-which can be traversed and modified before saving. The built-in parser only supports HTML4 and XHTML syntax. In order 
-to successfully process HTML5 tags, please use the 
-['silverstripe/html5' module](https://github.com/silverstripe/silverstripe-html5).
+which can be traversed and modified before saving. The built-in parser supports HTML5 syntax.
 
-## Recipes
+## Security groups with their own editor configuration
 
-### Customising the "Insert" panels
+Different groups of authors can be assigned their own config,
+e.g. a more restricted rule set for content reviewers (see [access control](/developer_guides/security/access_control/#the-security-groups-in-silverstripe-cms)).
+The config is available on each user record through [Member::getHTMLEditorConfigForCMS()](api:SilverStripe\Security\Member::getHTMLEditorConfigForCMS()).
+The group assignment is done through the "Security" interface for each [Group](api:SilverStripe\Security\Group) record.
+Note: The dropdown is only available if more than one config exists.
+
+## Customising modal forms
 
 In the standard installation, you can insert links (internal/external/anchor/email),
 images as well as flash media files. The forms used for preparing the new content element
 are rendered by Silverstripe CMS, but there's some JavaScript involved to transfer
 back and forth between a content representation the editor can understand, present and save.
 
-Example: Remove field for "image captions"
+The forms for these actions are created using implementations of the [`FormFactory`](api:SilverStripe\Forms\FormFactory) interface.
+For example, the module for embedding remote files gets its form from the [`RemoteFileFormFactory`](api:SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory) class.
 
+All of these forms can be customised by implementing an extension with the appropriate
+extension hook method.
+
+Example: Remove field for "Caption" in the embedded image form:
+
+**`app/src/Extension/RemoteFileFormFactoryExtension.php`**
 
 ```php
-use SilverStripe\Core\Extension;
+namespace App\Extension;
 
-// File: app/src/MyToolbarExtension.php
-class MyToolbarExtension extends Extension 
+use SilverStripe\Core\Extension;
+use SilverStripe\Forms\Form;
+
+class RemoteFileFormFactoryExtension extends Extension 
 {
-    public function updateFieldsForImage(&$fields, $url, $file) 
+    public function updateForm(Form $form)
     {
-        $fields->removeByName('CaptionText');
+        $form->Fields()->removeByName('CaptionText');
     }
 }
 ```
 
-```php
-// File: app/_config.php
-use SilverStripe\Admin\ModalController;
+**`app/_config/extensions.yml`**
 
-ModalController::add_extension('MyToolbarExtension');
+```yml
+SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+  extensions:
+    - App\Extension\RemoteFileFormFactoryExtension
 ```
 
 Adding functionality is a bit more advanced, you'll most likely
 need to add some fields to the PHP forms, as well as write some
 JavaScript to ensure the values from those fields make it into the content
 elements (and back out in case an existing element gets edited).
-There's lots of extension points in the [ModalController](api:SilverStripe\Admin\ModalController) class
-to get you started.
 
-### Security groups with their own editor configuration
+## Using the `HTMLEditorField` outside of the CMS
 
-Different groups of authors can be assigned their own config,
-e.g. a more restricted rule set for content reviewers (see the "Security" )
-The config is available on each user record through [Member::getHtmlEditorConfigForCMS()](api:SilverStripe\Security\Member::getHtmlEditorConfigForCMS()).
-The group assignment is done through the "Security" interface for each [Group](api:SilverStripe\Security\Group) record.
-Note: The dropdown is only available if more than one config exists.
+The `HTMLEditorField` is configured for use in the CMS interface - but it can be used in other contexts
+as well, with some additional configuration. Note however that use of the `ssmedia` and `sslink` and
+related plugins is not directly supported outside of the CMS. Your best bet is to configure a custom
+`HTMLEditorConfig` for this purpose which doesn't include those plugins.
 
-### Using the editor outside of the CMS
+You will also need to provide some basic javascript to initialise the TinyMCE field. The below javascript
+will initialise TinyMCE configuration for every `HTMLEditorField` on the page:
 
-Each interface can have multiple fields of this type, each with their own toolbar to set formatting
-and insert HTML elements. They do share one common set of dialogs for inserting links and other media though,
-encapsulated in the [ModalController](api:SilverStripe\Admin\ModalController) class.
-In the CMS, those dialogs are automatically instantiate, but in your own interfaces outside
-of the CMS you have to take care of instantiate yourself:
-
-
-```php
-use SilverStripe\Admin\ModalController;
-use SilverStripe\Control\Controller;
-
-// File: app/src/MyController.php
-class MyObjectController extends Controller 
-{
-    public function Modals() 
-    {
-        return ModalController::create($this, "Modals");
+```js
+for (let field of document.querySelectorAll('textarea[data-editor="tinyMCE"]')) {
+    const id = field.getAttribute('id');
+    const config = JSON.parse(field.dataset.config);
+    config.selector = `#${id}`;
+    if (typeof config.baseURL !== 'undefined') {
+        tinymce.EditorManager.baseURL = config.baseURL;
     }
+    tinymce.init(config);
 }
 ```
 
-Note: The dialogs rely on CMS-access, e.g. for uploading and browsing files,
-so this is considered advanced usage of the field.
-
-```php
-// File: app/_config.php
-HtmlEditorConfig::get('cms')->disablePlugins('ssbuttons');
-HtmlEditorConfig::get('cms')->removeButtons('sslink', 'ssmedia');
-HtmlEditorConfig::get('cms')->addButtonsToLine(2, 'link', 'media');
-```
-
-### Developing a wrapper to use a different WYSIWYG editors with HTMLEditorField
+## Developing a wrapper to use a different WYSIWYG editors with HTMLEditorField
 
 WYSIWYG editors are complex beasts, so replacing it completely is a difficult task.
 The framework provides a wrapper implementation for the basic required functionality,
 mainly around selecting and inserting content into the editor view.
-Have a look in `HtmlEditorField.js` and the `ss.editorWrapper` object to get you started
-on your own editor wrapper. Note that the [HtmlEditorConfig](api:SilverStripe\Forms\HTMLEditor\HtmlEditorConfig) is currently hardwired to support TinyMCE,
-so its up to you to either convert existing configuration as applicable,
-or start your own configuration.
+Have a look in `HTMLEditorField.js` and the `ss.editorWrapper` object to get you started
+on your own editor wrapper. Note that the javascript for the `HTMLEditorField` is currently hardwired to support TinyMCE,
+and it is likely that a lot of projects and modules will be expecting all `HTMLEditorConfig`
+instances to be `TinyMCEConfig` instances.

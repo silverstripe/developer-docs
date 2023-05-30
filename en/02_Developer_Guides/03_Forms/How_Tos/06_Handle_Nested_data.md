@@ -71,7 +71,9 @@ use SilverStripe\Forms\TextField;
 
 class MyController extends Controller
 {
-    private static $allowed_actions = ['Form'];
+    private static $allowed_actions = [
+        'Form',
+    ];
 
     private static $url_segment = 'MyController';
 
@@ -80,7 +82,7 @@ class MyController extends Controller
         $player = Player::get()->byID(1);
         return Form::create(
             $this,
-            'Form',
+            __FUNCTION__,
             FieldList::create([
                 TextField::create('Name'),
                 CheckboxSetField::create('Teams')
