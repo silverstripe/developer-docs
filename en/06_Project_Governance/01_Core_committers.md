@@ -23,7 +23,6 @@ This page outlines those who are part of the Core Committer team and outlines th
 * [Michal Kleiner](https://github.com/michalkleiner)
 * [Sam Minnée](https://github.com/sminnee)
 * [Steve Boyd](https://github.com/emteknetnz)
-* [Stevie Mayhew](https://github.com/stevie-mayhew/)
 * [Will Rossiter](https://github.com/wilr/)
 
 ## Onboarding new Core Committer team members
