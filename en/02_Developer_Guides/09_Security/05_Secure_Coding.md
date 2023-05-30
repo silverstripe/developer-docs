@@ -778,6 +778,18 @@ Cookie::set('cookie-name', 'chocolate-chip', $expiry = 30, $path = null, $domain
 );
 ```
 
+### Using SSL in database connections
+
+In some circumstances, like connecting to a database on a remote host for example, you may wish to enable SSL encryption to ensure the protection of sensitive information and database access credentials.
+You can configure that by setting the following environment variables:
+
+| Name  | Description |
+| ----  | ----------- |
+| `SS_DATABASE_SSL_KEY` | Absolute path to SSL key file (optional - but if set, `SS_DATABASE_SSL_CERT` must also be set) |
+| `SS_DATABASE_SSL_CERT` | Absolute path to SSL certificate file (optional - but if set, `SS_DATABASE_SSL_KEY` must also be set) |
+| `SS_DATABASE_SSL_CA` | Absolute path to SSL Certificate Authority bundle file (optional) |
+| `SS_DATABASE_SSL_CIPHER` | Custom SSL cipher for database connections (optional) |
+
 ## Security Headers
 
 In addition to forcing HTTPS browsers can support additional security headers which can only allow access to a website 
