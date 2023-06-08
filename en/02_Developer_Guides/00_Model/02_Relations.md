@@ -570,6 +570,144 @@ the best way to think about it is that the object where the relationship will be
 `Product` => `Category`, the `Product` model should contain the `many_many` side of the relationship, because it is much
 more likely that the user will select categories for a product than vice-versa.
 
+## Eager loading
+
+Querying nested relationships inside a loop using the ORM is prone to the N + 1 query problem. To illustrate the N + 1 query problem, imagine a scenario where there are Teams with many child Players
+
+```php
+class Team extends DataObject
+{
+    private static $has_many = [
+        'Players' => Player::class,
+    ];
+}
+```
+
+To retrieve teams and their players:
+
+```php
+$teams = Team::get();
+
+foreach ($teams as $team) {
+    foreach ($team->Players() as $player) {
+        echo $player->FirstName;
+    }
+}
+```
+
+In this case the loop will execute one query to retrieve all the teams and then an additional query for each team to retrieve its players. If we have 20 teams this loop would run 21 queries - one to get all the teams and then 20 more queries to get the players for each team.
+
+```sql
+# Retrieve all the teams
+# Note this is not the exact SQL that would generated it is just for demonstration
+SELECT * FROM Team;
+
+# Retrieve the players for all the teams in 20 separate queries:
+SELECT * FROM Player WHERE TeamID = 1
+SELECT * FROM Player WHERE TeamID = 2
+SELECT * FROM Player WHERE TeamID = 3
+SELECT * FROM Player WHERE TeamID = ...
+```
+
+The N + 1 query problem can be alleviated using eager loading which in this example will reduce this down to just two queries. We do this by passing the relationships that should be eagerly loaded to the `eagerLoad()` method on [DataList](api:SilverStripe\ORM\DataList):
+
+```php
+$teams = Team::get()->eagerLoad('Players')
+```
+
+With eager loading now only two queries will be executed:
+
+```sql
+# Retrieve all the teams
+SELECT * FROM Team
+
+# Retrieve all the players for the teams in a single query:
+SELECT * FROM Player WHERE TeamID IN (1, 2, 3, ...)
+```
+
+Suppose we have the following related classes:
+
+```php
+class Team extends DataObject
+{
+    private static $has_many = [
+        'Players' => Player::class,
+        'Fans' => Fan::class,
+    ];
+}
+
+class Player extends DataObject
+{
+    private static $has_one = [
+        'Team' => Team::class,
+    ];
+
+    private static $many_many = [
+        'Games' => Game::class,
+    ];
+}
+
+class Game extends DataObject
+{
+    private static $has_many = [
+        'Officials' => Official::class,
+        'Sponsors' => Sponsor::class,
+    ];
+}
+```
+
+In this example, to eager load the Players and Fans relationships on Team, pass multiple arguments to the `eagerLoad()` method:
+
+```php
+$teams = Team::get()->eagerLoad('Players', 'Fans');
+```
+
+Perhaps, you may need to get all the `Officials` that are related to each `Game`. In this example, you can use another feature provided by the `eagerLoad` method. Eager load nested relationships up to **three** levels deep using the dot syntax:
+
+```php
+$teams = Team::get()->eagerLoad('Players.Games.Officials');
+```
+
+You can then access the nested relationships in the loop as you normally would:
+
+```php
+foreach ($teams as $team) {
+    foreach ($team->Players() as $player) {
+        foreach ($player->Games() as $game) {
+            foreach ($game->Officials() as $official) {
+                // Everything will have been eager loaded at this point
+                echo $official->FirstName;
+            }
+        }
+    }
+}
+```
+
+You can get the results for multiple nested relations with multiple arguments:
+
+```php
+$teams = Team::get()->eagerLoad(
+    'Players.Games.Officials',
+    'Players.Games.Sponsors',
+);
+```
+
+Eager loading can be used in templates. The following example assumes that `$MyTeams` is an available DataList which could be provided via a `getMyTeams()` method on `PageController`:
+
+```ss
+<% loop $MyTeams.eagerLoad('Players') %>
+    <% loop $Players %>
+        <p>Player first name is $FirstName</p>
+    <% end_loop %>
+<% end_loop %>
+```
+
+Eager loading supports all relationships - `has_one`, `belongs_to`, `has_many`, `many_many`, `many_many_through`, `belongs_many_many`.
+
+[notice]
+Eager loading is only intended to be used in read-only scenarios such as when outputting data on the front-end of a website. When using default lazy-loading, relationship methods will return a subclass of [DataList](api:SilverStripe\ORM\DataList) such as [DataList](api:SilverStripe\ORM\HasManyList). However when using eager-loading [ArrayList](api:SilverStripe\ORM\ArrayList) will be returned instead. [ArrayList](api:SilverStripe\ORM\ArrayList) still has common methods such as `filter()`, `sort()`, `limit()` and `reverse()` available to manipulate its data.
+[/notice]
+
 ## Cascading deletions
 
 Relationships between objects can cause cascading deletions, if necessary, through configuration of the
