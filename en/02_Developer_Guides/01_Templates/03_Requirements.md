@@ -275,7 +275,7 @@ SilverStripe\Core\Injector\Injector:
   SilverStripe\Assets\Storage\GeneratedAssetHandler.custom-generated-assets:
     class: SilverStripe\Assets\Flysystem\GeneratedAssets
     properties:
-      Filesystem: %$League\Flysystem\Filesystem.custom-filesystem
+      Filesystem: '%$League\Flysystem\Filesystem.custom-filesystem'
   # Assign this generator to the requirements builder
   SilverStripe\View\Requirements_Backend:
     properties:
@@ -370,7 +370,7 @@ SilverStripe\Core\Injector\Injector:
   SilverStripe\View\Requirements_Backend:
     properties:
       MinifyCombinedFiles: true
-      Minifier: %$MyProject\MyMinifier
+      Minifier: '%$MyProject\MyMinifier'
 ```
 
 [alert]
