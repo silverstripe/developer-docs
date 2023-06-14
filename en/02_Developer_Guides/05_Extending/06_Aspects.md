@@ -106,7 +106,7 @@ Next, this should be bound into an instance of the `Aspect` class
 SilverStripe\Core\Injector\Injector:
   MySQLWriteDbAspect:
     properties:
-      writeDb: %$WriteMySQLDatabase
+      writeDb: '%$WriteMySQLDatabase'
 ```
 
 Next, we need to define the database connection that will be used for all non-write queries
@@ -135,10 +135,10 @@ SilverStripe\Core\Injector\Injector:
   MySQLDatabase:
     class: AopProxyService
     properties:
-      proxied: %$ReadMySQLDatabase
+      proxied: '%$ReadMySQLDatabase'
       beforeCall:
         query: 
-          - %$MySQLWriteDbAspect
+          - '%$MySQLWriteDbAspect'
 ```
 
 The two important parts here are in the `properties` declared for the object.
@@ -163,7 +163,7 @@ SilverStripe\Core\Injector\Injector:
         database: read_database
   MySQLWriteDbAspect:
     properties:
-      writeDb: %$WriteMySQLDatabase
+      writeDb: '%$WriteMySQLDatabase'
   WriteMySQLDatabase:
     class: MySQLDatabase
     constructor:
@@ -175,10 +175,10 @@ SilverStripe\Core\Injector\Injector:
   MySQLDatabase:
     class: AopProxyService
     properties:
-      proxied: %$ReadMySQLDatabase
+      proxied: '%$ReadMySQLDatabase'
       beforeCall:
         query: 
-          - %$MySQLWriteDbAspect
+          - '%$MySQLWriteDbAspect'
 ```
 
 ## Changing what a method returns
