@@ -98,8 +98,33 @@ requirement):
 }
 ```
 
-After your module is running and tested, you can publish it. Since your module is a self-contained piece of software, it
-will constitute a project in itself. The below assumes you are using GitHub and have already created a new GitHub repository for this module.
+While you are creating you will need to ensure it works with Silverstripe as you expect. You can do this in one of two ways.
+
+#### Local
+
+You can work with a module completely locally, to do this you will need to add a local repository to `composer.json`
+
+```json
+{
+  "repositories": [
+    {
+      "type": "path",
+      "url": "/full/or/relative/path/to/module",
+      "options": {
+        "symlink": false
+      }
+    }
+  ]
+}
+```
+
+Then install your local module via `composer require my_vendor/module_name @dev`.
+
+Remember that if you make changes to the module then you will need to update the module in composer
+
+#### Publish to Github
+
+The below assumes you are using GitHub and have already created a new GitHub repository for this module.
 
 Push your module upstream to the empty repository just created:
 
@@ -137,7 +162,7 @@ now include the following requirement in the same `composer.json`:
 ```
 	"require": {
 		...
-		"my_vendor.module_name": "*"
+		"my_vendor/module_name": "*"
 	}
 ```
 
