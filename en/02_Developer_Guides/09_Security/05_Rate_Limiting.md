@@ -53,7 +53,7 @@ Or if you want to apply your middleware to a specific route:
 SilverStripe\Control\Director:
   rules:
     special/section:
-      Controller: %$MyRateLimitedController
+      Controller: '%$MyRateLimitedController'
 ```
 
 ## Applying rate limiting across an entire application

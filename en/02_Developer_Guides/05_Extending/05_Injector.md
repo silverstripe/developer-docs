@@ -316,12 +316,12 @@ name: MyController
 ---
 App\MyController:
   dependencies:
-    permissions: %$App\PermissionService
+    permissions: '%$App\PermissionService'
 SilverStripe\Core\Injector\Injector:
   App\PermissionService:
     class: App\RestrictivePermissionService
     properties:
-      database: %$App\MySQLDatabase
+      database: '%$App\MySQLDatabase'
   App\MySQLDatabase:
     constructor:
       0: 'dbusername'
@@ -432,7 +432,7 @@ SilverStripe\Core\Injector\Injector:
     class: App\JSONServiceImplementor
     properties:
       Serialiser: App\JSONSerialiser
-  App\GZIPJSONProvider: %$App\JSONServiceDefinition
+  App\GZIPJSONProvider: '%$App\JSONServiceDefinition'
 ```
 
 `Injector::inst()->get(GZIPJSONProvider::class)` will then be an instance of `App\JSONServiceImplementor` with the injected
@@ -448,7 +448,7 @@ SilverStripe\Core\Injector\Injector:
   App\Connector:
     properties:
       AsString: true
-  App\ServiceConnector: %$Connector
+  App\ServiceConnector: '%$Connector'
 ```
 
 Both `App\Connector` and `App\ServiceConnector` will have the `AsString` property set to true, but the resulting
