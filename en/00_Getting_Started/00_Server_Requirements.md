@@ -89,9 +89,9 @@ also needs write access for the webserver user to the following locations:
   and [Partial Template Caching](/developer_guides/templates/partial_template_caching).
   See [Environment Management](/getting_started/environment_management).
 * `.graphql-generated`: silverstripe/graphql uses this directory. This is where your schema is
-  stored once it [has been built](/developer_guides/graphql/getting_started/building_the_schema). Best practice
+  stored once it [has been built](/developer_guides/graphql/getting_started/building_the_schema/). Best practice
   is to create it ahead of time, but if the directory doesn't exist and your project root is writable, the graphql
-  module will create it for you.
+  module will create it for you. Note that you can configure this to be stored elsewhere - see [building the schema](/developer_guides/graphql/getting_started/building_the_schema/#cache-location)
 * `public/_graphql`: silverstripe/graphql uses this directory. It's used for
   [schema introspection](/developer_guides/graphql/tips_and_tricks#schema-introspection). You should treat this folder
   the same way you treat the `.graphql-generated` folder.
