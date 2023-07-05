@@ -6,7 +6,7 @@ description: Modules which are commercially supported by Silverstripe
 # Commercially supported modules
 
 Silverstripe CMS ships modules that receive commercial support. Commercially supported modules receive regular updates to work with the latest Silverstripe CMS release. Their APIs conform to [semantic versioning](https://semver.org/). They are covered by:
-- our [security release process](managing_security_issues) and 
+- our [security release process](/contributing/managing_security_issues) and 
 - our [major release policy](major_release_policy).
 
 These modules will be supported for the lifetime of Silverstripe CMS 5 in the provided major versions.

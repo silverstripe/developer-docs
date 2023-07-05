@@ -71,7 +71,7 @@ SilverStripe\Core\Injector\Injector:
   SilverStripe\Security\Security:
     properties:
       Authenticators:
-        myauthenticator: %$MyVendor\MyProject\Authenticator\MyAuthenticator
+        myauthenticator: '%$MyVendor\MyProject\Authenticator\MyAuthenticator'
 ```
 If there is no authenticator registered, `Authenticator` will try to fall back on the default provided authenticator (`default`), which can be changed using the following config, replacing the MemberAuthenticator with your authenticator:
 ```yaml
@@ -84,7 +84,7 @@ SilverStripe\Core\Injector\Injector:
   SilverStripe\Security\Security:
     properties:
       Authenticators:
-        default: %$MyVendor\MyProject\Authenticator\MyAuthenticator
+        default: '%$MyVendor\MyProject\Authenticator\MyAuthenticator'
 ```
 
 By default, the `SilverStripe\Security\MemberAuthenticator\MemberAuthenticator` is seen as the default authenticator until it's explicitly set in the config.
@@ -136,12 +136,12 @@ SilverStripe\Core\Injector\Injector:
     properties:
       LDAPSettings:
         - URL: https://my-ldap-location.com
-      CascadeInTo: %$SilverStripe\Security\MemberAuthenticator\SessionAuthenticationHandler
+      CascadeInTo: '%$SilverStripe\Security\MemberAuthenticator\SessionAuthenticationHandler'
   SilverStripe\Security\AuthenticationHandler:
     class: SilverStripe\Security\RequestAuthenticationHandler
     properties:
       Handlers:
-        ldap: %$MyProject\LDAP\Authenticator\LDAPAuthenticator
+        ldap: '%$MyProject\LDAP\Authenticator\LDAPAuthenticator'
 ```
 
 CascadeInTo is used to defer login or logout actions to other authenticators, after the first one has been logged in. In the example of LDAP authenticator, this is useful to check e.g. the validity of the Session (is the user still logged in?) and if not, or it's LDAP login period has expired, only then validate against the external service again, limiting the amount of requests to the external service.
