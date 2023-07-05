@@ -11,6 +11,10 @@ Silverstripe CMS ships modules that receive commercial support. Commercially sup
 
 These modules will be supported for the lifetime of Silverstripe CMS 5 in the provided major versions.
 
+[notice]
+This list is for Silverstripe CMS 5. For Silverstripe CMS 4 supported modules, see the [CMS 4 version of this page](/en/4/project_governance/supported_modules/).
+[/notice]
+
 ## Core Silverstripe CMS modules
 
 These modules provide the core Silverstripe CMS experience. Most Silverstripe CMS projects should install all of them.
