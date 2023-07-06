@@ -59,7 +59,7 @@ There's a few rules guiding their access, in descending order of priority:
    have edit access by default, regardless of further restrictions below.
  * View or edit access can be restricted per file or folder through
    an inherited permissions model similar to page content (through [api:SilverStripe\Security\InheritedPermissionsExtension]).
-   There are four types: "Inherit from parent" (default), "Anyone", "Logged-in users", or "Only these groups".
+   There are five types: "Inherit from parent" (default), "Anyone", "Logged-in users", "Only these groups", or "Only these users".
  * Protected files (incl. draft files) allow view/edit access when `File::$non_live_permissions` is satisfied.
    By default, that's configured for anyone with access to any CMS section, or
    the ability to "view draft content".
