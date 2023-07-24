@@ -402,7 +402,7 @@ Note, that this feature has certain limitations:
 - This feature only works with many_many through
 - This feature will only allow polymorphic `many_many`, but not `belongs_many_many`.
   - You can have a `has_many` relation to the join table where you would normally use `belongs_many_many`, and iterate through it
-to collate parent records - but note that this will trigger a database query for every single record in the relation (because relations are not eager loaded), and filtering/etc would require additional complexity.
+to collate parent records - but note that this will trigger a database query for every single record in the relation (because relations are not eager loaded by default), and filtering/etc would require additional complexity.
 
 Note that this works by leveraging a polymorphic `has_one` relation on the join class. See [Polymorphic has_one](#polymorphic-has-one) for more information about that relation type.
 
@@ -609,10 +609,10 @@ SELECT * FROM Player WHERE TeamID = 3
 SELECT * FROM Player WHERE TeamID = ...
 ```
 
-The N + 1 query problem can be alleviated using eager loading which in this example will reduce this down to just two queries. We do this by passing the relationships that should be eagerly loaded to the `eagerLoad()` method on [DataList](api:SilverStripe\ORM\DataList):
+The N + 1 query problem can be alleviated using eager loading which in this example will reduce this down to just two queries. We do this by passing the relationships that should be eagerly loaded to the [`DataList::eagerLoad()`](api:SilverStripe\ORM\DataList::eagerLoad()) method:
 
 ```php
-$teams = Team::get()->eagerLoad('Players')
+$teams = Team::get()->eagerLoad('Players');
 ```
 
 With eager loading now only two queries will be executed:
@@ -692,7 +692,7 @@ $teams = Team::get()->eagerLoad(
 );
 ```
 
-Eager loading can be used in templates. The following example assumes that `$MyTeams` is an available DataList which could be provided via a `getMyTeams()` method on `PageController`:
+Eager loading can be used in templates. The following example assumes that `$MyTeams` is an available `DataList` which could be provided via a `getMyTeams()` method on `PageController`:
 
 ```ss
 <% loop $MyTeams.eagerLoad('Players') %>
@@ -702,10 +702,14 @@ Eager loading can be used in templates. The following example assumes that `$MyT
 <% end_loop %>
 ```
 
-Eager loading supports all relationships - `has_one`, `belongs_to`, `has_many`, `many_many`, `many_many_through`, `belongs_many_many`.
+Eager loading supports all relationship types.
 
 [notice]
-Eager loading is only intended to be used in read-only scenarios such as when outputting data on the front-end of a website. When using default lazy-loading, relationship methods will return a subclass of [DataList](api:SilverStripe\ORM\DataList) such as [DataList](api:SilverStripe\ORM\HasManyList). However when using eager-loading [ArrayList](api:SilverStripe\ORM\ArrayList) will be returned instead. [ArrayList](api:SilverStripe\ORM\ArrayList) still has common methods such as `filter()`, `sort()`, `limit()` and `reverse()` available to manipulate its data.
+Eager loading is only intended to be used in read-only scenarios such as when outputting data on the front-end of a website. When using default lazy-loading, relationship methods will return a subclass of [`DataList`](api:SilverStripe\ORM\DataList) such as [`HasManyList`](api:SilverStripe\ORM\HasManyList). However when using eager-loading, an [`EagerLoadedList`](api:SilverStripe\ORM\EagerLoadedList) will be returned instead. `EagerLoadedList` has common methods such as `filter()`, `sort()`, `limit()` and `reverse()` available to manipulate its data, as well as some methods you'd expect on the various relation list implementations such as [`getExtraData()`](api:SilverStripe\ORM\EagerLoadedList::getExtraData()).
+
+Note that filtering or sorting an `EagerLoadedList` will be done in PHP rather than as part of the database query, since we have already loaded all its relevant data into memory.
+
+Note also that `EagerLoadedList` can't currently filter or sort by fields on relations using dot syntax (e.g. `sort('MySubRelation.Title')` won't work), nor filter using [`SearchFilter` syntax](/developer_guides/model/searchfilters/) (e.g. `filter('Title:StartsWith', 'Prefix')`).
 [/notice]
 
 ## Cascading deletions
