@@ -12,7 +12,7 @@ the server to update templates, website logic, and perform upgrades or maintenan
 
 ## PHP
 
-* PHP >=8.1, <=8.2
+* PHP >=8.1
 * PHP extensions: `ctype`, `dom`, `fileinfo`, `hash`, `intl`, `mbstring`, `session`, `simplexml`, `tokenizer`, `xml`
 * PHP configuration: `memory_limit` with at least `48M`
 * PHP extension for image manipulation: Either `gd` or `imagick`
