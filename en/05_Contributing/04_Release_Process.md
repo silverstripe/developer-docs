@@ -305,6 +305,7 @@ This rating determines which release lines are targeted with security fixes.
 | **High**      | 7.0 to 8.9 | Important releases should be evaluated immediately. These issues allow an attacker to compromise a site's data and should be fixed within days. *Example: SQL injection.* |
 | **Medium**    | 4.0 to 6.9 | Releases of moderate severity should be applied as soon as possible. They allow the unauthorized editing or creation of content. *Examples: Cross Site Scripting (XSS) in template helpers.* |
 | **Low**       | 0.1 to 3.9 | Low risk releases fix information disclosure and read-only privilege escalation vulnerabilities. These updates should also be applied as soon as possible, but with an impact-dependent priority. *Example: Exposure of the core version number, Cross Site Scripting (XSS) limited to the admin interface.* |
+| **None**      | 0.0 | These releases won't affect a large majority of projects, and may not require any action. They only impact projects with extremely complex or unlikely customisations. They do not impact projects which only implement common customisations or use common features. |
 
 ### Internal Security Process
 
