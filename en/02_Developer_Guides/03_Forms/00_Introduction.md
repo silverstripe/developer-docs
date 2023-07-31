@@ -51,7 +51,7 @@ class PageController extends ContentController
             TextField::create('Name', 'Your Name')
         );
 
-        $actions = FieldList:create(
+        $actions = FieldList::create(
             FormAction::create('doSayHello')->setTitle('Say hello')
         );
 

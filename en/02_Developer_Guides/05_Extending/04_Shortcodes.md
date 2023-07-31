@@ -14,31 +14,34 @@ In the CMS, authors often want to insert content elements which go beyond standa
 in their WYSIWYG editor. Shortcodes are a semi-technical solution for this. A good example would be embedding a 3D file 
 viewer or a Google Map at a certain location. 
 
+In this example, `[map]` represents the shortcode from [How to Create a Google Maps Shortcode](how_tos/create_a_google_maps_shortcode).
+
 ```php
 $text = "<h1>My Map</h1>[map]"
 
 // Will output
-// <h1>My Map</h1><iframe ..></iframe>
+// <h1>My Map</h1><iframe ... ></iframe>
 ```
 
-Here's some syntax variations:
+The following are all valid syntax for shortcodes. Some shortcodes accept parameters or wrap content, while others don't.
 
 ```php
+# The most simple shortcodes don't need any parameters or wrap any content
 [my_shortcode]
-#
+# A closing slash is allowed for legacy reasons
 [my_shortcode /]
-#
+# Parameters can be included like so:
 [my_shortcode,myparameter="value"]
-#
+# If you wrap any content in a shortcode, you need to have a closing tag 
 [my_shortcode,myparameter="value"]Enclosed Content[/my_shortcode]
 ```
 
-Shortcodes are automatically parsed on any database field which is declared as [HTMLValue](api:SilverStripe\View\Parsers\HTMLValue) or [DBHTMLText](api:SilverStripe\ORM\FieldType\DBHTMLText), 
-when rendered into a template. This means you can use shortcodes on common fields like `SiteTree.Content`, and any 
+Shortcodes are automatically parsed on any database field which is declared as [HTMLText](api:SilverStripe\ORM\FieldType\DBHTMLText) 
+when rendered into a template (if you want a `HTMLText` field that doesn't parse shortcodes, use `HTMLFragment`).
+This can also be enabled for [HTMLVarchar](api:SilverStripe\ORM\FieldType\DBHTMLVarchar). This means you can use shortcodes on common fields like `SiteTree.Content`, and any
 other [DataObject::$db](api:SilverStripe\ORM\DataObject::$db) definitions of these types.
 
 Other fields can be manually parsed with shortcodes through the `parse` method.
-
 
 ```php
 use SilverStripe\View\Parsers\ShortcodeParser;
@@ -47,9 +50,45 @@ $text = "My awesome [my_shortcode] is here.";
 ShortcodeParser::get_active()->parse($text);
 ```
 
+## Enabling shortcode parsing for `HTMLVarchar`
+
+If you want _all_ `HTMLVarchar` fields to automatically process shortcodes when rendered in templates, you can enable this globally like so:
+
+```yml
+SilverStripe\Core\Injector\Injector:
+  HTMLVarchar:
+    properties:
+      ProcessShortcodes: true
+```
+
+If you want only some specific `HTMLVarchar` fields to process shortcodes, you can either do that by declaring a _new_ field type:
+
+```yml
+SilverStripe\Core\Injector\Injector:
+  HTMLVarcharWithShortcodes:
+    class: SilverStripe\ORM\FieldType\DBHTMLVarchar
+    properties:
+      ProcessShortcodes: true
+```
+
+or by defining a "getter" method for the relevant fields. This example assumes you have a db field named `MyHtmlVarcharField`:
+
+```php
+public function getMyHtmlVarcharField()
+{
+    $field = $this->dbObject('MyHtmlVarcharField');
+    $field->setProcessShortcodes(true);
+    return $field;
+}
+```
+
+[info]
+See [Data types and Casting](/developer_guides/model/data_types_and_casting/#overriding) for more information about getter methods.
+[/info]
+
 ## Defining Custom Shortcodes
  
-First we need to define a callback for the shortcode.
+First we need to define a callback for the shortcode. These callbacks are usually static methods on some class, but they can also be anonymous functions or any other valid PHP callback.
 
 **app/src/Page.php**
 
@@ -70,6 +109,8 @@ class Page extends SiteTree
 }
 ```
 
+Note that the `$casting` configuration here is optional - it's used in this case to allow directly calling this method from a template. It doesn't affect the actual shortcode functionality at all.
+
 [warning]
 Note that the `$arguments` parameter potentially contains any arbitrary key/value pairs the user has chosen to include.
 It is strongly recommended that you don't directly convert this array into a list of attributes for your final HTML markup
@@ -85,7 +126,7 @@ These parameters are passed to the `MyShortCodeMethod` callback:
  - Any parameters attached to the shortcode as an associative array (keys are lower-case).
  - Any content enclosed within the shortcode (if it is an enclosing shortcode). Note that any content within this
    will not have been parsed, and can optionally be fed back into the parser.
- - The ShortcodeParser instance used to parse the content.
+ - The `ShortcodeParser` instance used to parse the content.
  - The shortcode tag name that was matched within the parsed content.
  - An associative array of extra information about the shortcode being parsed. For example, if the shortcode is
    is inside an attribute, the `element` key contains a reference to the parent `DOMElement`, and the `node`
@@ -98,14 +139,16 @@ To register a shortcode you call the following.
 
 
 ```php
-// ShortcodeParser::get('default')->register($shortcode, $callback);
-
 ShortcodeParser::get('default')->register('my_shortcode', ['Page', 'MyShortCodeMethod']);
 ```
 
+[info]
+Note that `my_shortcode` is an arbitrary name which can be made up of alphanumeric characters and the underscore (`_`) character. If you try to register a shortcode with a name using any other characters, it will not work.
+[/info]
+
 ## Built-in Shortcodes
 
-Silverstripe CMS comes with several shortcode parsers already.
+Silverstripe CMS comes with several shortcode built-in.
 
 ### Links
 
@@ -141,7 +184,7 @@ Many media formats can be embedded into websites through the `<object>` tag, but
 special markup and attributes. OEmbed is a standard to discover these formats based on a simple URL, for example a 
 Youtube link pasted into the "Insert Media" form of the CMS.
 
-Since TinyMCE can't represent all these variations, we're showing a placeholder instead, and storing the URL with a 
+Some of these variations are likely to be explicitly not allowed in your TinyMCE configuration, so the embed plugin shows a placeholder instead, and the embed details such as the URL are stored with a 
 custom `[embed]` shortcode.
 
 ```html
@@ -157,9 +200,9 @@ HTML with unprocessed shortcodes in it is still valid HTML. As a result, shortco
  - In an attribute value, like so: `<a title="[title]">link</a>`
  - In an element's text, like so: `<p>Some text [shortcode] more text</p>`
 
-The first is called "element scope" use, the second "attribute scope"
+The first is called "element scope", the second "attribute scope"
 
-You may not use shortcodes in any other location. Specifically, you can not use shortcodes to generate attributes or 
+You may not use shortcodes in any other location. Specifically, you can not use shortcodes to generate new attributes in an existing element or 
 change the name of a tag. These usages are forbidden:
 
 ```html
@@ -207,16 +250,16 @@ When converted naively would become:
 However this is not valid HTML - P elements can not contain other block level elements.
 
 To fix this you can specify a "location" attribute on a shortcode. When the location attribute is "left" or "right"
-the inserted content will be moved to immediately before the block tag. The result is this:
+the inserted content will be moved to immediately before the block tag.
+
+```html
+<p><a href="#">Head [figure,location="left",src="assets/a.jpg",caption="caption"] Tail</a></p>
+```
+
+The result is this:
 
 ```html
 <figure><img src="assets/a.jpg" /><figcaption>caption</figcaption></figure><p><a href="#">Head  Tail</a></p>
-```
-
-When the location attribute is "leftAlone" or "center" then the DOM is split around the element. The result is this:
-
-```html
-<p><a href="#">Head </a></p><figure><img src="assets/a.jpg" /><figcaption>caption</figcaption></figure><p><a href="#"> Tail</a></p>
 ```
 
 ### Parameter values
@@ -232,15 +275,15 @@ public function MyCustomShortCode($arguments, $content = null, $parser = null, $
 
 ```
 [my_shortcode]
-$attributes     => [];
+$attributes      => [];
 $content         => null;
-$parser         => ShortcodeParser instance,
-$tagName         => 'my_shortcode')
+$parser          => ShortcodeParser instance,
+$tagName         => 'my_shortcode'
 ```
 
 ```
 [my_shortcode,attribute="foo",other="bar"]
-$attributes      => ['attribute'  => 'foo', 'other'      => 'bar']
+$attributes      => ['attribute' => 'foo', 'other' => 'bar']
 $enclosedContent => null
 $parser          => ShortcodeParser instance
 $tagName         => 'my_shortcode'

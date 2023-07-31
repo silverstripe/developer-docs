@@ -45,7 +45,7 @@ class Player extends DataObject
 *  `'Foreignkey'`: A special `Int` field used for foreign keys in `has_one` relationships (see: [DBForeignKey](api:SilverStripe\ORM\FieldType\DBForeignKey)).
 *  `'HTMLFragment'`: A variable-length string of up to 2MB, designed to store HTML. Doesn't process [shortcodes](/developer_guides/extending/shortcodes/). (see: [DBHTMLText](api:SilverStripe\ORM\FieldType\DBHTMLText)).
 *  `'HTMLText'`: A variable-length string of up to 2MB, designed to store HTML. Processes [shortcodes](/developer_guides/extending/shortcodes/). (see: [DBHTMLText](api:SilverStripe\ORM\FieldType\DBHTMLText)).
-*  `'HTMLVarchar'`: A variable-length string of up to 255 characters, designed to store HTML (see: [DBHTMLVarchar](api:SilverStripe\ORM\FieldType\DBHTMLVarchar)).
+*  `'HTMLVarchar'`: A variable-length string of up to 255 characters, designed to store HTML. Can process [shortcodes](/developer_guides/extending/shortcodes/) with additional configuration. (see: [DBHTMLVarchar](api:SilverStripe\ORM\FieldType\DBHTMLVarchar)).
 *  `'Int'`: A 32-bit signed integer field (see: [DBInt](api:SilverStripe\ORM\FieldType\DBInt)).
 *  `'Locale'`: A field for storing locales (see: [DBLocale](api:SilverStripe\ORM\FieldType\DBLocale)).
 *  `'Money'`: Similar to Currency, but with localisation support (see: [DBMoney](api:SilverStripe\ORM\FieldType\DBMoney)).
@@ -83,7 +83,7 @@ class Car extends DataObject
 {   
     private static $db = [
         'Wheels' => 'Int(4)',
-        'Condition' => 'Enum(["New","Fair","Junk"], "Fair")',
+        'Condition' => 'Enum("New,Fair,Junk", "Fair")',
         'Make' => 'Varchar(["default" => "Honda"])',
     ];
 }

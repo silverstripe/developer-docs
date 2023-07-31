@@ -363,11 +363,7 @@ There are a few special cases:
 
 ## Language definitions
 
-Each module can have one language table per locale, stored by convention in the `lang/` subfolder.
-The translation is powered by [Zend_Translate](https://framework.zend.com/manual/current/en/modules/zend.i18n.translating.html),
-which supports different translation adapters, dealing with different storage formats.
-
-By default, Silverstripe CMS uses a YAML format which is loaded via the
+Each module can have one language table per locale, stored by convention in the `lang/` subfolder.  Silverstripe CMS uses a YAML format which is loaded via the
 [symfony/translate](https://symfony.com/doc/current/translation.html) library.
 
 Example: framework/lang/en.yml (extract)
@@ -391,8 +387,7 @@ de:
 ```
 
 Note that translations are cached across requests.
-The cache can be cleared through the `?flush=1` query parameter,
-or explicitly through `Zend_Translate::getCache()->clean(Zend_Cache::CLEANING_MODE_ALL)`.
+The cache can be cleared through the `?flush=1` query parameter.
 
 ## Javascript Usage
 

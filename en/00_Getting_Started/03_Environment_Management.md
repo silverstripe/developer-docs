@@ -73,21 +73,8 @@ Environment::setEnv('API_KEY', 'AABBCCDDEEFF012345');
 
 ### Using environment variables in config
 
-To use environment variables in `.yaml` configs you can reference them using backticks. You can have multiple
-environment variables within a single value, though the overall value must start and end with backticks.
-
-```yaml
-SilverStripe\Core\Injector\Injector:
-    MyServiceClass:
-        properties:
-            MyProperty: '`ENV_VAR_ONE`'
-            MultiValueProperty: '`ENV_VAR_ONE`:`ENV_VAR_TWO`'
-            ThisWillNotSubstitute: 'lorem `REGULAR_TEXT` ipsum'
-```
-
-[warning]
-Environment variables cannot be used outside of Injector config.
-[/warning]
+To use environment variables in `.yaml` configs you can reference them using backticks. This only works in `Injector` configuration.
+See the [Injector documentation](/developer_guides/extending/injector/#using-constants-and-environment-variables) for details.
 
 ## Including an extra .env file
 

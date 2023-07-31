@@ -361,7 +361,7 @@ one preview state.
 
 ```php
 use SilverStripe\Control\Controller;
-use SilverStripe\View\Parsers\HTML4Value;
+use SilverStripe\View\Parsers\HTMLValue;
 
 class ProductPage extends Page
 {
@@ -382,7 +382,7 @@ class ProductPage extends Page
         $controller = Controller::curr();
         $request = $controller->getRequest();
         if ($request->getVar('DataObjectPreview') !== null) {
-            $html = HTML4Value::create($tags);
+            $html = HTMLValue::create($tags);
             $xpath = "//meta[@name='x-page-id' or @name='x-cms-edit-link']";
             $removeTags = $html->query($xpath);
             $body = $html->getBody();

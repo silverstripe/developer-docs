@@ -136,7 +136,7 @@ There are two approaches to namespacing:
 
 ##### Namespacing by filename
 
-If the filename is named one of the four keywords above, it will be implicitly placed
+If the filename is named one of the seven keywords used in the `app/_graphql/schema.yml` example above, it will be implicitly placed
 in the corresponding section of the schema - e.g. any configuration
 added to `app/_graphql/config.yml` will be implicitly added to
 `SilverStripe\GraphQL\Schema\Schema.schemas.default.config`.
@@ -171,7 +171,7 @@ will not work).
 
 ##### Namespacing by directory name
 
-If you use a parent directory name (at any depth) of one of the four keywords above, it will
+If you use a parent directory name (at any depth) of one of the seven keywords, it will
 be implicitly placed in the corresponding section of the schema - e.g. any configuration
 added to a `.yml` file in `app/_graphql/config/` will be implicitly added to
 `SilverStripe\GraphQL\Schema\Schema.schemas.default.config`.

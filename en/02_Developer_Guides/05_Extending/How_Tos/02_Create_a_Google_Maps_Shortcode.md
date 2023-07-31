@@ -40,3 +40,6 @@ ShortcodeParser::get('default')->register('googlemap', function($arguments, $add
     );
 });
 ```
+
+You might want to [create a simple TinyMCE plugin](https://www.tiny.cloud/docs/tinymce/6/creating-a-plugin/) to provide a nice
+UI for content authors to add the shortcode to their content.
