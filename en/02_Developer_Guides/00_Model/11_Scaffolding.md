@@ -79,9 +79,12 @@ The `$searchable_fields` property uses a mixed array format that can be used to 
 system. The default is a set of array values listing the fields.
 
 [info]
-`$searchable_fields` will default to use the [`$summary_fields` config](#summary-fields) if not defined. This works fine unless 
-your `$summary_fields` config specifies fields that are not stored in the database.
+`$searchable_fields` will default to use the [`$summary_fields` config](#summary-fields), excluding anything that isn't a database field (such as method calls) if not explicitly defined.
 [/info]
+
+[warning]
+If you define a `searchable_fields` configuration, _do not_ specify fields that are not stored in the database (such as methods), as this will cause an error.
+[/warning]
 
 ```php
 use SilverStripe\ORM\DataObject;
