@@ -149,7 +149,7 @@ Changes are only tracked for file metadata (e.g. the `Title` attribute).
 You can opt-in to retaining the file content for replaced or removed files.
 
 ```yml
-SilverStripe\Assets\Flysystem\FlysystemAssetStore:
+SilverStripe\Assets\File:
   keep_archived_assets: true
 ```
 
