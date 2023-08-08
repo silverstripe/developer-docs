@@ -13,6 +13,6 @@ For increased performance, placeholders are not used when filtering by an array 
 There is no chance of SQL injection because of the exclusive use of integers for values. However, if you still wish for placeholders to be used for this type of query then you can enable them with the following config:
 
 ```yml
-SilverStripe\ORM\Filters\ExactMatchFilter:
+SilverStripe\ORM\DataList:
   use_placeholders_for_integer_ids: true
 ```
