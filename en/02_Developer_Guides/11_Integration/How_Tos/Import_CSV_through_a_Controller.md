@@ -16,7 +16,7 @@ use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FileField;
 use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\FieldsValidator;
 use SilverStripe\Dev\CsvBulkLoader;
 use SilverStripe\Control\Controller;
 
@@ -45,7 +45,7 @@ class MyController extends Controller
             new FieldList(
                 new FormAction('doUpload', 'Upload')
             ),
-            new RequiredFields()
+            new FieldsValidator()
         );
         return $form;
     }
