@@ -27,7 +27,7 @@ $form = new Form(
     $name, // name of the method that returns this form on the controller
     FieldList $fields, // list of FormField instances 
     FieldList $actions, // list of FormAction instances
-    $required // optional use of RequiredFields object
+    $validator // optional use of Validator object
 );
 ```
 
@@ -343,7 +343,10 @@ validating its' own data value.
 For more information, see the [Form Validation](validation) documentation.
 
 ```php
-$validator = new SilverStripe\Forms\RequiredFields([
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\RequiredFields;
+
+$validator = new RequiredFields([
     'Name',
     'Email'
 ]);
