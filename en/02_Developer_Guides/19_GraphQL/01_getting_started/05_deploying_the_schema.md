@@ -10,10 +10,6 @@ icon: rocket
 
 ## Deploying the schema
 
-[info]
-For simplicity, this documentation assumes you are using the default `.graphql-generated/` to store your generated schema - but note that this can be configured to be any path relative to your project root. See [choosing where the cache is stored](/developer_guides/graphql/getting_started/building_the_schema/#cache-location) for more information.
-[/info]
-
 One way or another, you must get the `.graphql-generated/` and `public/_graphql/` folders into your test and production environments for Silverstripe CMS (and your own custom queries) to work as expected. There are many ways to do so. The options below are listed in order of complexity.
 
 ### Single-server hosting solutions with simple deployments {#simple-single-server}
