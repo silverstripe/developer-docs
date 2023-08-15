@@ -6,8 +6,8 @@ icon: check-square
 
 # Form Validation
 
-Silverstripe CMS provides server-side form validation out of the box through the [Validator](api:SilverStripe\Forms\Validator) class and its' child class
-[RequiredFields](api:SilverStripe\Forms\RequiredFields). A single `Validator` instance is set on each `Form`. Validators are implemented as an argument to 
+Silverstripe CMS provides server-side form validation out of the box through the [Validator](api:SilverStripe\Forms\Validator) class and its' child classes
+(see [available validators](#available-validators) below). A single `Validator` instance is set on each `Form`. Validators are implemented as an argument to
 the [Form](api:SilverStripe\Forms\Form) constructor or through the function `setValidator`.
 
 ```php
@@ -181,6 +181,20 @@ class Page_Controller extends ContentController
 }
 ```
 
+## Available validators
+
+The Silverstripe framework comes with the following built-in validators:
+
+- [`CompositeValidator`](api:SilverStripe\Forms\CompositeValidator)  
+  A container for additional validators. You can implement discrete validation logic in multiple `Validator` subclasses and apply them _all_ to a
+  given form by putting them inside a `CompositeValidator`. The `CompositeValidator` doesn't have perform any validation by itself.
+- [`FieldsValidator`](api:SilverStripe\Forms\FieldsValidator)
+  Simply calls [`validate()`](api:SilverStripe\Forms\FormField::validate()) on all data fields in the form, to ensure fields have valid values.
+- [`RequiredFields`](api:SilverStripe\Forms\RequiredFields)
+  Validates that fields you declare as "required" have a value.
+
+There are additional validators available in community modules, and you can implement your own validators by subclassing the abstract `Validator` class.
+
 ## Exempt validation actions
 
 In some cases you might need to disable validation for specific actions. E.g. actions which discard submitted
@@ -274,7 +288,7 @@ class MyController extends Controller
 ### Validation in the CMS
 
 In the CMS, we're not creating the forms for editing CMS records. The `Form` instance is generated for us so we cannot
-call `setValidator` easily. However, a `DataObject` can provide its' own `Validator` instance/s through the 
+call `setValidator` easily. However, a `DataObject` can provide its own `Validator` instance/s through the
 `getCMSCompositeValidator()` method. The CMS interfaces such as [LeftAndMain](api:SilverStripe\Admin\LeftAndMain),
 [ModelAdmin](api:SilverStripe\Admin\ModelAdmin) and [GridField](api:SilverStripe\Forms\GridField\GridField) will 
 respect the provided `Validator`/s and handle displaying error and success responses to the user. 

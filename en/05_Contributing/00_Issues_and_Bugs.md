@@ -64,6 +64,10 @@ Silverstripe CMS does not operate a *bug bounty* program.
 
 Review our [Managing Security Guidelines](managing_security_issues) guidelines to understand what happens once a vulnerability is reported.
 
+Silverstripe CMS aims to ship security patches at pre-defined intervals when those issues are not actively exploited in the wild.
+
+Review the [Security patch windows](../Project_Governance/Minor_release_policy#security-patch-windows) section of our minor release policy for more details.
+
 ## Sharing your Opinion
 
 * [forum.silverstripe.org](http://forum.silverstripe.org): Forums on silverstripe.org

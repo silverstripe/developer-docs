@@ -152,7 +152,7 @@ in order to avoid bloat. If you need to retain file contents (e.g. for auditing 
 you can opt-in to this behaviour:
 
 ```yaml
-SilverStripe\Assets\Flysystem\FlysystemAssetStore:
+SilverStripe\Assets\File:
   keep_archived_assets: true
 ```
 
