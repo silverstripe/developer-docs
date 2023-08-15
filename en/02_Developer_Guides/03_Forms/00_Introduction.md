@@ -21,9 +21,9 @@ use SilverStripe\Forms\FieldList;
 $form = Form::create(
     $controller, // the Controller to render this form on 
     $name, // name of the method that returns this form on the controller
-    $fields, // list of FormField instances 
-    $actions, // list of FormAction instances
-    $validator // optional Validator - usually a RequiredFields object
+    FieldList $fields, // list of FormField instances 
+    FieldList $actions, // list of FormAction instances
+    Validator $validator // optional use of Validator object
 );
 ```
 
@@ -343,6 +343,7 @@ validating its' own data value.
 For more information, see the [Form Validation](validation) documentation.
 
 ```php
+use SilverStripe\Forms\Form;
 use SilverStripe\Forms\RequiredFields;
 
 $validator = new RequiredFields([
