@@ -38,7 +38,7 @@ PHP session is pointing to a valid [`LoginSession`](api:SilverStripe\SessionMana
 If a valid record is found, it will update the `LastAccessed` date.
 Otherwise, it will force a logout, destroying the PHP session.
 
-A periodic process ([`GarbageCollectionService`](api:SilverStripe\SessionManager\Services\GarbageCollectionService)) cleans up expired [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession) records.
+A periodic process ([`GarbageCollectionService`](api:SilverStripe\SessionManager\Services\GarbageCollectionService) - see [garbage collection](#garbage-collection) below) cleans up expired [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession) records.
 Due to the way PHP sessions operate, it can not expire those sessions as well.
 The PHP sessions will be invalidated on next request through [`LoginSessionMiddleware`](api:SilverStripe\SessionManager\Middleware\LoginSessionMiddleware),
 unless they expire independently beforehand (through PHP's own session expiry logic).
@@ -161,7 +161,16 @@ Note that if the member’s session expires before this timeout (e.g. a short `s
 
 ### Garbage collection
 
-Expired sessions need to be cleaned up periodically to avoid bloating the database. There are two methods available to manage this:
+Expired sessions need to be cleaned up periodically to avoid bloating the database. There are two methods available to manage this, discussed below.
+
+Regardless of how you manage garbage collection, the `GarbageCollectionService` is ultimately in charge of performing the garbage collection. It tries to remove all of the garbage data in a single run, but if you have particularly large tables it can timeout or run into memory limits and fail part-way through. Running it multiple times will eventually get through all of the data, but it can be annoying to have all of those extra error messages cluttering your logs.
+
+You can optionally limit the number of items it will remove in a single run by setting the following yaml configuration:
+
+```yml
+SilverStripe\SessionManager\Services\GarbageCollectionService:
+  batch_remove_limit: 1000
+```
 
 #### Via `symbiote/silverstripe-queuedjobs` (recommended)
 If you have the `symbiote/silverstripe-queuedjobs` module installed and configured, garbage collection will run automatically every 1 day via `GarbageCollectionJob`, and no further action is required.  This job will be automatically created if it does not exist on dev/build.
