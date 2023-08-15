@@ -76,29 +76,6 @@ slow things down.
 To mitigate this, the generated code for each type is cached against a signature.
 If the type hasn't changed, it doesn't get re-built. This reduces build times to **under one second** for incremental changes.
 
-#### Choosing where the cache is stored {#cache-location}
-
-By default, the generated PHP code is placed in the `.graphql-generated/` directory in the root of your project.
-
-If you want to store this in another directory, you can configure this using the following yaml configuration. Note that the path is relative to your project root.
-
-```yml
-SilverStripe\GraphQL\Schema\Storage\CodeGenerationStore:
-  dirName: 'some/other/directory'
-```
-
-If you set the `dirName` configuration property to be blank, the schema will be stored in the `silverstripe-cache` (i.e. `TEMP_PATH`) directory. This can be useful
-if you have a mechanism that clear this folder on each deployment, or if you share this folder between servers in a multi-server setup, etc.
-
-```yml
-SilverStripe\GraphQL\Schema\Storage\CodeGenerationStore:
-  dirName: ''
-```
-
-[notice]
-Your schema will not be cleared on a normal system `flush`, even if you store it in the `silverstripe-cache` directory. See below to learn how to clear the schema.
-[/notice]
-
 #### Clearing the schema cache
 
 If you want to completely re-generate your schema from scratch, you can add `clear=1` to the `dev/graphql/build` command.
@@ -121,8 +98,8 @@ tangential changes such as:
 
 ### Viewing the generated code
 
-If you want to view your generated code, you can find it in the directory it has been configured to build in. See [choosing where the cache is stored](#cache-location) above.
-It is not meant to be accessible through your webserver, which is ensured by keeping it outside of the
+By default, the generated PHP code is placed in the `.graphql-generated/` directory in the root of your project.
+It is not meant to be accessible through your webserver, Which is ensured by keeping it outside of the
 `public/` webroot and the inclusion of a `.htaccess` file in each schema folder.
 
 Additional files are generated for CMS operation in `public/_graphql/`, and
