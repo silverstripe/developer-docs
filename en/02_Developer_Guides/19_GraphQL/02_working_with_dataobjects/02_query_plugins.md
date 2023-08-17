@@ -64,6 +64,31 @@ isn't something we do in Silverstripe CMS. You can ignore `edges.node` and just 
 you want to.
 [/notice]
 
+#### Limiting pagination
+
+To change the limit for items per page for a given type, you can set the `maximumLimit` property on the `paginateList` plugin in the schema:
+
+**app/_graphql/models.yml**
+```yaml
+MyProject\Models\ProductCategory:
+  operations:
+    read:
+      plugins:
+        paginateList:
+          maximumLimit: 10
+```
+
+To change the default limit globally, set the max_limit configuration on the `PaginationPlugin` itself:
+
+```yaml
+SilverStripe\GraphQL\Schema\Plugin\PaginationPlugin:
+  max_limit: 10
+```
+
+[notice]
+If you want to _increase_ the limit beyond the default value, you will also need to set a new `default_limit` configuration value on the `PaginationPlugin`.
+[/notice]
+
 #### Disabling pagination
 
 Just set it to `false` in the configuration.
