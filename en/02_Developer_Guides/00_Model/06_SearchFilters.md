@@ -38,7 +38,7 @@ $players = Player::get()->filterAny([
 
 [hint]
 Notice the syntax - to invoke a `SearchFilter` in a `DataList`'s `filter()`/`filterAny()`/`filterByCallback()` or `exclude()`/`excludeAny()` methods, you add a colon after the field name, followed by the name of the filter (excluding the actual word "filter"). e.g. for a `StartsWithFilter`: `'FieldName:StartsWith'`
-[hint]
+[/hint]
 
 Developers can define their own [SearchFilter](api:SilverStripe\ORM\Filters\SearchFilter) if needing to extend the ORM filter and exclude behaviors.
 
