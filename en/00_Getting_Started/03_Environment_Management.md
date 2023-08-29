@@ -118,7 +118,7 @@ Silverstripe core environment variables are listed here, though you're free to d
 | `SS_DEPRECATION_ENABLED` | Enable deprecation notices for this environment. `SS_ENVIRONMENT_TYPE` must be set to `dev` for deprecation notices to show. See [Deprecations](/upgrading/deprecations/) for more information. |
 | `SS_DEPRECATION_SHOW_HTTP` | Include deprecation warnings in HTTP responses if `SS_ENVIRONMENT_TYPE` is true. Defaults to false. |
 | `SS_DEPRECATION_SHOW_CLI` | Include deprecation warnings in CLI responses if `SS_ENVIRONMENT_TYPE` is true. Defaults to true. |
-| `SS_ENVIRONMENT_TYPE`| The environment type. Should be one of `dev`, `test`, or `live`. See [Environment Types](/debugging/environment_types/) for more information. |
+| `SS_ENVIRONMENT_TYPE`| The environment type. Should be one of `dev`, `test`, or `live`. See [Environment Types](/developer_guides/debugging/environment_types/) for more information. |
 | `SS_DEFAULT_ADMIN_USERNAME`| The username of the default admin. This is a user with administrative privileges. |
 | `SS_DEFAULT_ADMIN_PASSWORD`| The password of the default admin. This will not be stored in the database. |
 | `SS_USE_BASIC_AUTH`| Baseline protection for requests handled by Silverstripe. Usually requires additional security measures for comprehensive protection. Set this to the name of a permission which users must have to be able to access the site (e.g. "ADMIN"). See [Environment Types](/developer_guides/debugging/environment_types) for caveats. |
