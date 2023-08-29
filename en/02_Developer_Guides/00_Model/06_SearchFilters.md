@@ -6,7 +6,7 @@ icon: search
 
 # SearchFilter Modifiers
 
-The [`filter()`](api:SilverStripe\ORM\DataList::filter()) and [`exclude()`](api:SilverStripe\ORM\DataList::exclude()) methods on `DataList` specify exact matches by default. However, when filtering a `DataList`, there are a number of suffixes that
+The `filter()`, `exclude()`, and other related methods on [`DataList`](api:SilverStripe\ORM\DataList), [`ArrayList`](api:SilverStripe\ORM\ArrayList), and [`EagerLoadedList`](api:SilverStripe\ORM\EagerLoadedList) specify exact matches by default. However, when calling these methods, there are a number of suffixes that
 you can put on field names to change this behavior. These are represented as `SearchFilter` subclasses and include:
 
  * [ExactMatchFilter](api:SilverStripe\ORM\Filters\ExactMatchFilter)
@@ -37,7 +37,7 @@ $players = Player::get()->filterAny([
 ```
 
 [hint]
-Notice the syntax - to invoke a `SearchFilter` in a `DataList`'s `filter()`/`filterAny()`/`filterByCallback()` or `exclude()`/`excludeAny()` methods, you add a colon after the field name, followed by the name of the filter (excluding the actual word "filter"). e.g. for a `StartsWithFilter`: `'FieldName:StartsWith'`
+Notice the syntax - to invoke a `SearchFilter` in the `filter()`/`filterAny()`/`find()` or `exclude()`/`excludeAny()` methods, you add a colon after the field name, followed by the name of the filter (excluding the actual word "filter"). e.g. for a `StartsWithFilter`: `'FieldName:StartsWith'`
 [hint]
 
 Developers can define their own [SearchFilter](api:SilverStripe\ORM\Filters\SearchFilter) if needing to extend the ORM filter and exclude behaviors.
@@ -45,9 +45,24 @@ Developers can define their own [SearchFilter](api:SilverStripe\ORM\Filters\Sear
 ## Modifiers
 
 `SearchFilter`s can also take modifiers. The modifiers currently supported are `":not"`, `":nocase"`, and
-`":case"` (though you can implement custom modifiers on your own `SearchFilter` implementations). These negate the filter, make it case-insensitive and make it case-sensitive, respectively. The default
-comparison uses the database's default. For MySQL and MSSQL, this is case-insensitive. For PostgreSQL, this is
-case-sensitive.
+`":case"` (though you can implement custom modifiers on your own `SearchFilter` implementations). These negate the filter, make it case-insensitive and make it case-sensitive, respectively.
+
+[info]
+The default comparison uses the database's default case sensitivity. For MySQL and MSSQL, this is case-insensitive. For PostgreSQL, this is case-sensitive. But you can declare the default
+case sensitivity for your project by setting the `default_case_sensitive` configuration property on `SearchFilter` like so:
+
+```yml
+SilverStripe\ORM\Filters\SearchFilter:
+  default_case_sensitive: false
+```
+
+Though note that for backwards compatibility reasons, `ArrayList` is explicitly case sensitive by default. To change that, you must set `ArrayList.default_case_sensitive` to false.
+
+```yml
+SilverStripe\ORM\ArrayList:
+  default_case_sensitive: false
+```
+[/info]
 
 ```php
 // Fetch players that their FirstName is exactly 'Sam'
