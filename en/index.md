@@ -22,7 +22,7 @@ Silverstripe has a wide range of options for getting support:
 * Join our [forum](https://forum.silverstripe.org)
 * Ask technical questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/silverstripe)
 * Read the technical reference in our [API Documentation](https://api.silverstripe.org/)
-* Get a user-focused overview of the CMS features in our [User Help](https://userhelp.silverstripe.com)
+* Get a user-focused overview of the CMS features in our [User Help guide](https://userhelp.silverstripe.com)
 * Discuss new features, API changes and the development [roadmap](https://www.silverstripe.org/software/roadmap/)
   on the ["feature ideas" category](https://forum.silverstripe.org/c/feature-ideas) in our forums
 
