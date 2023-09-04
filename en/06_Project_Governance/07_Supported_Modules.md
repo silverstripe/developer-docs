@@ -59,6 +59,7 @@ Supported PHP Module | Supported versions
 [silverstripe/contentreview](https://packagist.org/packages/silverstripe/contentreview) | 5
 [silverstripe/crontask](https://packagist.org/packages/silverstripe/crontask) | 3
 [silverstripe/documentconverter](https://packagist.org/packages/silverstripe/documentconverter) | 3
+[silverstripe/dynamodb](https://packagist.org/packages/silverstripe/dynamodb) | 5
 [silverstripe/elemental-bannerblock](https://packagist.org/packages/silverstripe/elemental-bannerblock) | 3
 [silverstripe/elemental-fileblock](https://packagist.org/packages/silverstripe/elemental-fileblock) | 3
 [silverstripe/environmentcheck](https://packagist.org/packages/silverstripe/environmentcheck) | 3
