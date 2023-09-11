@@ -149,14 +149,16 @@ App\Extensions\MyDataClassConfigExtension:
 ```
 
 [notice]
-Note that the value for `key1` in the `my_configuration_property` array was _not_ overridden by the extension class. Configuration declared in an extension class is merged into the base class as a lower priority than the base class itself. Where there is any collision between the configuration declared on the base class and on the extension class, the base class configuration is used. To workaround this, use the .yml configuration because $db, $has_one, etc are ultimately just configuration properties.
-[/notice]
+Note that the value for `key1` in the `my_configuration_property` array was _not_ overridden by the extension class. Configuration declared in an extension class is merged into the base class as a lower priority than the base class itself. Where there is any collision between the configuration declared on the base class and on the extension class, the base class configuration is used.
+
+If you need to override values, you should do so using the [yml configuration API](/developer_guides/configuration/configuration).
 
 ```yml
 App\Data\MyDataClass:
   my_configuration_property:
     key1: 'is overridden'
 ```
+[/notice]
 
 See [Configuration API](/developer_guides/configuration/configuration/) for more information about configuration properties.
 
