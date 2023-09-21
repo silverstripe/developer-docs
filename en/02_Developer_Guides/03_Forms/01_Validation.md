@@ -318,6 +318,7 @@ class Page extends SiteTree
         $validator->addValidator(RequiredFields::create([
             'MyRequiredField',
         ]));
+        return $validator;
     }
 }
 ```
