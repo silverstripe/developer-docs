@@ -637,19 +637,89 @@ public function countDuplicates($model, $fieldToCheck)
 }
 ```
 
+### Common Table Expressions (CTEs aka the `WITH` clause) {#cte}
+
+Common Table Expressions are a powerful tool both for optimising complex queries, and for creating recursive queries. You can use these by calling the [`DataQuery::with()`](api:SilverStripe\ORM\DataQuery::with()) method.
+
+Note that there is no direct abstraction for this on `DataList`, so you'll need to [modify the underlying `DataQuery`](#modifying-the-underlying-query) to apply a CTE to a `DataList`.
+
+Older database servers don't support this functionality, and the core implementation is only valid for MySQL (though community modules may add support for other database connectors). You can esure this code will only be used when it's supported by wrapping it in a conditional call to [`DB::get_conn()->supportsCteQueries()`](api:SilverStripe\ORM\Connect\Database::supportsCteQueries()). See the [SQL Queries](/developer_guides/model/sql_select/#cte) documentation for more details.
+
+The following example is the equivalent to the example in the [SQL Queries](/developer_guides/model/sql_select/#cte) documentation, except it is modifying the underlying query of a `DataList`. This means we are effectively filtering the `DataList` to include only records which are ancestors of the `$someRecord` record.
+
+```php
+use App\Model\ObjectWithParent;
+use SilverStripe\Core\Convert;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DataQuery;
+use SilverStripe\ORM\DB;
+
+// Only use the CTE functionality if it is supported by the current database
+if (DB::get_conn()->supportsCteQueries(true)) {
+    $ancestors = ObjectWithParent::get()->alterDataQuery(function (DataQuery $baseQuery) use ($someRecord) {
+        $schema = DataObject::getSchema();
+        $parentIdField = $schema->sqlColumnForField(ObjectWithParent::class, 'ParentID');
+        $idField = $schema->sqlColumnForField(ObjectWithParent::class, 'ID');
+        $cteIdField = Convert::symbol2sql('hierarchy_cte.ParentID');
+
+        $cteQuery = new DataQuery(ObjectWithParent::class);
+        $cteQuery->where([
+            "$parentIdField > 0",
+            $idField => $someRecord->ID,
+        ]);
+        $recursiveQuery = new DataQuery(ObjectWithParent::class);
+        $recursiveQuery->innerJoin('hierarchy_cte', "$idField = $cteIdField")
+            ->where("$parentIdField > 0")
+            // MySQL doesn't support ORDER BY or DISTINCT in the recursive portion of a CTE
+            ->sort(null)
+            ->distinct(false);
+        $cteQuery->union($recursiveQuery);
+        $baseQuery->with('hierarchy_cte', $cteQuery, [], true);
+        $baseQuery->innerJoin('hierarchy_cte', "$idField = $cteIdField");
+        // This query result will include only the ancestors of whatever record is stored in the $someRecord variable.
+        return $baseQuery;
+    });
+} else {
+    // provide an alternative implementation, e.g. a recursive PHP method which runs a query at each iteration
+}
+```
+
+The PHPDoc for the [`DataQuery::with()`](api:SilverStripe\ORM\DataQuery::with()) method has more details about what each of the arguments are and how they're used, though note that you should ensure you understand the underlying SQL concept of CTE queries before using this API.
+
+#### Gotchas {#cte-gotchas}
+
+There are a few things that might catch you off guard with this abstraction if you aren't looking for them. Many of these are specifically enforced by MySQL and may not apply to other databases.
+
+* `DataQuery` wants to use `DISTINCT` and to apply a sort order by default. MySQL 8 doesn't support `ORDER BY`, `DISTINCT`, or `LIMIT` in the recursive query block of Common Table Expressions so we need to make sure to explicitly set the sort order to null and distinct to false when using a `DataQuery` for that part of the query.
+* If you use `DataQuery` for `$cteQuery` (i.e. the `$query` argument of the `with()` method), you can reduce the fields being selected by including them in the `$cteFields` argument. Be aware though that the number of fields passed in must match the number used in the recursive query if your CTE is recursive.
+  * `$cteFields` will be used to set the select fields for the `$cteQuery` if it's a `DataQuery` - but if it's a `SQLSelect` then this argument works the same as it does with `SQLSelect::addWith()`.
+
 ### Raw SQL
 
 Occasionally, the system described above won't let you do exactly what you need to do. In these situations, we have
 methods that manipulate the SQL query at a lower level. When using these, please ensure that all table and field names
 are escaped with double quotes, otherwise some database backends (e.g. [PostgreSQL](https://github.com/silverstripe/silverstripe-postgresql)) won't work.
 
+#### Modifying the underlying query
+
 Under the hood, query generation is handled by the [DataQuery](api:SilverStripe\ORM\DataQuery) class. This class provides more direct access
-to certain SQL features that `DataList` abstracts away from you.
+to certain SQL features that `DataList` abstracts away from you. You can modify the underlying `DataQuery` by calling
+the [`alterDataQuery()`](api:SilverStripe\ORM\DataList::alterDataQuery()) method.
+
+This can be useful for accessing abstractions that exist on the `DataQuery` layer but aren't available at the `DataList` layer.
+
+```php
+$members = Member::get()->alterDataQuery(function (DataQuery $query) {
+    return $query->union($anotherQuery);
+});
+```
+
+#### Using raw SQL directly
 
 In general, we advise against using these methods unless it's absolutely necessary. If the ORM doesn't do quite what
 you need it to, you may also consider extending the ORM with new data types or filter modifiers
 
-#### Where clauses
+##### Where clauses
 
 You can specify a WHERE clause fragment (that will be combined with other filters using AND) with the `where()` method:
 
@@ -657,9 +727,9 @@ You can specify a WHERE clause fragment (that will be combined with other filter
 $members = Member::get()->where("\"FirstName\" = 'Sam'");
 ```
 
-#### Joining Tables
+##### Joining Tables
 
-You can specify a join with the `innerJoin` and `leftJoin` methods.  Both of these methods have the same arguments:
+You can specify a join with the `innerJoin`, `leftJoin`, and `rightJoin` methods. All of these methods have the same arguments:
 
 * The name of the table to join to.
 * The filter clause for the join.
@@ -670,11 +740,15 @@ You can specify a join with the `innerJoin` and `leftJoin` methods.  Both of the
 $members = Member::get()
     ->leftJoin("Group_Members", "\"Group_Members\".\"MemberID\" = \"Member\".\"ID\"");
 $members = Member::get()
+    ->rightJoin("Group_Members", "\"Group_Members\".\"MemberID\" = \"Member\".\"ID\"");
+$members = Member::get()
     ->innerJoin("Group_Members", "\"Group_Members\".\"MemberID\" = \"Member\".\"ID\"");
 
 // With an alias "Rel"
 $members = Member::get()
     ->leftJoin("Group_Members", "\"Rel\".\"MemberID\" = \"Member\".\"ID\"", "Rel");
+$members = Member::get()
+    ->rightJoin("Group_Members", "\"Rel\".\"MemberID\" = \"Member\".\"ID\"", "Rel");
 $members = Member::get()
     ->innerJoin("Group_Members", "\"Rel\".\"MemberID\" = \"Member\".\"ID\"", "Rel");
 ```
