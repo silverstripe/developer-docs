@@ -1,10 +1,10 @@
 ---
-title: Bug Reports
+title: Issues and Bug Reports
 summary: Report bugs or problems with Silverstripe CMS, feature requests or other issues.
 icon: bug
 ---
 
-# Bug Reports
+# Issues and Bug Reports
 
 ## Reporting Bugs
 
@@ -79,3 +79,32 @@ Silverstripe CMS aims to ship security patches at pre-defined intervals when tho
 Review the [Security patch windows](../Project_Governance/Minor_release_policy#security-patch-windows) section of our minor release policy for more details.
 
 Silverstripe CMS does not operate a _bug bounty_ program.
+
+## GitHub Labels {#labels}
+
+The current GitHub labels are grouped into five sections:
+
+1. *Impact* - What impact does this issue have, does it break a feature completely, is it just a side effect or is it trivial and not a big problem (but a bit annoying), etc. Impact is evaluated in the context of the CMS as a whole, rather than against the individual module the issue is raised on.
+2. *Complexity* - What level of technical proficiency is required to address this issue?
+3. *Type* - The type of solution required to address this issue
+4. *Affects* - The release line this issue is relevant to
+5. *RFC* - The issue is a request-for-comment
+
+| Label | Purpose |
+| ----- | ------- |
+| impact/critical | Website breaking issue with no workarounds. Reserved only for bugs. Bugfix's will target all supported minor release lines. |
+| impact/high | Affects a major usage flow. Broken functionality with no obvious workarounds available, or an enhancement that provides a clear benefit to users |
+| impact/medium | When affecting a major usage flow, for bugs there is a workaround available and for enhancements there would be a reasonable benefit to users. For a less common usage flow there is broken functionality and for enhancements there is a clear benefit to users. |
+| impact/low | A nuisance but doesn't break any functionality (typos, etc). For enhancements there would only be a limited benefit to users. |
+| complexity/low | Someone with limited Silverstripe CMS experience could resolve |
+| complexity/medium | Someone with a good understanding of Silverstripe CMS could resolve |
+| complexity/high | Only an expert with Silverstripe CMS could resolve |
+| type/bug | Does not function as intended, or is inadequate for the purpose it was created for |
+| type/enhancement | New feature or improvement for either users or developers |
+| type/api-break | An API-breaking change requiring a new major release |
+| type/ux | Impact on the CMS user interface |
+| type/docs | A docs change |
+| type/userhelp | A userhelp documentation change |
+| affects/* | Issue has been observed on a specific CMS release line |
+| rfc/draft | [RFC](/project_governance/request_for_comment) under discussion |
+| rfc/accepted | [RFC](/project_governance/request_for_comment) where agreement has been reached |
