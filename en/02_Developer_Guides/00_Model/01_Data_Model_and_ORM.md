@@ -303,16 +303,11 @@ $players = Players::get()->sort([
 ]);
 ```
 
-You can also sort randomly. Using the `DB` class, you can get the random sort method per database type.
+You can also sort randomly.
 
 ```php
-$random = DB::get_conn()->random(); 
-$players = Player::get()->orderBy($random);
+$players = Player::get()->shuffle();
 ```
-
-[warning]
-Note that we've used the `orderBy()` method here. This is because `sort()` doesn't allow sorting by raw SQL, which is necessary to use a random sort. Be careful whenever you use the `orderBy()` method to ensure you don't pass in any values you can't trust.
-[/warning]
 
 ## Filtering Results
 
@@ -725,6 +720,14 @@ You can specify a WHERE clause fragment (that will be combined with other filter
 
 ```php
 $members = Member::get()->where("\"FirstName\" = 'Sam'");
+```
+
+##### Order by clauses
+
+You can specify an ORDER BY clause fragment with the `orderBy` method:
+
+```php
+$members = Member::get()->orderBy(/* some raw SQL here */);
 ```
 
 ##### Joining Tables
