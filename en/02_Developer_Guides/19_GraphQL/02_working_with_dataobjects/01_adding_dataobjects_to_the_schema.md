@@ -204,15 +204,16 @@ A couple things to note here:
 
 * By assigning a value of `true` to the field, we defer to the model to infer the type for the field. To override that, we can always add a `type` property:
 
-```yaml
-MyProject\Models\Product:
-  fields:
-    onSale:
-      type: Boolean
-```
+    ```yaml
+    MyProject\Models\Product:
+      fields:
+        onSale:
+          type: Boolean
+    ```
 
 * The mapping of our field names to the `DataObject` property is case-insensitive. It is a
 convention in GraphQL APIs to use lowerCamelCase fields, so this is given by default.
+
 [/notice]
 
 ### Bulk loading models
@@ -239,9 +240,9 @@ elemental: # An arbitrary key to define what these directives are doing
   load:
     inheritanceLoader:
       include:
-          - DNADesign\Elemental\Models\BaseElement
+        - DNADesign\Elemental\Models\BaseElement
       exclude:
-          - MyApp\Elements\MySecretElement
+        - MyApp\Elements\MySecretElement
   # Add all fields and read operations
   apply:
     fields:
