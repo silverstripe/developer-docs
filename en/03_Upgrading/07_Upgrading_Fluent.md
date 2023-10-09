@@ -132,14 +132,14 @@ The following actions in the history tab in the CMS are affected:
 
 ### Standard Versioned methods
 
-Fluent 6 alters how many of the [`Versioned`](api:SilverStripe/Versioned/Versioned) methods work as the data source is changed to use the localised tables. This has a large impact on the CMS UI and behaviour (as mentioned in the previous section).
+Fluent 6 alters how many of the [`Versioned`](api:SilverStripe\Versioned\Versioned) methods work as the data source is changed to use the localised tables. This has a large impact on the CMS UI and behaviour (as mentioned in the previous section).
 
 Examples of impacted methods:
 
-- [`isOnDraft()`](api:SilverStripe/Versioned/Versioned::isOnDraft())
-- [`isPublished()`](api:SilverStripe/Versioned/Versioned::isPublished())
-- [`isArchived()`](api:SilverStripe/Versioned/Versioned::isArchived())
-- [`stagesDiffer()`](api:SilverStripe/Versioned/Versioned::stagesDiffer())
+- [`isOnDraft()`](api:SilverStripe\Versioned\Versioned::isOnDraft())
+- [`isPublished()`](api:SilverStripe\Versioned\Versioned::isPublished())
+- [`isArchived()`](api:SilverStripe\Versioned\Versioned::isArchived())
+- [`stagesDiffer()`](api:SilverStripe\Versioned\Versioned::stagesDiffer())
 
 Simply put, any code you have checking the versioned state of a record used to return results for the base (unlocalised) record. To get the result for the localised record, specialised methods had to be called.
 
@@ -243,9 +243,9 @@ These changes aren't likely to break anything in your project, but we recommend 
 Some unit tests may break. There's no one solution for problems you may encounter, but some general recommendations that might help are:
 
 - avoid localised tables in yaml fixtures
-  - localise models in your PHP code instead, either in the `setUp()` method or via ORM calls (for example explicitly calling [`$obj->write()`](api:SilverStripe/ORM/DataObject::write()) after fetching the fixture object)
+  - localise models in your PHP code instead, either in the `setUp()` method or via ORM calls (for example explicitly calling [`$obj->write()`](api:SilverStripe\ORM\DataObject::write()) after fetching the fixture object)
 - avoid including version history in your yaml fixtures
-  - use ORM methods like [`$obj->publishRecursive()`](api:SilverStripe/Versioned/RecursivePublishable:publishRecursive()) after fetching the fixture objects instead
+  - use ORM methods like [`$obj->publishRecursive()`](api:SilverStripe\Versioned\RecursivePublishable:publishRecursive()) after fetching the fixture objects instead
 
 ## Further reading
 
