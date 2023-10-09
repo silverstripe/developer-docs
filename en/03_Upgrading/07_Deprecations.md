@@ -55,7 +55,7 @@ SilverStripe\Core\Injector\Injector:
   ErrorLogFileHandler:
     class: Monolog\Handler\StreamHandler
     constructor:
-      - "var/www/silverstripe.log"
+      - "/var/www/silverstripe.log"
       - "warning" # warning is the level deprecation warnings are logged as
   Psr\Log\LoggerInterface.errorhandler:
     calls:
