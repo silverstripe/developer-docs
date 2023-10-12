@@ -8,6 +8,10 @@ icon: code
 
 Silverstripe CMS will never be finished, and we need your help to keep making it better.  If you're a developer a great way to get involved is to contribute patches to our modules and core codebase, fixing bugs or adding features.
 
+[info]
+If you want to contribute changes to documentation, please read through the [contributing documentation](./documentation) page.
+[/info]
+
 The Silverstripe CMS core modules (`framework` and `cms`), as well as some of the more popular modules are in
 git version control. Silverstripe CMS hosts its modules on [github.com/silverstripe](https://github.com/silverstripe/).  After [installing git](https://help.github.com/articles/set-up-git/) and creating a [free github.com account](https://github.com/join/), you can "fork" a module,
 which creates a copy that you can commit to (see github's [guide to "forking"](https://help.github.com/articles/fork-a-repo/)).
