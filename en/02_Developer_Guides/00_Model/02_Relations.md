@@ -709,7 +709,7 @@ Eager loading is only intended to be used in read-only scenarios such as when ou
 
 Note that filtering or sorting an `EagerLoadedList` will be done in PHP rather than as part of the database query, since we have already loaded all its relevant data into memory.
 
-Note also that `EagerLoadedList` can't currently filter or sort by fields on relations using dot syntax (e.g. `sort('MySubRelation.Title')` won't work).
+Note also that `EagerLoadedList` can't filter or sort by fields on relations using dot notation (e.g. `sort('MySubRelation.Title')` won't work).
 [/notice]
 
 ## Cascading deletions
