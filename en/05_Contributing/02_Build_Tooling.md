@@ -1,98 +1,91 @@
 ---
 title: Build tooling
-summary: The tools we use to compile our frontend code
+summary: The tools we use to compile our client-side code
 icon: tools
 ---
 
 # Client-side build tooling
 
-Core JavaScript, CSS, and thirdparty dependencies are managed with the build tooling
+Core JavaScript, CSS, and thirdparty client-side dependencies are managed with the build tooling
 described below.
 
-Note this only applies to core SilverStripe dependencies, you're free to manage
+Note this only applies to core Silverstripe CMS dependencies, you're free to manage
 dependencies in your project codebase however you like.
 
 ## Installation
 
-The [NodeJS](https://nodejs.org) JavaScript runtime is the foundation of our client-side
+The [Node.js](https://nodejs.org) JavaScript runtime is the foundation of our client-side
 build tool chain. If you want to do things like upgrade dependencies, make changes to core
 JavaScript or SCSS files, you'll need Node installed on your dev environment.
 
-Our build tooling supports the v18.x ([LTS as of October 2022](https://github.com/nodejs/release#release-schedule)) version
-of NodeJS.
+We recommend using the
+[Node Version Manager](https://github.com/creationix/nvm) (nvm) to ensure you use the appropriate
+version of node.
 
-If you already have a different version of NodeJS installed, check out the
-[Node Version Manager](https://github.com/creationix/nvm) to run multiple versions
-in your environment. We aim to have a `.nvmrc` file in each repository, so you just need
-to run `nvm use` to swap to the correct node version.
+If you're using nvm, make sure you use it to install and swap to the correct version of node
+before you run any of the yarn commands.
 
-[yarn](https://yarnpkg.com/) is the package manager we use for JavaScript and SCSS dependencies.
-The configuration for an npm package goes in `package.json`.
+```bash
+nvm install && nvm use
+```
+
+[yarn](https://yarnpkg.com/) is the package manager we use for JavaScript dependencies.
 You'll need to install yarn after Node.js is installed.
 See [yarn installation docs](https://yarnpkg.com/en/docs/install).
 We recommend using `npm` which comes with Node.js to install it globally.
 
-```sh
+```bash
 npm install -g yarn
 ```
 
 Once you've installed Node.js and yarn, run the following command once in the `silverstripe/admin` module folder and in each module folder you are working on:
 
-```sh
+```bash
 yarn install
 ```
 
-## The Basics: ES6, Webpack and Babel
+[notice]
+The `silverstripe/admin` repository includes some components and dependencies that other modules
+need to work. Make sure that in addition to the module(s) who's code you're touching, you also run
+`yarn install` in the directory for `silverstripe/admin`.
 
-[Webpack](https://webpack.github.io) contains the build tooling to
-"transpile" various syntax patterns into a format the browser can understand,
-and resolve ECMA `import` statements ([details](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import)).
-Webpack provides the entry point to our build tooling through a `webpack.config.js`
-file in the root folder of each core module.
-
-[Babel](https://babeljs.io/) is a JavaScript compiler. It takes JavaScript files as input,
-performs some transformations, and outputs other JavaScript files. This allows us to use modern syntax
-in source files, while ensuring the output is converted to syntax that is supported by the browser.
-In SilverStripe we use Babel to transform our JavaScript in two ways.
+You may need to first run `composer reinstall silverstripe/admin --prefer-source` if you installed
+that module without `--prefer-source` originally.
+[/notice]
 
 ## Build Commands
 
 The `script` property of a `package.json` file can be used to define command line
 [scripts](https://docs.npmjs.com/misc/scripts).
-A nice thing about running commands from an npm script is binaries located in
-`node_modules/.bin/` are temporally added to your `$PATH`. This means we can use dependencies
-defined in `package.json` for things like compiling JavaScript and SCSS, and not require
-developers to install these tools globally. This means builds are much more consistent
-across development environments.
 
-To run an npm script, open up your terminal, change to the directory where `package.json`
+To run one of these scripts, open up your terminal, change to the directory where `package.json`
 is located, and run `yarn <SCRIPT_NAME>`. Where `<SCRIPT_NAME>` is the name of the
 script you wish to run.
 
 ### build
 
-```sh
+During development, you'll want to build the core JavaScript and CSS files in development mode.
+This is faster than `yarn build` below and outputs the files in a format that is useful for debugging.
+
+```bash
 yarn dev
 ```
 
-Runs [Webpack](https://webpack.github.io/) to builds the core JavaScript and CSS files in development mode.
-This is faster than `yarn build` below and outputs the files in a format that is useful for debugging.
+You might want to automatically rebuild whenever you change a `.js` or `.scss` file.
+This is useful for when you are rapidly making lots of small changes.
 
-```sh
+```bash
 yarn watch
 ```
 
-The same as `yarn dev`, except it will automatically rebuild whenever you change a `.js` or `.scss` file.
-This is useful for when you are rapidly making lots of small changes.
+When you've finished making your changes, build the core JavaScript and CSS files in production mode.
+You will need to run this script before committing your changes to git.
 
-```sh
+```bash
 yarn build
 ```
 
-Runs [Webpack](https://webpack.github.io/) to builds the core JavaScript and CSS files in production mode.
-You will need to run this script before committing your changes to git.
-
-### build JavaScript or CSS separately
+#### build JavaScript or CSS separately
 
 If you are only working on JavaScript or only working on CSS you might want to only build what you're working on. You can do this by adding `WEBPACK_CHILD=css` or `WEBPACK_CHILD=js` before the relevant yarn command, for example:
 
@@ -102,38 +95,21 @@ WEBPACK_CHILD=css yarn dev
 
 The `css` or `js` portion of this is defined in the `webpack.config.js` file. Some modules may also include other configured components that can be built independently as well.
 
-### lint
+### lint and test
 
-```sh
+You can lint and run JavaScript unit tests manually - though note that these are also automatically run as part of the `yarn build` script.
+You will not be able to build production-ready distribution files if either of these fails.
+
+```bash
 yarn lint
-```
-
-Run linters (`eslint` and `sass-lint`) to enforce
-our [JavaScript](/contributing/javascript_coding_conventions) and
-[CSS](/contributing/css_coding_conventions) coding conventions.
-
-### test
-
-```sh
 yarn test
 ```
 
-Runs the JavaScript unit tests.
+## Requiring Silverstripe CMS JavaScript modules in your own CMS customisation
 
-### coverage
-
-```sh
-yarn coverage
-```
-
-Generates a coverage report for the JavaScript unit tests. The report is generated
-in the `coverage` directory.
-
-## Requiring Silverstripe JavaScript modules in your own CMS customisation
-
-Silverstripe creates bundles which contain many dependencies you might also
+Silverstripe CMS creates bundles which contain many dependencies you might also
 want to use in your own CMS customisation (e.g. `react`).
-You might also need some of SilverStripe's own JavaScript ECMA modules (e.g. `components/FormBuilder`).
+You might also need some of Silverstripe CMS's own JavaScript components (e.g. `components/FormBuilder`).
 
 To avoid transpiling these into your own generated bundles,
 we have exposed many libraries as [Webpack externals](https://webpack.js.org/configuration/externals/).
@@ -170,25 +146,3 @@ import FormBuilder from 'components/FormBuilder/FormBuilder';
 ```
 
 For a more in-depth explanation of how to use `@silverstripe/webpack-config` [take a look at the readme](https://www.npmjs.com/package/@silverstripe/webpack-config).
-
-## Publishing frontend packages to NPM
-
-We're progressing to include NPM modules in our development process. We currently have a limited number of
-[JavaScript only projects published to NPM under the `@silverstripe` organisation](https://www.npmjs.com/search?q=%40silverstripe).
-
-When a pull request is merged against one of those JS-only projects, a new release has to be published to NPM. Regular
-Silverstripe CMS modules using these packages have to upgrade their JS dependencies to get the new release.
-
-These are the steps involved to publish a new version to NPM for a package, similar steps apply for creating a new
-package under the `@silverstripe` organisation:
-
-1) Make your changes, pull from upstream if applicable
-2) Change to the relevant container folder with the `package.json` file
-3) Run `npm login` and make sure you’re part of the `@silverstripe` organisation
-4) Make sure the `name` property of the `package.json` file matches to the right module name with organisation name prefix, e.g. `"name": "@silverstripe/webpack-config"`
-5) Update the `version` property of the `package.json` file with a new version number, following semantic versioning where possible
-6) Run `npm version` and validate that the version matches what you expect
-7) Run `npm publish`
-
-_IMPORTANT NOTE_: You cannot publish the same or lower version number. Only members of the Silverstripe CMS core team
-can publish a release to NPM.
