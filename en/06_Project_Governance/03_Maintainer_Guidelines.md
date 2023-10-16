@@ -104,13 +104,13 @@ First and foremost rule of a maintainer is to collaborate with other maintainers
 
 Triaging issues and pull requests involves review, applying labels, as well as closing invalid submissions.
 
-Applying [labels](./code/#labels) is the main mechanism used to escalate critical and high impact issues, give feedback to the community, or peer review a PR and let other maintainers know it is “good to be merged on green CI tests”.
+Applying [labels](./issues_and_bugs/#labels) is the main mechanism used to escalate critical and high impact issues, give feedback to the community, or peer review a PR and let other maintainers know it is “good to be merged on green CI tests”.
 
 
 How to do it
   - Regularly check the repository for new issues or use the ["Untriaged" filter](https://silverstripe-github-issues.now.sh/?mode=untriaged) in our cross-repository issue tracker.
   - Ideally subscribe to the repository via [GitHub Watch](https://docs.github.com/en/free-pro-team@latest/github/managing-subscriptions-and-notifications-on-github/viewing-your-subscriptions#configuring-your-watch-settings-for-an-individual-repository) functionality
-  - Read the docs about [how we use labels](./code/#labels)
+  - Read the docs about [how we use labels](./issues_and_bugs/#labels)
   - If unsure about anything, it’s usually good to ask other maintainers for their opinions (on Slack or via mentioning them directly on GitHub)
 
 

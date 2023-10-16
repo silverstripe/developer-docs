@@ -55,11 +55,11 @@ All Silverstripe CMS recipes are released in lock step with each other. For exam
 contain `silverstripe/recipe-cms` 5.3.1 and `silverstripe/recipe-core` 5.3.1. These recipes may contain various patch
 versions of its modules within the same minor release line (5.3 in this example).
 
-## Regular quarterly releases
+## Regular minor releases
 
-A regular Silverstripe CMS release is tagged on a quarterly basis, in the months: March, June, September, December. This usually involves creating a new minor increment of 
-each core recipe. Regular quarterly releases are preceded by pre-stable releases to help lay the groundwork for the
-stable release.
+Regular minor releases are preceded by pre-stable releases to help lay the groundwork for the stable release.
+
+See our [minor release policy](/project_governance/minor_release_policy/) for details about our release cadence.
 
 ### Beta phase
 
