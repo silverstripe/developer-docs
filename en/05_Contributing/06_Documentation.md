@@ -1,140 +1,250 @@
 ---
-title: Documentation
-summary: Writing guide for contributing to SilverStripe developer and CMS user help documentation. 
+title: Contributing Documentation
+summary: Guide for contributing to Silverstripe CMS developer and CMS user help documentation.
 icon: file-alt
 ---
 
 # Contributing documentation
 
-Documentation for a software project is a continuing, collaborative effort. We encourage everybody to contribute in any way they can, from simply fixing spelling mistakes, to writing recipes, reviewing existing documentation and translation to other languages.
+Documentation for a software project is a continuous, collaborative effort. We encourage everybody to contribute in any way they can whether it's fixing a typo, updating some outdated documentation, or adding missing documentation.
 
-Modifying documentation requires basic knowledge of [PHPDoc](https://en.wikipedia.org/wiki/PHPDoc) and 
-[Markdown](https://daringfireball.net/projects/markdown/) as well as a GitHub user account.
+Modifying documentation requires basic knowledge of [markdown](https://www.markdownguide.org/). Our documentation also includes some additional syntax which you can read about in the [extended markdown syntax](#extended-markdown-syntax) section below.
 
-[info]
-Note that there are two sources of documentation, depending on the intended audience. You can see where each of those lives in the [repositories](#repositories) section below.
-[/info]
-
-## Editing online
-
-The easiest way of editing any documentation is by clicking the "Edit on GitHub" button at the bottom of the
-page you want to edit. Alternatively, locate the appropriate .md file in the
-[silverstripe/developer-docs](https://github.com/silverstripe/developer-docs/) repository and press the "edit" button. **You will need a free GitHub account to do this**.
-
-
- * After editing the documentation, describe your changes in the "commit summary" and "extended description" fields below then press "Commit Changes".
- * After committing you changes, you will see a form to submit a Pull Request: "[pull requests](https://support.github.com/features/pull-requests)". You should be able to adjust the version to which your documentation changes apply before submitting the form. Any changes submitted in a pull request will be sent to the core committers for approval.
-
-[warning]
-You should make your changes in the lowest major branch they apply to. For instance, if you fix a spelling issue that you found in the CMS 5 documentation, submit your fix to the `5` branch in Github and it'll be copied to the most recent major version of the documentation automatically. *Don't submit multiple pull requests for the same change*.
-[/warning]
-
-## Editing on your computer
-
-If you prefer to edit content on your local machine, you can "[fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo)" the 
-[silverstripe/developer-docs](https://github.com/silverstripe/developer-docs) repository, make changes locally, and then [send us a pull request](https://github.com/silverstripe/developer-docs/compare) to incorporate your changes.
-
-[warning]
-If you submit a new feature or an API change, we strongly recommend and request that you include a PR to update the necessary documentation. This helps prevent our documentation from getting out of date.
-[/warning]
+In order to contribute changes to documentation, you will need to [create a GitHub account](https://docs.github.com/en/get-started/onboarding/getting-started-with-your-github-account).
 
 ## Repositories
 
+Note that there are two sources of documentation, depending on the intended audience.
+
 * End-user help: [silverstripe/silverstripe-userhelp-content](https://github.com/silverstripe/silverstripe-userhelp-content/)
 * Developer guides: [silverstripe/developer-docs](https://github.com/silverstripe/developer-docs/)
+
+If you find a problem related to how the documentation is displayed which can't be fixed in the documentation source files, you can [raise an issue](./issues_and_bugs) or [submit a pull request](./code) to the relevant repository below:
+
 * Website code for user and developer docs: [silverstripe/doc.silverstripe.org](https://github.com/silverstripe/doc.silverstripe.org)
-* Developer API documentation: [silverstripe/api.silverstripe.org](https://github.com/silverstripe/api.silverstripe.org)
+* Website code for automatically generated Developer API documentation: [silverstripe/api.silverstripe.org](https://github.com/silverstripe/api.silverstripe.org)
 
-## Source control
+## Branches and commit messages
 
-Contributing documentation is the same process as providing any other patch (see [Contributing code](code)).
+* All documentation commits must follow the [commit message guidelines](./code#commit-messages), and must be prefixed with the `DOC` prefix.
+* If you are fixing incorrect or incomplete information, you should create a PR that targets the most recent patch release branch branch for the relevant major release line (e.g. `5.1`).
+* If you are adding documentation for functionality that has not yet been released, you should target the most recent minor release branch branch (e.g. `5`).
 
-If you are fixing incorrect or incomplete information for the current major version, you should create a PR that targets the branch for the latest stable release (e.g. `5.1`).
+[warning]
+You should make your changes in the lowest major branch they apply to. For instance, if you fix a spelling issue that you found in the CMS 4 documentation, submit your fix to the `4.13` branch in Github and it'll be copied to the most recent major version of the documentation automatically. *Don't submit multiple pull requests for the same change*.
+[/warning]
 
-If you are adding documentation for functionality that has not yet been released, you should target the most recent _major_ branch (e.g. `5`)
+## Editing online
 
-## What to write
+If you haven't contributed documentation in the past, you will need to fork the repository. If you're editing online, GitHub will guide you through that process before you can edit the documentation.
 
-See [what to write (jacobian.org)](https://jacobian.org/writing/great-documentation/what-to-write/) for an excellent introduction to the different types of documentation. Also see [producing OSS: "documentation"](https://producingoss.com/en/getting-started.html#documentation) for good rules of thumb 
-for documenting open source software.
+### Simple changes {#editing-online-simple}
 
-## Structure
+The easiest way of editing any documentation is by clicking the "Edit on GitHub" button at the bottom of the page you want to edit. This works great if all of the changes you want to make are on a single page.
 
-* Keep documentation lines shorter than 120 characters.
-* Don't duplicate: Search for existing places to put your documentation. Do you really require a new page, or just a new paragraph of text somewhere?
-* Use PHPDoc in source code: Leave low level technical documentation to code comments within PHP, in [PHPDoc](https://en.wikipedia.org/wiki/PHPDoc) format. 
-* API and developer guides are two forms of source code documentation that complement each other.
-* API documentation should provide context, ie, the "bigger picture", by referring to developer guides inside your PHPDoc.
-* Make your documentation easy to find: Documentation is useful only when it is interlinked so please make sure your contribution doesn't become an inaccessible island. At the very least, put a link to your index page in the same folder. A link to your page can also appear
-as "related content" on other resource (e.g. `/tutorials/site_search` might link to `/developer_guides/forms/introduction`).
+Before you start making your changes, take note of what branch you are editing. You will need this when you create the pull request.
+
+![note the branch you're editing](../_images/contributing/docs-check-the-branch.png)
+
+After editing the documentation, click "Commit changes", then describe your changes in the "commit summary" and "extended description" fields below.
+
+![follow the guidelines to add a descriptive commit message](../_images/contributing/docs-commit-message.png)
+
+Click "Propose changes" when you are ready to commit your changes. This saves them to the forked repository on your profile.
+
+You will see a form to submit a pull request. Make sure to target your pull request at the correct branch you took note of earlier.
+
+![target your pull request at the branch you noted earlier](../_images/contributing/docs-use-correct-branch.png)
+
+Then click "Create pull request".
+
+Any changes submitted in a pull request will be sent to the core committers for approval. Make sure the pull request follows the guidelines in [create the pull request](./code#create-the-pr), and then see [recieve and respond to feedback](./code#recieve-feedback) for next steps.
+
+### Larger changes {#editing-online-advanced}
+
+For any changes that span more than one page, you can edit the documentation in GitHub's web-based editor.
+
+To learn more, follow the instructions in [GitHub's documentation](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor).
+
+Once you've made the pull request, make sure the pull request follows the guidelines in [create the pull request](./code#create-the-pr), and then see [recieve and respond to feedback](./code#recieve-feedback) for next steps.
+
+## Editing on your computer
+
+If you prefer to edit content on your local machine, follow the instructions on the [contributing code](code) page, since editing documentation on your computer follows that same process.
 
 ## Writing style
 
-* Write in second person plural form: Use "we" instead of "I". It gives the text an instructive and collaborative style.
-* It's okay to address the reader: For example "First you'll install a webserver" is good style.
-* Write in an active and direct voice.
-* Mark up correctly: The use of preformatted text, emphasis and bold make technical writing easier to scan.
-* Avoid FAQs: FAQs are not a replacement for coherent, well explained documentation. If you've done a good job
-documenting, there shouldn't be any "frequently asked questions" left.
-* "SilverStripe" should always appear without a space with both "S"s capitalised.
-* Use simple language and words. Avoid uncommon jargon and overly long words.
-* Use UK English and not US English. SilverStripe is proudly a New Zealand open source project we use the UK spelling and forms of English. The most common of these differences are -ize vs -ise, or -or vs our (eg color vs colour).
-* We use sentence case for titles so only capitalise the first letter of the first word of a title. The only exceptions to this are when using brand names (e.g. SilverStripe), acronyms (e.g. PHP) and class names (e.g. ModelAdmin).
+* Write in second person form, addressing the reader. For example "First you'll install a webserver" is good style.
+* If referring to maintainers of Silverstripe CMS, either explicitly say "the maintainers", or write in second person plural form (use "we" instead of "I")
 * Use gender neutral language throughout the document, unless referencing a specific person. Use them, they, their, instead of he and she, his or her.
-* URLs: if the end of your sentence is a URL then you don't need to use a full stop.
-* Bullet points: Sentence case your bullet points. If a bullet point is a full sentence then end with a full stop. If it is a sentence fragment or a comma separated list, full stops are not required.
+* Use simple language and words. Avoid uncommon jargon and overly long words. Remember that not everyone speaks English as their primary language.
+* Use UK English, not US English. Silverstripe CMS is proudly a New Zealand open source project we use the UK spelling and forms of English. The most common of these differences are -ize vs -ise, or -or vs our (eg color vs colour).
+* Write in an active and direct voice.
+* Avoid saying words like "obviously" or "of course". Things that are obvious to you as the writer may not be so obvious to the person reading the documentation.
+* Keep documentation lines shorter than 120 characters.
+* Avoid FAQs. FAQs are not a replacement for coherent, well explained documentation. If you've done a good job
+documenting, there shouldn't be any "frequently asked questions" left.
+* We use sentence case for titles. Only capitalise the first letter of the first word of a title. The only exceptions to this are when using brand names (e.g. GitHub), acronyms (e.g. PHP) and class names (e.g. ModelAdmin).
+* Use `example.com` as the domain of sample URLs and `example.org` and `example.net` when additional domains are required. All of these domains are [reserved by the IANA](https://tools.ietf.org/html/rfc2606#section-3).
+* Use appropriate markdown. The use of code blocks, emphasis, lists, and tables make technical writing easier to scan.
+* Never leave spaces at the end of a line.
+* Use an empty line to separate paragraphs.
+* Sentence case your bullet points. If a bullet point is a full sentence then end with a full stop. If it is a sentence fragment or a comma separated list, full stops are not required.
+* All code blocks must have an appropriate syntax highlighting hint. For plain text, use "text".
+* Code examples should follow our [coding conventions](./coding_conventions).
+* Use `App` when the code requires a vendor name (e.g. as the root for namespaces).
+* Do not put a `$` in front of lines of bash code examples.
+* When referencing directories, always add a trailing slash to avoid confusions with regular files
+* "Silverstripe CMS" is used to refer to the Silverstripe CMS open source project as a whole.
+* "Silverstripe" is used to refer to the company, where appropriate.
 
-## Highlighted blocks
+## Extended markdown syntax
 
-There are several built-in block styles for highlighting a paragraph of text. Please use these graphical elements 
+Silverstripe CMS documentation has a few special syntax extensions that normal markdown doesn't. These are listed below.
+
+### Callout blocks
+
+There are several built-in block styles for calling out a paragraph of text. Please use these graphical elements
 sparingly.
 
+[info]
+"Info box": An info box is useful for adding, deepening or accenting information in the main text. They can be used for background knowledge, or to provide links to further information (ie, a "see also" link).
+[/info]
+
+Code for an Info box:
+
+```text
+[info]
+...
+[/info]
+```
+
 [hint]
-"Tip box": A tip box is great for adding, deepening or accenting information in the main text. They can be used for background knowledge, or to provide links to further information (ie, a "see also" link).
+"Hint box": A hint box is great for pointing out extra use cases or hints about how to use a feature.
 [/hint]
 
-Code for a Tip box:
+Code for a Hint box:
 
-```
+```text
 [hint]
 ...
 [/hint]
-```
-
-[notice]
-"Notification box": A notification box is good for technical notifications relating to the main text. For example, notifying users about a deprecated feature.
-[/notice]
-
-Code for a Notification box:
-
-```
-[notice]
-...
-[/notice]
 ```
 
 [warning]
-"Warning box": A warning box is useful for highlighting a severe bug or a technical issue requiring a user's attention. For example, suppose a rare edge case sometimes leads to a variable being overwritten incorrectly. A warning box can be used to alert the user to this case so they can write their own code to handle it.  
+"Warning box": A warning box is useful for pointing out gotchas or technical notifications relating to the main text. For example, notifying users about a deprecated feature.
 [/warning]
 
 Code for a Warning box:
 
-```
+```text
 [warning]
 ...
 [/warning]
 ```
 
-See [markdown extra documentation](https://michelf.com/projects/php-markdown/extra/#html) for more restrictions
-on placing HTML blocks inside Markdown.
+[alert]
+"Alert box": An alert box is good for for calling out a severe bug or a technical issue requiring a user's attention. For example, suppose a rare edge case sometimes leads to a variable being overwritten incorrectly. An alert box can be used to alert the user to this case so they can write their own code to handle it.
+[/alert]
 
-## Translating documentation
+Code for an Alert box:
 
-Documentation is kept alongside the source code, typically in a module subdirectory like `framework/docs/en/`. Each language has its own subfolder, which can duplicate parts of or the entire body of documentation. German documentation would, for example, live in `framework/docs/de/`. The 
-[docsviewer](https://github.com/silverstripe/silverstripe-docsviewer) module that drives 
-[docs.silverstripe.org](https://docs.silverstripe.org) automatically resolves these subfolders into a language dropdown.
+```text
+[alert]
+...
+[/alert]
+```
 
-## Further reading
+### Links to documentation
 
-* [Writing great documentation (jacobian.org)](https://jacobian.org/writing/great-documentation/)
-* [How tech writing sucks: Five sins](https://www.slash7.com/articles/2006/11/15/tech-writing-the-five-sins)
+Links to other pages in the documentation uses the URL slug, *not* the file name.
+
+Relative documentation links are prefixed with `./` for pages in the same directory, or `../` for pages in parent directories. For example `[contributing code](./code)` becomes [contributing code](./code) and `[getting started](../getting_started)` becomes [getting started](../getting_started).
+
+Absolute documentation links are preferred for pages which aren't in the same directory or one level up. The language and version number are ommitted. For example `[managing lists](/developer_guides/model/lists/)` becomes [managing lists](/developer_guides/model/lists/).
+
+#### Links to API documentation
+
+API documentation is linked in a special way. Give some examples for classes, methods, properties.
+
+For classes, interfaces, traits, and enums:
+
+``[`Form`](api:SilverStripe\Forms\Form)`` will become [`Form`](api:SilverStripe\Forms\Form), and will link to the API documentation for the `SilverStripe\Forms\Form` class.
+
+For methods:
+
+``[`Form::makeReadonly()`](api:SilverStripe\Forms\Form::makeReadonly())`` will become [`Form::makeReadonly()`](api:SilverStripe\Forms\Form::makeReadonly()), and will link to the API documentation for the `makeReadonly()` method in the `SilverStripe\Forms\Form` class.
+
+For properties, including configuration properties:
+
+``[`Form->casting`](api:SilverStripe\Forms\Form->casting)`` will become [`Form->casting`](api:SilverStripe\Forms\Form->casting), and will link to the API documentation for the `casting` property in the `SilverStripe\Forms\Form` class.
+
+### Anchor links in headings
+
+Headings automatically include anchor links, which are generated from the heading text. Sometimes you might want to include a shorter or otherwise more useful anchor link instead. To do that, include the desired anchor in a `{#anchor-here}` section after the heading text. The custom anchor does not render as part of the heading text.
+
+For example:
+
+`## This is a really long heading which has a silly anchor {#my-custom-anchor}`
+
+The above heading would normally have a long and silly anchor, but instead it will use the `#my-custom-anchor` anchor.
+
+### Linking to child and sibling pages {#link-to-children}
+
+You can list child/sibling pages using the special `[CHILDREN]` syntax. By default these will render as cards with an icon, a title, and a summary if one is available.
+
+You can change what is displayed using one of the `Exclude`, `Folder`, or `Only` modifiers. These all take folder and/or file names as arguments. Exclude the `.md` extension when referencing files. Arguments can include a single item, or multiple items using commas to separate them.
+
+* `[CHILDREN Exclude="How_tos,01_Relations"]`: Exclude specific folders or files from the list. Note that folders don't need to be excluded unless the `includeFolders` modifier is also used.
+* `[CHILDREN Only="rc,beta"]`: Only include the listed items. This is the inverse of the `Exclude` modifier.
+* `[CHILDREN Folder="How_Tos"]`: List the children of the named folder, instead of the children of the *current* folder. This modifier only accepts a single folder as an argument.
+
+The above can be combined with any of the `asList`, `includeFolders`, and `reverse` modifiers:
+
+* `[CHILDREN asList]`: Render the children as a description list instead of as cards. The icon is not used when rendering as a list.
+* `[CHILDREN includeFolders]`: Include folders as well as files.
+* `[CHILDREN reverse]`: Reverse the order of the list. The list is sorted in case sensitive ascending alphabetical order by default.
+
+The following would render links for all children as a description list in reverse order, including folders but excluding anything called "How_tos":
+
+`[CHILDREN Exclude="How_tos" asList includeFolders reverse]`
+
+#### Example {#link-to-children-example}
+
+With the following file structure:
+
+```text
+00_Model/
+├─ How_Tos
+   ├─ Dynamic_Default_Fields.md
+   ├─ Grouping_DataObject_Sets.md
+   └─ index.md
+├─ 00_Data_Model_and_ORM.md
+├─ 01_Relations.md
+├─ ...
+└─ index.md
+```
+
+Using the `[CHILDREN]` tag on any file directly in the `00_Model/` directory will list all files *including itself* but excluding the `index.md` file. It will not list `How_Tos/` or any file inside that directory unless `includeFolders` is included (`[CHILDREN includeFolders]`), in which case `How_Tos/` will be listed, and will link to the `index.md` file. No other files inside the `How_Tos/` directory will be listed.
+
+### Page metadata
+
+We use gatsby to render the documentation. Gatsby defines a syntax for metadata (which it calls frontmatter) [in its documentation](https://www.gatsbyjs.com/docs/how-to/routing/adding-markdown-pages/). This is used to provide useful information about how to render the page when it's being rendered as a child page as described in [linking to child and sibling pages](#link-to-children) above.
+
+This metadata is always included at the top of a page, in a block fenced in by `---`, e,g:
+
+```text
+---
+title: My page title
+summary: This summary, the title, and the icon will all be used when rendering this page as a child.
+icon: file-alt
+---
+```
+
+The available keys for this metadata are:
+
+* `title`: The title of the page when rendered as a child, and in the navigation.
+* `summary`: A short sumary of the page which is used when the page is rendered as a child.
+* `icon`: An icon which is used when the page is rendered as a child in card format. Must be one of the icons provided by fontawesome 5, excluding brand icons.
+* `iconBrand`: An icon which is used when the page is rendered as a child in card format. Must be one of the brand icons provided by fontawesome 5.
+* `hideChildren`: If true, doesn't display children of this page in the navigation. Doesn't affect child lists.
