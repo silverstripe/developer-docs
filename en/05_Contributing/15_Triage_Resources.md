@@ -6,10 +6,41 @@ icon: users
 
 # Triage and peer review
 
-This page collates common resources that maintainers can use to efficiently and consistently manage incoming issues and
-PRs.
+Triage and peer review are important processes for getting changes made and merged.
 
-## Merge Checklist
+If you are involved with triage of Silverstripe CMS core and supported modules, regularly check the repository for new issues or use the ["Untriaged" filter](https://silverstripe-github-issues.now.sh/?mode=untriaged) in our cross-repository issue tracker.
+
+You can also optionally subscribe to the repository via [GitHub watch functionality](https://docs.github.com/en/account-and-profile/managing-subscriptions-and-notifications-on-github/setting-up-notifications/configuring-notifications#configuring-your-watch-settings-for-an-individual-repository).
+
+[hint]
+When performing these tasks, make sure to adhere to the [code of conduct](/project_governance/code_of_conduct/) and [maintainer guidelines](/project_governance/maintainer_guidelines/#guidelines).
+[/hint]
+
+## How to triage
+
+Triaging issues involves review, applying labels, and closing invalid issues/PRs.
+
+How to do it
+
+* Read the docs about [how we use labels](./issues_and_bugs/#labels), and apply the relevant labels to any untriaged issues
+* Request follow-up information if you can't reproduce the issue based on the information that has been provided
+* Close any issues that seem like spam, are duplicates, are requesting support rather than reporting a bug, are feature requests that the reporter doesn't intend to implement, etc
+  * Make sure to explain why you are closing the issue. There are some [canned responses](#canned-responses) that you can use
+* For any issues you add the "impact/critical" label to, bring this to the attention of the Core Committers and the CMS Squad
+* If unsure about anything, it’s usually good to ask other maintainers for their opinions (on Slack or via mentioning them directly on GitHub)
+
+## How to review pull requests
+
+Reviewing and merging PRs is one of the most critical responsibilities, which often requires a lot of effort and scrutiny.
+
+Bad PRs may contain technical debt, provide problems in the future and require extra attention and time from the maintainers. It is usually better not to merge at all, rather than merge half-ready or poorly written code. Especially if a PR comes from a non-maintainer who’s not responsible for taking care of the feature later on. On the other hand, the nature of Open Source implies access to resources of the community, so it’s important to make sure we don’t close the doors for people willing to spend their time and brain energy.
+
+How to do it
+
+* Follow the [merge checklist](#merge-checklist). You may even post it straight on GitHub so the contributor sees the PR progress
+* If the author doesn't respond for several weeks you may choose take the PR over and push it forward yourself by adding your own commits to their branch - in that case, you become the developer and someone else will need to review the pull request when you are done. Otherwise, it’s fine to close the PR if there has been no response and you don't want to take it over yourself.
+
+### Merge Checklist
 
 This list helps to ensure that PRs are in a good state before merging. Ideally it should be applied to the PR upon
 initial triage, so that the contributor can check items off prior to the reviewer digging in. Some items may not be
@@ -51,6 +82,13 @@ progress the work or respond to any outstanding feedback.
 
 > It seems like there's going to be no further activity on this pull request, so we’ve closed it for now. Please open a
 > new pull-request if you want to re-approach this work, or for anything else you think could be fixed or improved.
+
+### Support Issue raised
+
+**Context:** We don't provide support through GitHub issues. If an issue is created that is requested support rather than reporting a bug, we'll close the issue and link to the community channels.
+
+> We don't provide support through GitHub issues. The problems you're experiencing don't seem to be a result of bugs in Silverstripe CMS core or supported modules, so
+> I'm going to close this issue. Please ask for support in our [community channels](https://www.silverstripe.org/community).
 
 ### Enhancement Issue raised
 
