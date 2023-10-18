@@ -182,7 +182,7 @@ which the Silverstripe CMS project applies to the modules it creates and maintai
  * The module is a Composer package.
  * All Composer dependencies are bound to a single major release (e.g. `^4.0` not `>=4` or `*`).
  * There is a level of test coverage.
- * A clear public API documented in the docblock tags.
+ * A clear [public API](/project_governance/public_api/) documented in the docblock tags.
  * Code follows [PSR-1](http://www.php-fig.org/psr/psr-1/) and [PSR-2](http://www.php-fig.org/psr/psr-2/) style guidelines.
  * `.gitattributes` will be used to exclude non-essential files from the distribution. At a minimum tests, docs, and IDE/dev-tool config should be excluded.
  * Add a [PSR-4 compatible autoload reference](https://getcomposer.org/doc/04-schema.md#psr-4) for your module.

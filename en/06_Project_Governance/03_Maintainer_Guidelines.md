@@ -92,8 +92,8 @@ First and foremost rule of a maintainer is to collaborate with other maintainers
  * Ensure contributions have appropriate [test coverage](../developer_guides/testing), are documented, and pass our [coding conventions](/getting_started/coding_conventions)
  * Keep the codebase "releasable" at all times (check our [release process](release_process))
  * Follow [Semantic Versioning](code/#picking-the-right-version) by putting any changes into the correct branch
- * API changes and non-trivial features should not be merged into release branches. 
- * API changes on master should not be merged until they have the buy-in of at least two Core Committers (or better, through the [core mailing list](https://groups.google.com/forum/#!forum/silverstripe-dev))
+ * Public API changes and non-trivial features should not be merged into release branches. 
+ * Public API changes on master should not be merged until they have the buy-in of at least two Core Committers (or better, through the [core mailing list](https://groups.google.com/forum/#!forum/silverstripe-dev))
  * Be inclusive. Ensure a wide range of Silverstripe CMS developers can obtain an understanding of your code and docs, and you're not the only one who can maintain it.
  * Avoid `git push --force`, and be careful with your git remotes (no accidental pushes)
  * Use your own forks to create feature branches

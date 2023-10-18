@@ -5,7 +5,7 @@ description: Modules which are commercially supported by Silverstripe
 
 # Commercially supported modules
 
-Silverstripe CMS ships modules that receive commercial support. Commercially supported modules receive regular updates to work with the latest Silverstripe CMS release. Their APIs conform to [semantic versioning](https://semver.org/). They are covered by:
+Silverstripe CMS ships modules that receive commercial support. Commercially supported modules receive regular updates to work with the latest Silverstripe CMS release. Their [public API](/project_governance/public_api/) conforms to [semantic versioning](https://semver.org/). They are covered by:
 
 - our [security release process](/contributing/managing_security_issues) and
 - our [major release policy](major_release_policy).
@@ -146,6 +146,6 @@ The following two NPM packages are also supported because they are required to b
 
 ## Other modules in the "silverstripe" namespace
 
-There are other modules hosted under the _silverstripe_ Packagist namespace. These modules are maintained on a best effort basis. They are not guaranteed to go through regular regression testing. Their APIs may be more fluid than supported modules. They maybe more experimental or may not receive the same level of care as supported modules.
+There are other modules hosted under the _silverstripe_ Packagist namespace. These modules are maintained on a best effort basis. They are not guaranteed to go through regular regression testing. Their public API may be more fluid than supported modules. They maybe more experimental or may not receive the same level of care as supported modules.
 
 These modules can still be used in Silverstripe CMS projects, but should be considered as community modules.
