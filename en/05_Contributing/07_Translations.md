@@ -1,5 +1,5 @@
 ---
-title: Translations
+title: Contributing Translations
 summary: Translate interface components like button labels into multiple languages.
 icon: globe
 ---
@@ -8,7 +8,7 @@ icon: globe
 
 The content for UI elements (button labels, field titles, etc) and instruction texts shown in the CMS and elsewhere is
 stored in yaml and JavaScript files (see [i18n](/developer_guides/i18n)). These get
-uploaded to [transifex](https://explore.transifex.com/silverstripe/) to be edited online.
+uploaded to [transifex](https://transifex.com) to be edited online.
 
 Silverstripe CMS is already translated in over 60 languages, and we're
 relying on native speakers to keep these up to date, and of course add new languages.
@@ -21,9 +21,9 @@ Please [register a free translator account](https://app.transifex.com/signup/ope
 
 ## The online translation tool
 
-We provide a GUI for translations through [transifex.com](http://transifex.com). If you don't have an account yet,
+We provide a GUI for translations through [transifex.com](https://app.transifex.com/silverstripe/). If you don't have an account yet,
 please follow the links there to sign up.  Select a project from the
-[list of translatable modules](https://app.transifex.com/silverstripe/) and start translating online!
+[list of translatable modules](https://explore.transifex.com/silverstripe/) and start translating online!
 
 If you need help learning how to edit translations in transifex, check out [transifex's documentation](https://help.transifex.com/).
 
@@ -35,7 +35,7 @@ If a core or supported module is not listed on Transifex, usually that means it 
 If you find a core or supported module which has strings that can be (or should be able to be) translated, please
 [raise an issue on GitHub](./issues_and_bugs) for that module.
 
-### How do I translate substituted strings? (e.g. '%s' or '{my-variable}')
+### How do I translate substituted strings? (e.g. `%s` or `{my-variable}`)
 
 You don't have to - if the english master-string reads 'Hello %s', your german translation would be 'Hallo %s'. Strings
 prefixed by a percentage-sign are automatically replaced by silverstripe with dynamic content. See
