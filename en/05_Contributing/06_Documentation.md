@@ -163,19 +163,19 @@ Relative documentation links are prefixed with `./` for pages in the same direct
 
 Absolute documentation links are preferred for pages which aren't in the same directory or one level up. The language and version number are ommitted. For example `[managing lists](/developer_guides/model/lists/)` becomes [managing lists](/developer_guides/model/lists/).
 
-#### Links to API documentation
+### Links to API documentation
 
 API documentation is linked in a special way. Give some examples for classes, methods, properties.
 
-For classes, interfaces, traits, and enums:
+#### For classes, interfaces, traits, and enums
 
 ``[`Form`](api:SilverStripe\Forms\Form)`` will become [`Form`](api:SilverStripe\Forms\Form), and will link to the API documentation for the `SilverStripe\Forms\Form` class.
 
-For methods:
+#### For methods
 
 ``[`Form::makeReadonly()`](api:SilverStripe\Forms\Form::makeReadonly())`` will become [`Form::makeReadonly()`](api:SilverStripe\Forms\Form::makeReadonly()), and will link to the API documentation for the `makeReadonly()` method in the `SilverStripe\Forms\Form` class.
 
-For properties, including configuration properties:
+#### For properties, including configuration properties
 
 ``[`Form->casting`](api:SilverStripe\Forms\Form->casting)`` will become [`Form->casting`](api:SilverStripe\Forms\Form->casting), and will link to the API documentation for the `casting` property in the `SilverStripe\Forms\Form` class.
 
