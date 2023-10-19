@@ -673,6 +673,13 @@ server IPs using the SS_TRUSTED_PROXY_IPS define in your `.env`.
 SS_TRUSTED_PROXY_IPS="127.0.0.1,192.168.0.1"
 ```
 
+You can also whitelist subnets in CIDR notation if you don't know the exact IP of a trusted proxy.
+For example, some cloud provider load balancers don't have fixed IPs.
+
+```
+SS_TRUSTED_PROXY_IPS="10.10.0.0/24,10.10.1.0/24,10.10.2.0/24"
+```
+
 If you wish to change the headers that are used to find the proxy information, you should reconfigure the
 TrustedProxyMiddleware service:
 
@@ -695,7 +702,7 @@ At the same time, you'll also need to define which headers you trust from these 
 
 If there is no proxy server, 'none' can be used to distrust all clients.
 If only trusted servers will make requests then you can use '*' to trust all clients.
-Otherwise a comma separated list of individual IP addresses should be declared.
+Otherwise a comma separated list of individual IP addresses (or subnets in CIDR notation) should be declared.
 
 This behaviour is enabled whenever `SS_TRUSTED_PROXY_IPS` is defined, or if the
 `BlockUntrustedIPs` environment variable is declared. It is advisable to include the
