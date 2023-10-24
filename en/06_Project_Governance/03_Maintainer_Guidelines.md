@@ -98,29 +98,3 @@ First and foremost rule of a maintainer is to collaborate with other maintainers
  * Avoid `git push --force`, and be careful with your git remotes (no accidental pushes)
  * Use your own forks to create feature branches
  * We release using the standard process. See the [Making a Silverstripe CMS Core Release](making_a_silverstripe_core_release)
-
-
-### How to triage
-
-Triaging issues and pull requests involves review, applying labels, as well as closing invalid submissions.
-
-Applying [labels](./issues_and_bugs/#labels) is the main mechanism used to escalate critical and high impact issues, give feedback to the community, or peer review a PR and let other maintainers know it is “good to be merged on green CI tests”.
-
-
-How to do it
-  - Regularly check the repository for new issues or use the ["Untriaged" filter](https://silverstripe-github-issues.now.sh/?mode=untriaged) in our cross-repository issue tracker.
-  - Ideally subscribe to the repository via [GitHub Watch](https://docs.github.com/en/free-pro-team@latest/github/managing-subscriptions-and-notifications-on-github/viewing-your-subscriptions#configuring-your-watch-settings-for-an-individual-repository) functionality
-  - Read the docs about [how we use labels](./issues_and_bugs/#labels)
-  - If unsure about anything, it’s usually good to ask other maintainers for their opinions (on Slack or via mentioning them directly on GitHub)
-
-
-### How to review pull requests
-
-Merging PRs is one of the most critical responsibilities, which often requires a lot of effort and scrutiny.
-
-Bad PRs may contain technical debt, provide problems in the future and require extra attention and time from the maintainers. So, it is usually better not to merge at all, rather than merge half-ready or poorly written code. Especially if a PR comes from a non-maintainer who’s not responsible for taking care of the feature later on. On the other hand, the nature of Open Source implies access to resources of the community, so it’s important to make sure we don’t close the doors for people willing to spend their time and brain energy.
-
-How to do it
-  - Follow the [merge checklist](./triage_resources/#merge-checklist). You may even post it straight on GitHub so the contributor sees the PR progress
-  - Ensure you’re familiar with the module own conventions (explained in README or CONTRIBUTING files).
-  - If the author disappears you may either take the PR over and push it forward yourself by adding your own commits to their branch. Otherwise, it’s fine to close their PR if they don’t respond for over several weeks.

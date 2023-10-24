@@ -6,12 +6,19 @@ description: Modules which are commercially supported by Silverstripe
 # Commercially supported modules
 
 Silverstripe CMS ships modules that receive commercial support. Commercially supported modules receive regular updates to work with the latest Silverstripe CMS release. Their APIs conform to [semantic versioning](https://semver.org/). They are covered by:
+
 - our [security release process](/contributing/managing_security_issues) and
 - our [major release policy](major_release_policy).
 
 These modules will be supported for the lifetime of Silverstripe CMS 4 in the provided major versions.
 
 ## Core Silverstripe CMS modules
+
+The "core" of Silverstripe refers to the module packages owned by the "silverstripe" Packagist vendor that fall under one of the following recipes:
+
+- [silverstripe/recipe-core](https://packagist.org/packages/silverstripe/recipe-core)
+- [silverstripe/recipe-cms](https://packagist.org/packages/silverstripe/recipe-cms)
+- [silverstripe/installer](https://packagist.org/packages/silverstripe/installer)
 
 These modules provide the core Silverstripe CMS experience. Most Silverstripe CMS projects should install all of them.
 
@@ -71,7 +78,7 @@ Supported PHP Module | Supported versions
 [silverstripe/comment-notifications](https://packagist.org/packages/silverstripe/comment-notifications) | 2
 [silverstripe/comments](https://packagist.org/packages/silverstripe/comments) | 3
 [silverstripe/contentreview](https://packagist.org/packages/silverstripe/contentreview) | 4
-[silverstripe/content-widget ](https://packagist.org/packages/silverstripe/content-widget) | 2
+[silverstripe/content-widget](https://packagist.org/packages/silverstripe/content-widget) | 2
 [silverstripe/crontask](https://packagist.org/packages/silverstripe/crontask) | 2
 [silverstripe/documentconverter](https://packagist.org/packages/silverstripe/documentconverter) | 2
 [silverstripe/dynamodb](https://packagist.org/packages/silverstripe/dynamodb) | 4
@@ -126,13 +133,14 @@ Supported PHP Module | Supported versions
 [symbiote/silverstripe-queuedjobs](https://packagist.org/packages/symbiote/silverstripe-queuedjobs) | 4
 [tijsverkoyen/akismet](https://packagist.org/packages/tijsverkoyen/akismet) | 1
 [tractorcow/classproxy](https://packagist.org/packages/tractorcow/classproxy) | 1
-[tractorcow/silverstripe-proxy-db ](https://packagist.org/packages/tractorcow/silverstripe-proxy-db ) | 1
+[tractorcow/silverstripe-proxy-db](https://packagist.org/packages/tractorcow/silverstripe-proxy-db ) | 1
 [tractorcow/silverstripe-fluent](https://packagist.org/packages/tractorcow/silverstripe-fluent) | 4
 [undefinedoffset/sortablegridfield](https://packagist.org/packages/undefinedoffset/sortablegridfield) | 2
 
 ## Supported NPM packages
 
 The following two NPM packages are also supported because they are required to build the UI of Silverstripe CMS 4:
+
 - [@silverstripe/webpack-config](https://www.npmjs.com/package/@silverstripe/webpack-config)
 - [@silverstripe/eslint-config](https://www.npmjs.com/package/@silverstripe/eslint-config)
 
