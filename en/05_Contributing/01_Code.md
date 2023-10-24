@@ -6,10 +6,6 @@ icon: code
 
 # Contributing Code - Submitting Bugfixes and Enhancements
 
-[info]
-If you want to contribute changes to documentation, please read through the [contributing documentation](./documentation) page.
-[/info]
-
 The Silverstripe CMS core and supported modules are hosted on [GitHub](https://github.com) - mostly in [github.com/silverstripe](https://github.com/silverstripe/). To contribute code, you will need to [create a GitHub account](https://docs.github.com/en/get-started/onboarding/getting-started-with-your-github-account).
 
 This documentation assumes you are fairly confident with git and GitHub. If that isn't the case, you may want to read some guides for [GitHub](https://docs.github.com/en/get-started/quickstart), [git](https://docs.github.com/en/get-started/using-git), and [pull requests](https://docs.github.com/en/pull-requests).
@@ -23,6 +19,10 @@ We ask for this so that the ownership in the license is clear and unambiguous, a
 ## Before you start working {#before-you-start}
 
 There are a few things that you should do before you start working on a fix:
+
+[info]
+If you want to contribute changes to documentation, please read through the [contributing documentation](./documentation) page.
+[/info]
 
 ### Consider if your change should be its own module
 
@@ -54,7 +54,7 @@ Please adjust the commands as appropriate for the version of Silverstripe CMS th
 
 ### Editing files directly on GitHub.com
 
-If you see a typo or another small fix that needs to be made, and you don't have an installation set up for contributions, you can edit files directly in the github.com web interface. Every file view on GitHub has an "edit this file" link.
+If you see a typo or another small fix that needs to be made, and you don't have an installation set up for contributions, you can edit files directly in the github.com web interface.
 
 After you have edited the file, GitHub will offer to create a pull request for you. This pull request will be reviewed along with other pull requests.
 
@@ -71,50 +71,26 @@ As we follow semantic versioning, we name the branches in repositories according
 
 If after reading this section you are still unsure what branch your pull request should go to, consider asking either in the GitHub issue that you address with your PR or in one of the various [community channels](https://www.silverstripe.org/community/).
 
+[hint]
+Refer to our [definition of public API](/project_governance/public_api/) for the following sections.
+[/hint]
+
+Any updates to third party dependencies in composer.json should aim to target the default branch for a minor release if possible. Targeting a patch release branch is acceptable if updating dependencies is required to fix a high impact or critical bug and is unlikely to result in regressions.
+
 #### For changes to public API or new/enhanced features
 
-If you are introducing new APIs, introducing new features, or enhancing an existing feature, you should generally use the default branch of the repository where you want to contribute to. That would usually target the next minor release of the module.
+If you are introducing new public API, introducing new features, or enhancing an existing feature, you should generally use the default branch of the repository where you want to contribute to. That would usually target the next minor release of the module.
 
 #### For bug fixes that don't introduce new API
 
-If you are fixing a bug that doesn't require API changes, use the highest patch release branch available for the lowest supported major release line the bug applies to. You can see the currently supported release lines for Silverstripe CMS on [the roadmap](https://www.silverstripe.org/software/roadmap/). You can find which major release lines of core and supported modules apply to that version by checking the relevant [/project_governance/supported_modules/](supported modules) page.
+If you are fixing a bug that doesn't require public API changes, use the highest patch release branch available for the lowest supported major release line the bug applies to. You can see the currently supported release lines for Silverstripe CMS on [the roadmap](https://www.silverstripe.org/software/roadmap/). You can find which major release lines of core and supported modules apply to that version by checking the relevant [supported modules](/project_governance/supported_modules/) page.
 
 For example, if your bug fix is applicable for Silverstripe CMS 4, and is for the `silverstripe/admin` module, you would target the `1.13` branch.
 
 #### For API breaking changes
 
-Do not make a pull request that includes a breaking change, including changing public API (described below), unless there is a major release branch ready to merge into.
+Do not make a pull request that includes a breaking change, including changing public API, unless there is a major release branch ready to merge into.
 e.g. if the latest stable release is `5.2.7`, the major release branch would be `6`.
-
-#### Definition of public API
-
-Silverstripe CMS public APIs explicitly include (unless excluded below):
-
-- **global** functions, constants, and variables
-- namespaces, classes, interfaces, enums, and traits
-- public and protected scope (including methods, properties and constants)
-- private static class properties (considered to be configuration variables)
-- yml configuration file structure and value types
-- extension hooks (e.g. `$this->extend('someExtensionHook'));`)
-
-Silverstripe CMS public APIs explicitly exclude:
-
-- private scope (with the exception for `private static` properties which aren't annotated with `@internal`)
-- all entities marked as `@internal`
-- yml configuration file default values
-- HTML, CSS, JavaScript (within reason), SQL, and anything else that is not PHP
-
-Other entities might be considered to be included or excluded from the public APIs on case-by-case basis based on how likely it is to cause problems during an upgrade.
-
-Any updates to third party dependencies in composer.json should aim to target the default branch for a minor release if possible. Targeting a patch release branch is acceptable if updating dependencies is required to fix a high impact or critical bug and is unlikely to result in regressions.
-
-API from third party dependencies may implicitly be incorporated into our definition of public API if:
-
-- they are defined as a parameter type for a supported method
-- they are defined as a return type for a supported method
-- they are extended by a Silverstripe CMS class.
-
-When defining a return type or a parameter type, it is preferable to use a more generic interface rather than a specific class. Third party dependencies that are used for internal purposes and are not explicitly exposed via the Silverstripe CMS public API are not covered by SemVer and maybe substituted without notice.
 
 ### Step 2: Install the project {#install-the-project}
 
