@@ -19,7 +19,11 @@ Silverstripe CMS uses [GitHub](https://github.com/) to manage bug reports. If yo
 want to report a bug, you will need to [create a GitHub account](https://docs.github.com/en/get-started/onboarding/getting-started-with-your-github-account)
 and log in.
 
-Before submitting a bug:
+[warning]
+We don't provide support through GitHub issues. If you're having trouble using or developing with Silverstripe CMS but you don't think your problem is a bug, please ask for assistance in our [community channels](https://www.silverstripe.org/community).
+[/warning]
+
+### Before submitting a bug
 
  * Ask for assistance in our [community channels](https://www.silverstripe.org/community) if you're unsure if it's really a bug.
  * Search for similar, existing issues.
@@ -28,7 +32,7 @@ Before submitting a bug:
  * Is this a security issue? Please follow our [security reporting guidelines](#reporting-security-issues) below.
  * Try to reproduce your issue on a [clean installation](/getting_started/composer#create-a-new-site) to rule out bugs in your own code.
 
-If the issue does look like a new bug:
+### If the issue does look like a new bug
 
  * Create an issue on the right module repository in GitHub
    * If you are unsure, [create an issue](https://github.com/silverstripe/silverstripe-framework/issues/new) on the the "framework" repository.

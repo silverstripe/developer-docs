@@ -12,6 +12,10 @@ This policy applies to all [Silverstripe CMS commercially supported modules](/pr
 
 Community modules are not covered by this policy. Modules in the `silverstripe` github organisation that are not commercially supported are updated on a best effort basis.
 
+[info]
+Refer to our [definition of public API](/project_governance/public_api/).
+[/info]
+
 ## General approach to major releases
 
 Silverstripe CMS aims to deliver regular major releases at predefined intervals with a clear support timeline. The key objective of this policy is to allow Silverstripe CMS project owners to plan major upgrades ahead of time.
@@ -26,7 +30,7 @@ The lifecycle for a Silverstripe CMS major release line is:
 
 Most of the changes shipped in a major release will:
 - upgrade third party dependencies
-- remove deprecated APIs and clean up ambiguous APIs
+- remove deprecated public API and clean up ambiguous API
 - implement architectural changes that can not reasonably be introduced in a minor release.
 
 At launch, major releases may contain new features not present in the previous major release line. However, this is a secondary concern. New features will usually ship in minor releases.
@@ -62,7 +66,7 @@ New major releases of Silverstripe CMS are tagged between April and June of odd 
 ### Active development
 
 Once a major release is stable, it enters a period of active development. A major release in active development receives:
-- regular minor releases that ship new features and API in a backward compatible way
+- regular minor releases that ship new features and public API in a backward compatible way
 - regular patches for bugs at all impact levels
 - security patches for all vulnerabilities.
 
@@ -80,7 +84,7 @@ A major release line in the *bug and security fixes* phase receives:
 
 A major release line in the *bug and security fixes* phase does **not** receive:
 - new feature
-- new APIs
+- new public API
 - new minor releases.
 
 A major release line stays in the *bug and security fixes* phase for 1 year.
