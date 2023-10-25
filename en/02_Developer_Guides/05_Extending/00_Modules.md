@@ -173,7 +173,7 @@ which the Silverstripe CMS project applies to the modules it creates and maintai
  * All Composer dependencies are bound to a single major release (e.g. `^5.0` not `>=5` or `*`) unless there are obvious reasons not to for some specific dependency.
  * There is a level of test coverage.
  * Uses strong typing where appropriate.
- * A clear public API documented in the docblock tags.
+ * A clear [public API](/project_governance/public_api/) documented in the docblock tags.
    * If parameters and return values don't need additional description and are strongly typed, these should be ommitted from the docblock.
  * Code follows [PSR-1](https://www.php-fig.org/psr/psr-1/) and [PSR-2](https://www.php-fig.org/psr/psr-2/) style guidelines.
  * `.gitattributes` will be used to exclude non-essential files from the distribution. At a minimum tests, docs, and IDE/dev-tool config should be excluded.
