@@ -13,4 +13,4 @@ icon: heart
 
 For more detailed guidance, read one of the following pages:
 
-[CHILDREN]
+[CHILDREN includeFolders]
