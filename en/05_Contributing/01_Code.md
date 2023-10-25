@@ -34,7 +34,7 @@ Check to see if someone else has already submitted a pull request for this chang
 
 ### Make or find a GitHub issue
 
-Whether you're fixing a bug, updating documentation, making an ehancement for an existing feature, or even a brand new feature, you must link your pull request to a GitHub issue.
+Whether you're fixing a bug, updating documentation, making an enhancement for an existing feature, or even a brand new feature, you must link your pull request to a GitHub issue.
 
 If there's an existing GitHub issue, there may already be some discussion there about the preferred approach. Make sure you read through the comments.
 
@@ -58,7 +58,7 @@ If you see a typo or another small fix that needs to be made, and you don't have
 
 After you have edited the file, GitHub will offer to create a pull request for you. This pull request will be reviewed along with other pull requests.
 
-Make sure you read the [picking the right version](#picking-the-right-version), [create the pull request](#create-the-pr), and [recieve and respond to feedback](#recieve-feedback) sections below.
+Make sure you read the [picking the right version](#picking-the-right-version), [create the pull request](#create-the-pr), and [receive and respond to feedback](#receive-feedback) sections below.
 
 ### Step 1: Picking the right version {#picking-the-right-version}
 
@@ -204,7 +204,7 @@ Following these additional guidelines for your pull request will improve the cha
 - Link to your pull request from that issue (in the description if you can edit it, or in a comment otherwise)
 - Explain your implementation. If there's anything which you needed to do a deep dive to find the best way to do it, or anything potentially controversial, etc, you can add a comment to your own pull request explaining what you did and why you did it that way.
 
-### Step 6: Recieve and respond to feedback {#recieve-feedback}
+### Step 6: Receive and respond to feedback {#receive-feedback}
 
 Once your pull request is created, it's not the end of the road.
 
