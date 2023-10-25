@@ -10,7 +10,11 @@ This policy complements the [Silverstripe CMS Major release policy](major_releas
 
 Note that the release cadence and pre-release time frame are indicative only. We may alter those in response to external constraints.
 
-Our minor release policy is more flexible because minor release upgrades are more straightforward to manage than major release upgrades. 
+Our minor release policy is more flexible because minor release upgrades are more straightforward to manage than major release upgrades.
+
+[info]
+Refer to our [definition of public API](/project_governance/public_api/).
+[/info]
 
 ## Scope of the policy
 
@@ -20,7 +24,7 @@ Community modules are not covered by this policy. Modules in the `silverstripe` 
 
 ## Upgrading to a new minor release
 
-Silverstripe CMS follows [semantic versioning](https://semver.org/). Silverstripe CMS minor releases deliver new features and new APIs in a backward compatible way.
+Silverstripe CMS follows [semantic versioning](https://semver.org/). Silverstripe CMS minor releases deliver new features and new public API in a backward compatible way.
 
 ## Minor release cadence
 
@@ -30,7 +34,7 @@ Silverstripe CMS aims to ship a new minor releases every 6 months for the major 
 
 Silverstripe CMS does not usually tag alpha releases for minor releases.
 
-Approximately 6 weeks prior to the anticipated stable minor release, a beta minor release is published. Once a beta release is tagged, any new feature or API that didn't make it to the beta should be targeted to the follow up minor release. This allows the CMS development team to perform a regression test on the beta release with confidence that no additional regressions will be introduced before the stable release.
+Approximately 6 weeks prior to the anticipated stable minor release, a beta minor release is published. Once a beta release is tagged, any new feature or public API that didn't make it to the beta should be targeted to the follow up minor release. This allows the CMS development team to perform a regression test on the beta release with confidence that no additional regressions will be introduced before the stable release.
 
 Approximately 2 weeks prior to the anticipated stable minor release, a release candidate is tagged. Once a release candidate is tagged, only critical impact bug fixes can be added to the release. The release candidate is sent to an external auditor for a security review. Any security patches which will be included in the stable release are also sent to the auditor.
 
@@ -47,12 +51,12 @@ The minor release support timeline follows similar phases to those of a major re
 A Silverstripe CMS minor release line enters the *bug and security fixes* phase once it is tagged *stable*.
 
 A minor release in the *bug and security fixes* phase receives:
-- bugfixes that do not change existing APIs
+- bugfixes that do not change existing public API
 - security patches for vulnerabilities at all impact levels.
 
 It does **not** receive:
 - new features
-- new APIs.
+- new public API.
 
 A minor release line stays in the *bug and security fixes* phase until a follow up minor release is tagged.
 
