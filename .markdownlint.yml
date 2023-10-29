@@ -1,0 +1,104 @@
+# Enable all rules with default settings as a baseline
+default: true
+
+customRules:
+  - 'markdownlint-rule-title-case-style'
+
+# markdownlint-rule-title-case-style: Use sentence-style headings
+title-case-style:
+  case: 'sentence'
+  ignore:
+    - 'GitHub'
+    - 'GraphQL'
+    - 'JavaScript'
+    - 'I'
+    - 'InnoDB'
+    - 'MyISAM'
+    - 'MySQL'
+    - 'RFCs'
+    - 'Silverstripe'
+
+# MD041: Ignore the frontmatter (metadata) title when checking for H1s
+first-line-h1:
+  front_matter_title: ''
+
+# MD025: Ignore the frontmatter (metadata) title when checking for H1s
+single-h1:
+  front_matter_title: ''
+
+# MD003: Enforce ATX style headings
+heading-style:
+  style: 'atx'
+
+# MD049: Use asterisks for italics
+emphasis-style:
+  style: 'asterisk'
+
+# MD050: Use asterisks for bold
+strong-style:
+  style: 'asterisk'
+
+# MD004: Use hyphens for unordered lists
+ul-style:
+  style: 'dash'
+
+# MD029: Always use 1. for ordered lists
+ol-prefix:
+  style: 'one'
+
+# MD013: Disable line-length rule (for now)
+line-length: false
+# line_length: 120
+
+# MD010: Use two spaces for each tab (default was 1)
+no-hard-tabs:
+  spaces_per_tab: 2
+
+# MD031: Don't require empty lines after code blocks in lists
+blanks-around-fences:
+  list_items: false
+
+# MD035: Enforce a style for horizontal rules.
+# Hyphens would be confusing since we use those for frontmatter (metadata)
+hr-style:
+  style: '___'
+
+# MD046: Don't allow indented codeblocks
+code-block-style:
+  style: 'fenced'
+
+# MD048: Use backticks for codeblocks
+code-fence-style:
+  style: backtick
+
+# MD040: Explicitly only allow some languages for code blocks
+# This helps with consistency (e.g. avoid having both yml and yaml)
+fenced-code-language:
+  language_only: true
+  allowed_languages:
+    - 'bash' # use this instead of shell or env
+    - 'css'
+    - 'graphql'
+    - 'js'
+    - 'php'
+    - 'scss'
+    - 'ss'
+    - 'text'
+    - 'yml'
+
+# MD044: Enforces capitalisation for specific names
+proper-names:
+  code_blocks: false
+  names:
+    - 'CMS'
+    - 'CSS'
+    - 'JavaScript'
+    - 'JS'
+    - 'SCSS'
+    - 'Silverstripe'
+
+# MD033: Allow specific HTML tags
+no-inline-html:
+  allowed_elements:
+    - 'details'
+    - 'summary'

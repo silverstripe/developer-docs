@@ -1,0 +1,14 @@
+{
+  "name": "docs",
+  "scripts": {
+    "lint-vale": "vale sync && vale en/00_Getting_Started",
+    "lint-md": "markdownlint-cli2 en/**/*.md"
+  },
+  "dependencies": {
+    "@ocular-d/vale-bin": "^2.29.6",
+    "js-yaml": "^4.1.0",
+    "markdownlint": "^0.31.1",
+    "markdownlint-cli2": "^0.10.0",
+    "markdownlint-rule-title-case-style": "^0.4.3"
+  }
+}
