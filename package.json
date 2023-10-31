@@ -2,10 +2,14 @@
   "name": "docs",
   "scripts": {
     "lint-vale": "vale sync && vale en/00_Getting_Started",
-    "lint-md": "markdownlint-cli2 en/**/*.md"
+    "lint-md": "markdownlint-cli2 en/**/*.md",
+    "lint-js": "eslint en"
   },
   "dependencies": {
     "@ocular-d/vale-bin": "^2.29.6",
+    "@silverstripe/eslint-config": "^1.1.0",
+    "eslint": "^8.52.0",
+    "eslint-plugin-markdown": "^3.0.1",
     "js-yaml": "^4.1.0",
     "markdownlint": "^0.31.1",
     "markdownlint-cli2": "^0.10.0",
