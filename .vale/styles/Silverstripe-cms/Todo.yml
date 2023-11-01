@@ -1,0 +1,6 @@
+extends: existence
+message: "'%s' left in text."
+ignorecase: true
+level: error
+tokens:
+  - todo
