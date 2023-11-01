@@ -72,7 +72,7 @@ see [Using development versions](#using-development-versions).
 
 Composer isn't only used to download Silverstripe CMS, it is also used to manage all Silverstripe CMS modules
 and any other PHP dependencies you may have.
-You can find thousands of modules on [https://addons.silverstripe.org](https://addons.silverstripe.org).
+You can find thousands of Silverstripe CMS modules on [Packagist](https://packagist.org/search/?type=silverstripe-vendormodule).
 Installing a module can be done with [the require command](https://getcomposer.org/doc/03-cli.md#require-r):
 
 ```bash

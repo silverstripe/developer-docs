@@ -27,10 +27,10 @@ You also need to install [Composer 2](https://getcomposer.org/).
 ## Database
 
 * MySQL >=5.6 (built-in, [commercially supported](/project_governance/supported_modules/))
-* PostgreSQL ([third party module](https://addons.silverstripe.org/add-ons/silverstripe/postgresql), community
+* PostgreSQL ([third party module](https://github.com/silverstripe/silverstripe-postgresql), community
   supported)
-* SQL Server ([third party module](https://addons.silverstripe.org/add-ons/silverstripe/mssql), community supported)
-* SQLite ([third party module](https://addons.silverstripe.org/add-ons/silverstripe/sqlite3), community supported)
+* SQL Server ([third party module](https://github.com/silverstripe/silverstripe-mssql), community supported)
+* SQLite ([third party module](https://github.com/silverstripe/silverstripe-sqlite3), community supported)
 
 ### Default MySQL Collation
 
@@ -239,7 +239,7 @@ instances, this can become a capacity issue over time - see
 ### Error pages
 
 The default installation
-includes [silverstripe/errorpage](https://addons.silverstripe.org/add-ons/silverstripe/errorpage), which generates
+includes [silverstripe/errorpage](https://github.com/silverstripe/silverstripe-errorpage/), which generates
 static error pages that bypass PHP execution when those pages are published in the CMS. Once published, the static files
 are located in `public/assets/error-404.html` and `public/assets/error-500.html`. The default `public/.htaccess` file is
 configured to have Apache serve those pages based on their HTTP status code.
