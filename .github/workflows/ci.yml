@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    strategy:
+      # set fail-fast to false prevent one matrix job from cancelling other matrix jobs
+      # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategyfail-fast
+      fail-fast: false
+      matrix:
+        script: [ 'lint-md', 'lint-js', 'lint-php' ]
+    name: ${{ matrix.script }}
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+
+      - name: Read .nvmrc
+        id: read-nvm
+        run: |
+          NPM_VERSION=$(cat .nvmrc)
+          echo "version=$NPM_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Install NPM
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
+        with:
+          node-version: ${{ steps.read-nvm.outputs.version }}
+
+      - name: Install yarn and dependencies
+        run: |
+          npm install --global yarn
+          yarn install
+
+      - name: Install PHP
+        if: ${{ matrix.script == 'lint-php' }}
+        uses: shivammathur/setup-php@1a18b2267f80291a81ca1d33e7c851fe09e7dfc4 # v2.22.0
+        with:
+          php-version: 8.1
+
+      - name: Install composer dependencies
+        if: ${{ matrix.script == 'lint-php' }}
+        run: composer install --prefer-dist --no-progress --ansi --no-interaction --no-scripts --no-plugins --optimize-autoloader
+
+      - name: Run lint
+        run: yarn ${{ matrix.script }}
