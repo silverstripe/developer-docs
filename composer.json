@@ -19,5 +19,14 @@
             "name": "The SilverStripe Community",
             "homepage": "http://silverstripe.org"
         }
-    ]
+    ],
+    "require-dev": {
+        "silverstripe/markdown-php-codesniffer": "^1.0",
+        "slevomat/coding-standard": "^8.14"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
 }

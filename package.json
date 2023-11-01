@@ -3,7 +3,8 @@
   "scripts": {
     "lint-vale": "vale sync && vale en/00_Getting_Started",
     "lint-md": "markdownlint-cli2 en/**/*.md",
-    "lint-js": "eslint en"
+    "lint-js": "eslint en",
+    "lint-php": "composer install --prefer-dist --no-progress --ansi --no-interaction --no-scripts --no-plugins --optimize-autoloader && vendor/bin/mdphpcs en"
   },
   "dependencies": {
     "@ocular-d/vale-bin": "^2.29.6",
