@@ -4,7 +4,7 @@ summary: Manage access permission to assets
 icon: lock
 ---
 
-# File Security
+# File security
 
 ## Overview
 
@@ -19,51 +19,51 @@ There's two dimensions in which to classify how a file can be accessed.
 
 Versioning stage:
 
- * "Draft file" (default): A file which hasn't been published (default after upload).
+- "Draft file" (default): A file which hasn't been published (default after upload).
    A subset of "protected file". See [versioning](/developer_guides/model/versioning).
- * "Published file": A published file (can be protected by further access restrictions).
+- "Published file": A published file (can be protected by further access restrictions).
    Files are often published indirectly as part
    of the objects who own them (see [File Ownership](file_management#ownership)).
 
 Access restrictions:
 
- * "Unprotected file" (default): A file without access restrictions.
- * "Protected file": A file with access restrictions.
+- "Unprotected file" (default): A file without access restrictions.
+- "Protected file": A file with access restrictions.
    Note that draft files are always protected, and even published files
    can be protected if they have access restrictions.
 
-## Permission Model
+## Permission model
 
 Like all other objects in Silverstripe CMS, permissions are generally controlled via `can*()` methods,
 for example `canView()` (see [permissions](/developer_guides/security/permissions)).
 
 The permission model defines the following actions:
 
- * View: Access file metadata in the database.
- * Edit: Edit file metadata as well as replacing the file content.
- * Create: Create file metadata and upload file content.
- * Delete: Delete file metadata and the file content.
- * Download: Access the file content, but not the file metadata.
+- View: Access file metadata in the database.
+- Edit: Edit file metadata as well as replacing the file content.
+- Create: Create file metadata and upload file content.
+- Delete: Delete file metadata and the file content.
+- Download: Access the file content, but not the file metadata.
    Usually treated the same as "View".
 
 There's a few rules guiding their access, in descending order of priority:
 
- * Published and unprotected files can be downloaded by anyone knowing the URL.
+- Published and unprotected files can be downloaded by anyone knowing the URL.
    They bypass any Silverstripe CMS permission checks (served directly by the webserver).
- * Access can be restricted by custom `can*()` method implementations on `File`
+- Access can be restricted by custom `can*()` method implementations on `File`
    (through [extensions](/developer_guides/extending/extensions)).
    This logic can overrule any further restrictions below.
- * Users with "Full administrative rights" (`ADMIN` permission code)
+- Users with "Full administrative rights" (`ADMIN` permission code)
    have view and edit access by default, regardless of further restrictions below.
- * Users with "Edit any file" permissions (`FILE_EDIT_ALL` permission code)
+- Users with "Edit any file" permissions (`FILE_EDIT_ALL` permission code)
    have edit access by default, regardless of further restrictions below.
- * View or edit access can be restricted per file or folder through
-   an inherited permissions model similar to page content (through [api:SilverStripe\Security\InheritedPermissionsExtension]).
+- View or edit access can be restricted per file or folder through
+   an inherited permissions model similar to page content (through [`InheritedPermissionsExtension`](api:SilverStripe\Security\InheritedPermissionsExtension)).
    There are four types: "Inherit from parent" (default), "Anyone", "Logged-in users", or "Only these groups".
- * Protected files (incl. draft files) allow view/edit access when `File::$non_live_permissions` is satisfied.
+- Protected files (incl. draft files) allow view/edit access when `File::$non_live_permissions` is satisfied.
    By default, that's configured for anyone with access to any CMS section, or
    the ability to "view draft content".
- * Protected files need an "access grant" for the current session
+- Protected files need an "access grant" for the current session
    in order to download the file (see [User access control](#user-access-control)).
    While you can technically allow viewing or editing a file without granting
    access to download it, those aspects are usually bundled together by the file viewing logic.
@@ -81,7 +81,7 @@ When implementing your own `canView()` logic through [extensions](/developer_gui
 existing unprotected files are not retroactively moved to the protected asset store.
 While those new permissions are honoured in the CMS, protected files through custom `canView()`
 can still be downloaded through a public URL until a `write()` operation is triggered on them.
-[/warning]  
+[/warning]
 
 ## Asset stores
 
@@ -93,11 +93,10 @@ instructed to favour private or protected stores in some cases.
 For instance, in order to write an asset to a protected location you can use the following additional
 config option:
 
-
 ```php
 $store = singleton(AssetStore::class);
 $store->setFromString('My protected content', 'my-folder/my-file.jpg', null, null, [
-    'visibility' => AssetStore::VISIBILITY_PROTECTED
+    'visibility' => AssetStore::VISIBILITY_PROTECTED,
 ]);
 ```
 
@@ -111,7 +110,6 @@ the response containing the link to that file.
 An automated system will, in most cases, handle this whitelisting for you. Calls to getURL()
 will automatically whitelist access to that file for the current user. Using this as a guide, you can easily
 control access to embedded assets at a template level.
-
 
 ```ss
 <ul class="files">
@@ -136,18 +134,20 @@ partial cache block) will not whitelist those files automatically. You can manua
 file via PHP for the current user instead, by using the following code to grant access.
 
 ```php
-use SilverStripe\CMS\Controllers\ContentController;
+namespace {
+    use SilverStripe\CMS\Controllers\ContentController;
 
-class PageController extends ContentController
-{
-    public function init()
+    class PageController extends ContentController
     {
-        parent::init();
+        public function init()
+        {
+            parent::init();
 
-        // Whitelist the protected files on this page for the current user
-        $file = $this->File();
-        if($file->canView()) {
-            $file->grantFile();
+            // Whitelist the protected files on this page for the current user
+            $file = $this->File();
+            if ($file->canView()) {
+                $file->grantFile();
+            }
         }
     }
 }
@@ -157,33 +157,36 @@ If a user does not have access to a file, you can still generate the URL but sup
 permission whitelist by invoking the getter as a method, but pass in a falsey value as a parameter.
 (or '0' in template as a workaround for all parameters being cast as string)
 
-
-```php
+```ss
 <% if not $canView %>
-    <!-- The user will be denied if they follow this url -->
+    <%-- The user will be denied if they follow this url --%>
     <li><a href="$getURL(0)">Access to $Title is denied</a></li>
 <% else %>
+    ...
+<% end_if %>
 ```
 
 Alternatively, if a user has already been granted access, you can explicitly revoke their access using
 the `revokeFile` method.
 
 ```php
-use SilverStripe\CMS\Controllers\ContentController;
+namespace {
+    use SilverStripe\CMS\Controllers\ContentController;
 
-class PageController extends ContentController
-{
-    public function init()
+    class PageController extends ContentController
     {
-        parent::init();
+        public function init()
+        {
+            parent::init();
 
-        // Whitelist the protected files on this page for the current user
-        $file = $this->File();
-        if($file->canView()) {
-            $file->grantFile();
-        } else {
-            // Will revoke any historical grants
-            $file->revokeFile();
+            // Whitelist the protected files on this page for the current user
+            $file = $this->File();
+            if ($file->canView()) {
+                $file->grantFile();
+            } else {
+                // Will revoke any historical grants
+                $file->revokeFile();
+            }
         }
     }
 }
@@ -200,11 +203,11 @@ or `AssetStore::VISIBILITY_PUBLIC` constants. It's advisable to ensure the visib
 is declared as early as possible, so that potentially sensitive content never touches any
 public facing area.
 
-E.g.
+For example:
 
 ```php
 $object->MyFile->setFromLocalFile($tmpFile['Path'], $filename, null, null, [
-    'visibility' => AssetStore::VISIBILITY_PROTECTED
+    'visibility' => AssetStore::VISIBILITY_PROTECTED,
 ]);
 ```
 
@@ -240,8 +243,7 @@ in the protected store, awaiting publishing.
 
 Internally your folder structure would look something like:
 
-
-```
+```text
 assets/
     OldCompanyLogo.gif
     .protected/
@@ -252,9 +254,9 @@ assets/
 
 The urls for these two files, however, do not reflect the physical structure directly.
 
-* The public file at `http://www.example.com/assets/OldCompanyLogo.gif` will be served directly from the web server,
+- The public file at `http://www.example.com/assets/OldCompanyLogo.gif` will be served directly from the web server,
   and will not invoke a PHP request.
-* The protected file at `http://www.example.com/assets/a870de278b/NewCompanyLogo.gif` will be routed via a 404 handler to PHP,
+- The protected file at `http://www.example.com/assets/a870de278b/NewCompanyLogo.gif` will be routed via a 404 handler to PHP,
   which will be passed to the `[ProtectedFileController](api:SilverStripe\Assets\Storage\ProtectedFileController)` controller, which will serve
   up the content of the hidden file, conditional on a permission check.
 
@@ -271,7 +273,7 @@ $store->publish('NewCompanyLogo.gif', 'a870de278b475cb75f5d9f451439b2d378e13af1'
 
 After this the filesystem will now look like below:
 
-```
+```text
 assets/
     NewCompanyLogo.gif
     .protected/
@@ -289,7 +291,7 @@ directly may lead to necessary security checks being omitted.
 
 See the web server setting section below for more information on configuring your server properly
 
-### Performance: Static caching
+### Performance: static caching
 
 If you are deploying your site to a server configuration that makes use of static caching, it's essential
 that you ensure any page or dataobject cached adequately publishes any linked assets. This is due to the
@@ -309,7 +311,7 @@ require developers to adjust the HTTP response for file requests.
 Most of the routing logic for serving Files is controlled via the `AssetStore` interface. The default
 implementation of the `AssetStore` is `FlysystemAssetStore`.
 
-### Configuring: Protected folder location
+### Configuring: protected folder location
 
 In the default Silverstripe CMS configuration, protected assets are placed within the web root into the
 `assets/.protected` folder, into which is also generated a `.htaccess` or `web.config` configured
@@ -321,11 +323,11 @@ root altogether.
 For instance, given your web root is in the folder `/sites/myapp/www`, you can tell the asset store
 to put protected files into `/sites/myapp/protected` with the below `.env` setting:
 
-```
+```bash
 SS_PROTECTED_ASSETS_PATH="/sites/myapp/protected"
 ```
 
-### Configuring: Protected file headers {#protected_file_headers}
+### Configuring: protected file headers {#protected_file_headers}
 
 In certain situations, it's necessary to customise HTTP headers required either by
 intermediary caching services, or by the client, or upstream caches.
@@ -334,7 +336,7 @@ When a protected file is served it will also be transmitted with all headers def
 `SilverStripe\Filesystem\Flysystem\FlysystemAssetStore.file_response_headers` config.
 You can customise this with the below config:
 
-```yaml
+```yml
 SilverStripe\Filesystem\Flysystem\FlysystemAssetStore:
   file_response_headers:
     Pragma: 'no-cache'
@@ -365,9 +367,7 @@ before it's sent to the client by applying an `Extension` to `FlysystemAssetStor
 To achieve this create an `Extension` and implement the `updateResponse` method.
 
 ```php
-<?php
-
-namespace App\MySite;
+namespace App\Extension;
 
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Extension;
@@ -386,22 +386,21 @@ class AssetStoreExtension extends Extension
         HTTPResponse $response,
         string $asset,
         array $context
-    ): void
-    {
+    ): void {
         // Do something to the response
     }
 }
 ```
 
-Enable the extension with YML configuration:
+Enable the extension with YAML configuration:
 
 ```yml
 SilverStripe\Assets\Flysystem\FlysystemAssetStore:
   extensions:
-    - App\MySite\AssetStoreExtension
+    - App\Extension\AssetStoreExtension
 ```
 
-### Configuring: Archive behaviour
+### Configuring: archive behaviour
 
 By default, the default extension `AssetControlExtension` will control the disposal of assets
 attached to objects when those objects are archived or replaced. For example, unpublished versioned objects
@@ -421,25 +420,30 @@ config to true on that class. Note that this feature only works with dataobjects
 the `Versioned` extension.
 
 ```php
-use SilverStripe\ORM\DataObject;
+namespace App\Model;
 
-class MyVersiondObject extends DataObject
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Versioned\Versioned;
+
+class MyVersionedObject extends DataObject
 {
     /** Ensure assets are archived along with the DataObject */
     private static $keep_archived_assets = true;
-    /** Versioned */
-    private static $extensions = ['Versioned'];
+
+    private static $extensions = [
+        Versioned::class,
+    ];
 }
 ```
 
 The extension can also be globally disabled by removing it at the root level:
 
-```yaml
+```yml
 SilverStripe\ORM\DataObject:
   AssetControl: null
 ```
 
-## Webserver Configuration
+## Webserver configuration
 
 ### Protected files location
 
@@ -454,10 +458,10 @@ see [Server Requirements: Secure Assets](/getting_started/server_requirements#se
 If the default server configuration is not appropriate for your specific environment, then you can
 further customise the `.htaccess` or `web.config` by editing one or more of the below:
 
-* `PublicAssetAdapter_HTAccess.ss`: Template for public permissions on the Apache server.
-* `PublicAssetAdapter_WebConfig.ss`: Template for public permissions on the IIS server.
-* `ProtectedAssetAdapter_HTAccess.ss`: Template for the protected store on the Apache server (should deny all requests).
-* `ProtectedAssetAdapter_WebConfig.ss`: Template for the protected store on the IIS server (should deny all requests).
+- `PublicAssetAdapter_HTAccess.ss`: Template for public permissions on the Apache server.
+- `PublicAssetAdapter_WebConfig.ss`: Template for public permissions on the IIS server.
+- `ProtectedAssetAdapter_HTAccess.ss`: Template for the protected store on the Apache server (should deny all requests).
+- `ProtectedAssetAdapter_WebConfig.ss`: Template for the protected store on the IIS server (should deny all requests).
 
 Each of these files will be regenerated on `?flush`, so it is important to ensure that these files are
 overridden at the template level, not via manually generated configuration files.
@@ -468,7 +472,7 @@ In order to ensure that public files are served correctly, you should check that
 bypasses PHP requests for files that do exist. The default template
 (declared by `PublicAssetAdapter_HTAccess.ss`) has the following section, which may be customised in your project:
 
-```
+```text
 # Non existent files passed to requesthandler
 RewriteCond %{REQUEST_URI} ^(.*)$
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -487,7 +491,7 @@ this file security.
 
 For instance your server configuration should look similar to the below:
 
-```
+```xml
 <Directory "/var/www/superarcade/public/assets">
   php_admin_flag engine off
 </Directory>
@@ -504,7 +508,7 @@ while ensuring non-existent files are processed via the Framework.
 
 The default rule for IIS is as below (only partial configuration displayed):
 
-```
+```xml
 <rule name="Secure and 404 File rewrite" stopProcessing="true">
     <match url="^(.*)$" />
     <conditions>
@@ -526,7 +530,7 @@ will need to make sure you manually configure these rules.
 For instance, this will allow your nginx site to serve files directly, while ensuring
 dynamic requests are processed via the Framework:
 
-```
+```text
 location ^~ /assets/ {
     sendfile on;
     try_files $uri index.php?$query_string;

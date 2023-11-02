@@ -26,9 +26,7 @@ link that wraps around the node title, a node's id which is given as id attribut
 tags showing the node status, etc. Silverstripe CMS tree node will be typically rendered into html
 code like this:
 
-
 ```ss
-
 ...
 <ul>
     ...
@@ -62,55 +60,74 @@ inherited subclass or [DataExtension](api:SilverStripe\ORM\DataExtension). It is
 value of function `SiteTree->getTreeTitle()` by two easily extendable methods
 `SiteTree->getStatusClass()` and `SiteTree->getStatusFlags()`.
 
-Note: Though the flag is not necessarily tie to its status of __publication__ and it could
+Note: Though the flag is not necessarily tie to its status of **publication** and it could
 be used for flagging anything you like, we should keep this lozenge to show version-related
 status, while let `SiteTree->CMSTreeClasses()` to deal with other customised classes, which
 will be used for the class attribute of &lt;li&gt; tag of the tree node.
 
 ### Add new flag
-__Example: using a subclass__
-
 
 ```php
-use SilverStripe\CMS\Model\SiteTree;
+namespace {
+    use SilverStripe\CMS\Model\SiteTree;
 
-class Page extends SiteTree 
-{
-    public function getScheduledToPublish()
+    class Page extends SiteTree
     {
-        // return either true or false
-    }
+        public function getScheduledToPublish()
+        {
+            // return either true or false
+        }
 
-    public function getStatusFlags($cached = true) 
-    {
-        $flags = parent::getStatusFlags($cached);
-        $flags['scheduledtopublish'] = "Scheduled To Publish";
-        return $flags;
+        public function getStatusFlags($cached = true)
+        {
+            $flags = parent::getStatusFlags($cached);
+            $flags['scheduledtopublish'] = 'Scheduled To Publish';
+            return $flags;
+        }
     }
 }
 ```
 
 The above subclass of [SiteTree](api:SilverStripe\CMS\Model\SiteTree) will add a new flag for indicating its
-__'Scheduled To Publish'__ status. The look of the page node will be changed
-from ![Normal Page Node](../../../_images/page_node_normal.png) to ![Scheduled Page Node](../../../_images/page_node_scheduled.png). The getStatusFlags has an `updateStatusFlags()`
-extension point, so the flags can be modified through `DataExtension` rather than
-inheritance as well. Deleting existing flags works by simply unsetting the array key.
+**'Scheduled To Publish'** status. The look of the page node will be changed
+from ![Normal Page Node](../../../_images/page_node_normal.png) to ![Scheduled Page Node](../../../_images/page_node_scheduled.png).
+
+The getStatusFlags has an `updateStatusFlags()`
+extension point, so the flags can be modified through `Extension` rather than
+inheritance as well.
+
+Deleting existing flags works by simply unsetting the array key.
 
 ## Customising page icons
 
 The page tree in the CMS is a central element to manage page hierarchies, hence its display of pages can be customised as well. You can specify a custom page icon to make it easier for CMS authors to identify pages of this type, when navigating the tree or adding a new page:
 
 ```php
+namespace App\PageType;
+
+use Page;
+
 class HomePage extends Page
 {
     private static $icon_class = 'font-icon-p-home';
+
+    // ...
 }
 ```
 
-The CMS uses an icon set from [Fontastic](http://fontastic.me/). New icons may be [requested](https://github.com/silverstripe/silverstripe-admin/issues/new) and added to the [core icon set](https://silverstripe.github.io/silverstripe-pattern-lib/?selectedKind=Admin%2FIcons&selectedStory=Icon%20reference&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook%2Factions%2Factions-panel). The benefit of having icons added to the core set is that you can use icons more consistently across different modules allowing every module to use a different icon with the same style.
+The CMS uses an icon set from [Fontastic](http://fontastic.me/). New icons may be [requested](https://github.com/silverstripe/silverstripe-admin/issues/new) and added to the [core icon set](https://silverstripe.g.ithub.io/silverstripe-pattern-lib/?selectedKind=Admin%2FIcons&selectedStory=Icon%20reference&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook%2Factions%2Factions-panel). The benefit of having icons added to the core set is that you can use icons more consistently across different modules allowing every module to use a different icon with the same style.
 
 You can also add your own icon by specifying an image path to override the Fontastic icon set:
 
 ```php
+namespace App\PageType;
+
+use Page;
+
+class HomePage extends Page
+{
     private static $icon = 'app/images/homepage-icon.svg';
+
+    // ...
+}
 ```

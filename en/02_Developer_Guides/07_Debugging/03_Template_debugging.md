@@ -8,9 +8,9 @@ icon: bug
 
 ## Source code comments
 
-If there is a problem with the rendered html your page is outputting you may need 
-to track down a template or two. The template engine can help you along by displaying 
-source code comments indicating which template is responsible for rendering each 
+If there is a problem with the rendered html your page is outputting you may need
+to track down a template or two. The template engine can help you along by displaying
+source code comments indicating which template is responsible for rendering each
 block of html on your page.
 
 ```yml

@@ -9,7 +9,7 @@ summary: Add a custom query for any type of data
 [info]
 You are viewing docs for silverstripe/graphql 4.x.
 If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
+[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 [/info]
 
 ## Building a custom query
@@ -17,8 +17,8 @@ If you are using 3.x, documentation can be found
 We've defined the shape of our data, now we need a way to access it. For this,
 we'll need a query. Let's add one to the `queries` section of our config.
 
-**app/_graphql/schema.yml**
-```yaml
+```yml
+# app/_graphql/schema.yml
 queries:
   readCountries: '[Country]'
 ```
@@ -29,9 +29,12 @@ Now we have a query that will return all the countries. In order to make this wo
 need a **resolver** to tell the query where to get the data from. For this, we're going to
 have to break out of the configuration layer and write some PHP code.
 
-**app/src/Resolvers/MyResolver.php**
 ```php
-namespace MyProject\Resolvers;
+// app/src/GraphQL/Resolver/MyResolver.php
+namespace App\GraphQL\Resolver;
+
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\i18n\Data\Locales;
 
 class MyResolver
 {
@@ -42,7 +45,7 @@ class MyResolver
         foreach ($countries as $code => $name) {
             $results[] = [
                 'code' => $code,
-                'name' => $name
+                'name' => $name,
             ];
         }
 
@@ -54,19 +57,19 @@ class MyResolver
 Resolvers are pretty loosely defined, and don't have to adhere to any specific contract
 other than that they **must be static methods**. You'll see why when we add it to the configuration:
 
-**app/_graphql/schema.yml**
-```yaml
+```yml
+# app/_graphql/schema.yml
 queries:
   readCountries:
     type: '[Country]'
-    resolver: [ 'MyProject\Resolvers\MyResolver', 'resolveCountries' ]
+    resolver: [ 'App\GraphQL\Resolver\MyResolver', 'resolveCountries' ]
 ```
 
 [notice]
 Note the difference in syntax here between the `type` and the `resolver` - the type declaration
-_must_ have quotes around it, because we are saying "this is a list of `Country` objects". The value
-of this must be a yaml _string_. But the resolver must _not_ be surrounded in quotes. It is explicitly
-a yaml array, so that PHP recognises it as a `callable`.
+*must* have quotes around it, because we are saying "this is a list of `Country` objects". The value
+of this must be a YAML *string*. But the resolver must *not* be surrounded in quotes. It is explicitly
+a YAML array, so that PHP recognises it as a `callable`.
 [/notice]
 
 Now, we just have to build the schema:
@@ -75,12 +78,13 @@ Now, we just have to build the schema:
 
 ### Testing the query
 
-Let's test this out in our GraphQL IDE. If you have the [silverstripe/graphql-devtools](https://github.com/silverstripe/silverstripe-graphql-devtools)
+Let's test this out in our GraphQL IDE. If you have the [`silverstripe/graphql-devtools`](https://github.com/silverstripe/silverstripe-graphql-devtools)
 module installed, just go to `/dev/graphql/ide` in your browser.
 
 As you start typing, it should autocomplete for you.
 
 Here's our query:
+
 ```graphql
 query {
   readCountries {
@@ -118,21 +122,21 @@ implement your own `canView()` checks. It also means you need
 to add your own filter functionality, such as [pagination](adding_pagination).
 [/notice]
 
-## Resolver Method Arguments
+## Resolver method arguments
 
 A resolver is executed in a particular query context, which is passed into the method as arguments.
 
-* `mixed $value`: An optional value of the parent in your data graph.
+- `mixed $value`: An optional value of the parent in your data graph.
   Defaults to `null` on the root level, but can be useful to retrieve the object
   when writing field-specific resolvers (see [Resolver Discovery](resolver_discovery)).
-* `array $args`: An array of optional arguments for this field (which is different from the [Query Variables](https://graphql.org/learn/queries/#variables))
-* `array $context`: An arbitrary array which holds information shared between resolvers.
+- `array $args`: An array of optional arguments for this field (which is different from the [Query Variables](https://graphql.org/learn/queries/#variables))
+- `array $context`: An arbitrary array which holds information shared between resolvers.
   Use implementors of [`ContextProvider`](api:SilverStripe\GraphQL\Schema\Interfaces\ContextProvider) to get and set
   data, rather than relying on the array keys directly.
-* [`?ResolveInfo`](api:GraphQL\Type\Definition\ResolveInfo)` $info`: Data structure containing useful information for the resolving process (e.g. the field name).
+- [`?ResolveInfo`](api:GraphQL\Type\Definition\ResolveInfo)`$info`: Data structure containing useful information for the resolving process (e.g. the field name).
   See [Fetching Data](http://webonyx.github.io/graphql-php/data-fetching/) in the underlying PHP library for details.
 
-## Using Context Providers
+## Using context providers
 
 The `$context` array can be useful to get access to the HTTP request,
 retrieve the current member, or find out details about the schema.
@@ -140,18 +144,24 @@ You can use it through implementors of the `ContextProvider` interface.
 In the example below, we'll demonstrate how you could limit viewing the country code to
 users with ADMIN permissions.
 
-**app/src/Resolvers/MyResolver.php**
 ```php
-namespace MyProject\Resolvers;
+// app/src/GraphQL/Resolver/MyResolver.php
+namespace App\GraphQL\Resolver;
 
 use GraphQL\Type\Definition\ResolveInfo;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\GraphQL\QueryHandler\UserContextProvider;
 use SilverStripe\Security\Permission;
+use SilverStripe\i18n\Data\Locales;
 
 class MyResolver
 {
-    public static function resolveCountries(mixed $value = null, array $args = [], array $context = [], ?ResolveInfo $info = null): array
-    {
+    public static function resolveCountries(
+        mixed $value = null,
+        array $args = [],
+        array $context = [],
+        ?ResolveInfo $info = null
+    ): array {
         $member = UserContextProvider::get($context);
         $canViewCode = ($member && Permission::checkMember($member, 'ADMIN'));
         $results = [];
@@ -159,7 +169,7 @@ class MyResolver
         foreach ($countries as $code => $name) {
             $results[] = [
                 'code' => $canViewCode ? $code : '',
-                'name' => $name
+                'name' => $name,
             ];
         }
 
@@ -168,7 +178,7 @@ class MyResolver
 }
 ```
 
-## Resolver Discovery
+## Resolver discovery
 
 This is great, but as we write more and more queries for types with more and more fields,
 it's going to get awfully laborious mapping all these resolvers. Let's clean this up a bit by

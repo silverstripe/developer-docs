@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: ${{ steps.read-nvm.outputs.version }}
 
-      - name: Install yarn and dependencies
+      - name: Install yarn dependencies
         run: |
           npm install --global yarn
           yarn install
@@ -44,7 +44,7 @@ jobs:
 
       - name: Install composer dependencies
         if: ${{ matrix.script == 'lint-php' }}
-        run: composer install --prefer-dist --no-progress --ansi --no-interaction --no-scripts --no-plugins --optimize-autoloader
+        run: composer install --prefer-dist --no-progress --ansi --no-interaction --optimize-autoloader
 
       - name: Run lint
         run: yarn ${{ matrix.script }}

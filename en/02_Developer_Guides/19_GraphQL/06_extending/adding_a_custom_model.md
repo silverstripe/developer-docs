@@ -2,14 +2,14 @@
 title: Adding a custom model
 summary: Add a new class-backed type beyond DataObject
 ---
-# Extending the Schema
+# Extending the schema
 
 [CHILDREN asList]
 
 [info]
 You are viewing docs for silverstripe/graphql 4.x.
 If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
+[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 [/info]
 
 ## Adding a custom model
@@ -30,29 +30,28 @@ of what a non-`DataObject` model might be.
 Models must implement the [`SchemaModelInterface`](api:SilverStripe\GraphQL\Schema\Interfaces\SchemaModelInterface),
 which has a lot of methods to implement. Let's walk through them:
 
-* `getIdentifier(): string`: A unique identifier for this model type,
-e.g. 'DataObject'
-* `hasField(string $fieldName): bool`: Return true if `$fieldName` exists
+- `getIdentifier(): string`: A unique identifier for this model type, e.g. `DataObject`
+- `hasField(string $fieldName): bool`: Return true if `$fieldName` exists
 on the model
-* `getTypeForField(string $fieldName): ?string`: Given a field name,
+- `getTypeForField(string $fieldName): ?string`: Given a field name,
 infer the type. If the field doesn't exist, return `null`
-* `getTypeName(): string`: Get the name of the type (i.e. based on
+- `getTypeName(): string`: Get the name of the type (i.e. based on
 the source class)
-* `getDefaultResolver(?array $context = []): ResolverReference`:
+- `getDefaultResolver(?array $context = []): ResolverReference`:
 Get the generic resolver that should be used for types that are built
 with this model.
-* `getSourceClass(): string`: Get the name of the class that builds
+- `getSourceClass(): string`: Get the name of the class that builds
 the type, e.g. `MyDataObject`
-* `getAllFields(): array`: Get all available fields on the object
-* `getModelField(string $fieldName): ?ModelType`: For nested fields.
+- `getAllFields(): array`: Get all available fields on the object
+- `getModelField(string $fieldName): ?ModelType`: For nested fields.
 If a field resolves to another model (e.g. has_one), return that
 model type.
 
 In addition, models may want to implement:
 
-* [`OperationProvider`](api:SilverStripe\GraphQL\Schema\Interfaces\) (if your model creates operations, like
+- [`OperationProvider`](api:SilverStripe\GraphQL\Schema\Interfaces\OperationProvider) (if your model creates operations, like
 read, create, etc)
-* [`DefaultFieldsProvider`](api:SilverStripe\GraphQL\Schema\Interfaces\) (if your model provides a default list
+- [`DefaultFieldsProvider`](api:SilverStripe\GraphQL\Schema\Interfaces\DefaultFieldsProvider) (if your model provides a default list
 of fields, e.g. `id`)
 
 This is all a lot to take in out of context. A good exercise would be
@@ -76,8 +75,8 @@ for a good example of how this works.
 
 Just add it to the registry:
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
 modelCreators:
   - 'SilverStripe\GraphQL\Schema\DataObject\ModelCreator'
 ```

@@ -21,7 +21,7 @@
         }
     ],
     "require-dev": {
-        "silverstripe/markdown-php-codesniffer": "^1.0",
+        "silverstripe/markdown-php-codesniffer": "^1",
         "slevomat/coding-standard": "^8.14"
     },
     "config": {

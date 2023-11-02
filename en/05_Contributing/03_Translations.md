@@ -4,10 +4,10 @@ summary: Translate interface components like button labels into multiple languag
 icon: globe
 ---
 
-# Contributing Translations
+# Contributing translations
 
 The content for UI elements (button labels, field titles, etc) and instruction texts shown in the CMS and elsewhere is
-stored in yaml and JavaScript files (see [i18n](/developer_guides/i18n)). These get
+stored in YAML and JavaScript files (see [i18n](/developer_guides/i18n)). These get
 uploaded to [transifex](https://transifex.com) to be edited online.
 
 Silverstripe CMS is already translated in over 60 languages, and we're
@@ -31,18 +31,18 @@ If you need help learning how to edit translations in transifex, check out [tran
 
 ### How do I translate a module not listed on Transifex?
 
-If a core or supported module is not listed on Transifex, usually that means it has no strings which _can_ be translated.
+If a core or supported module is not listed on Transifex, usually that means it has no strings which *can* be translated.
 If you find a core or supported module which has strings that can be (or should be able to be) translated, please
 [raise an issue on GitHub](./issues_and_bugs) for that module.
 
-### How do I translate substituted strings? (e.g. `%s` or `{my-variable}`)
+### How do I translate substituted strings? (Such as `%s` or `{my-variable}`)
 
 You don't have to - if the english master-string reads 'Hello %s', your german translation would be 'Hallo %s'. Strings
-prefixed by a percentage-sign are automatically replaced by silverstripe with dynamic content. See
-http://php.net/sprintf for details. The newer `{my-variable}` format works the same way, but makes its intent clearer,
+prefixed by a percentage-sign are automatically replaced by Silverstripe with dynamic content. See
+<http://php.net/sprintf> for details. The newer `{my-variable}` format works the same way, but makes its intent clearer,
 and allows reordering of placeholders in your translation.
 
-### Do I need to convert special characters (e.g. HTML-entities)?
+### Do I need to convert special characters (such as HTML entities)?
 
 Special characters (such as german umlauts) need to be entered in their native form. Please don't use HTML-entities
 (use "ä" instead of "`&auml;`"). Silverstripe stores and renders most strings in UTF8 (Unicode) format.
@@ -74,7 +74,7 @@ technically minded, please read [i18n](/developer_guides/i18n) on how to make it
 
 Otherwise please [raise a bug report](./issues_and_bugs) so that we can fix it.
 
-### What about right-to-left (RTL) languages (e.g. Arabic)?
+### What about right-to-left (RTL) languages (such as arabic)?
 
 Silverstripe CMS doesn't have built-in support for attribute-based RTL-modifications (e.g. `<html dir="rtl">`).
 

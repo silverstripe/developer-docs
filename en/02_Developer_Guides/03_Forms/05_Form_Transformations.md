@@ -4,40 +4,37 @@ summary: Provide read-only and disabled views of your Form data.
 icon: random
 ---
 
-# Read-only and Disabled Forms
+# Read-only and disabled forms
 
-[Form](api:SilverStripe\Forms\Form) and [FormField](api:SilverStripe\Forms\FormField) instances can be turned into a read-only version for things like confirmation pages or 
-when certain fields cannot be edited due to permissions. Creating the form is done the same way and markup is similar, 
+[Form](api:SilverStripe\Forms\Form) and [FormField](api:SilverStripe\Forms\FormField) instances can be turned into a read-only version for things like confirmation pages or
+when certain fields cannot be edited due to permissions. Creating the form is done the same way and markup is similar,
 `readonly` mode converts the `input`, `select` and `textarea` tags to static HTML elements like `span`.
 
 To make an entire [Form](api:SilverStripe\Forms\Form) read-only.
 
-
 ```php
 use SilverStripe\Forms\Form;
 
-$form = new Form(..);
+$form = new Form(/* ... */);
 $form->makeReadonly();
 ```
 
-To make all the fields within a [FieldList](api:SilverStripe\Forms\FieldList) read-only (i.e to make fields read-only but not buttons).
-
+To make all the fields within a [FieldList](api:SilverStripe\Forms\FieldList) read-only (i.e. to make fields read-only but not buttons).
 
 ```php
 use SilverStripe\Forms\FieldList;
 
-$fields = new FieldList(..);
+$fields = new FieldList(/* ... */);
 $fields = $fields->makeReadonly();
 ```
 
 To make a [FormField](api:SilverStripe\Forms\FormField) read-only you need to know the name of the form field or call it direct on the object
 
-
 ```php
-use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextField;
 
-$field = new TextField(..);
+$field = new TextField(/* ... */);
 $field = $field->performReadonlyTransformation();
 
 $fields = new FieldList(
@@ -45,7 +42,7 @@ $fields = new FieldList(
 );
 
 // Or,
-$field = new TextField(..);
+$field = new TextField(/* ... */);
 $field->setReadonly(true);
 
 $fields = new FieldList(
@@ -53,13 +50,13 @@ $fields = new FieldList(
 );
 ```
 
-## Disabled FormFields
+## Disabled formFields
 
-Disabling [FormField](api:SilverStripe\Forms\FormField) instances, sets the `disabled` property on the class. This will use the same HTML markup as 
+Disabling [FormField](api:SilverStripe\Forms\FormField) instances, sets the `disabled` property on the class. This will use the same HTML markup as
 a normal form, but set the `disabled` attribute on the `input` tag.
 
 ```php
-$field = new TextField(..);
+$field = new TextField(/* ... */);
 $field->setDisabled(true);
 
 echo $field->forTemplate();

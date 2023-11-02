@@ -11,17 +11,17 @@ icon: code
 [info]
 You are viewing docs for silverstripe/graphql 4.x.
 If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
+[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 [/info]
 
 ## Configuring your schema
 
 GraphQL is a strongly-typed API layer, so having a schema behind it is essential. Simply put:
 
-* A schema consists of **[types](https://graphql.org/learn/schema/#type-system)**
-* **Types** consist of **[fields](https://graphql.org/learn/queries/#fields)**
-* **Fields** can have **[arguments](https://graphql.org/learn/queries/#arguments)**.
-* **Fields** need to be **[resolved](https://graphql.org/learn/execution/#root-fields-resolvers)**
+- A schema consists of **[types](https://graphql.org/learn/schema/#type-system)**
+- **Types** consist of **[fields](https://graphql.org/learn/queries/#fields)**
+- **Fields** can have **[arguments](https://graphql.org/learn/queries/#arguments)**.
+- **Fields** need to be **[resolved](https://graphql.org/learn/execution/#root-fields-resolvers)**
 
 **Queries** are just **fields** on a type called "query". They can take arguments, and they
 must be resolved.
@@ -34,8 +34,8 @@ serve almost all of your needs to get started.
 
 To start your first schema, open a new configuration file. Let's call it `graphql.yml`.
 
-**app/_config/graphql.yml**
 ```yml
+# app/_config/graphql.yml
 SilverStripe\GraphQL\Schema\Schema:
   schemas:
     # your schemas here
@@ -43,8 +43,8 @@ SilverStripe\GraphQL\Schema\Schema:
 
 Let's populate a schema that is pre-configured for us out of the box called "default".
 
-**app/_config/graphql.yml**
 ```yml
+# app/_config/graphql.yml
 SilverStripe\GraphQL\Schema\Schema:
   schemas:
     default:
@@ -80,12 +80,12 @@ standard config changes which won't take effect without a flush.
 We can do this by adding a `src` key to our `app/_config/graphql.yml` schema definition
 that maps to a directory relative to the project root.
 
-**app/_config/graphql.yml**
 ```yml
+# app/_config/graphql.yml
 SilverStripe\GraphQL\Schema\Schema:
   schemas:
     default:
-      src: 
+      src:
         - app/_graphql
 ```
 
@@ -95,8 +95,8 @@ This feature can be use to extend the schema of third party modules.
 [info]
 Your directory can also be relative to a module reference, e.g. `somevendor/somemodule: _graphql`:
 
-**app/_config/graphql.yml**
 ```yml
+# app/_config/graphql.yml
 SilverStripe\GraphQL\Schema\Schema:
   schemas:
     default:
@@ -106,12 +106,14 @@ SilverStripe\GraphQL\Schema\Schema:
         # The next line would map to `vendor/somevendor/somemodule/_graphql`
         - 'somevendor/somemodule: _graphql'
 ```
+
 [/info]
 
 Now, in the new `app/_graphql` folder, we can create YAML file definitions.
 
-**app/_graphql/schema.yml**
-```yaml
+```yml
+# app/_graphql/schema.yml
+
 # no schema key needed. it's implied!
 config:
   # your schema config here
@@ -137,8 +139,8 @@ to the keys they populate -- e.g. `config/`, `types/`, `models/`, `queries/`, `m
 
 There are two approaches to namespacing:
 
-* By filename
-* By directory name
+- By filename
+- By directory name
 
 ##### Namespacing by filename
 
@@ -150,28 +152,33 @@ added to `app/_graphql/config.yml` will be implicitly added to
 **This only works in the root source directory** (i.e. `app/_graphql/some-directory/config.yml`
 will not work).
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
+
 # my config here
 ```
 
-**app/_graphql/types.yml**
-```yaml
+```yml
+# app/_graphql/types.yml
+
 # my types here
 ```
 
-**app/_graphql/models.yml**
-```yaml
+```yml
+# app/_graphql/models.yml
+
 # my models here
 ```
 
-**app/_graphql/enums.yml**
-```yaml
+```yml
+# app/_graphql/enums.yml
+
 # my enums here
 ```
 
-**app/_graphql/bulkLoad.yml**
-```yaml
+```yml
+# app/_graphql/bulkLoad.yml
+
 # my bulk loader directives here
 ```
 
@@ -187,28 +194,33 @@ The names of the actual files here do not matter. You could for example have a s
 for each of your types, e.g. `app/_graphql/types/my-first-type.yml`.
 [/hint]
 
-**app/_graphql/config/config.yml**
-```yaml
+```yml
+# app/_graphql/config/config.yml
+
 # my config here
 ```
 
-**app/_graphql/types/types.yml**
-```yaml
+```yml
+# app/_graphql/types/types.yml
+
 # my types here
 ```
 
-**app/_graphql/models/models.yml**
-```yaml
+```yml
+# app/_graphql/models/models.yml
+
 # my models here
 ```
 
-**app/_graphql/enums/enums.yml**
-```yaml
+```yml
+# app/_graphql/enums/enums.yml
+
 # my enums here
 ```
 
-**app/_graphql/bulkLoad/bulkLoad.yml**
-```yaml
+```yml
+# app/_graphql/bulkLoad/bulkLoad.yml
+
 # my bulk loader directives here
 ```
 
@@ -216,14 +228,14 @@ for each of your types, e.g. `app/_graphql/types/my-first-type.yml`.
 
 These special directories can contain multiple files that will all merge together, so you can even
 create one file per type, or some other convention. All that matters is that the parent directory name
-_or_ the filename matches one of the schema keys.
+*or* the filename matches one of the schema keys.
 
 The following are perfectly valid:
 
-* `app/_graphql/config/config.yml` maps to `SilverStripe\GraphQL\Schema\Schema.schemas.default.config`
-* `app/_graphql/types/allElementalBlocks.yml` maps to `SilverStripe\GraphQL\Schema\Schema.schemas.default.types`
-* `app/_graphql/news-and-blog/models/blog.yml` maps to `SilverStripe\GraphQL\Schema\Schema.schemas.default.models`
-* `app/_graphql/mySchema.yml` maps to `SilverStripe\GraphQL\Schema\Schema.schemas.default`
+- `app/_graphql/config/config.yml` maps to `SilverStripe\GraphQL\Schema\Schema.schemas.default.config`
+- `app/_graphql/types/allElementalBlocks.yml` maps to `SilverStripe\GraphQL\Schema\Schema.schemas.default.types`
+- `app/_graphql/news-and-blog/models/blog.yml` maps to `SilverStripe\GraphQL\Schema\Schema.schemas.default.models`
+- `app/_graphql/mySchema.yml` maps to `SilverStripe\GraphQL\Schema\Schema.schemas.default`
 
 ### Schema config
 
@@ -234,10 +246,10 @@ An important subsection of `config` is `modelConfig`, where you can configure se
 models, e.g. `DataObject`.
 
 Like the other sections, it can have its own `config.yml`, or just be added as a `config:`
-mapping to a generic schema yaml document.
+mapping to a generic schema YAML document.
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
 modelConfig:
   DataObject:
     plugins:
@@ -262,8 +274,9 @@ Generic types don't map to `DataObject` classes - they're useful for querying mo
 You'll learn more about adding DataObjects in [working with DataObjects](../working_with_DataObjects).
 [/info]
 
-**app/_graphql/types.yml***
-```yaml
+```yml
+# app/_graphql/types.yml
+
 Country:
   fields:
     name: String
@@ -278,10 +291,10 @@ this should look pretty familiar.
 There are only a handful of [scalar types](https://graphql.org/learn/schema/#scalar-types)
 available in GraphQL by default. They are:
 
-* String
-* Int
-* Float
-* Boolean
+- String
+- Int
+- Float
+- Boolean
 
 To define a type as a list, you wrap it in brackets: `[String]`, `[Int]`
 

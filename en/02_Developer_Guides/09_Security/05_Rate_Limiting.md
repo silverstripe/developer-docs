@@ -4,7 +4,7 @@ summary: Silverstripe CMS's in built rate limiting features
 icon: tachometer-alt
 ---
 
-# Rate Limiting
+# Rate limiting
 
 Silverstripe CMS comes with a [Middleware](../controllers/middlewares/) that provides rate limiting
 for the Security controller. This provides added protection to a potentially vulnerable part of a Silverstripe CMS application
@@ -70,7 +70,7 @@ SilverStripe\Core\Injector\Injector:
         SiteWideRateLimitMiddleware: '%$SiteWideRateLimitMiddleware'
 ```
 
-## Disabling the Rate Limiter
+## Disabling the rate limiter
 
 You may already solve the rate limiting problem on a server level and the built in rate limiting may well be redundant.
 If this is the case you can turn off the rate limiting middleware by redefining the URL rules for the Security controller.

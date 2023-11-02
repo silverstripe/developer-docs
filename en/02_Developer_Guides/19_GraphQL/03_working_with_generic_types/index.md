@@ -4,6 +4,8 @@ summary: Break away from the magic of DataObject models and build types and quer
 icon: clipboard
 ---
 
+# Working with generic types
+
 In this section of the documentation, we cover the fundamentals that are behind a lot of the magic that goes
 into making `DataObject` types work. We'll create some types that are not based on DataObjects at all, and we'll
 write some custom queries from the ground up.
@@ -20,7 +22,7 @@ in doing so, but this lower level API may suit your needs for very specific use 
 [info]
 You are viewing docs for silverstripe/graphql 4.x.
 If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
+[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 [/info]
 
 [CHILDREN]

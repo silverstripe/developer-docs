@@ -5,9 +5,11 @@ introduction: Both the Cookie and Session classes can be used to preserve certai
 icon: cookie
 ---
 
+# Cookies and sessions
+
 [CHILDREN]
 
-## API Documentation
+## API documentation
 
-* [Cookie](api:SilverStripe\Control\Cookie)
-* [Session](api:SilverStripe\Control\Session)
+- [Cookie](api:SilverStripe\Control\Cookie)
+- [Session](api:SilverStripe\Control\Session)

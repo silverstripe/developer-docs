@@ -1,20 +1,20 @@
 {
-  "name": "docs",
+  "name": "developer-docs",
   "scripts": {
-    "lint": "yarn lint-md && yarn lint-js && yarn lint-php && yarn lint-language",
+    "lint": "yarn lint-md && yarn lint-js && yarn lint-php && echo 'All linting passed successfully'",
     "lint-fix": "yarn lint-md --fix; yarn lint-js --fix; yarn lint-php --fix; echo 'Fixed all auto-fixable problems'",
-    "lint-md": "markdownlint-cli2 en/**/*.md",
-    "lint-js": "eslint en",
-    "lint-php": "vendor/bin/mdphpcs en"
+    "lint-md": "markdownlint-cli2 './en/**/*.md'",
+    "lint-js": "eslint en/",
+    "lint-php": "vendor/bin/mdphpcs en/"
   },
-  "dependencies": {
-    "@ocular-d/vale-bin": "^2.29.6",
+  "devDependencies": {
     "@silverstripe/eslint-config": "^1.1.0",
     "eslint": "^8.52.0",
     "eslint-plugin-markdown": "^3.0.1",
     "js-yaml": "^4.1.0",
     "markdownlint": "^0.31.1",
     "markdownlint-cli2": "^0.10.0",
-    "markdownlint-rule-title-case-style": "^0.4.3"
+    "markdownlint-rule-title-case-style": "^0.4.3",
+    "markdownlint-rule-enhanced-proper-names": "^0.0.1"
   }
 }

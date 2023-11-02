@@ -3,14 +3,14 @@ title: DataObject operation permissions
 summary: A look at how permissions work for DataObject queries and mutations
 ---
 
-# Working with DataObjects
+# Working with `DataObject` models
 
 [CHILDREN asList]
 
 [info]
 You are viewing docs for silverstripe/graphql 4.x.
 If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
+[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 [/info]
 
 ## `DataObject` operation permissions
@@ -56,16 +56,16 @@ for `limit` and `offset` parameters.
 
 Though not recommended, you can disable query permissions by setting their plugins to `false`.
 
-**app/_graphql/models.yml**
-```yaml
-  Page:
-    operations:
-      read:
-        plugins:
-          canView: false
-      readOne:
-        plugins:
-          canView: false
+```yml
+# app/_graphql/models.yml
+Page:
+  operations:
+    read:
+      plugins:
+        canView: false
+    readOne:
+      plugins:
+        canView: false
 ```
 
 ### Further reading

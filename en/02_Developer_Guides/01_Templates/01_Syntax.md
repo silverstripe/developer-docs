@@ -4,17 +4,16 @@ summary: A look at the operations, variables and language controls you can use w
 icon: code
 ---
 
-# Template Syntax
+# Template syntax
 
-A template can contain any markup language (e.g HTML, CSV, JSON..) and before being rendered to the user, they're
+A template can contain any markup language (e.g. HTML, CSV, JSON..) and before being rendered to the user, they're
 processed through [SSViewer](api:SilverStripe\View\SSViewer). This process replaces placeholders such as `$Var` with real content from your
 [model](../model) and allows you to define logic controls like `<% if $Var %>`.
 
 An example of a Silverstripe CMS template is below:
 
-**app/templates/Page.ss**
-
 ```ss
+<%-- app/templates/Page.ss --%>
 <html>
     <head>
         <% base_tag %>
@@ -44,7 +43,7 @@ An example of a Silverstripe CMS template is below:
 ```
 
 [note]
-Templates can be used for more than HTML output. You can use them to output your data as JSON, XML, CSV or any other 
+Templates can be used for more than HTML output. You can use them to output your data as JSON, XML, CSV or any other
 text-based format.
 [/note]
 
@@ -56,7 +55,7 @@ a module, theme, or your `app/` folder.
 By default, templates will have the same name as the class they are used to render. So, your `Page` class will
 be rendered with the `templates/Page.ss` template.
 
-When the class has a namespace, the namespace will be interpreted as a subfolder within the `templates` path. 
+When the class has a namespace, the namespace will be interpreted as a subfolder within the `templates` path.
 For example, the class `SilverStripe\Control\Controller` will be rendered with the
 `templates/SilverStripe/Control/Controller.ss` template.
 
@@ -66,15 +65,15 @@ where you need to leave out the `Includes/` folder.
 
 ## Variables
 
-Variables are placeholders that will be replaced with data from the [DataModel](../model/) or the current 
-[Controller](../controllers). Variables are prefixed with a `$` character. Variable names must start with an 
+Variables are placeholders that will be replaced with data from the [DataModel](../model/) or the current
+[Controller](../controllers). Variables are prefixed with a `$` character. Variable names must start with an
 alphabetic character or underscore, with subsequent characters being alphanumeric or underscore:
 
 ```ss
 $Title
 ```
 
-This inserts the value of the Title database field of the page being displayed in place of `$Title`. 
+This inserts the value of the Title database field of the page being displayed in place of `$Title`.
 
 Variables can be chained together, and include arguments.
 
@@ -86,12 +85,12 @@ $Foo.Bar
 
 These variables will call a method / field on the object and insert the returned value as a string into the template.
 
-*  `$Foo` will call `$obj->Foo()` (or the field `$obj->Foo`)
-*  `$Foo(param)` will call `$obj->Foo("param")`
-*  `$Foo.Bar` will call `$obj->Foo()->Bar()` 
+- `$Foo` will call `$obj->Foo()` (or the field `$obj->Foo`)
+- `$Foo(param)` will call `$obj->Foo("param")`
+- `$Foo.Bar` will call `$obj->Foo()->Bar()`
 
 If a variable returns a string, that string will be inserted into the template. If the variable returns an object, then
-the system will attempt to render the object through its `forTemplate()` method. If the `forTemplate()` method has not 
+the system will attempt to render the object through its `forTemplate()` method. If the `forTemplate()` method has not
 been defined, the system will return an error.
 
 [notice]
@@ -99,39 +98,45 @@ If you wish to pass parameters to getter functions, you must use the full method
 [/notice]
 
 [note]
-For more detail around how variables are inserted and formatted into a template see 
+For more detail around how variables are inserted and formatted into a template see
 [Formatting, Modifying and Casting Variables](/developer_guides/templates/casting/)
 [/note]
 
 Variables can come from your database fields, or custom methods you define on your objects.
 
-**app/src/Page.php**
-
 ```php
-public function UsersIpAddress()
+// app/src/Model/MyObject.php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+
+class MyObject extends DataObject
 {
-    return $this->getRequest()->getIP();
+    // ...
+
+    public function UsersIpAddress()
+    {
+        return $this->getRequest()->getIP();
+    }
 }
 ```
 
-**app/src/Page.ss**
-
 ```html
+<!-- app/templates/App/Model/MyObject.ss -->
 <p>You are coming from $UsersIpAddress.</p>
 ```
 
 [note]
-	Method names that begin with `get` will automatically be resolved when their prefix is excluded. For example, the above method call `$UsersIpAddress` would also invoke a method named `getUsersIpAddress()`.
+Method names that begin with `get` will automatically be resolved when their prefix is excluded. For example, the above method call `$UsersIpAddress` would also invoke a method named `getUsersIpAddress()`.
 [/note]
 
 The variables that can be used in a template vary based on the object currently in [scope](#scope). Scope defines what
-object the methods get called on. For the standard `Page.ss` template the scope is the current [PageController](api:SilverStripe\CMS\Controllers\ContentController\PageController) 
+object the methods get called on. For the standard `Page.ss` template the scope is the current [PageController](api:SilverStripe\CMS\Controllers\ContentController\PageController)
 class. This object gives you access to all the database fields on [PageController](api:SilverStripe\CMS\Model\SiteTree\PageController), its corresponding [Page](api:SilverStripe\CMS\Model\SiteTree\Page)
 record and any subclasses of those two.
 
-**app/src/Layout/Page.ss**
-
 ```ss
+<%-- app/templates/Layout/Page.ss --%>
 $Title
 // returns the page `Title` property
 
@@ -139,7 +144,7 @@ $Content
 // returns the page `Content` property
 ```
 
-## Conditional Logic
+## Conditional logic
 
 The simplest conditional block is to check for the presence of a value (does not equal 0, null, false).
 
@@ -158,7 +163,7 @@ A conditional can also check for a value other than falsy.
 ```
 
 [notice]
-When inside template tags variables should have a '$' prefix, and literals should have quotes. 
+When inside template tags variables should have a '$' prefix, and literals should have quotes.
 [/notice]
 
 Conditionals can also provide the `else` case.
@@ -195,7 +200,6 @@ You can check if a variable is false with `<% if not %>`.
 
 Note that you cannot combine this with other operators such as `==`.
 
-
 For more nuanced check you can use the `!` operator.
 
 ```ss
@@ -204,9 +208,9 @@ For more nuanced check you can use the `!` operator.
 <% end_if %>
 ```
 
-### Boolean Logic
+### Boolean logic
 
-Multiple checks can be done using `||`, `or`, `&&` or `and`. 
+Multiple checks can be done using `||`, `or`, `&&` or `and`.
 
 If *either* of the conditions is true.
 
@@ -252,7 +256,7 @@ When using subfolders in your template structure
 <% include MyNamespace/SideBar %> <!-- chooses templates/MyNamespace/Includes/Sidebar.ss -->
 ```
 
-The `include` tag can be particularly helpful for nested functionality and breaking large templates up. In this example, 
+The `include` tag can be particularly helpful for nested functionality and breaking large templates up. In this example,
 the include only happens if the user is logged in.
 
 ```ss
@@ -261,7 +265,7 @@ the include only happens if the user is logged in.
 <% end_if %>
 ```
 
-Includes can't directly access the parent scope when the include is included. However you can pass arguments to the 
+Includes can't directly access the parent scope when the include is included. However you can pass arguments to the
 include.
 
 ```ss
@@ -270,9 +274,9 @@ include.
 <% end_with %>
 ```
 
-## Looping Over Lists
+## Looping over lists
 
-The `<% loop %>` tag is used to iterate or loop over a collection of items such as [DataList](api:SilverStripe\ORM\DataList) or an [ArrayList](api:SilverStripe\ORM\ArrayList) 
+The `<% loop %>` tag is used to iterate or loop over a collection of items such as [DataList](api:SilverStripe\ORM\DataList) or an [ArrayList](api:SilverStripe\ORM\ArrayList)
 collection.
 
 ```ss
@@ -284,21 +288,21 @@ collection.
 </ul>
 ```
 
-This snippet loops over the children of a page, and generates an unordered list showing the `Title` property from each 
-page. 
+This snippet loops over the children of a page, and generates an unordered list showing the `Title` property from each
+page.
 
 [notice]
 The `$Title` inside the loop refers to the Title property on each object that is looped over, not the current page like
-the reference of `$Title` outside the loop. 
+the reference of `$Title` outside the loop.
 
-This demonstrates the concept of [Scope](#scope). When inside a <% loop %> the scope of the template has changed to the 
+This demonstrates the concept of [Scope](#scope). When inside a <% loop %> the scope of the template has changed to the
 object that is being looped over.
 [/notice]
 
 ### Altering the list
 
-`<% loop %>` statements iterate over a [DataList](api:SilverStripe\ORM\DataList) instance. As the template has access to the list object, 
-templates can call [DataList](api:SilverStripe\ORM\DataList) methods. 
+`<% loop %>` statements iterate over a [DataList](api:SilverStripe\ORM\DataList) instance. As the template has access to the list object,
+templates can call [DataList](api:SilverStripe\ORM\DataList) methods.
 
 Sorting the list by a given field.
 
@@ -350,22 +354,22 @@ Methods can also be chained.
 </ul>
 ```
 
-### Position Indicators
+### Position indicators
 
-Inside the loop scope, there are many variables at your disposal to determine the current position in the list and 
+Inside the loop scope, there are many variables at your disposal to determine the current position in the list and
 iteration.
 
- * `$Even`, `$Odd`: Returns boolean, handy for zebra striping.
- * `$EvenOdd`: Returns a string, either 'even' or 'odd'. Useful for CSS classes.
- * `$First`, `$Last`, `$Middle`: Booleans about the position in the list.
-    * Note: as of CMS 4.7.0 `$IsFirst` and `$IsLast` will be preferred. The original
+- `$Even`, `$Odd`: Returns boolean, handy for zebra striping.
+- `$EvenOdd`: Returns a string, either 'even' or 'odd'. Useful for CSS classes.
+- `$First`, `$Last`, `$Middle`: Booleans about the position in the list.
+  - Note: as of CMS 4.7.0 `$IsFirst` and `$IsLast` will be preferred. The original
     syntax will continue to work, but will be deprecated in a future release.
- * `$FirstLast`: Returns a string, "first", "last", "first last" (if both), or "". Useful for CSS classes.
- * `$Pos`: The current position in the list (integer).
+- `$FirstLast`: Returns a string, "first", "last", "first last" (if both), or "". Useful for CSS classes.
+- `$Pos`: The current position in the list (integer).
    Will start at 1, but can take a starting index as a parameter.
- * `$FromEnd`: The position of the item from the end (integer).
+- `$FromEnd`: The position of the item from the end (integer).
    Last item defaults to 1, but can be passed as a parameter.
- * `$TotalItems`: Number of items in the list (integer).
+- `$TotalItems`: Number of items in the list (integer).
 
 ```ss
 <ul>
@@ -380,11 +384,11 @@ iteration.
 ```
 
 [info]
-A common task is to paginate your lists. See the [Pagination](how_tos/pagination) how to for a tutorial on adding 
+A common task is to paginate your lists. See the [Pagination](how_tos/pagination) how to for a tutorial on adding
 pagination.
 [/info]
 
-### Modulus and MultipleOf
+### `Modulus` and `MultipleOf`
 
 `$Modulus` and `$MultipleOf` can help to build column and grid layouts.
 
@@ -393,7 +397,7 @@ pagination.
 $Modulus(value, offset)
 
 // returns a boolean.
-$MultipleOf(factor, offset) 
+$MultipleOf(factor, offset)
 
 <% loop $Children %>
 <div class="column-{$Modulus(4)}">
@@ -405,11 +409,11 @@ $MultipleOf(factor, offset)
 ```
 
 [hint]
-`$Modulus` is useful for floated grid CSS layouts. If you want 3 rows across, put $Modulus(3) as a class and add a 
+`$Modulus` is useful for floated grid CSS layouts. If you want 3 rows across, put $Modulus(3) as a class and add a
 `clear: both` to `.column-1`.
 [/hint]
 
-`$MultipleOf(value, offset)` can also be utilized to build column and grid layouts. In this case we want to add a `<br>` 
+`$MultipleOf(value, offset)` can also be utilized to build column and grid layouts. In this case we want to add a `<br>`
 after every 3rd item.
 
 ```ss
@@ -449,21 +453,23 @@ For more information on formatting and casting variables see [Formatting, Modify
 
 ## Scope
 
-In the `<% loop %>` section, we saw an example of two **scopes**. Outside the `<% loop %>...<% end_loop %>`, we were in 
-the scope of the top level `Page`. But inside the loop, we were in the scope of an item in the list (i.e the `Child`).
+In the `<% loop %>` section, we saw an example of two **scopes**. Outside the `<% loop %>...<% end_loop %>`, we were in
+the scope of the top level `Page`. But inside the loop, we were in the scope of an item in the list (i.e. the `Child`).
 
-The scope determines where the value comes from when you refer to a variable. Typically the outer scope of a `Page.ss` 
-layout template is the [PageController](api:SilverStripe\CMS\Controllers\ContentController\PageController) that is currently being rendered. 
+The scope determines where the value comes from when you refer to a variable. Typically the outer scope of a `Page.ss`
+layout template is the [PageController](api:SilverStripe\CMS\Controllers\ContentController\PageController) that is currently being rendered.
 
 When the scope is a `PageController` it will automatically also look up any methods in the corresponding `Page` data
 record. In the case of `$Title` the flow looks like
 
-	$Title --> [Looks up: Current PageController and parent classes] --> [Looks up: Current Page and parent classes]
+```text
+$Title --> [Looks up: Current PageController and parent classes] --> [Looks up: Current Page and parent classes]
+```
 
 The list of variables you could use in your template is the total of all the methods in the current scope object, parent
 classes of the current scope object, and any [Extension](api:SilverStripe\Core\Extension) instances you have.
 
-### Navigating Scope
+### Navigating scope
 
 #### Up
 
@@ -482,21 +488,23 @@ When in a particular scope, `$Up` takes the scope back to the previous level.
 ```
 
 Given the following structure, it will output the text.
-```
-	My Page
-	|
-	+-+ Child 1
- 	| 	|
- 	| 	+- Grandchild 1
- 	|
- 	+-+ Child 2
 
-	Children of 'My Page'
+```text
+ My Page
+ |
+ +-+ Child 1
+  |  |
+  |  +- Grandchild 1
+  |
+  +-+ Child 2
 
-	Page 'Child 1' is a child of 'My Page'
-	Page 'Grandchild 1' is a grandchild of 'My Page'
-	Page 'Child 2' is a child of 'MyPage'
+ Children of 'My Page'
+
+ Page 'Child 1' is a child of 'My Page'
+ Page 'Grandchild 1' is a grandchild of 'My Page'
+ Page 'Child 2' is a child of 'MyPage'
 ```
+
 [notice]
 Additional selectors implicitly change the scope so you need to put additional `$Up` to get what you expect.
 [/notice]
@@ -504,14 +512,14 @@ Additional selectors implicitly change the scope so you need to put additional `
 ```ss
 <h1>Children of '$Title'</h1>
 <% loop $Children.Sort('Title').First %>
-    <%-- We have two additional selectors in the loop expression so... --%> 
+    <%-- We have two additional selectors in the loop expression so... --%>
     <p>Page '$Title' is a child of '$Up.Up.Up.Title'</p>
 <% end_loop %>
 ```
 
 #### Top
 
-While `$Up` provides us a way to go up one level of scope, `$Top` is a shortcut to jump to the top most scope of the 
+While `$Up` provides us a way to go up one level of scope, `$Top` is a shortcut to jump to the top most scope of the
 page. The  previous example could be rewritten to use the following syntax.
 
 ```ss
@@ -544,8 +552,8 @@ Hello, $CurrentMember.FirstName, welcome back. Your current balance is $CurrentM
 
 Notice that the first example is much tidier, as it removes the repeated use of the `$CurrentMember` accessor.
 
-Outside the `<% with %>.`, we are in the page scope. Inside it, we are in the scope of `$CurrentMember` object. We can 
-refer directly to properties and methods of the [Member](api:SilverStripe\Security\Member) object. `$FirstName` inside the scope is equivalent to 
+Outside the `<% with %>.`, we are in the page scope. Inside it, we are in the scope of `$CurrentMember` object. We can
+refer directly to properties and methods of the [Member](api:SilverStripe\Security\Member) object. `$FirstName` inside the scope is equivalent to
 `$CurrentMember.FirstName`.
 
 ### Me
@@ -571,10 +579,11 @@ for adding notes for other developers but for things you don't want published in
 $EditForm <%-- Some hidden comment about the form --%>
 ```
 
-## Related Lessons
-* [Creating your first theme](https://www.silverstripe.org/learn/lessons/v4/creating-your-first-theme-1)
+## Related lessons
 
-## Related Documentation
+- [Creating your first theme](https://www.silverstripe.org/learn/lessons/v4/creating-your-first-theme-1)
+
+## Related documentation
 
 [CHILDREN Exclude="How_Tos"]
 
@@ -582,9 +591,7 @@ $EditForm <%-- Some hidden comment about the form --%>
 
 [CHILDREN Folder="How_Tos"]
 
-## API Documentation
+## API documentation
 
-* [SSViewer](api:SilverStripe\View\SSViewer)
-* [ThemeManifest](api:SilverStripe\View\ThemeManifest)
-
-
+- [SSViewer](api:SilverStripe\View\SSViewer)
+- [ThemeManifest](api:SilverStripe\View\ThemeManifest)

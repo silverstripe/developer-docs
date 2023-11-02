@@ -3,7 +3,7 @@ title: Testing
 summary: Deploy robust applications by bundling Unit and Behavior tests with your application code and modules.
 ---
 
-# Unit and Integration Testing
+# Unit and integration testing
 
 For behaviour testing in Silverstripe CMS, check out [Silverstripe CMS Behat Documentation](https://github.com/silverstripe-labs/silverstripe-behat-extension/).
 
@@ -22,22 +22,22 @@ If you are familiar with PHP coding but new to unit testing then check out Mark'
 You should also read over the [PHPUnit manual](http://www.phpunit.de/manual/current/en/). It provides a lot of
 fundamental concepts that we build on in this documentation.
 
-## Running Tests
+## Running tests
 
 In order to run tests, you need to install Silverstripe CMS using [Composer](/getting-started/composer),
 which will pull in the required development dependencies to run tests.
 
 Tests are run from the commandline, in your webroot folder:
 
- * `vendor/bin/phpunit`: Runs all tests (as defined by `phpunit.xml`)
- * `vendor/bin/phpunit vendor/silverstripe/framework/tests/`: Run all tests of a specific module
- * `vendor/bin/phpunit vendor/silverstripe/framework/tests/filesystem`: Run specific tests within a specific module
- * `vendor/bin/phpunit vendor/silverstripe/framework/tests/filesystem/FolderTest.php`: Run a specific test 
- * `vendor/bin/phpunit vendor/silverstripe/framework/tests '' flush=1`: Run tests with optional request parameters (note the empty second argument)
+- `vendor/bin/phpunit`: Runs all tests (as defined by `phpunit.xml`)
+- `vendor/bin/phpunit vendor/silverstripe/framework/tests/`: Run all tests of a specific module
+- `vendor/bin/phpunit vendor/silverstripe/framework/tests/filesystem`: Run specific tests within a specific module
+- `vendor/bin/phpunit vendor/silverstripe/framework/tests/filesystem/FolderTest.php`: Run a specific test
+- `vendor/bin/phpunit vendor/silverstripe/framework/tests '' flush=1`: Run tests with optional request parameters (note the empty second argument)
 
 Check the PHPUnit manual for all available [command line arguments](http://www.phpunit.de/manual/current/en/textui.html).
 
-On Linux or OSX, you can avoid typing the full path on every invocation by adding `vendor/bin` 
+On Linux or OSX, you can avoid typing the full path on every invocation by adding `vendor/bin`
 to your `$PATH` definition in the shell profile (usually `~/.profile`): `PATH=./vendor/bin:$PATH`
 
 ## Caching
@@ -50,7 +50,7 @@ In order to flush the cache, use the `flush=1` CLI parameter:
 vendor/bin/phpunit vendor/silverstripe/framework/tests '' flush=1
 ```
 
-## Generating a Coverage Report
+## Generating a coverage report
 
 PHPUnit can generate a code coverage report ([docs](http://www.phpunit.de/manual/current/en/code-coverage-analysis.html))
 which shows you how much of your logic is executed by your tests. This is very useful to determine gaps in tests.
@@ -61,24 +61,25 @@ vendor/bin/phpunit --coverage-html <output-folder> <optional-tests-folder>
 
 To view the report, open the `index.html` in `<output-folder>` in a web browser.
 
-Typically, only your own custom PHP code in your project should be regarded when producing these reports. To exclude 
+Typically, only your own custom PHP code in your project should be regarded when producing these reports. To exclude
 some `thirdparty/` directories add the following to the `phpunit.xml` configuration file.
+
 ```xml
 <filter>
-	<blacklist>
-		<directory suffix=".php">vendor/silverstripe/framework/dev/</directory>
-		<directory suffix=".php">vendor/silverstripe/framework/thirdparty/</directory>
-		<directory suffix=".php">vendor/silverstripe/cms/thirdparty/</directory>
+    <blacklist>
+        <directory suffix=".php">vendor/silverstripe/framework/dev/</directory>
+        <directory suffix=".php">vendor/silverstripe/framework/thirdparty/</directory>
+        <directory suffix=".php">vendor/silverstripe/cms/thirdparty/</directory>
 
-		<!-- Add your custom rules here -->
-		<directory suffix=".php">app/thirdparty/</directory>
-	</blacklist>
+        <!-- Add your custom rules here -->
+        <directory suffix=".php">app/thirdparty/</directory>
+    </blacklist>
 </filter>
 ```
 
 ## Configuration
 
-The `phpunit` executable can be configured by [command line arguments](http://www.phpunit.de/manual/current/en/textui.html) 
+The `phpunit` executable can be configured by [command line arguments](http://www.phpunit.de/manual/current/en/textui.html)
 or through an XML file. File-based configuration has
 the advantage of enforcing certain rules across test executions (e.g. excluding files from code coverage reports), and
 of course this information can be version controlled and shared with other team members.
@@ -91,12 +92,12 @@ There's nothing stopping you from creating multiple XML files (see the `--config
 [PHPUnit documentation](http://www.phpunit.de/manual/current/en/textui.html)). For example, you could have a
 `phpunit-unit-tests.xml` and `phpunit-functional-tests.xml` file (see below).
 
-### Database Permissions
+### Database permissions
 
 Silverstripe CMS tests create their own temporary database on every execution. Because of this the database user in your config file
 should have the appropriate permissions to create new databases on your server, otherwise tests will not run.
 
-## Writing Tests
+## Writing tests
 
 Tests are written by creating subclasses of [SapphireTest](api:SilverStripe\Dev\SapphireTest).  You should put tests for your site in the
 `app/tests` directory.  If you are writing tests for a module, put them in the `tests/` directory of your module (in `vendor/`).
@@ -107,11 +108,11 @@ application class, with "Test" as a suffix.  For instance, we have all the tests
 
 You will generally write two different kinds of test classes.
 
-*  **Unit Test:** Test the behaviour of one of your DataObjects.
-*  **Functional Test:** Test the behaviour of one of your controllers.
+- **Unit Test:** Test the behaviour of one of your DataObjects.
+- **Functional Test:** Test the behaviour of one of your controllers.
 
 Tutorials and recipes for creating tests using the Silverstripe CMS:
 
-* [Creating a Silverstripe CMS test](how_tos/write_a_sapphiretest): Writing tests to check core data objects
-* [Creating a functional test](how_tos/write_a_functionaltest): An overview of functional tests and how to write a functional test
-* [Testing Outgoing Email](how_tos/testing_email): An overview of the built-in email testing code
+- [Creating a Silverstripe CMS test](how_tos/write_a_sapphiretest): Writing tests to check core data objects
+- [Creating a functional test](how_tos/write_a_functionaltest): An overview of functional tests and how to write a functional test
+- [Testing Outgoing Email](how_tos/testing_email): An overview of the built-in email testing code

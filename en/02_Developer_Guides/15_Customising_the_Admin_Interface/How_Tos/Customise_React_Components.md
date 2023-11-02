@@ -2,37 +2,35 @@
 title: Customising React components
 summary: Learn how to use Injector to override React-rendered form fields
 ---
-# Customising React Components
+# Customising react components
 
 In this tutorial, we'll customise some form elements rendered with React to have some new features.
 
-## An enhanced TextField
+## An enhanced textField
 
-Let's add a character count to the `TextField` component. `TextField` is a built-in component in the admin area. Because the `TextField` component is fetched 
+Let's add a character count to the `TextField` component. `TextField` is a built-in component in the admin area. Because the `TextField` component is fetched
 through Injector, we can override it and augment it with our own functionality.
 
 First, let's create our [higher order component](../reactjs_redux_and_graphql#customising-react-components-with-injector).
 
-__my-module/js/components/CharacterCounter.js__
 ```js
+// my-module/js/components/CharacterCounter.js
 import React from 'react';
 
-const CharacterCounter = (TextField) => (props) => {
-    return (
-        <div>
-            <TextField {...props} />
-            <small>Character count: {props.value.length}</small>
-        </div>
-    );
-}
+const CharacterCounter = (TextField) => (props) => (
+  <div>
+    <TextField {...props} />
+    <small>Character count: {props.value.length}</small>
+  </div>
+);
 
 export default CharacterCounter;
 ```
 
-Now let's add this higher order component to [Injector](../reactjs_redux_and_graphql#the-injector-api). 
+Now let's add this higher order component to [Injector](../reactjs_redux_and_graphql#the-injector-api).
 
-__my-module/js/main.js__
 ```js
+// my-module/js/main.js
 import Injector from 'lib/Injector';
 import CharacterCounter from './components/CharacterCounter';
 
@@ -44,9 +42,8 @@ Injector.transform('character-count-transform', (updater) => {
 The last thing we'll have to do is [transpile our code](../javascript_development#es6-and-build-tools) and load the resulting bundle file
 into the admin page.
 
-__my-module/\_config/config.yml__
-
-```yaml
+```yml
+# my-module/_config/config.yml
 ---
 Name: my-module
 ---
@@ -55,33 +52,36 @@ SilverStripe\Admin\LeftAndMain:
     # The name of this file will depend on how you've configured your build process
     - 'my-module/js/dist/main.bundle.js'
 ```
+
 Now that the customisation is applied, our text fields look like this:
 
-![](../../../_images/react-di-1.png)
+![a text field with some text in it, and a character count showing "characters count: 7"](../../../_images/react-di-1.png)
 
 ### More enhancements
 
 Let's add another customisation to TextField. If the text goes beyond a specified
 length, let's throw a warning in the UI.
 
-__my-module/js/components/TextLengthChecker.js__
-
 ```js
-const TextLengthCheker = (TextField) => (props) => {  
-  const {limit, value } = props;
+// my-module/js/components/TextLengthChecker.js
+import React from 'react';
+// ...
+
+const TextLengthCheker = (TextField) => (props) => {
+  const { limit, value } = props;
   const invalid = limit !== undefined && value.length > limit;
 
   return (
     <div>
       <TextField {...props} />
       {invalid &&
-        <span style={{color: 'red'}}>
+        <span style={{ color: 'red' }}>
           {`Text is too long! Must be ${limit} characters`}
         </span>
       }
     </div>
   );
-}
+};
 
 export default TextLengthChecker;
 ```
@@ -90,9 +90,8 @@ We'll apply this one to the injector as well, but let's do it under a different 
 For the purposes of demonstration, let's imagine this customisation comes from another
 module.
 
-__my-module/js/main.js__
-
 ```js
+// my-module/js/main.js
 import Injector from 'lib/Injector';
 import TextLengthChecker from './components/TextLengthChecker';
 
@@ -103,64 +102,64 @@ Injector.transform('text-length-transform', (updater) => {
 
 Now, both components have applied themselves to the textfield.
 
-![](../../../_images/react-di-2.png)
-
+![a text field with a lot of text in it, a character count showing "character count: 47", and an error message saying "Text is too long! Must be 40 characters"](../../../_images/react-di-2.png)
 
 ### Getting the customisations to work together
 
 Both these enhancements are nice, but what would be even better is if they could
 work together collaboratively so that the character count only appeared when the user
 input got within a certain range of the limit. In order to do that, we'll need to be
-sure that the `TextLengthChecker` customisation is loaded ahead of the `CharacterCounter` customisation. 
+sure that the `TextLengthChecker` customisation is loaded ahead of the `CharacterCounter` customisation.
 
-First let's update the character counter to show characters _remaining_, which is
+First let's update the character counter to show characters *remaining*, which is
 much more useful. We'll also update the API to allow a `warningBuffer` prop. This is
 the amount of characters the input can be within the `limit` before the warning shows.
 
-__my-module/js/components/CharacterCounter.js__
 ```js
+// my-module/js/components/CharacterCounter.js
 import React from 'react';
 
 const CharacterCounter = (TextField) => (props) => {
-    const { warningBuffer, limit, value: { length } } = props;
-    const remainingChars = limit - length;
-    const showWarning = length + warningBuffer >= limit;
-    return (
-        <div>
-            <TextField {...props} />
-            {showWarning &&
-                <small>Characters remaining: {remainingChars}</small>
+  const { warningBuffer, limit, value: { length } } = props;
+  const remainingChars = limit - length;
+  const showWarning = length + warningBuffer >= limit;
+  return (
+    <div>
+      <TextField {...props} />
+      {showWarning &&
+        <small>Characters remaining: {remainingChars}</small>
             }
-        </div>
-    );
-}
+    </div>
+  );
+};
 
 export default CharacterCounter;
 ```
 
-Now, when we apply this customisation, we need to be sure it loads _after_ the length
+Now, when we apply this customisation, we need to be sure it loads *after* the length
 checker in the middleware chain, as it relies on the prop `limit`.
 
 For this example, we'll imagine these two enhancements come from different modules.
 
-__module-a/js/main.js__
 ```js
+// module-a/js/main.js
 import Injector from 'lib/Injector';
 import CharacterCounter from './components/CharacterCounter';
+
 Injector.transform(
-  'character-count-transform', 
+  'character-count-transform',
   (update) => update.component('TextField', CharacterCounter),
   { after: 'text-length-transform' }
 );
 ```
 
-__module-b/js/main.js__
 ```js
+// module-b/js/main.js
 import Injector from 'lib/Injector';
 import TextLengthChecker from './components/TextLengthChecker';
 
 Injector.transform(
-  'text-length-transform', 
+  'text-length-transform',
   (updater) => updater.component('TextField', TextLengthChecker),
   { before: 'character-count-transform' }
 );
@@ -168,7 +167,7 @@ Injector.transform(
 
 Now, both components, coming from different modules, play together nicely, in the correct order.
 
-![](../../../_images/react-di-3.png)
+![a text field with a lot of text in it, a character count showing "characters remaining: -7", and an error message saying "Text is too long! Must be 40 characters"](../../../_images/react-di-3.png)
 
 ### Adding context
 
@@ -178,22 +177,18 @@ Now, both components, coming from different modules, play together nicely, in th
  this may sometimes be useful, more often than not, we only want to add our enhancements in certain
  contexts. You may, for instance, only want your character counter to display on one specific field
  in one specific form.
- 
-
 
  Let's apply our transformation to just the file edit form in AssetAdmin.
- 
- __my-module/js/main.js__
+
  ```js
+ // my-module/js/main.js
  import Injector from 'lib/Injector';
  import TextLengthChecker from './components/TextLengthChecker';
- 
+
  Injector.transform('text-length-transform', (updater) => {
    updater.component('TextField.AssetAdmin.FileEditForm', TextLengthChecker);
  });
  ```
-
-
 
 ## A better form action: dealing with events
 
@@ -201,8 +196,8 @@ Let's make a new customisation that customises the behaviour of a button. We'll 
 all form actions throw a `window.confirm()` message before executing their action. Further,
 we'll apply some new style to the button if it is in a loading state.
 
-__my-module/js/components/ConfirmingFormButton.js__
 ```js
+// my-module/js/components/ConfirmingFormButton.js
 import React from 'react';
 
 export default (FormAction) => (props) => {
@@ -213,18 +208,19 @@ export default (FormAction) => (props) => {
       buttonStyle: props.loading ? 'danger' : props.data.buttonStyle
     },
     handleClick(e) {
-      if(window.confirm('Did you really mean to click this?')) {
+      /* eslint-disable-next-line no-alert */
+      if (window.confirm('Did you really mean to click this?')) {
         props.handleClick(e);
       }
     }
-  }
+  };
 
-  return <FormAction {...newProps} />
-}
+  return <FormAction {...newProps} />;
+};
 ```
 
-__my-module/js/main.js__
 ```js
+// my-module/js/main.js
 import ConfirmingFormButton from './components/ConfirmingFormButton';
 
 Injector.transform('confirming-button-transform', (updater) => {

@@ -4,7 +4,7 @@ summary: Outline the minor release lifecycle and support commitment for Silverst
 icon: code-branch
 ---
 
-# Minor Release Policy
+# Minor release policy
 
 This policy complements the [Silverstripe CMS Major release policy](major_release_policy) by providing guidance on when new minor releases of Silverstripe CMS are shipped.
 
@@ -20,7 +20,7 @@ Refer to our [definition of public API](/project_governance/public_api/).
 
 This policy applies to all [Silverstripe CMS commercially supported modules](/project_governance/supported_modules/).
 
-Community modules are not covered by this policy. Modules in the `silverstripe` github organisation that are not commercially supported are updated on a best effort basis.
+Community modules are not covered by this policy. Modules in the `silverstripe` GitHub organisation that are not commercially supported are updated on a best effort basis.
 
 ## Upgrading to a new minor release
 
@@ -51,10 +51,12 @@ The minor release support timeline follows similar phases to those of a major re
 A Silverstripe CMS minor release line enters the *bug and security fixes* phase once it is tagged *stable*.
 
 A minor release in the *bug and security fixes* phase receives:
+
 - bugfixes that do not change existing public API
 - security patches for vulnerabilities at all impact levels.
 
 It does **not** receive:
+
 - new features
 - new public API.
 
@@ -83,6 +85,7 @@ Silverstripe CMS aims to deliver security patches at pre-defined intervals to ma
 When a vulnerability is [confidentially reported](/contributing/issues_and_bugs/#reporting-security-issues) to the Silverstripe CMS development team and we are confident that the vulnerability is not actively being exploited in the wild, we will wait until the next available security patch window to disclose it and release a patch.
 
 Security patch windows are scheduled to line up with our expected minor release. Our security patch windows are in:
+
 - January
 - April
 - July
