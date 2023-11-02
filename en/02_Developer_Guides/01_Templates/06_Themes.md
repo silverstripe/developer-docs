@@ -11,7 +11,7 @@ application can provide multiple unique themes (i.e.a mobile theme).
 
 ## Downloading
 
-Head to the [themes section of the addons site](https://addons.silverstripe.org/add-ons?search=&type=theme) to check out the range of themes the 
+Head to the [Packagist](https://packagist.org/search/?type=silverstripe-theme) to check out the range of themes the 
 community has built. Themes are published and downloaded using Composer,
 just like any other [Silverstripe module](/developer_guides/extending/modules).
 
@@ -97,9 +97,9 @@ A `theme` within Silverstripe CMS is simply a collection of templates and other 
 
 To define extra themes simply add extra entries to the `SilverStripe\View\SSViewer.themes` configuration array. You will probably always want to ensure that you include `'$default'` in your list of themes to ensure that the base templates are used when required.
 
-## Submitting your theme to addons
+## Submitting your theme
 
-If you want to submit your theme to the Silverstripe CMS addons directory then check:
+If you want to submit your theme to Packagist for others to use, then check:
 
 * You should ensure your templates are well structured, modular and commented so it's easy for other people to customise 
 * Templates should not contain text inside images and all images provided must be open source and not break any 
@@ -109,11 +109,11 @@ copyright or license laws. This includes any icons your template uses.
 
 Once you've created your module and set up your Composer configuration, create a new repository and push your theme to a Git host such as [GitHub.com](https://github.com). 
 
-The final step is to [submit your theme to Packagist](https://packagist.org/about#how-to-submit-packages) (the central Composer package repository). Once your theme is listed in Packagist, and has `"type": "silverstripe-theme"` in its configuration, it will automatically be pulled into our addons listing site.
+The final step is to [submit your theme to Packagist](https://packagist.org/about#how-to-submit-packages) (the central Composer package repository).
 
 ## Links
 
- * [Themes Listing on silverstripe.org](https://addons.silverstripe.org/add-ons?search=&type=theme)
+ * [Silverstripe CMS themes on Packagist](https://packagist.org/search/?type=silverstripe-theme)
 
 ## Related Lessons
 * [Creating your first project](https://www.silverstripe.org/learn/lessons/v4/creating-your-first-project)
