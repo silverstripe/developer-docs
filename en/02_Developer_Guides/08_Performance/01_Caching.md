@@ -141,7 +141,7 @@ use SilverStripe\Core\Injector\Injector;
 
 $cache = Injector::inst()->get(CacheInterface::class . '.myCache');
 
-// remove the cache item
+// set a cache item with an expiry
 $cache->set('myCacheKey', 'myValue', 300); // cache for 300 seconds
 ```
 
