@@ -166,6 +166,7 @@ at the beginning of the commit message.
 | FIX    | Bugfix on something developers or users are likely to encounter.                                                                                 |
 | DOC    | Any documentation changes.                                                                                                                       |
 | DEP    | Dependency version updates (updates for composer.json, package.json etc)                                                                         |
+| TLN    | Translation commits                                                                                                                              |
 | MNT    | Maintenance commits that have no impact on users and applications (e.g. CI configs) - ommitted from the changelog                                |
 | Merge  | PR merges and merge-ups - ommitted from the changelog                                                                                            |
 
