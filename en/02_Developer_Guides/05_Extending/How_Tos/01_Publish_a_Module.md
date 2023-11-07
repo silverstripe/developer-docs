@@ -60,9 +60,7 @@ For more information about what your `composer.json` file should include, consul
 
 
 Once your module is published online with a service like github.com or bitbucket.com, submit the repository to 
-[Packagist](https://packagist.org/) to have the module accessible to developers. It'll automatically get picked
-up by [addons.silverstripe.org](https://addons.silverstripe.org/) website due to the `silverstripe-vendormodule`
-type in the file.
+[Packagist](https://packagist.org/) to have the module accessible to developers.
 
 Note that Silverstripe CMS modules have the following distinct characteristics:
 

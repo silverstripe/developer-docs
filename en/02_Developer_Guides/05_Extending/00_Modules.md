@@ -21,7 +21,6 @@ within your module when you next flush your cache.
 
 ## Finding Modules
 
-* [Official module list on silverstripe.org](https://addons.silverstripe.org/)
 * [Packagist.org "silverstripe" tag](https://packagist.org/search/?tags=silverstripe)
 * [GitHub.com "silverstripe" search](https://github.com/search?q=silverstripe)
 
