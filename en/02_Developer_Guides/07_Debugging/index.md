@@ -34,6 +34,14 @@ Backtrace::backtrace();
 // prints a calls-stack
 ```
 
+## Debugging database queries
+
+You can opt in to including a comment on all ORM queries indicating where the query was executed by setting the [DBQueryBuilder.trace_query_origin](api:SilverStripe\ORM\Connect\DBQueryBuilder->trace_query_origin) configuration property or the `SS_TRACE_DB_QUERY_ORIGIN` environment variable to `true`.
+
+Note that the environment variable, if set, will take precedence over the configuration property value.
+
+This is useful if you're using a database proxy, or if you're using the [`showqueries` URL variable](url_variable_tools/#database).
+
 ## API documentation
 
 - [Backtrace](api:SilverStripe\Dev\Backtrace)
