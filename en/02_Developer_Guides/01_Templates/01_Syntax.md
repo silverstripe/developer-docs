@@ -88,6 +88,7 @@ Arguments passed into methods can be any non-array literal type (not just string
 * `$Foo(true)` will pass `true` as a boolean
 * `$Foo(null)` will pass `null` as a null primitive
 * `$Foo("param")`, `$Foo('param')`, and `$Foo(param)` will all pass `'param'` as a string. It is recommended that you always use quotes when passing a string for clarity
+
 [/info]
 
 [notice]
@@ -102,7 +103,7 @@ been defined, the system will return an error.
 
 [note]
 For more details around how variables are inserted and formatted into a template see
-[Formatting, Modifying and Casting Variables](casting)
+[Formatting, Modifying and Casting Variables](/casting)
 [/note]
 
 Variables can come from your database fields, or custom methods you define on your objects.
