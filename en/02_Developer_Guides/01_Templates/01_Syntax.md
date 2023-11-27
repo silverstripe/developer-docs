@@ -103,7 +103,7 @@ been defined, the system will return an error.
 
 [note]
 For more details around how variables are inserted and formatted into a template see
-[Formatting, Modifying and Casting Variables](/casting)
+[Formatting, Modifying and Casting Variables](/developer_guides/templates/casting/)
 [/note]
 
 Variables can come from your database fields, or custom methods you define on your objects.
