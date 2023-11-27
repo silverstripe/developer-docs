@@ -74,7 +74,7 @@ class GridFieldCustomAction extends AbstractGridFieldComponent implements
 
     public function getColumnContent($gridField, $record, $columnName)
     {
-        if (!$record->canEdit()) {
+        if (!$record->hasMethod('canEdit') || !$record->canEdit()) {
             return null;
         }
 
@@ -230,7 +230,7 @@ class GridFieldCustomAction extends AbstractGridFieldComponent implements
 
     private function getCustomAction($gridField, $record)
     {
-        if (!$record->canEdit()) {
+        if (!$record->hasMethod('canEdit') || !$record->canEdit()) {
             return;
         }
 

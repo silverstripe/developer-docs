@@ -9,6 +9,8 @@ icon: table
 [GridField](api:SilverStripe\Forms\GridField\GridField) is Silverstripe CMS's implementation of data grids. The main purpose of this field type is to display
 tabular data in a format that is easy to view and modify. It can be thought of as a HTML table with some tricks.
 
+Usually `GridField` is used with `DataObject` records - but it can be used with data that isn't represented by `DataObject` records as well. See [using `GridField` with arbitrary data](/developer_guides/forms/using_gridfield_with_arbitrary_data/) for more information.
+
 [info]
 `GridField` powers the automated data UI of [ModelAdmin](api:SilverStripe\Admin\ModelAdmin). For more information about `ModelAdmin` see the
 [Customizing the CMS](/developer_guides/customising_the_admin_interface) guide.
@@ -29,10 +31,6 @@ Each `GridField` is built from a number of components grouped into the [GridFiel
 a `GridField` has almost no functionality. The `GridFieldConfig` instance and the attached [GridFieldComponent](api:SilverStripe\Forms\GridField\GridFieldComponent) are
 responsible for all the user interactions including formatting data to be readable, modifying data and performing any
 actions such as deleting records.
-
-[warning]
-Some `GridField` components expect the list to be an instance of `DataList` and won't work with `ArrayList`.
-[/warning]
 
 ```php
 // app/src/PageType/MyPage.php
@@ -223,11 +221,10 @@ Similar to `GridFieldConfig_Base` with the addition support of the ability to vi
 a read-only view of the data record.
 
 [info]
-The data row show must be a `DataObject` subclass. The fields displayed in the read-only view come from
-`DataObject::getCMSFields()`.
+Each record in the list must have an `ID` field, and the value of that field must be a positive integer.
 
-The `DataObject` subclass displayed must define a `canView()` method that returns a boolean on whether the user can view
-this record.
+If the class representing your data has a `getCMSFields()` method, the return value of that method will be used for the fields displayed in the read-only view.
+Otherwise, you'll need to pass in a [`FieldList`](api:SilverStripe\Forms\FieldList) to [`GridFieldDetailForm::setFields()`](api:SilverStripe\Forms\GridField\GridFieldDetailForm::setFields()).
 [/info]
 
 ```php
@@ -246,13 +243,20 @@ $gridField->setConfig($config);
 Similar to `GridFieldConfig_RecordViewer` with the addition support to edit or delete each of the records.
 
 [info]
-The data row show must be a `DataObject` subclass. The fields displayed in the edit view come from
-`DataObject::getCMSFields()`.
+Each record in the list must have an `ID` field, and the value of that field must be a positive integer.
+
+If the class representing your data has a `getCMSFields()` method, the return value of that method will be used for the fields displayed in the read-only view.
+Otherwise, you'll need to pass in a [`FieldList`](api:SilverStripe\Forms\FieldList) to [`GridFieldDetailForm::setFields()`](api:SilverStripe\Forms\GridField\GridFieldDetailForm::setFields()).
 [/info]
 
+[warning]
+The class representing your data _must_ implement [`DataObjectInterface`](api:SilverStripe\ORM\DataObjectInterface) so that your records can be edited.
+
+See [using `GridField` with arbitrary data](/developer_guides/forms/using_gridfield_with_arbitrary_data/) for more information.
+[/warning]
+
 [alert]
-Permission control for editing and deleting the record uses the `canEdit()` and `canDelete()` methods on the
-`DataObject` object.
+Permission control for editing and deleting the record uses the `canEdit()` and `canDelete()` methods on the class that represents your data.
 [/alert]
 
 ```php
@@ -319,8 +323,8 @@ $gridField->setConfig($config);
 
 ## `GridFieldDetailForm`
 
-The `GridFieldDetailForm` component drives the record viewing and editing form. By default it takes its fields from the
-[`DataObject->getCMSFields()`](api:SilverStripe\ORM\DataObject::getCMSFields()) method but can be customised to accept different fields via the
+The `GridFieldDetailForm` component drives the record viewing and editing form. By default it takes its fields from the `getCMSFields()` method
+(e.g. [`DataObject->getCMSFields()`](api:SilverStripe\ORM\DataObject::getCMSFields())) method but can be customised to accept different fields via the
 [GridFieldDetailForm::setFields()](api:SilverStripe\Forms\GridField\GridFieldDetailForm::setFields()) method.
 
 ```php
