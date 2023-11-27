@@ -88,7 +88,6 @@ Arguments passed into methods can be any non-array literal type (not just string
 * `$Foo(true)` will pass `true` as a boolean
 * `$Foo(null)` will pass `null` as a null primitive
 * `$Foo("param")`, `$Foo('param')`, and `$Foo(param)` will all pass `'param'` as a string. It is recommended that you always use quotes when passing a string for clarity
-
 [/info]
 
 [notice]
