@@ -312,7 +312,7 @@ modelConfig:
           filter: false
 ```
 
-### The sort plugin
+### The sort plugins
 
 The sort plugin ([`QuerySort`](api:SilverStripe\GraphQL\Schema\DataObject\Plugin\QuerySort)) adds a
 special `sort` argument to the `read` and `readOne` operations.
@@ -346,6 +346,48 @@ query {
     }
   }
 }
+```
+
+In addition, you can use the field sorting plugin ([`SortPlugin`](api:SilverStripe\GraphQL\Schema\Plugin\SortPlugin)) to sort fields that represent `has_many` and `many_many` relationships. To do this, simply add the desired fields to the query, as well as the `sort` argument to these fields. It is also necessary to update the scheme by adding a `sorter` plugin to those fields that need to be sorted. 
+
+Example how to use SortPlugin.
+
+```graphql
+query {
+  readPages (
+    sort: { created: DESC }
+  ) {
+    nodes {
+      title
+      created
+      hasManyFilesField (sort: { parentFolderID: DESC, title: ASC }) {
+        name
+      }
+    }
+  }
+}
+```
+**app/_graphql/models.yml**
+```yaml
+MyProject\Models\Page:
+  operations:
+    read:
+      plugins:
+        sort:
+          before: paginateList
+          fields:
+            created: true
+  fields:
+    title: true
+    created: true
+    hasManyFilesField:
+      fields:
+        name: true
+      plugins:
+        sorter:
+          fields:
+            title: true
+            parentFolderID: true
 ```
 
 #### Customising the sort fields
