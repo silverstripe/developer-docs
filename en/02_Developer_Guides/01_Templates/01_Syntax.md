@@ -100,7 +100,7 @@ If you wish to pass parameters to getter functions, you must use the full method
 
 [note]
 For more detail around how variables are inserted and formatted into a template see 
-[Formatting, Modifying and Casting Variables](casting)
+[Formatting, Modifying and Casting Variables](/developer_guides/templates/casting/)
 [/note]
 
 Variables can come from your database fields, or custom methods you define on your objects.
