@@ -19,6 +19,8 @@ These are explicitly included in our definition of public API (unless excluded b
 * **global** functions, constants, and variables
 * namespaces, classes, interfaces, enums, and traits
 * public and protected scope (including methods, properties and constants)
+* signatures of functions/methods that are considered public API
+  * including typehints, parameters, and parameter names
 * private static class property declarations (considered to be configuration variables)
 * configuration default values (in yml files and in private statics)
 * yml configuration file and fragment names (see [yml configuration syntax](/developer_guides/configuration/configuration/#syntax))
