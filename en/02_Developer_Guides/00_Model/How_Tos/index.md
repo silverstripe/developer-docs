@@ -1,6 +1,6 @@
 ---
 title: How To's
 ---
-# How To's: Model and Databases
+# How to's: model and databases
 
 [CHILDREN]

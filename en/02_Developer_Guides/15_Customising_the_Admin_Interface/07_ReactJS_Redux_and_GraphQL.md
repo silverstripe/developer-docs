@@ -6,21 +6,22 @@ iconBrand: react
 
 # Introduction to the "React" layer
 
-Some admin modules render their UI with React, a popular Javascript library created by Facebook. 
-For these sections, rendering happens via client side scripts that create and inject HTML 
-declaratively using data structures. 
+Some admin modules render their UI with React, a popular JavaScript library created by Facebook.
+For these sections, rendering happens via client side scripts that create and inject HTML
+declaratively using data structures.
 
 There are some several members of this ecosystem that all work together to provide a dyanamic UI. They include:
-* [ReactJS](https://facebook.github.io/react/) - A Javascript UI library
-* [Redux](http://redux.js.org/) - A state manager for Javascript
-* [GraphQL](http://graphql.org/) - A query language for your API
-* [Apollo](https://www.apollodata.com/) - A framework for using GraphQL in your application
+
+- [ReactJS](https://facebook.github.io/react/) - A JavaScript UI library
+- [Redux](http://redux.js.org/) - A state manager for JavaScript
+- [GraphQL](http://graphql.org/) - A query language for your API
+- [Apollo](https://www.apollodata.com/) - A framework for using GraphQL in your application
 
 All of these pillars of the frontend application can be customised, giving you more control over how the admin interface looks, feels, and behaves.
 
 [alert]
 These technologies underpin the future of Silverstripe CMS development, but their current implementation is
-_experimental_. Our APIs are not expected to change drastically between releases, but they are excluded from
+*experimental*. Our APIs are not expected to change drastically between releases, but they are excluded from
 our [semantic versioning](https://semver.org) commitments for the time being. Any breaking changes will be
 clearly signalled in release notes.
 [/alert]
@@ -32,12 +33,16 @@ First, a brief summary of what each of these are:
 React's job is to render UI. Its UI elements are known as "components" and represent the fundamental building block of a React-rendered interface. A React component expressed like this:
 
 ```js
-<PhotoItem size={200} caption="Angkor Wat" onSelect={openLightbox}>
-    <img src="path/to/image.jpg" />
-</PhotoItem>
+import React from 'react';
+// ...
+
+  <PhotoItem size={200} caption="Angkor Wat" onSelect={openLightbox}>
+    <img alt="" src="path/to/image.jpg" />
+  </PhotoItem>;
 ```
 
 Might actually render HTML that looks like this:
+
 ```html
 <div class="photo-item">
     <div class="photo" style="width:200px;height:200px;">
@@ -49,53 +54,54 @@ Might actually render HTML that looks like this:
 </div>
 ```
 
-This syntax is known as JSX. It is transpiled at build time into native Javascript calls
+This syntax is known as JSX. It is transpiled at build time into native JavaScript calls
 to the React API. While optional, it is recommended to express components this way.
 
-### Recommended: React Dev Tools
+### Recommended: react dev tools
 
-The [React Dev Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en) extension available for Chrome and Firefox is critical to debugging a React UI. It will let you browse the React UI much like the DOM, showing the tree of rendered components and their current props and state in real time.
+The [React Dev Tools](https://chrome.g.oogle.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en) extension available for Chrome and Firefox is critical to debugging a React UI. It will let you browse the React UI much like the DOM, showing the tree of rendered components and their current props and state in real time.
 
 ## Redux
 
-Redux is a state management tool with a tiny API that affords the developer highly predictable behaviour. All of the application state is stored in a single object, and the only way to mutate that object is by calling an action, which is just a simple object that describes what happened. A function known as a _reducer_ mutates the state based on that action and returns a new reference with the updated state.
+Redux is a state management tool with a tiny API that affords the developer highly predictable behaviour. All of the application state is stored in a single object, and the only way to mutate that object is by calling an action, which is just a simple object that describes what happened. A function known as a *reducer* mutates the state based on that action and returns a new reference with the updated state.
 
-The following example is taken from the [Redux Github page](https://github.com/reactjs/redux):
+The following example is taken from the [Redux GitHub page](https://github.com/reactjs/redux):
 
 ```js
 // reducer
 function counter(state = 0, action) {
   switch (action.type) {
-  case 'INCREMENT':
-    return state + 1;
-  case 'DECREMENT':
-    return state - 1;
-  default:
-    return state
+    case 'INCREMENT':
+      return state + 1;
+    case 'DECREMENT':
+      return state - 1;
+    default:
+      return state;
   }
 }
 
-let store = createStore(counter);
-store.subscribe(() =>
-  console.log(store.getState())
-);
-// Call an action
+const store = createStore(counter);
+// subscribe to an action
+store.subscribe(() => {
+  const state = store.g.etState();
+  // ... do something with the state here
+});
+
+// Call an action - in this case increment the state from 0 to 1
 store.dispatch({ type: 'INCREMENT' });
-// 1
 ```
 
-### Recommended: Redux Devtools
+### Recommended: redux devtools
 
 It's important to be able to view the state of the React application when you're debugging and
 building the interface.
 
-To be able to view the state, you'll need to be in a dev environment 
+To be able to view the state, you'll need to be in a dev environment
 and have the [Redux Devtools](https://github.com/zalmoxisus/redux-devtools-extension)
 installed on Google Chrome or Firefox, which can be found by searching with your favourite search
 engine.
 
-
-## GraphQL and Apollo
+## GraphQL and apollo
 
 [GraphQL](http://graphql.org/learn/) is a strictly-typed query language that allows you to describe what data you want to fetch from your API. Because it is based on types, it is self-documenting and predictable. Further, it's structure lends itself nicely to fetching nested objects. Here is an example of a simple GraphQL query:
 
@@ -144,58 +150,65 @@ On its own, GraphQL offers nothing functional, as it's just a query language. Yo
 
 This documentation will stop short of explaining React, Redux, and GraphQL/Apollo in-depth, as there is much better
 documentation available all over the web. We recommend:
-* [The Official React Tutorial](https://facebook.github.io/react/tutorial/tutorial.html)
-* [Build With React](http://buildwithreact.com/tutorial)
-* [Getting Started with Redux](https://egghead.io/courses/getting-started-with-redux)
-* [The React Apollo docs](http://dev.apollodata.com/react/)
-* [GraphQL in Silverstripe](/developer_guides/graphql/)
 
-# The Injector API
+- [The Official React Tutorial](https://facebook.github.io/react/tutorial/tutorial.html)
+- [Build With React](http://buildwithreact.com/tutorial)
+- [Getting Started with Redux](https://egghead.io/courses/getting-started-with-redux)
+- [The React Apollo docs](http://dev.apollodata.com/react/)
+- [GraphQL in Silverstripe](/developer_guides/graphql/)
+
+## The injector API
 
 Much like Silverstripe CMS's [Injector API](../../extending/injector) in PHP,
-the client-side framework has its own implementation of dependency injection 
-known as `Injector`. Using Injector, you can register new services, and 
+the client-side framework has its own implementation of dependency injection
+known as `Injector`. Using Injector, you can register new services, and
 transform existing services.
 
 Injector is broken up into three sub-APIs:
-* `Injector.component` for React UI components
-* `Injector.reducer` for Redux state management
-* `Injector.form` for forms rendered via `FormSchema`.
 
-The frontend Injector works a bit differently than its backend counterpart. Instead of _overriding_ a service with your own implementation, you _enhance_ an existing service with your own concerns. This pattern is known as [middleware](https://en.wikipedia.org/wiki/Middleware).
+- `Injector.component` for React UI components
+- `Injector.reducer` for Redux state management
+- `Injector.form` for forms rendered via `FormSchema`.
+
+The frontend Injector works a bit differently than its backend counterpart. Instead of *overriding* a service with your own implementation, you *enhance* an existing service with your own concerns. This pattern is known as [middleware](https://en.wikipedia.org/wiki/Middleware).
 
 Middleware works a lot like a decorator. It doesn't alter the original API of the service,
 but it can augment it with new features and concerns. This has the inherent advantage of allowing all thidparty code to have an influence over the behaviour, state, and UI of a component.
 
-## A simple middleware example
+### A simple middleware example
 
 Let's say you have an application that features error logging. By default, the error logging service simply outputs to `console.error`. But you want to customise it to send errors to a thirdparty service. For this, you could use middleware to augment the default functionality of the logger.
 
-_LoggingService.js_
 ```js
+// LoggingService.js
+
+/* eslint-disable-next-line no-console */
 const LoggingService = (error) => console.error(error);
 
 export default LoggingService;
 ```
 
-Now, let's add some middleware to that service. The signature of middleware is: 
+Now, let's add some middleware to that service. The signature of middleware is:
+
 ```js
 const middleware = (next) => (args) => next(args);
 ```
+
 Where `next()` is the next customisation in the "chain" of middleware. Before invoking the next implementation, you can add whatever customisations you need. Here's how we would use middleware to enhance `LoggingService`.
 
 ```js
 import thirdPartyLogger from 'third-party-logger';
 
 const addLoggingMiddleware = (next) => (error) => {
-    if (error.type === LoggingService.CRITICAL) {
-        thirdpartyLogger.send(error.message);
-    }
-    return next(error);
-}
+  if (error.type === LoggingService.CRITICAL) {
+    thirdpartyLogger.send(error.message);
+  }
+  return next(error);
+};
 ```
 
 Then, we would create a new logging service that merges both implementations.
+
 ```js
 import LoggingService from './LoggingService';
 import addLoggingMiddleware from './addLoggingMiddleware';
@@ -206,33 +219,32 @@ const MyNewLogger = addLoggingMiddleware(LoggingService);
 We haven't overridden any functionality. `LoggingService(error)` will still invoke `console.error`, once all the middleware has run. But what if we did want to kill the original functionality?
 
 ```js
-import LoggingService from './LoggingService';
 import thirdPartyLogger from 'third-party-logger';
+import LoggingService from './LoggingService';
 
 const addLoggingMiddleware = (next) => (error) => {
-    // Critical errors go to a thirdparty service
-    if (error.type === LoggingService.CRITICAL) {
-        thirdPartyLogger.send(error.message);
-    }
-    // Other errors get logged, but not to our thirdparty
-    else if (error.type === LoggingService.ERROR) {
-        next(error);
-    } 
-    // Minor errors are ignored
-    else {
-        // Do nothing!
-    }
-}
+  // Critical errors go to a thirdparty service
+  if (error.type === LoggingService.CRITICAL) {
+    thirdPartyLogger.send(error.message);
+  }
+  // Other errors get logged, but not to our thirdparty
+  else if (error.type === LoggingService.ERROR) {
+    next(error);
+  }
+  // Minor errors are ignored
+  else {
+    // Do nothing!
+  }
+};
 ```
 
+### Registering new services to the injector
 
-## Registering new services to the Injector
-
-If you've created a module using React, it's a good idea to afford other developers an 
+If you've created a module using React, it's a good idea to afford other developers an
 API to enhance those components, forms, and state. To do that, simply register them with `Injector`.
 
-__my-public-module/js/main.js__
 ```js
+// my-public-module/js/main.js
 import Injector from 'lib/Injector';
 
 Injector.component.register('MyComponent', MyComponent);
@@ -249,94 +261,86 @@ const MyComponent = Injector.component.get('MyComponent');
 Because of the unique structure of the `form` middleware, you cannot register new services to `Injector.form`.
 [/notice]
 
-
 [alert]
 Overwriting components by calling `register()` multiple times for the same
 service name is discouraged, and will throw an error. Should you really need to do this,
 you can pass `{ force: true }` as the third argument to the `register()` function.
 [/alert]
 
-
-## Transforming services using middleware
+### Transforming services using middleware
 
 Now that the services are registered, other developers can customise your services with `Injector.transform()`.
 
-__someone-elses-module/js/main.js__
-
 ```js
+// someone-elses-module/js/main.js
 Injector.transform(
-    'my-transformation',
-    (updater) => {
-        updater.component('MyComponent', MyCustomComponent);
-        updater.reducer('myCustom', MyCustomReducer);
-
-    }
+  'my-transformation',
+  (updater) => {
+    updater.component('MyComponent', MyCustomComponent);
+    updater.reducer('myCustom', MyCustomReducer);
+  }
 );
-
 ```
 
 Much like the configuration layer, we need to specify a name for this transformation. This will help other modules negotiate their priority over the injector in relation to yours.
 
-The second parameter of the `transform` argument is a callback which receives an `updater`object. It contains four functions: `component()`, `reducer()`, `form.alterSchema()` and `form.addValidation()`. We'll cover all of these in detail functions in detail further into the document, but briefly, these update functions allow you to mutate the DI container with a wrapper for the service. Remember, this function does not _replace_
+The second parameter of the `transform` argument is a callback which receives an `updater`object. It contains four functions: `component()`, `reducer()`, `form.alterSchema()` and `form.addValidation()`. We'll cover all of these in detail functions in detail further into the document, but briefly, these update functions allow you to mutate the DI container with a wrapper for the service. Remember, this function does not *replace*
 the service - it enhances it with new functionality.
 
-### Helpful tip: Name your component middleware
+#### Helpful tip: name your component middleware
 
 Since multiple enhancements can be applied to the same component, it will be really
 useful for debugging purposes to reveal the names of each enhancement on the `displayName` of
- the component. This will really help you when viewing the rendered component tree in 
- [React Dev Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en).
- 
+ the component. This will really help you when viewing the rendered component tree in
+ [React Dev Tools](https://chrome.g.oogle.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en).
+
  For this, you can use the third parameter of the `updater.component` function. It takes an arbitrary
  name for the enhancement you're applying.
- 
- __module-a/js/main.js__
+
  ```js
- (updater) => updater.component('TextField', CharacterCounter, 'CharacterCounter')
- ```
- __module-b/js/main.js__
- ```js
- (updater) => updater.component('TextField', TextLengthChecker, 'TextLengthChecker')
+ // module-a/js/main.js
+ (updater) => updater.component('TextField', CharacterCounter, 'CharacterCounter');
  ```
 
+ ```js
+ // module-b/js/main.js
+ (updater) => updater.component('TextField', TextLengthChecker, 'TextLengthChecker');
+ ```
 
-## Controlling the order of transformations
+### Controlling the order of transformations
 
 Sometimes, it's critical to ensure that your customisation happens after another one has been executed. To afford you control over the ordering of transforms, Injector allows `before` and `after` attributes as metadata for the transformation.
 
-__my-module/js/main.js__
-
 ```js
+// my-module/js/main.js
 Injector.transform(
-    'my-transformation',
-    (updater) => {
-        updater.component('MyComponent', MyCustomComponent);
-        updater.reducer('myCustom', MyCustomReducer);
-
-    },
-    { after: 'another-module' }
+  'my-transformation',
+  (updater) => {
+    updater.component('MyComponent', MyCustomComponent);
+    updater.reducer('myCustom', MyCustomReducer);
+  },
+  { after: 'another-module' }
 );
-
 ```
 
 `before` and `after` also accept arrays of constraints.
 
 ```js
 Injector.transform(
-  'my-transformation', 
-  (updater) => updater.component('MyComponent', MyCustomComponent);
+  'my-transformation',
+  (updater) => updater.component('MyComponent', MyCustomComponent),
   { before: ['my-transformation', 'some-other-transformation'] }
 );
 ```
 
-### Using the * flag
+#### Using the `*` flag
 
-If you really want to be sure your customisation gets loaded first or last, you can use 
-`*` as your `before` or `after` reference. 
+If you really want to be sure your customisation gets loaded first or last, you can use
+`*` as your `before` or `after` reference.
 
 ```js
 Injector.transform(
-  'my-transformation', 
+  'my-transformation',
   (updater) => updater.component('MyComponent', FinalTransform),
   { after: '*' }
 );
@@ -345,16 +349,18 @@ Injector.transform(
 [info]
 This flag can only be used once per transformation.
 The following are not allowed:
-* `{ before: ['*', 'something-else'] }`
-* `{ after: '*', before: 'something-else' }`
+
+- `{ before: ['*', 'something-else'] }`
+- `{ after: '*', before: 'something-else' }`
 
 [/info]
 
-## Injector context
+### Injector context
 
 Because so much of UI design depends on context, dependency injection in the frontend is not necessarily universal. Instead, services are fetched with context.
 
-_example_:
+*example*:
+
 ```js
 const CalendarComponent = Injector.get('Calendar', 'AssetAdmin.FileEditForm.StartDate');
 ```
@@ -363,18 +369,18 @@ Likewise, services can be applied for specific contexts.
 
 ```js
 Injector.transform('my-transform', (updater) => {
-    // Applies to all text fields in AssetAdmin
-    updater.component('TextField.AssetAdmin', MyTextField);
+  // Applies to all text fields in AssetAdmin
+  updater.component('TextField.AssetAdmin', MyTextField);
 
-    // Applies to all text fields in AssetAdmin editform
-    updater.component('TextField.AssetAdmin.FileEditForm', MyTextField);
+  // Applies to all text fields in AssetAdmin editform
+  updater.component('TextField.AssetAdmin.FileEditForm', MyTextField);
 
-    // Applies to any textfield named "Title" in AssetAdmin
-    updater.component('TextField.AssetAdmin.*.Title', MyTextField);
+  // Applies to any textfield named "Title" in AssetAdmin
+  updater.component('TextField.AssetAdmin.*.Title', MyTextField);
 
-    // Applies to any textfield named "Title" in any admin
-    updater.component('TextField.*.*.Title', MyTextField);
-})
+  // Applies to any textfield named "Title" in any admin
+  updater.component('TextField.*.*.Title', MyTextField);
+});
 ```
 
  To apply context-based transformations, you'll need to know the context of the component you want to customise. To learn this,
@@ -384,17 +390,19 @@ Injector.transform('my-transform', (updater) => {
  with the most general category (in this case, "Admin") and working its way down to the most specific
  category (Name = 'Title'). You can use Injector to hook into the level of specificity that you want.
 
-
-# Customising React components with Injector
+## Customising react components with injector
 
 When middleware is used to customise a React component, it is known as a [higher order component](https://facebook.github.io/react/docs/higher-order-components.html).
 
 Using the `PhotoItem` example above, let's create a customised `PhotoItem` that allows a badge, perhaps indicating that it is new to the gallery.
 
 ```js
+import React from 'react';
+// ...
+
 const enhancedPhoto = (PhotoItem) => (props) => {
-  const badge = props.isNew ? 
-    <div className="badge">New!</div> : 
+  const badge = props.isNew ?
+    <div className="badge">New!</div> :
     null;
 
   return (
@@ -403,22 +411,25 @@ const enhancedPhoto = (PhotoItem) => (props) => {
       <PhotoItem {...props} />
     </div>
   );
-}
+};
 
 const EnhancedPhotoItem = enhancedPhoto(PhotoItem);
 
-<EnhancedPhotoItem isNew={true} size={300} />
+  <EnhancedPhotoItem isNew size={300} />;
 ```
 
 Alternatively, this component could be expressed with an ES6 class, rather than a simple
 function.
 
 ```js
+import React from 'react';
+// ...
+
 const enhancedPhoto = (PhotoItem) => (
   class EnhancedPhotoItem extends React.Component {
     render() {
-      const badge = this.props.isNew ? 
-        <div className="badge">New!</div> : 
+      const badge = this.props.isNew ?
+        <div className="badge">New!</div> :
         null;
 
       return (
@@ -434,35 +445,36 @@ const enhancedPhoto = (PhotoItem) => (
 
 When components are stateless, using a simple function in lieu of a class is recommended.
 
-
-## Using dependencies within your React component
+## Using dependencies within your react component
 
 If your component has dependencies, you can add them via the injector using the `inject()`
 higher order component. The function accepts the following arguments:
 
 ```js
-inject([dependencies], mapDependenciesToProps, getContext)(Component)
+inject([dependencies], mapDependenciesToProps, getContext)(Component);
 ```
-* **[dependencies]**: An array of dependencies (or a string, if just one)
-* **mapDependenciesToProps**: (optional) All dependencies are passed into this function as params. The function
+
+- **[dependencies]**: An array of dependencies (or a string, if just one)
+- **mapDependenciesToProps**: (optional) All dependencies are passed into this function as params. The function
 is expected to return a map of props to dependencies. If this parameter is not specified,
 the prop names and the service names will mirror each other.
-* **getContext**: A callback function with params `(props, currentContext)` that will calculate the context to
+- **getContext**: A callback function with params `(props, currentContext)` that will calculate the context to
 use for determining which transformations apply to the dependencies. This defaults to the current context. This
 could help when any customisations that may calls for a change (or tweak) to the current context.
 
 The result is a function that is ready to apply to a component.
- 
+
  ```js
 const MyInjectedComponent = inject(
-  ['Dependency1', 'Dependency2']
+   ['Dependency1', 'Dependency2']
 )(MyComponent);
 // MyComponent now has access to props.Dependency1 and props.Dependency2
 ```
+
 Here is its usage with a bit more context:
 
-__my-module/js/components/Gallery.js__
 ```js
+// my-module/js/components/Gallery.js
 import React from 'react';
 import { inject } from 'lib/Injector';
 
@@ -470,8 +482,8 @@ class Gallery extends React.Component {
   render() {
     const { SearchComponent, ItemComponent } = this.props;
     return (
-      <div>  
-         <SearchComponent />
+      <div>
+        <SearchComponent />
         {this.props.items.map(item => (
           <ItemComponent title={item.title} image={item.image} />
         ))}
@@ -480,8 +492,8 @@ class Gallery extends React.Component {
   }
 }
 
-export default inject( 
-  ['GalleryItem', 'SearchBar'], 
+export default inject(
+  ['GalleryItem', 'SearchBar'],
   (GalleryItem, SearchBar) => ({
     ItemComponent: GalleryItem,
     SearchComponent: SearchBar
@@ -495,8 +507,8 @@ The properties used by `inject()` are soft-supplied. This means a parent calling
 Here is an example using the above `Gallery` component with the dependency `ItemComponent` overwritten by the
 calling component. We pull in a previously registered `PreviewItem` to replace the former `GalleryItem`.
 
-__my-module/js/components/PreviewSection.js__
 ```js
+// my-module/js/components/PreviewSection.js
 import React from 'react';
 import { inject } from 'lib/Injector';
 
@@ -520,8 +532,8 @@ export default inject(
 Another way to provide context to injector is by using the `provideContext` HOC, rather than
 the `getContext` param in `inject()`.
 
-__my-module/js/components/ContextualSection.js__
 ```js
+// my-module/js/components/ContextualSection.js
 import React, { Component } from 'react';
 import { provideContext, inject } from 'lib/Injector';
 
@@ -543,15 +555,17 @@ declare them in `inject()`. In cases like this, use `withInjector()`. This highe
 component puts the `Injector` instance in `context`.
 
 ```js
-class MyGallery extends React.Component 
-{
-  render () {
-    <div>
+import React from 'react';
+// ...
+
+class MyGallery extends React.Component {
+  render() {
+    return <div>
       {this.props.items.map(item => {
         const Component = this.context.injector.get(item.type, 'Reports.context');
-        return <Component title={item.title} image={item.image} />
+        return <Component title={item.title} image={item.image} />;
       })}
-    </div>
+    </div>;
   }
 }
 
@@ -562,8 +576,7 @@ The `Reports.context` in the second parameter provides a context for the injecto
 which transformations to apply to or remove from the component you're looking to get.
 More details about transformations below.
 
-
-## Using Injector to customise forms
+## Using injector to customise forms
 
 Forms in the React layer are built declaratively, using the `FormSchema` API. A component called
 `FormBuilderLoader` is given a URL to a form schema definition, and it populates itself with fields
@@ -578,17 +591,17 @@ we'll use the `updater.form.alterSchema()` function.
 
 ```js
 Injector.transform(
-    'my-custom-form',
-    (updater) => {
-        updater.form.alterSchema(
-            'AssetAdmin.*',
-            (form) =>
+  'my-custom-form',
+  (updater) => {
+    updater.form.alterSchema(
+      'AssetAdmin.*',
+      (form) =>
         form.updateField('Title', {
-            myCustomProp: true
+          myCustomProp: true
         })
-        .getState()
-        )
-    }
+          .getState()
+    );
+  }
 );
 ```
 
@@ -596,17 +609,17 @@ The `alterSchema()` function takes a callback, with an instance of `FormStateMan
 above example) as a parameter. `FormStateMangaer` allows you to declaratively update the form schema
 API using several helper methods, including:
 
-* `updateField(fieldName:string, updates:object)`
-* `updateFields({ myFieldName: updates:object })`
-* `mutateField(fieldName:string, callback:function)`
-* `setFieldComponent(fieldName:string, componentName:string)`
-* `setFieldClass(fieldName:string, cssClassName:string, active:boolean)`
-* `addFieldClass(fieldName:string, cssClassName:string)`
-* `removeFieldClass(fieldName:string, cssClassName:string)`
+- `updateField(fieldName:string, updates:object)`
+- `updateFields({ myFieldName: updates:object })`
+- `mutateField(fieldName:string, callback:function)`
+- `setFieldComponent(fieldName:string, componentName:string)`
+- `setFieldClass(fieldName:string, cssClassName:string, active:boolean)`
+- `addFieldClass(fieldName:string, cssClassName:string)`
+- `removeFieldClass(fieldName:string, cssClassName:string)`
 
 [info]
 For a complete list of props that are available to update on a `Field` object,
-see http://redux-form.com/6.8.0/docs/api/Field.md/#props-you-can-pass-to-field-
+see <http://redux-form.com/6.8.0/docs/api/Field.md/#props-you-can-pass-to-field->
 [/info]
 
 [notice]
@@ -615,12 +628,12 @@ It is critical that you end series of mutation calls with `getState()`.
 
 In addition to mutation methods, several readonly methods are available on `FormSchemaManager` to read the current form state, including:
 
-* `getValues()`: Returns a map of field names to their current values
-* `getValue(fieldName:string)`: Returns the value of the given field
-* `isDirty()`: Returns true if the form has been mutated from its original state
-* `isPristine()`: Returns true if the form is in its original state
-* `isValid()`: Returns true if the form has no validation errors
-* `isInvalid()`: Returns true if the form has validation errors
+- `getValues()`: Returns a map of field names to their current values
+- `getValue(fieldName:string)`: Returns the value of the given field
+- `isDirty()`: Returns true if the form has been mutated from its original state
+- `isPristine()`: Returns true if the form is in its original state
+- `isValid()`: Returns true if the form has no validation errors
+- `isInvalid()`: Returns true if the form has validation errors
 
 ### Adding validation to a form
 
@@ -637,22 +650,21 @@ Injector.transform(
           validator.addError('PostalCode', 'Invalid postal code');
         }
       }
-    )
+    );
   }
 );
 ```
 
 The `addValidation()` function takes a callback, with an instance of `FormValidationManager` (`validator` in the above example) as a parameter. `FormValidationMangaer` allows you to manage the validation result using several helper methods, including:
 
-* `addError(fieldName:string, message:string)`
-* `addErrors(fieldName:string, messages:Array)`
-* `hasError(fieldName:string)`
-* `clearErrors(fieldName:string)`
-* `getErrors(fieldName:string)`
-* `reset(void)`
+- `addError(fieldName:string, message:string)`
+- `addErrors(fieldName:string, messages:Array)`
+- `hasError(fieldName:string)`
+- `clearErrors(fieldName:string)`
+- `getErrors(fieldName:string)`
+- `reset(void)`
 
-
-## Using Injector to customise Redux state data
+## Using injector to customise redux state data
 
 Before starting this tutorial, you should become familiar with the concepts of [Immutability](https://www.sitepoint.com/immutability-javascript/) and [Redux](http://redux.js.org).
 
@@ -660,16 +672,19 @@ The examples use [Spread in object literals](http://redux.js.org/docs/recipes/Us
  the `Object.assign()` API that shouldn't present any problems and should work the same.
 
 For example:
+
 ```js
-  newProps = { ...oldProps, name: 'New name' };
+newProps = { ...oldProps, name: 'New name' };
 ```
+
 is the same as
+
 ```js
-  newProps = Object.assign(
-    {},
-    oldProps,
-    { name: 'New name' }
-  );
+newProps = Object.assign(
+  {},
+  oldProps,
+  { name: 'New name' }
+);
 ```
 
 To start customising, you'll need to transform an existing registered reducer, you can find what reducers are registered by importing Injector and running `Injector.reducer.getAll()`
@@ -682,15 +697,16 @@ Injector.transform('customisationName', (updater) => {
 
 As you can see, we use the `reducer()` function on the `update` object to augment Redux state transformations.
 
-### Using Redux dev tools
+### Using redux dev tools
 
-It is important to learn the basics of [Redux dev tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en), so that you can find out what ACTIONS and payloads to intercept and modify in your Transformer should target.
+It is important to learn the basics of [Redux dev tools](https://chrome.g.oogle.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en), so that you can find out what ACTIONS and payloads to intercept and modify in your Transformer should target.
 
 Most importantly, it helps to understand the "Action" sub-tab on the right panel (bottom if your dev tools is small), as this will be the data your Transformer will most likely receive, pending other transformers that may run before/after your one.
 
 ### Structuring a transformer
 
 We use currying to supply utilities which your transformer may require to handle the transformation.
+
 - `originalReducer` - reducer callback which the transformer is customising, this will need to be called in most cases. This will also callback other transformations down the chain of execution. Not calling this will break the chain.
 - `getGlobalState` - A function that gets the state of the global Redux store. There may be data outside the current scope in the reducer which you may need to help determine the transformation.
 - `state` - current state of the current scope. This is what should be used to form the new state.
@@ -702,11 +718,12 @@ const MyReducerTransformer = (originalReducer) => (globalState) => (state, { typ
   switch (type) {
     case 'EXISTING_ACTION': {
       // recommended to call and return the originalReducer with the payload changed by the transformer
-      /* return action to call here; */
+      return originalReducer(/* ... */);
     }
-    
+
     case 'OVERRIDE_EXISTING_ACTION': {
       // could omit the originalReducer to enforce your change or cancel the originalREducer's change
+      return originalReducer(/* ... */);
     }
 
     default: {
@@ -714,7 +731,7 @@ const MyReducerTransformer = (originalReducer) => (globalState) => (state, { typ
       return originalReducer(state, { type, payload });
     }
   }
-}
+};
 ```
 
 ### A basic transformation
@@ -738,6 +755,9 @@ const MyReducerTransformer = (originalReducer) => (getGlobalState) => (state, { 
         },
       });
     }
+    default: {
+      return state;
+    }
   }
 };
 ```
@@ -749,11 +769,14 @@ Accessing the globalState is easy, as it is passed in as part of the curried fun
 ```js
 export default (originalReducer) => (getGlobalState) => (state, { type, payload }) => {
   const baseUrl = globalState.config.baseUrl;
-  
+
   switch (type) {
     /* ... cases here ... */
+    default: {
+      // ...
+    }
   }
-}
+};
 ```
 
 ### Setting a different initial state
@@ -769,6 +792,7 @@ const MyReducerTransformer = (originalReducer) => () => (state, { type, payload 
       myCustom: 'initial state here',
     };
   }
+  return state;
 };
 ```
 
@@ -783,6 +807,9 @@ export default (originalReducer) => (getGlobalState) => (state, { type, payload 
     case 'CANCEL_THIS_ACTION': {
       return state;
     }
+    default: {
+      return state;
+    }
   }
 };
 ```
@@ -793,7 +820,7 @@ You could manipulate the action called by the originalReducer, there isn't an ex
  code will present the theory of how it can be achieved.
 
 ```js
- default (originalReducer) => (getGlobalState) => (state, { type, payload }) => {
+export default (originalReducer) => (getGlobalState) => (state, { type, payload }) => {
   switch (type) {
     case 'REMOVE_ERROR': {
       // we'd like to archive errors instead of removing them
@@ -802,11 +829,14 @@ You could manipulate the action called by the originalReducer, there isn't an ex
         payload,
       });
     }
+    default: {
+      return state;
+    }
   }
 };
 ```
 
-## Using Injector to customise GraphQL queries
+## Using injector to customise GraphQL queries
 
 One of the strengths of GraphQL is that it allows us to declaratively state exactly what data a given component needs to function. Because GraphQL queries and mutations are considered primary concerns of a component, they are not abstracted away somewhere in peripheral asynchronous functions. Rather, they are co-located with the component definition itself.
 
@@ -824,9 +854,8 @@ Let's imagine that we have a module that adds a tab where the user can write "no
 
 Here's what that might look like:
 
-**my-module/client/src/components/Notes.js**
-
 ```js
+// my-module/client/src/components/Notes.js
 import React from 'react';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
@@ -849,7 +878,7 @@ query ReadNotes {
 const apolloConfig = {
   props({ data: { readNotes } }) {
     return {
-      notes: readNotes ? readNotes : []
+      notes: readNotes || []
     };
   }
 };
@@ -861,11 +890,11 @@ export default NotesWithData;
 
 Next we'll expose the model to GraphQL:
 
-#### Graphql v4 {#build-extensible-gql-app-v4}
-
-**my-module/_config/graphql.yml**
+#### GraphQL v4 {#build-extensible-gql-app-v4}
 
 ```yml
+# my-module/_config/graphql.yml
+
 # Tell graphql that we're adding to the admin graphql schema
 SilverStripe\GraphQL\Schema\Schema:
   schemas:
@@ -874,9 +903,9 @@ SilverStripe\GraphQL\Schema\Schema:
         - my-module/_graphql
 ```
 
-**my-module/_graphql/models.yml**
-
 ```yml
+# my-module/_graphql/models.yml
+
 # Tell graphql how to scaffold the schema for our model
 App\Model\Note:
   fields:
@@ -888,11 +917,11 @@ App\Model\Note:
         paginateList: false
 ```
 
-#### Graphql v3 {#build-extensible-gql-app-v3}
-
-**my-module/_config/graphql.yml**
+#### GraphQL v3 {#build-extensible-gql-app-v3}
 
 ```yml
+# my-module/_config/graphql.yml
+
 # Tell graphql how to scaffold the schema for our model inside the admin schema
 SilverStripe\GraphQL\Manager:
   schemas:
@@ -908,16 +937,15 @@ SilverStripe\GraphQL\Manager:
 ```
 
 [hint]
-Graphql v3 uses the first part of the model class's namespace in the default query/mutation names - so with a class `App\Model\Note` the default read operation would be `readAppNotes`. The example above has overridden the default name to keep it consistent with Graphql v4 behaviour.
+GraphQL v3 uses the first part of the model class's namespace in the default query/mutation names - so with a class `App\Model\Note` the default read operation would be `readAppNotes`. The example above has overridden the default name to keep it consistent with GraphQL v4 behaviour.
 [/hint]
 
 #### Define the app
 
 Finally, let's make a really simple container app which holds a header and our notes component, and inject it into the DOM using entwine.
 
-**my-module/client/src/App.js**
-
 ```js
+// my-module/client/src/App.js
 import React from 'react';
 import Notes from './components/Notes';
 
@@ -931,8 +959,8 @@ const App = () => (
 export default App;
 ```
 
-**my-module/client/src/index.js**
 ```js
+// my-module/client/src/index.js
 import ReactDOM from 'react-dom';
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
@@ -950,10 +978,10 @@ Injector.ready(() => {
           <App />
         </ApolloProvider>,
         this[0]
-      )
+      );
     },
 
-    onunmatch: function() {
+    onunmatch() {
       ReactDOM.unmountComponentAtNode(this[0]);
     },
   });
@@ -968,15 +996,14 @@ To mount the app, we use the `onmatch()` event fired by entwine, and we're off a
 
 What we've just built may work, but we've made life very difficult for other developers. They have no way of customising this. Let's change that.
 
-#### Register as much as possible with Injector
+#### Register as much as possible with injector
 
 The best thing you can do to make your code extensible is to use `Injector` early and often. Anything that goes through Injector is easily customisable.
 
 First, let's break up the list into smaller components.
 
-**my-module/client/src/components/NotesList.js**
-
 ```js
+// my-module/client/src/components/NotesList.js
 import React from 'react';
 import { inject } from 'lib/Injector';
 
@@ -1000,9 +1027,8 @@ export default inject(
 )(NotesList);
 ```
 
-**my-module/client/src/components/NotesListItem.js**
-
 ```js
+// my-module/client/src/components/NotesListItem.js
 import React from 'react';
 
 const NotesListItem = ({ note }) => <li>{note.content}</li>;
@@ -1014,9 +1040,8 @@ export default NotesListItem;
 
 The next piece is the query. We'll need to register that with `Injector`. Unlike components and reducers, this is a lot more abstract. We're actually not going to write any GraphQL at all. We'll just build the concept of the query in an abstraction layer, and leave `Injector` to build the GraphQL syntax at runtime.
 
-**my-module/client/src/state/readNotes.js**
-
 ```js
+// my-module/client/src/state/readNotes.js
 import { graphqlTemplates } from 'lib/Injector';
 
 const { READ } = graphqlTemplates;
@@ -1025,8 +1050,8 @@ const query = {
   apolloConfig: {
     props({ data: { readNotes } }) {
       return {
-        notes: readNotes ? readNotes : [],
-      }
+        notes: readNotes || [],
+      };
     }
   },
   templateName: READ,
@@ -1051,10 +1076,10 @@ For simplicity, we're not querying any relations or otherwise nested data here. 
 
 ```js
 const query = {
-  //...
+  // ...
   fields: [
     'foo', [
-        'title',
+      'title',
     ]
   ],
 };
@@ -1067,13 +1092,12 @@ You might instinctively try to use JSON object notation for this instead, but th
 
 Let's now register all of this with Injector.
 
-**my-module/client/src/boot/registerDependencies.js**
-
 ```js
+// my-module/client/src/boot/registerDependencies.js
+import Injector, { injectGraphql } from 'lib/Injector';
 import NotesList from '../components/NotesList';
 import NotesListItem from '../components/NotesListItem';
 import readNotes from '../state/readNotes';
-import Injector, { injectGraphql } from 'lib/Injector';
 
 const registerDependencies = () => {
   Injector.component.register('NotesList', NotesList);
@@ -1089,9 +1113,9 @@ If you have a lot of components or queries to add, you can use `registerMany` in
 
 ```js
 Injector.component.registerMany({
-    NotesList,
-    NotesListItem,
-    //...etc
+  NotesList,
+  NotesListItem,
+  // ...etc
 });
 ```
 
@@ -1103,9 +1127,9 @@ We use `Injector.query.register()` to register our `readNotes` query so that oth
 
 The only missing piece now is to attach the `ReadNotes` injected query to the `NotesList` component. We could have done this using `injectGraphql` in the `NotesList` component itself, but instead, we'll do it as an Injector transformation. Why? There's a good chance whoever is customising the query will want to customise the UI of the component that is using that query. If someone adds a new field to a query, it is likely the component should display that new field. Registering the GraphQL injection as a transformation will allow a thirdparty developer to override the UI of the component explicitly *after* the GraphQL query is attached. This is important, because otherwise the customised component wouldn't use the query.
 
-**my-module/client/src/boot/registerDependencies.js**
-
 ```js
+// my-module/client/src/boot/registerDependencies.js
+
 // ...
 const registerDependencies = () => {
   // ...
@@ -1128,9 +1152,8 @@ All of this feels like a lot of extra work, and, to be fair, it is. You're proba
 
 Our container app needs to have the `NotesList` component injected into it.
 
-**my-module/client/src/App.js**
-
 ```js
+// my-module/client/src/App.js
 import React from 'react';
 import { inject } from 'lib/Injector';
 
@@ -1146,18 +1169,17 @@ export default inject(['NotesList'])(App);
 
 You can register the `App` component with `Injector`, too, but since it's already injected with dependencies it could get pretty convoluted. High level components like this are best left uncustomisable.
 
-#### Use the Injector from an entwine context
+#### Use the injector from an entwine context
 
 Since almost everything is in `Injector` now, we need to update our mounting logic to inject the dependencies into our app.
 
-**my-module/client/src/index.js**
-
 ```js
+// my-module/client/src/index.js
 import ReactDOM from 'react-dom';
 import React from 'react';
-import registerDependencies from './boot/registerDependencies';
 import { ApolloProvider } from 'react-apollo';
 import Injector, { provideInjector } from 'lib/Injector';
+import registerDependencies from './boot/registerDependencies';
 import App from './App';
 
 registerDependencies();
@@ -1179,7 +1201,7 @@ Injector.ready(() => {
       );
     },
 
-    onunmatch: function() {
+    onunmatch() {
       ReactDOM.unmountComponentAtNode(this[0]);
     },
   });
@@ -1198,24 +1220,22 @@ Let's suppose we have a project that extends the `Notes` object in some way. Per
 
 We'll first need to apply the extension and update our GraphQL scaffolding.
 
-**app/_config/extensions.yml**
-
 ```yml
+# app/_config/extensions.yml
 App\Model\Note:
   extensions:
     # this extension adds a "Priority" integer field
     - MyOtherApp\Extension\NoteExtension
 ```
 
-##### Graphql 4 {#applying-extensions-gql-v4}
+##### GraphQL 4 {#applying-extensions-gql-v4}
 
-Remember, this example is in a project which is customising the schema from the previous example, so we still have to tell graphql where to find our schema modifications.
+Remember, this example is in a project which is customising the schema from the previous example, so we still have to tell GraphQL where to find our schema modifications.
 
 If you're following along, you could declare a different folder than before within the same project so you can see how the schema definitions merge together into a single schema.
 
-**app/_config/graphql.yml**
-
 ```yml
+# app/_config/graphql.yml
 SilverStripe\GraphQL\Schema\Schema:
   schemas:
     admin:
@@ -1223,19 +1243,17 @@ SilverStripe\GraphQL\Schema\Schema:
         - app/_graphql
 ```
 
-**app/_graphql/models.yml**
-
 ```yml
+# app/_graphql/models.yml
 App\Model\Note:
   fields:
     priority: true
 ```
 
-##### Graphql 3 {#applying-extensions-gql-v3}
-
-**app/_config/graphql.yml**
+##### GraphQL 3 {#applying-extensions-gql-v3}
 
 ```yml
+# app/_config/graphql.yml
 SilverStripe\GraphQL\Manager:
   schemas:
     admin:
@@ -1249,13 +1267,12 @@ SilverStripe\GraphQL\Manager:
 
 Let's first update the `NotesListItem` to contain our new field.
 
-**app/client/src/transformNotesListItem.js**
-
 [notice]
 Note that we're overriding the entire `NotesListItem` component. This is the main reason we broke the original list up into smaller components.
 [/notice]
 
 ```js
+// app/client/src/transformNotesListItem.js
 import React from 'react';
 
 const transformNotesListItem = () => ({ note: { content, priority } }) => (
@@ -1267,9 +1284,8 @@ export default transformNotesListItem;
 
 Now, let's update the query to fetch our new field.
 
-**app/client/src/transformReadNotes.js**
-
 ```js
+// app/client/src/transformReadNotes.js
 const transformReadNotes = (manager) => {
   manager.addField('priority');
 };
@@ -1284,7 +1300,7 @@ Simple! The transformation passes us a `ApolloGraphQLManager` instance that prov
 In the above example, we added a single field to a query. Here's how that works:
 
 ```js
-manager.addField(fieldName, fieldPath = 'root')
+manager.addField(fieldName, fieldPath = 'root');
 ```
 
 The `fieldPath` argument tells the manager at what level to add the field. In this case, since the `priority` field is going on the root query (`readNotes`), we'll use `root` as the path. But suppose we had a more complex query like this:
@@ -1336,9 +1352,8 @@ Where `root/company/logo` is the path to the field, `size` is the name of the ar
 
 Now, let's apply all these transformations, and we'll use the `after` property to ensure they get applied in the correct sequence.
 
-**app/client/src/boot.js**
-
 ```js
+// app/client/src/boot.js
 import Injector from 'lib/Injector';
 import transformNotesListItem from './transformNotesListItem';
 import transformReadNotes from './transformReadNotes';
@@ -1354,7 +1369,7 @@ Injector.transform(
 ```
 
 [hint]
-This transformation could either be transpiled as-is, or if you have other javascript to include in this module you might want to export it as a function and call it from some entry point.
+This transformation could either be transpiled as-is, or if you have other JavaScript to include in this module you might want to export it as a function and call it from some entry point.
 Don't forget to add the transpiled result to the CMS e.g. via the `SilverStripe\Admin\LeftAndMain.extra_requirements_javascript` configuration property.
 [/hint]
 
@@ -1362,21 +1377,21 @@ Don't forget to add the transpiled result to the CMS e.g. via the `SilverStripe\
 
 Going back to the original module, let's add an `AddForm` component to our list that lets the user create a new note.
 
-**my-module/client/src/components/AddForm.js**
-
 ```js
-import React from 'react';
+// my-module/client/src/components/AddForm.js
+import React, { useRef } from 'react';
 
 const AddForm = ({ onAdd }) => {
-  let input;
+  const inputRef = useRef(null);
   return (
     <div>
       <label>New note</label>
-      <input type="text" ref={node => input = node}/>
+      <input type="text" ref={inputRef}/>
       <button onClick={(e) => {
         e.preventDefault();
-        onAdd(input && input.value);
-      }}>Add</button>
+        onAdd(inputRef && inputRef.value);
+      }}
+      >Add</button>
     </div>
   );
 };
@@ -1390,9 +1405,8 @@ Because this isn't a full react tutorial, we've avoided the complexity of ensuri
 
 And we'll inject that component into our `App` container.
 
-**my-module/client/src/App.js**
-
 ```js
+// my-module/client/src/App.js
 import React from 'react';
 import { inject } from 'lib/Injector';
 
@@ -1409,9 +1423,8 @@ export default inject(['NotesList', 'NoteAddForm'])(App);
 
 Next, add a mutation template to attach to the form.
 
-**my-module/client/src/state/createNote.js**
-
 ```js
+// my-module/client/src/state/createNote.js
 import { graphqlTemplates } from 'lib/Injector';
 
 const { CREATE } = graphqlTemplates;
@@ -1428,7 +1441,7 @@ const mutation = {
             }
           });
         }
-      }
+      };
     }
   },
   templateName: CREATE,
@@ -1444,18 +1457,17 @@ export default mutation;
 ```
 
 [notice]
-With graphql v3, the field names in the input object have to start with capital letters, and the input _type_ can't easily be overridden - it's always the first part of your namespace, then the class name, then "CreateInputType". So assuming your model's fully qualified classname is `App\Model\Note`, the input type is `AppNoteCreateInputType`.
+With GraphQL v3, the field names in the input object have to start with capital letters, and the input *type* can't easily be overridden - it's always the first part of your namespace, then the class name, then "CreateInputType". So assuming your model's fully qualified classname is `App\Model\Note`, the input type is `AppNoteCreateInputType`.
 [/notice]
 
 It looks like a lot of code, but if you're familiar with Apollo mutations, this is pretty standard. The supplied `mutate()` function gets mapped to a prop - in this case `onAdd`, which the `AddForm` component is configured to invoke. We've also supplied the `singularName` as well as the template `CREATE` for the `createNote` scaffolded mutation.
 
-And make sure we're exposing the mutation in our graphql schema:
+And make sure we're exposing the mutation in our GraphQL schema:
 
-#### Graphql 4 {#extensible-mutations-gql-v4}
-
-**my-module/_graphql/models.yml**
+#### GraphQL 4 {#extensible-mutations-gql-v4}
 
 ```yml
+# my-module/_graphql/models.yml
 App\Model\Note:
   #...
   operations:
@@ -1463,11 +1475,10 @@ App\Model\Note:
     create: true
 ```
 
-#### Graphql 3 {#extensible-mutations-gql-v3}
-
-**my-module/_config/graphql.yml**
+#### GraphQL 3 {#extensible-mutations-gql-v3}
 
 ```yml
+# my-module/_config/graphql.yml
 SilverStripe\GraphQL\Manager:
   schemas:
     admin:
@@ -1486,19 +1497,18 @@ Unlike with the read query, the injector isn't able to handle mutations with cus
 
 Lastly, let's just register all this with `Injector`.
 
-**my-module/client/src/boot/registerDependencies.js**
-
 ```js
-//...
+// my-module/client/src/boot/registerDependencies.js
 import AddForm from '../components/AddForm';
 import createNote from '../state/createNote';
+// ...
 
 const registerDependencies = () => {
-  //...
+  // ...
   Injector.component.register('NoteAddForm', AddForm);
   Injector.query.register('CreateNote', createNote);
 
-  //...
+  // ...
   Injector.transform(
     'notesaddform-graphql',
     (updater) => {
@@ -1516,28 +1526,30 @@ This is exactly the same pattern as we did before with a query, only with differ
 
 Now let's switch back to the project where we're customising the Notes application. The developer is going to want to ensure that users can supply a "Priority" value for each note entered. This will involve updating the `AddForm` component.
 
-**app/client/src/transformAddForm.js**
 ```js
-import React from 'react';
+// app/client/src/transformAddForm.js
+import React, { useRef } from 'react';
 
 const transformAddForm = () => ({ onAdd }) => {
-  let content, priority;
+  const contentRef = useRef(null);
+  const priorityRef = useRef(null);
   return (
     <div>
       <label>Note content</label>
-      <input type="text" ref={node => content = node}/>
+      <input type="text" ref={contentRef}/>
       <label>Priority</label>
-      <select ref={node => priority = node}>
+      <select ref={priorityRef}>
         <option value="0">Low</option>
         <option value="1">Medium</option>
         <option value="2">High</option>
       </select>
       <button onClick={(e) => {
         e.preventDefault();
-        if (content && priority) {
-          onAdd(content.value, Number(priority.value));
+        if (contentRef && priorityRef) {
+          onAdd(contentRef.value, Number(priorityRef.value));
         }
-      }}>Add</button>
+      }}
+      >Add</button>
     </div>
   );
 };
@@ -1547,9 +1559,8 @@ export default transformAddForm;
 
 We're now passing two arguments to the `onAdd` callback - one for the note content, and another for the priority. We'll need to update the mutation to reflect this.
 
-**app/client/src/transformCreateNote.js**
-
 ```js
+// app/client/src/transformCreateNote.js
 const transformCreateNote = (manager) => {
   manager.addField('priority');
   manager.transformApolloConfig('props', ({ mutate }) => (prevProps) => {
@@ -1569,7 +1580,7 @@ const transformCreateNote = (manager) => {
       ...prevProps,
       onAdd,
     };
-  })
+  });
 };
 
 export default transformCreateNote;
@@ -1579,17 +1590,16 @@ All we've done here is overridden the `props` setting in the `CreateNote` apollo
 
 Now we just need to register these transforms, and we're done!
 
-**app/client/src/boot.js**
-
 ```js
-//...
+// app/client/src/boot.js
 import transformAddForm from './transformAddForm';
 import transformCreateNote from './transformCreateNote';
+// ...
 
 Injector.transform(
   'noteslist-query-extension',
   (updater) => {
-    //...
+    // ...
     updater.component('NoteAddForm', transformAddForm);
     updater.query('CreateNote', transformCreateNote);
   },

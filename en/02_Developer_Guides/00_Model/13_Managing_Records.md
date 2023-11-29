@@ -4,7 +4,7 @@ summary: Manage your DataObject records
 icon: list-alt
 ---
 
-# Managing Records
+# Managing records
 
 Most records in Silverstripe CMS are managed [in a GridField](../forms/field_types/gridfield) - whether in the [GridField](api:SilverStripe\Forms\GridField\GridField)
 of some other record or directly [in a ModelAdmin](../customising_the_admin_interface/modeladmin/). The notable exceptions to this are
@@ -21,14 +21,14 @@ When using this extension, your model must also declare its `cms_edit_owner` as 
 [configuration property](../configuration/configuration/#configuration-properties). The value must either be the class name of the
 `ModelAdmin` that directly manages the record, or the `has_one` relation for the record that this model is edited on, which is often the parent `DataObject`.
 
-If the `cms_edit_owner` is a `has_one` relation, the class on the other end of the relation _must_ have
+If the `cms_edit_owner` is a `has_one` relation, the class on the other end of the relation *must* have
 a reciprocal `has_many` relation as documented in [Relations](./relations#has-many). For best results, use dot notation on the
 `has_many` relation. It must also implement a [getCMSEditLinkForManagedDataObject()](api:SilverStripe\Admin\CMSEditLinkExtension::getCMSEditLinkForManagedDataObject())
 method. The easiest way to do that is for it to apply the `CMSEditLinkExtension` to the reciprocal class.
 
-** app/src/Model/MyModel.php **
 ```php
-namespace MyProject\Model;
+// app/src/Model/MyModel.php
+namespace App\Model;
 
 use SilverStripe\Admin\CMSEditLinkExtension;
 use SilverStripe\ORM\DataObject;
@@ -47,11 +47,11 @@ class MyModel extends DataObject
 }
 ```
 
-** app/src/Model/MyParentModel.php **
 ```php
-namespace MyProject\Model;
+// app/src/Model/MyParentModel.php
+namespace App\Model;
 
-use MyProject\Admin\MyModelAdmin;
+use App\Admin\MyModelAdmin;
 use SilverStripe\Admin\CMSEditLinkExtension;
 use SilverStripe\ORM\DataObject;
 
@@ -71,7 +71,7 @@ class MyParentModel extends DataObject
 
 [hint]
 If the `cms_edit_owner` is in some vendor dependency that you don't control, you can always apply `CMSEditLinkExtension`
-and the `cms_edit_owner` via yml.
+and the `cms_edit_owner` via YAML.
 [/hint]
 
 With the above code examples, you can call `CMSEditLink()` on any instance of `MyModel` or `MyParentModel` and it will produce

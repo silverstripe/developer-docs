@@ -5,8 +5,10 @@ introduction: This guide will cover how to create and manipulate data within Sil
 icon: database
 ---
 
+# Model and databases
+
 In Silverstripe CMS, application data will be represented by a [DataObject](api:SilverStripe\ORM\DataObject) class. A `DataObject` subclass defines the
-data columns, relationships and properties of a particular data record. For example, [Member](api:SilverStripe\Security\Member) is a `DataObject` 
+data columns, relationships and properties of a particular data record. For example, [Member](api:SilverStripe\Security\Member) is a `DataObject`
 which stores information about a person, CMS user or mail subscriber.
 
 [CHILDREN Exclude="How_tos"]

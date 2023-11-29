@@ -6,77 +6,73 @@ icon: laptop-code
 
 # Configuration API
 
-Silverstripe CMS comes with a comprehensive code based configuration system through the [Config](api:SilverStripe\Core\Config\Config) class. It primarily 
-relies on declarative [YAML](http://en.wikipedia.org/wiki/YAML) files, and falls back to procedural PHP code, as well 
+Silverstripe CMS comes with a comprehensive code based configuration system through the [Config](api:SilverStripe\Core\Config\Config) class. It primarily
+relies on declarative [YAML](http://en.wikipedia.org/wiki/YAML) files, and falls back to procedural PHP code, as well
 as PHP static variables. This is provided by the [silverstripe/config](https://github.com/silverstripe/silverstripe-config)
 library.
 
-The Configuration API can be seen as separate from other forms of variables in the Silverstripe CMS system due to three 
+The Configuration API can be seen as separate from other forms of variables in the Silverstripe CMS system due to three
 properties API:
 
-  - Configuration is **per class**, not per instance.
-  - Configuration is normally set once during initialization and then not changed.
-  - Configuration is normally set by a knowledgeable technical user, such as a developer, not the end user.
+- Configuration is **per class**, not per instance.
+- Configuration is normally set once during initialization and then not changed.
+- Configuration is normally set by a knowledgeable technical user, such as a developer, not the end user.
 
 [notice]
 For providing content editors or CMS users a place to manage configuration see the [SiteConfig](siteconfig) module.
 [/notice]
 
-## Configuration Properties
+## Configuration properties
 
-Configuration values are static properties on any Silverstripe CMS class. These should be at the top of the class and 
-marked with a `@config` docblock. The API documentation will also list the static properties for the class. They should
-be marked `private static` and follow the `lower_case_with_underscores` structure.
-
-**app/src/MyClass.php**
-
+Configuration values are private static properties on any class in a Silverstripe CMS module or project code.
+The API documentation will also list the configuration properties for the class. They should
+be marked `private static`, be listed at the top of the class, and follow the `lower_case_with_underscores` structure.
 
 ```php
-class MyClass extends Page 
-{
+namespace App;
 
-    /**
-     * @config
-     */
+use SilverStripe\View\ViewableData;
+
+class MyClass extends ViewableData
+{
     private static $option_one = true;
 
-    /**
-     * @config
-     */
     private static $option_two = [];
 }
-
 ```
 
-## Accessing and Setting Configuration Properties
+## Accessing and setting configuration properties
 
-This can be done by calling the static method [Config::inst()](api:SilverStripe\Core\Config\Config::inst()), like so:
-
+This can be done by calling the static method [`Config::inst()`](api:SilverStripe\Core\Config\Config::inst()), like so:
 
 ```php
-$config = Config::inst()->get('MyClass', 'property');
+use App\MyClass;
+use SilverStripe\Core\Config\Config;
+
+$configValue = Config::inst()->get(MyClass::class, 'option_one');
 ```
 
-Or through the `config()` method on the class.
+Or through the static `config()` method on the class, if the class uses (either directly or through inheritance) the [`Configurable`](api:SilverStripe\Core\Config\Configurable) trait.
 
 ```php
-$config = $this->config()->get('property');
+use App\MyClass;
+
+$optionOneValue = static::config()->get('option_one');
+$optionTwoValue = MyClass::config()->get('option_two');
 ```
 
-You may need to apply the [Configurable](api:SilverStripe\Core\Config\Configurable) trait in order to access the `config()` method.
-
-**app/src/MyOtherClass.php**
+You may need to apply the [`Configurable`](api:SilverStripe\Core\Config\Configurable) trait in order to access the `config()` method.
 
 ```php
+namespace App;
+
 use SilverStripe\Core\Config\Configurable;
 
-class MyOtherClass 
+class MyOtherClass
 {
     use Configurable;
- 
 }
 ```
-
 
 Note that by default `Config::inst()` returns only an immutable version of config. Use `Config::modify()`
 if it's necessary to alter class config. This is generally undesirable in most applications, as modification
@@ -85,23 +81,20 @@ during testing to modify state.
 
 Note that while both objects have similar methods the APIs differ slightly. The below actions are equivalent:
 
-  * `Config::inst()->get('Class', 'property');` or `Class::config()->get('property')`
-  * `Config::inst()->uninherited('Class', 'property');` or `Class::config()->get('property', Config::UNINHERITED)`
-  * `Config::inst()->exists('Class', 'property');` or `Class::config()->exists('property')`
-  
+- `Config::inst()->get('Class', 'property');` or `Class::config()->get('property')`
+- `Config::inst()->uninherited('Class', 'property');` or `Class::config()->get('property', Config::UNINHERITED)`
+- `Config::inst()->exists('Class', 'property');` or `Class::config()->exists('property')`
+
 And mutable methods:
 
-  * `Config::modify()->merge('Class', 'property', 'newvalue');` or `Class::config()->merge('property', 'newvalue')`
-  * `Config::modify()->set('Class', 'property', 'newvalue');` or `Class::config()->set('property', 'newvalue')`
-  * `Config::modify()->remove('Class', 'property');` or `Class::config()->remove('property')`
+- `Config::modify()->merge('Class', 'property', 'newvalue');` or `Class::config()->merge('property', 'newvalue')`
+- `Config::modify()->set('Class', 'property', 'newvalue');` or `Class::config()->set('property', 'newvalue')`
+- `Config::modify()->remove('Class', 'property');` or `Class::config()->remove('property')`
 
 To set those configuration options on our previously defined class we can define it in a `YAML` file.
 
-**app/_config/app.yml**
-
-
 ```yml
-MyClass:
+App\MyClass:
   option_one: false
   option_two:
     - Foo
@@ -111,8 +104,10 @@ MyClass:
 
 To use those variables in your application code:
 
-
 ```php
+use App\MyClass;
+use SilverStripe\Core\Config\Config;
+
 $me = new MyClass();
 
 echo $me->config()->option_one;
@@ -134,32 +129,32 @@ echo Config::inst()->get('MyClass', 'option_one');
 
 // You can also use the static version
 MyClass::config()->option_two = [
-    'Qux'
+    'Qux',
 ];
 
 echo implode(', ', MyClass::config()->option_one);
 // returns 'Qux'
-
 ```
 
 [notice]
-There is no way currently to restrict read or write access to any configuration property, or influence/check the values 
+There is no way currently to restrict read or write access to any configuration property, or influence/check the values
 being read or written.
 [/notice]
 
-## Configuration Values
+## Configuration values
 
-Each configuration property can contain either a literal value (`'foo'`), integer (`2`), boolean (`true`) or an array. 
+Each configuration property can contain either a literal value (`'foo'`), integer (`2`), boolean (`true`) or an array.
 If the value is an array, each value in the array may also be one of those types.
 
-The value of any specific class configuration property comes from several sources. These sources do not override each 
-other - instead the values from each source are merged together to give the final configuration value, using these 
+The value of any specific class configuration property comes from several sources. These sources do not override each
+other - instead the values from each source are merged together to give the final configuration value, using these
 rules:
 
-- If the value is an array, each array is added to the _beginning_ of the composite array in ascending priority order.
+- If the value is an array, each array is added to the *beginning* of the composite array in ascending priority order.
   If a higher priority item has a non-integer key which is the same as a lower priority item, the value of those items
   is merged using these same rules, and the result of the merge is located in the same location the higher priority item
   would be if there was no key clash. Other than in this key-clash situation, within the particular array, order is preserved. To override a value that is an array, the value must first be set to `null`, and then set again to the new array.
+
 ```yml
 ---
 Name: arrayreset
@@ -175,9 +170,8 @@ Class\With\Array\Config:
 
 - If the value is not an array, the highest priority value is used without any attempt to merge
 
-
 [alert]
-The exception to this is "false-ish" values - empty arrays, empty strings, etc. When merging a non-false-ish value with 
+The exception to this is "false-ish" values - empty arrays, empty strings, etc. When merging a non-false-ish value with
 a false-ish value, the result will be the non-false-ish value regardless of priority. When merging two false-ish values
 the result will be the higher priority false-ish value.
 [/alert]
@@ -185,7 +179,7 @@ the result will be the higher priority false-ish value.
 The locations that configuration values are taken from in highest -> lowest priority order are:
 
 - Runtime modifications, ie: any values set via a call to `Config::inst()->update()`
-- The configuration values taken from the YAML files in `_config/` directories (internally sorted in before / after 
+- The configuration values taken from the YAML files in `_config/` directories (internally sorted in before / after
 order, where the item that is latest is highest priority)
 - Any static set on the class named the same as the name of the property
 - The composite configuration value of the parent class of this class
@@ -196,37 +190,40 @@ It is an error to have mixed types of the same named property in different locat
 be raised due to optimizations in the lookup code.
 [/notice]
 
-## Configuration Masks
+## Configuration masks
 
-At some of these levels you can also set masks. These remove values from the composite value at their priority point 
+At some of these levels you can also set masks. These remove values from the composite value at their priority point
 rather than add.
 
 ```php
+use SilverStripe\Core\Config\Config;
+
 $actionsWithoutExtra = $this->config()->get(
-    'allowed_actions', Config::UNINHERITED
+    'allowed_actions',
+    Config::UNINHERITED
 );
 ```
 
 Available masks include:
 
-  * Config::UNINHERITED - Exclude config inherited from parent classes
-  * Config::EXCLUDE_EXTRA_SOURCES - Exclude config applied by extensions
+- Config::UNINHERITED - Exclude config inherited from parent classes
+- Config::EXCLUDE_EXTRA_SOURCES - Exclude config applied by extensions
 
 You can also pass in literal `true` to disable all extra sources, or merge config options with
 bitwise `|` operator.
 
-## Configuration YAML Syntax and Rules
+## Configuration YAML syntax and rules
 
 [alert]
 As of Silverstripe 4, YAML files can no longer be placed any deeper than 2 directories deep. As this was an unintended bug, this change will only affect you if you nest your modules deeper than the top level of your project.
 [/alert]
 
-Each module can have a directory immediately underneath the main module directory called `_config/`. Inside this 
-directory you can add YAML files that contain values for the configuration system. 
+Each module can have a directory immediately underneath the main module directory called `_config/`. Inside this
+directory you can add YAML files that contain values for the configuration system.
 
 [info]
-The name of the files within the applications `_config` directly are arbitrary. Our examples use 
-`app/_config/app.yml` but you can break this file down into smaller files, or clearer patterns like `extensions.yml`, 
+The name of the files within the applications `_config` directly are arbitrary. Our examples use
+`app/_config/app.yml` but you can break this file down into smaller files, or clearer patterns like `extensions.yml`,
 `email.yml` if you want. For add-on's and modules, it is recommended that you name them with `<module_name>.yml`.
 [/info]
 
@@ -251,35 +248,34 @@ If there is only one set of values the header can be omitted.
 
 Each value section of a YAML file has:
 
-  - A reference path, made up of the module name, the config file name, and a fragment identifier Each path looks a 
+- A reference path, made up of the module name, the config file name, and a fragment identifier Each path looks a
   little like a URL and is of this form: `module/file#fragment`.
-  - A set of rules for the value section's priority relative to other value sections
-  - A set of rules that might exclude the value section from being used
+- A set of rules for the value section's priority relative to other value sections
+- A set of rules that might exclude the value section from being used
 
-The fragment identifier component of the reference path and the two sets of rules are specified for each value section 
+The fragment identifier component of the reference path and the two sets of rules are specified for each value section
 in the header section that immediately precedes the value section.
 
- - "module" is the name of the module this YAML file is in.
- - "file" is the name of this YAML file, stripped of the extension (so for routes.yml, it would be routes).
- - "fragment" is a specified identifier. It is specified by putting a `Name: {fragment}` key / value pair into the 
+- "module" is the name of the module this YAML file is in.
+- "file" is the name of this YAML file, stripped of the extension (so for routes.yml, it would be routes).
+- "fragment" is a specified identifier. It is specified by putting a `Name: {fragment}` key / value pair into the
  header section. If you don't specify a name, a random one will be assigned.
 
 This reference path has no affect on the value section itself, but is how other header sections refer to this value
 section in their priority chain rules.
 
-## Before / After Priorities
+## Before / after priorities
 
 Values for a specific class property can be specified in several value sections across several modules. These values are
 merged together using the same rules as the configuration system as a whole.
 
 However unlike the configuration system, there is no inherent priority amongst the various value sections.
 
-Instead, each value section can have rules that indicate priority. Each rule states that this value section must come 
+Instead, each value section can have rules that indicate priority. Each rule states that this value section must come
 before (lower priority than) or after (higher priority than) some other value section.
 
 To specify these rules you add an "After" and/or "Before" key to the relevant header section. The value for these
 keys is a list of reference paths to other value sections. A basic example:
-
 
 ```yml
 ---
@@ -298,31 +294,31 @@ You do not have to specify all portions of a reference path. Any portion may be 
 out all together. Either has the same affect - that portion will be ignored when checking a value section's reference
 path, and will always match. You may even specify just "\*", which means "all value sections".
 
-When a particular value section matches both a Before _and_ an After rule, this may be a problem. Clearly
-one value section can not be both before _and_ after another. However when you have used wildcards, if there
+When a particular value section matches both a Before *and* an After rule, this may be a problem. Clearly
+one value section can not be both before *and* after another. However when you have used wildcards, if there
 was a difference in how many wildcards were used, the one with the least wildcards will be kept and the other one
 ignored.
 
 The value section above has two rules:
 
-  - It must be merged in before (lower priority than) all other value sections
-  - It must be merged in after (higher priority than) any value section with a fragment name of "rootroutes"
+- It must be merged in before (lower priority than) all other value sections
+- It must be merged in after (higher priority than) any value section with a fragment name of "rootroutes"
 
-In this case there would appear to be a problem - adminroutes can not be both before all other value sections _and_
+In this case there would appear to be a problem - adminroutes can not be both before all other value sections *and*
 after value sections with a name of `rootroutes`. However because `\*` has three wildcards
-(it is the equivalent of `\*/\*#\*`) but `#rootroutes` only has two (it is the equivalent of `\*/\*#rootroutes`). 
+(it is the equivalent of `\*/\*#\*`) but `#rootroutes` only has two (it is the equivalent of `\*/\*#rootroutes`).
 
-In this case `\*` means "every value section _except_ ones that have a fragment name of rootroutes".
+In this case `\*` means "every value section *except* ones that have a fragment name of rootroutes".
 
 [alert]
-It is possible to create chains that are unsolvable. For instance, A must be before B, B must be before C, C must be 
+It is possible to create chains that are unsolvable. For instance, A must be before B, B must be before C, C must be
 before A. In this case you will get an error when accessing your site.
 [/alert]
 
 ## Exclusionary rules
 
-Some value sections might only make sense under certain environmental conditions - a class exists, a module is 
-installed, an environment variable or constant is set, or Silverstripe CMS is running in a certain environment mode (live, 
+Some value sections might only make sense under certain environmental conditions - a class exists, a module is
+installed, an environment variable or constant is set, or Silverstripe CMS is running in a certain environment mode (live,
 dev, etc).
 
 To accommodate this, value sections can be filtered to only be used when either a rule matches or doesn't match the
@@ -334,38 +330,37 @@ rules contained match.
 
 You then list any of the following rules as sub-keys, with informational values as either a single value or a list.
 
-  - `classexists`, in which case the value(s) should be classes that must exist
-  - `moduleexists`, in which case the value(s) should be modules that must exist. This supports either folder
+- `classexists`, in which case the value(s) should be classes that must exist
+- `moduleexists`, in which case the value(s) should be modules that must exist. This supports either folder
     name or composer `vendor/name` format.
-  - `environment`, in which case the value(s) should be one of "live", "test" or "dev" to indicate the Silverstripe CMS
+- `environment`, in which case the value(s) should be one of "live", "test" or "dev" to indicate the Silverstripe CMS
     mode the site must be in
-  - `envvarset`, in which case the value(s) should be environment variables that must be set
-  - `constantdefined`, in which case the value(s) should be constants that must be defined
-  - `envorconstant`, a variable which should be defined either via environment vars or constants (and optionally be set to a specific value)
-  - `extensionloaded`, in which case the PHP extension(s) must be loaded
+- `envvarset`, in which case the value(s) should be environment variables that must be set
+- `constantdefined`, in which case the value(s) should be constants that must be defined
+- `envorconstant`, a variable which should be defined either via environment vars or constants (and optionally be set to a specific value)
+- `extensionloaded`, in which case the PHP extension(s) must be loaded
 
 For instance, to add a property to "foo" when a module exists, and "bar" otherwise, you could do this:
-
 
 ```yml
 ---
 Only:
   moduleexists: 'MyFineModule'
 ---
-MyClass:
+App\MyClass:
   property: 'foo'
 ---
 Except:
   moduleexists: 'MyFineModule'
 ---
-MyClass:
+App\MyClass:
   property: 'bar'
 ---
 ```
 
 Multiple conditions of the same type can be declared via array format
 
-```yaml
+```yml
 ---
 Only:
   moduleexists:
@@ -375,9 +370,9 @@ Only:
 ```
 
 The `envorconstant` rule allows you to get even more specific by also directly comparing values of environment variables
-and constants. In this example, both `TEST_ENV` and `TEST_CONST` have to be defined _and_ set to certain values:
+and constants. In this example, both `TEST_ENV` and `TEST_CONST` have to be defined *and* set to certain values:
 
-```yaml
+```yml
 ---
 Only:
   envorconstant:
@@ -387,8 +382,8 @@ Only:
 ```
 
 [alert]
-When you have more than one rule for a nested fragment, they're joined like 
-`FRAGMENT_INCLUDED = (ONLY && ONLY) && !(EXCEPT && EXCEPT)`. 
+When you have more than one rule for a nested fragment, they're joined like
+`FRAGMENT_INCLUDED = (ONLY && ONLY) && !(EXCEPT && EXCEPT)`.
 That is, the fragment will be included if all Only rules match, except if all Except rules match.
 [/alert]
 
@@ -403,40 +398,51 @@ The test will run three times, each run with different configuration value.
 Note that the configuration change is active only within the callback function.
 
 ```php
-/**
- * @dataProvider testValuesProvider
- * @param string $value
- * @param string $expected
- */
-public function testConfigValues($value, $expected)
+namespace App\Test\Service;
+
+use App\Service\MyService;
+use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Dev\SapphireTest;
+
+class MyServiceTest extends SapphireTest
 {
-    $result = Config::withConfig(function(MutableConfigCollectionInterface $config) use ($value) {
-        // update your config
-        $config->set(MyService::class, 'some_setting', $value);
+    /**
+     * @dataProvider testValuesProvider
+     * @param string $value
+     * @param string $expected
+     */
+    public function testConfigValues($value, $expected)
+    {
+        $result = Config::withConfig(function (MutableConfigCollectionInterface $config) use ($value) {
+            // update your config
+            $config->set(MyService::class, 'some_setting', $value);
 
-        // your test code goes here and it runs with your changed config
-        return MyService::singleton()->executeSomeFunction();
-    });
+            // your test code goes here and it runs with your changed config
+            return MyService::singleton()->executeSomeFunction();
+        });
 
-    // your config change no longer applies here as it's outside of callback
+        // your config change no longer applies here as it's outside of callback
 
-    // assertions can be done here but also inside the callback function
-    $this->assertEquals($expected, $result);
-}
+        // assertions can be done here but also inside the callback function
+        $this->assertEquals($expected, $result);
+    }
 
-public function testValuesProvider(): array
-{
-    return [
-        ['test value 1', 'expected value 1'],
-        ['test value 2', 'expected value 2'],
-        ['test value 3', 'expected value 3'],
-    ];
+    public function testValuesProvider(): array
+    {
+        return [
+            ['test value 1', 'expected value 1'],
+            ['test value 2', 'expected value 2'],
+            ['test value 3', 'expected value 3'],
+        ];
+    }
 }
 ```
 
-## API Documentation
+## API documentation
 
-* [Config](api:SilverStripe\Core\Config\Config)
+- [Config](api:SilverStripe\Core\Config\Config)
 
-## Related Lessons
-* [DataExtensions and SiteConfig](https://www.silverstripe.org/learn/lessons/v4/data-extensions-and-siteconfig-1)
+## Related lessons
+
+- [DataExtensions and SiteConfig](https://www.silverstripe.org/learn/lessons/v4/data-extensions-and-siteconfig-1)

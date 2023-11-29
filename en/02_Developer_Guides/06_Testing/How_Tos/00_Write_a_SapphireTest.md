@@ -3,19 +3,21 @@ title: How to write a SapphireTest
 summary: Learn the basics of unit testing in Silverstripe
 ---
 
-# How to write a SapphireTest
+# How to write a sapphireTest
 
 Here is an example of a test which extends [SapphireTest](api:SilverStripe\Dev\SapphireTest) to test the URL generation of the page. It also showcases
 how you can load default records into the test database.
 
-**app/tests/PageTest.php**
-
 ```php
+// app/tests/PageTest.php
+namespace App\Test;
+
+use Page;
 use SilverStripe\Dev\SapphireTest;
 
 class PageTest extends SapphireTest
 {
-    /** 
+    /**
      * Defines the fixture file to use for this test class
      * @var string $fixture_file
      */
@@ -35,11 +37,11 @@ class PageTest extends SapphireTest
             'home' => 'home',
             'staff' => 'my-staff',
             'about' => 'about-us',
-            'staffduplicate' => 'my-staff-2'
+            'staffduplicate' => 'my-staff-2',
         ];
 
         foreach ($expectedURLs as $fixture => $urlSegment) {
-            $obj = $this->objFromFixture('Page', $fixture);
+            $obj = $this->objFromFixture(Page::class, $fixture);
 
             $this->assertEquals($urlSegment, $obj->URLSegment);
         }
@@ -47,9 +49,8 @@ class PageTest extends SapphireTest
 }
 ```
 
-**app/tests/SiteTreeTest.yml**
-
-```yaml
+```yml
+# app/tests/SiteTreeTest.yml
 Page:
     home:
       Title: Home
@@ -61,9 +62,8 @@ Page:
       Title: My Staff
 ```
 
-**phpunit.xml**
-
 ```xml
+<!-- phpunit.xml -->
 <phpunit bootstrap="vendor/silverstripe/framework/tests/bootstrap.php" colors="true">
     <testsuites>
         <testsuite name="Default">
@@ -82,16 +82,16 @@ Page:
 ```
 
 Firstly we define a static `$fixture_file`, this should point to a file that represents the data we want to test,
-represented as a YAML [Fixture](../fixtures). When our test is run, the data from this file will be loaded into a test 
+represented as a YAML [Fixture](../fixtures). When our test is run, the data from this file will be loaded into a test
 database and discarded at the end of the test.
 
 [notice]
-The `fixture_file` property can be path to a file, or an array of strings pointing to many files. The path must be 
+The `fixture_file` property can be path to a file, or an array of strings pointing to many files. The path must be
 absolute from your website's root folder.
 [/notice]
 
-The second part of our class is the `testURLGeneration` method. This method is our test. When the test is executed, 
-methods prefixed with the word `test` will be run. 
+The second part of our class is the `testURLGeneration` method. This method is our test. When the test is executed,
+methods prefixed with the word `test` will be run.
 
 [notice]
 The test database is rebuilt every time one of these methods is run.
@@ -103,7 +103,7 @@ but not saved in the database anywhere, `objFromFixture` looks the [DataObject](
 database. This means that you can use it to test the functions responsible for looking up content in the database.
 
 The final part of our test is an assertion command, `assertEquals`. An assertion command allows us to test for something
-in our test methods (in this case we are testing if two values are equal). A test method can have more than one 
+in our test methods (in this case we are testing if two values are equal). A test method can have more than one
 assertion command, and if any one of these assertions fail, so will the test method.
 
 The example **phpunit.xml** file should be placed in the root folder of your project. PHPUnit 5.7 should be included by default, as a dev dependency, in the **composer.json** file.
@@ -112,7 +112,7 @@ The example **phpunit.xml** file should be placed in the root folder of your pro
 
 Just like on web requests, Silverstripe CMS caches metadata about the execution context. This cache can get stale, e.g. when you change YAML configuration or add certain types of PHP code. In order to flush the cache, the **first time** this test is run use the `flush=1` CLI parameter:
 
-```sh
+```bash
 vendor/bin/phpunit app/tests/PageTest.php '' flush=1
 ```
 
@@ -120,12 +120,12 @@ vendor/bin/phpunit app/tests/PageTest.php '' flush=1
 For more information on PHPUnit's assertions see the [PHPUnit manual](http://www.phpunit.de/manual/current/en/api.html#api.assert).
 [/info]
 
-## Related Documentation
+## Related documentation
 
-* [Unit Testing](../unit_testing)
-* [Fixtures](../fixtures)
+- [Unit Testing](../unit_testing)
+- [Fixtures](../fixtures)
 
-## API Documentation
+## API documentation
 
-* [SapphireTest](api:SilverStripe\Dev\SapphireTest)
-* [FunctionalTest](api:SilverStripe\Dev\FunctionalTest)
+- [SapphireTest](api:SilverStripe\Dev\SapphireTest)
+- [FunctionalTest](api:SilverStripe\Dev\FunctionalTest)

@@ -10,7 +10,7 @@ summary: Add arguments to your fields, queries, and mutations
 [info]
 You are viewing docs for silverstripe/graphql 4.x.
 If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
+[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 [/info]
 
 ## Adding arguments
@@ -18,14 +18,14 @@ If you are using 3.x, documentation can be found
 Fields can have arguments, and queries are just fields, so let's add a simple
 way of influencing our query response:
 
-**app/_graphql/schema.yml**
-```yaml
-  queries:
-    'readCountries(limit: Int!)': '[Country]'
+```yml
+# app/_graphql/schema.yml
+queries:
+  'readCountries(limit: Int!)': '[Country]'
 ```
 
 [hint]
-In the above example, the `limit` argument is _required_ by making it non-nullable. If you want to be able
+In the above example, the `limit` argument is *required* by making it non-nullable. If you want to be able
 to get an un-filtered list, you can instead allow the argument to be nullable by removing the `!`:
 `'readCountries(limit: Int)': '[Country]'`
 [/hint]
@@ -34,21 +34,30 @@ We've provided the required argument `limit` to the query, which will allow us t
 Let's update the resolver accordingly.
 
 ```php
+namespace App\GraphQL\Resolver;
+
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\i18n\Data\Locales;
+
+class MyResolver
+{
     public static function resolveReadCountries($obj, array $args = [])
     {
         $limit = $args['limit'];
         $results = [];
         $countries = Injector::inst()->get(Locales::class)->getCountries();
         $countries = array_slice($countries, 0, $limit);
+
         foreach ($countries as $code => $name) {
             $results[] = [
                 'code' => $code,
-                'name' => $name
+                'name' => $name,
             ];
         }
 
         return $results;
     }
+}
 ```
 
 Now let's try our query again. This time, notice that the IDE is telling us we're missing a required argument.
@@ -63,13 +72,13 @@ query {
 }
 ```
 
-This works pretty well, but maybe it's a bit over the top to _require_ the `limit` argument. We want to optimise
+This works pretty well, but maybe it's a bit over the top to *require* the `limit` argument. We want to optimise
 performance, but we also don't want to burden the developer with tedium like this. Let's give it a default value.
 
-**app/_graphql/schema.yml**
-```yaml
-  queries:
-    'readCountries(limit: Int = 20)': '[Country]'
+```yml
+# app/_graphql/schema.yml
+queries:
+  'readCountries(limit: Int = 20)': '[Country]'
 ```
 
 Rebuild the schema and try the query again without adding a limit in the query. Notice that the IDE is no longer

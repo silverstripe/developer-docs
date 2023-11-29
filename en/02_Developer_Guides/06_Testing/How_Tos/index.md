@@ -1,6 +1,6 @@
 ---
 title: How To's
 ---
-# How To's: Testing
+# How to's: testing
 
 [CHILDREN]

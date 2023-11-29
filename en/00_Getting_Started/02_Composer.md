@@ -18,7 +18,7 @@ the code dependencies you need to run your Silverstripe CMS website from the cod
 Next, [install composer](https://getcomposer.org/download/). For our documentation we assume the `composer` command is
 installed globally. You should now be able to run the command:
 
-```
+```bash
 composer help
 ```
 
@@ -27,7 +27,7 @@ composer help
 Composer can create a new site for you, using the installer as a template. By default it will download the latest stable
 version:
 
-```
+```bash
 composer create-project silverstripe/installer my-project
 ```
 
@@ -44,7 +44,7 @@ visit the site in your web browser, and the installation process will be complet
 
 You can also specify a version to download that version explicitly, i.e. this will download the older `4.3.3` release:
 
-```
+```bash
 composer create-project silverstripe/installer ./my-project 4.3.3
 ```
 
@@ -54,11 +54,11 @@ see [Using development versions](#using-development-versions).
 
 ## Adding modules to your project
 
-Composer isn't only used to download Silverstripe CMS, it is also used to manage all Silverstripe CMS modules. 
+Composer isn't only used to download Silverstripe CMS, it is also used to manage all Silverstripe CMS modules.
 You can find thousands of modules on [https://addons.silverstripe.org](https://addons.silverstripe.org).
 Installing a module can be done with the following command:
 
-```
+```bash
 composer require silverstripe/blog
 ```
 
@@ -66,7 +66,7 @@ This will install the `silverstripe/blog` module in the latest compatible versio
 want to install already (such as `^2`), you can add it after the package name as
 a [version constraint](http://getcomposer.org/doc/01-basic-usage.md#the-require-key):
 
-```
+```bash
 composer require silverstripe/blog ^2
 ```
 
@@ -83,7 +83,7 @@ time. Silverstripe CMS modules are no exception.
 
 To get the latest updates of the modules in your project, run this command:
 
-```
+```bash
 composer update
 ```
 
@@ -101,22 +101,22 @@ version string. You can run `composer install` to install dependencies from this
 
 So your deployment process, as it relates to Composer, should be as follows:
 
-* Run `composer update` on your development version before you start whatever testing you have planned. Perform all the
+- Run `composer update` on your development version before you start whatever testing you have planned. Perform all the
   necessary testing.
-* Check `composer.lock` into your repository.
-* Deploy your project code base, using the deployment tool of your choice.
-* Run `composer install --no-dev -o` on your production version. In this command, the `--no-dev` command tells Composer
+- Check `composer.lock` into your repository.
+- Deploy your project code base, using the deployment tool of your choice.
+- Run `composer install --no-dev -o` on your production version. In this command, the `--no-dev` command tells Composer
   not to install your development-only dependencies, and `-o` is an alias for `--optimise-autoloader`, which will
   convert your PSR-0 and PSR-4 autoloader definitions into a classmap to improve the speed of the autoloader.
 
-## Composer managed modules, Git and .gitignore
+## Composer managed modules, Git and `.gitignore`
 
 Modules and themes managed by Composer should not be committed with your projects source code. Silverstripe CMS ships with
-a [.gitignore](http://git-scm.com/docs/gitignore) file by default which prevents this. For more details
+a [`.gitignore`](http://git-scm.com/docs/gitignore) file by default which prevents this. For more details
 read  [Should I commit the dependencies in my vendor directory?](https://getcomposer.org/doc/faqs/should-i-commit-the-dependencies-in-my-vendor-directory.md)
 .
 
-## Dev Environments for Contributing Code {#contributing}
+## Dev environments for contributing code {#contributing}
 
 So you want to contribute to Silverstripe CMS? Fantastic! You can do this with composer too. You have to tell composer three
 things in order to be able to do this:
@@ -127,7 +127,7 @@ things in order to be able to do this:
 
 The first two steps are done as part of the initial create project using additional arguments.
 
-```
+```bash
 composer create-project --keep-vcs --dev silverstripe/installer ./my-project 4.x-dev --prefer-source
 ```
 
@@ -140,9 +140,9 @@ The `--keep-vcs` flag will make sure you have access to the git history of the i
 
 The `--dev` flag is optional, and can be used to add a couple modules which are useful for Silverstripe CMS development:
 
-* The `behat-extension` module allows running [Behat](http://behat.org) integration tests
-* The `docsviewer` module will let you preview changes to the project documentation
-* The `buildtools` module which adds [phing](http://phing.info) tasks for creating Silverstripe CMS releases
+- The `behat-extension` module allows running [Behat](http://behat.org) integration tests
+- The `docsviewer` module will let you preview changes to the project documentation
+- The `buildtools` module which adds [phing](http://phing.info) tasks for creating Silverstripe CMS releases
 
 Once the `create-project` command completes, you need to edit the `composer.json` in the project root and remove
 the `@stable` markers from the `silverstripe/cms` and `silverstripe/framework` version entries.
@@ -152,9 +152,9 @@ an existing composer project with these steps.
 Please read the ["Contributing Code"](/contributing/code) documentation to find out how to create forks and send pull
 requests.
 
-# Advanced usage
+## Advanced usage
 
-## Manually editing composer.json
+### Manually editing `composer.json`
 
 To remove dependencies, or if you prefer seeing all your dependencies in a text file, you can edit the `composer.json`
 file. It will appear in your project root, and by default, it will look something like this:
@@ -182,14 +182,14 @@ modules. Be careful with the commas at the end of the lines!
 
 Save your file, and then run the following command to refresh the installed packages:
 
-```
+```bash
 composer update
 ```
 
-## Using development versions
+### Using development versions
 
 Composer will by default download the latest stable version of silverstripe/installer. The `composer.json` file that
-comes with silverstripe/installer may also explicitly state it requires the stable version of cms and framework - this
+comes with silverstripe/installer may also explicitly state it requires the stable version of CMS and framework - this
 is to ensure that when developers are getting started, running `composer update` won't upgrade their project to an
 unstable version
 
@@ -199,34 +199,34 @@ contribute back to the Silverstripe CMS project, it also allows you to get fixes
 This is a two step process. First you get composer to start a project based on the latest unstable
 silverstripe/installer
 
-```
+```bash
 composer create-project silverstripe/installer ./my-project dev-master
 ```
 
 Or for the latest development version in the 4.0.x series
 
-```
+```bash
 composer create-project silverstripe/installer ./my-project 4.0.x-dev
 ```
 
-## Working with project forks and unreleased modules
+### Working with project forks and unreleased modules
 
 By default, Composer will install modules listed on the Packagist site. There are a few reasons that you might not want
 to do this. For example:
 
-* You may have your own fork of a module, either specific to a project, or because you are working on a pull request
-* You may have a module that hasn't been released to the public.
+- You may have your own fork of a module, either specific to a project, or because you are working on a pull request
+- You may have a module that hasn't been released to the public.
 
 There are many ways that you can address this, but this is one that we recommend, because it minimises the changes you
 would need to make to switch to an official version in the future.
 
 This is how you do it:
 
-* **Ensure that all of your fork repositories have correct composer.json files.** Set up the project forks as you would
-  a distributed package. If you have cloned a repository that already has a composer.json file, then there's nothing you
+- **Ensure that all of your fork repositories have correct `composer.json` files.** Set up the project forks as you would
+  a distributed package. If you have cloned a repository that already has a `composer.json` file, then there's nothing you
   need to do, but if not, you will need to create one yourself.
 
-* **List all your fork repositories in your project's composer.json files.** You do this in a `repositories` section.
+- **List all your fork repositories in your project's `composer.json` files.** You do this in a `repositories` section.
   Set the `type` to `vcs`, and `url` to the URL of the repository. The result will look something like this:
 
 ```json
@@ -242,10 +242,10 @@ This is how you do it:
 }
 ```
 
-* **Install the module as you would normally.** Use the regular composer function - there are no special flags to use a
+- **Install the module as you would normally.** Use the regular composer function - there are no special flags to use a
   fork. Your fork will be used in place of the package version.
 
-```
+```bash
 composer require silverstripe/cms
 ```
 
@@ -255,7 +255,7 @@ the `repositories` section from `composer.json` and run `composer update`.
 
 Now add an "upstream" remote to the original repository location so you can rebase or merge your fork as required.
 
-```
+```bash
 cd cms
 git remote add -f upstream git://github.com/silverstripe/silverstripe-cms.git
 ```
@@ -263,7 +263,7 @@ git remote add -f upstream git://github.com/silverstripe/silverstripe-cms.git
 For more information, read
 the ["Repositories" chapter of the Composer documentation](http://getcomposer.org/doc/05-repositories.md).
 
-### Forks and branch names
+#### Forks and branch names
 
 Generally, you should keep using the same pattern of branch names as the main repositories does. If your version is a
 fork of 4.0, then call the branch `4.0`, not `4.0-myproj` or `myproj`. Otherwise, the dependency resolution gets
@@ -302,14 +302,6 @@ the ["Aliases" chapter of the Composer documentation](http://getcomposer.org/doc
 
 ## FAQ
 
-### Error "The requested package silverstripe/framework 1.0.0 could not be found"
-
-Composer needs hints about the base package version, either by using `composer create-project`
-as described above, or by checking out the `silverstripe-installer` project directly from version control. In order to
-use Composer on archive downloads from silverstripe.org, or other unversioned sources, an advanced workaround is to set
-the `COMPOSER_ROOT_VERSION` before every command
-([details](http://getcomposer.org/doc/03-cli.md#composer-root-version))
-
 ### How do I convert an existing module to using Composer?
 
 Simply decide on a [unique name and vendor prefix](https://packagist.org/about), create a `composer.json`, and either
@@ -324,7 +316,7 @@ on [packagist.org](http://packagist.org).
 
 Follow the packagist.org advice on choosing a [unique name and vendor prefix](https://packagist.org/about). Please don't
 use the `silverstripe/<modulename>` vendor prefix, since that's reserved for modules produced by Silverstripe Ltd. In
-order to declare that your module is in fact a Silverstripe CMS module, use the "silverstripe" tag in the composer.json
+order to declare that your module is in fact a Silverstripe CMS module, use the `silverstripe` tag in the `composer.json`
 file, and set the "type" to "silverstripe-module".
 
 ### What about themes?
@@ -345,14 +337,14 @@ the live server hosts a git repository checkout, which is updated to push a newe
 run `composer install` afterwards. We recommend looking
 into [Composer "lock" files](http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file) for this purpose.
 
-### Can I keep using Downloads, Subversion Externals or Git Submodules?
+### Can I keep using downloads, subversion externals or Git submodules?
 
 Composer is more than just a file downloader. It comes with additional features such as
 [autoloading](http://getcomposer.org/doc/01-basic-usage.md#autoloading)
 or [scripts](http://getcomposer.org/doc/articles/scripts.md)
 which some modules will start relying on. Please check the module README for specific installation instructions.
 
-### I don't want to get development versions of everything!
+### I don't want to get development versions of everything
 
 You don't have to, Composer is designed to work on the constraints you set. You can declare
 the ["minimum-stability"](http://getcomposer.org/doc/04-schema.md#minimum-stability)

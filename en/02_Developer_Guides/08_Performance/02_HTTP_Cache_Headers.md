@@ -4,9 +4,7 @@ summary: Set the correct HTTP cache headers for your responses.
 icon: tachometer-alt
 ---
 
-# HTTP Cache Headers
-
-## Overview
+# HTTP cache headers
 
 By default, Silverstripe CMS sends headers which signal to HTTP caches
 that the response should be not considered cacheable.
@@ -18,7 +16,7 @@ Getting it wrong can accidentally expose draft pages or other protected content.
 The [Google Web Fundamentals](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#public_vs_private)
 are a great way to learn about HTTP caching.
 
-## Cache Control Headers
+## Cache control headers
 
 ### Overview
 
@@ -41,11 +39,11 @@ since there are too many variations under which output could be considered priva
 (e.g. a custom "approval" flag on a comment object). It is up to
 the developer to ensure caching is used appropriately there.
 
-The [api:SilverStripe\Control\Middleware\HTTPCacheControlMiddleware] class replaces
+The [`HTTPCacheControlMiddleware`](api:SilverStripe\Control\Middleware\HTTPCacheControlMiddleware) class replaces
 (deprecated) caching methods in the `HTTP` helper class.
 It comes with methods which let developers safely interact with the `Cache-Control` header.
 
-### disableCache()
+### DisableCache()
 
 Simple way to set cache control header to a non-cacheable state.
 Use this method over `privateCache()` if you are unsure about caching details.
@@ -57,7 +55,7 @@ the others are added under [recommendation from Mozilla](https://developer.mozil
 Does not set `private` directive, use `privateCache()` if this is explicitly required
 ([details](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#public_vs_private))
 
-### enableCache()
+### EnableCache()
 
 Simple way to set cache control header to a cacheable state.
 Use this method over `publicCache()` if you are unsure about caching details.
@@ -68,55 +66,57 @@ Use alongside `setMaxAge()` to activate caching.
 Does not set `public` directive. Usually, `setMaxAge()` is sufficient. Use `publicCache()` if this is explicitly required
 ([details](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#public_vs_private))
 
-### privateCache()
+### PrivateCache()
 
 Advanced way to set cache control header to a non-cacheable state.
 Indicates that the response is intended for a single user and must not be stored by a shared cache.
 A private cache (e.g. Web Browser) may store the response. Also removes `public` as this is a contradictory directive.
 
-### publicCache()
+### PublicCache()
 
 Advanced way to set cache control header to a cacheable state.
 Indicates that the response may be cached by any cache. (eg: CDNs, Proxies, Web browsers)
 Also removes `private` as this is a contradictory directive
 
 ### Priority
-    
+
 Each of these highlevel methods has a boolean `$force` parameter which determines
 their application priority regardless of execution order.
 The priority order is as followed, sorted in descending order
-(earlier items will overrule later items): 
+(earlier items will overrule later items):
 
- * `disableCache($force=true)`
- * `privateCache($force=true)`
- * `publicCache($force=true)`
- * `enableCache($force=true)`
- * `disableCache()`
- * `privateCache()`
- * `publicCache()`
- * `enableCache()`
+- `disableCache($force=true)`
+- `privateCache($force=true)`
+- `publicCache($force=true)`
+- `enableCache($force=true)`
+- `disableCache()`
+- `privateCache()`
+- `publicCache()`
+- `enableCache()`
 
-## Cache Control Examples
+## Cache control examples
 
-### Global opt-in for page content 
+### Global opt-in for page content
 
 Enable caching for all page content (through `PageController`).
 
 ```php
-<?php
+namespace {
 
-use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
-use SilverStripe\CMS\Controllers\ContentController;
+    use SilverStripe\CMS\Controllers\ContentController;
+    use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
 
-class PageController extends ContentController
-{
-    public function init()
+    class PageController extends ContentController
     {
-        HTTPCacheControlMiddleware::singleton()
-           ->enableCache()
-           ->setMaxAge(60); // 1 minute
-        
-        parent::init();
+        public function init()
+        {
+            HTTPCacheControlMiddleware::singleton()
+            ->enableCache()
+            // 1 minute
+            ->setMaxAge(60);
+
+            parent::init();
+        }
     }
 }
 ```
@@ -133,33 +133,34 @@ you can disable caching either on a controller level
 (through `init()`) or for a particular action.
 
 ```php
-<?php
+namespace {
 
-use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
-use SilverStripe\CMS\Controllers\ContentController;
+    use SilverStripe\CMS\Controllers\ContentController;
+    use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
 
-class PageController extends ContentController
-{
-    public function myprivateaction($request)
+    class PageController extends ContentController
     {
-        HTTPCacheControlMiddleware::singleton()
-           ->disableCache();
-        
-        return $this->myPrivateResponse();
+        public function myprivateaction($request)
+        {
+            HTTPCacheControlMiddleware::singleton()
+            ->disableCache();
+
+            return $this->myPrivateResponse();
+        }
     }
 }
 ```
 
 Note: Silverstripe CMS will still override this preference when a session is active,
 a [CSRF token](/developer_guides/forms/form_security) token is present,
-or draft content has been requested. 
+or draft content has been requested.
 
-### Global opt-in, ignoring session (advanced) 
+### Global opt-in, ignoring session (advanced)
 
 This can be helpful in situations where forms are embedded on the website.
 Silverstripe CMS will still override this preference when draft content has been requested.
 CAUTION: This mode relies on a developer examining each execution path to ensure
-that no session data is used to vary output. 
+that no session data is used to vary output.
 
 Use case: By default, forms include a [CSRF token](/developer_guides/forms/form_security)
 which starts a session with a value that's unique to the visitor, which makes the output uncacheable.
@@ -169,30 +170,33 @@ and does not vary for this particular visitor. Forms can also contain submission
 when they're redisplayed after a validation error.
 
 ```php
-<?php
+namespace {
 
-use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
-use SilverStripe\CMS\Controllers\ContentController;
+    use SilverStripe\CMS\Controllers\ContentController;
+    use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
 
-class PageController extends ContentController
-{
-    public function init()
+    class PageController extends ContentController
     {
-        HTTPCacheControlMiddleware::singleton()
-           ->enableCache($force=true) // DANGER ZONE
-           ->setMaxAge(60); // 1 minute
-        
-        parent::init();
+        public function init()
+        {
+            HTTPCacheControlMiddleware::singleton()
+            // DANGER ZONE
+            ->enableCache($force = true)
+            // 1 minute
+            ->setMaxAge(60);
+
+            parent::init();
+        }
     }
 }
 ```
 
-## Max Age
+## Max age
 
 The cache age determines the lifetime of your cache, in seconds.
 It only takes effect if you instruct the cache control
 that your response is cacheable in the first place
-(via `enableCache()`, `publicCache()` or `privateCache()`), 
+(via `enableCache()`, `publicCache()` or `privateCache()`),
 or via modifying the `HTTP.cache_control` defaults).
 
 ```php
@@ -204,10 +208,10 @@ HTTPCacheControlMiddleware::singleton()
 Note that `setMaxAge(0)` is NOT sufficient to disable caching in all cases,
 use `disableCache()` instead.
 
-### Last Modified
+### Last modified
 
-Used to set the modification date to something more recent than the default. [api:DataObject::__construct] calls 
-[api:HTTP::register_modification_date(] whenever a record comes from the database ensuring the newest date is present.
+Used to set the modification date to something more recent than the default. [`DataObject::__construct()`](api:SilverStripe\ORM\DataObject::__construct()) calls
+[`HTTP::register_modification_date()`](api:SilverStripe\Control\HTTP::register_modification_date()) whenever a record comes from the database ensuring the newest date is present.
 
 ```php
 use SilverStripe\Control\HTTP;
@@ -218,9 +222,9 @@ HTTP::register_modification_date('2014-10-10');
 
 A `Vary` header tells caches which aspects of the response should be considered
 when calculating a cache key, usually in addition to the full URL.
-By default, Silverstripe CMS will output a `Vary` header with the following content: 
+By default, Silverstripe CMS will output a `Vary` header with the following content:
 
-```
+```text
 Vary: X-Forwarded-Protocol
 ```
 
@@ -236,7 +240,7 @@ then you should add `X-Requested-With` to the vary header.
 
 ## Testing
 
-HTTP Cache headers are disabled in developer environments by default to prevent any confusion around content not updating. To enable HTTP Cache Headers in dev mode you can add the following in yml config.
+HTTP Cache headers are disabled in developer environments by default to prevent any confusion around content not updating. To enable HTTP Cache Headers in dev mode you can add the following in YAML config.
 
 ```yml
 ---

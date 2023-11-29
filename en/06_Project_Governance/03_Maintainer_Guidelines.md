@@ -4,7 +4,7 @@ summary: Cheat sheet for module maintainers
 icon: clipboard-list
 ---
 
-# Maintainer Guidelines
+# Maintainer guidelines
 
 This doc outlines expectations on maintainers of Silverstripe CMS. It also forms the default expectations for maintainers of [supported modules](./supported_modules/), unless more specific contribution guidelines are available for a module.
 
@@ -19,14 +19,14 @@ All maintainers should be familiar with those docs as they explain many details 
 
 Refer to the [triage and peer review](/contributing/triage_resources/) for information about how those tasks are performed.
 
-## Maintainer Roles
+## Maintainer roles
 
-### Core Committers
+### Core committers
 
 The people looking after the Silverstripe Core modules.
 See the details on the [Core Committers](./core_committers) page.
 
-### CMS Squad
+### CMS squad
 
 Beyond the Core Committer role, there can be individuals which
 focus on core development work and are full-time employees of Silverstripe.
@@ -44,15 +44,15 @@ First and foremost rule of a maintainer is to collaborate with other maintainers
 
 ### House rules overview
 
-* Be friendly, encouraging and constructive towards other community members
-* Frequently review pull requests and new issues (in particular, respond quickly to @mentions)
-* Treat issues according to our [issue guidelines](/contributing/issues_and_bugs/), and use the [triage resources](/contributing/triage_resources/)
-* Don't commit directly to existing branches, raise pull requests instead
-* Use forks to create feature branches for pull requests
-* Only merge code you have tested and fully understand. If in doubt, ask for a second opinion.
-* Follow the [Supported Modules Standard](https://www.silverstripe.org/software/addons/supported-modules-definition/)
-* Ensure contributions have appropriate [test coverage](/developer_guides/testing/), are documented, and adhere to our [coding conventions](/getting_started/coding_conventions/)
-* Keep the codebase "releasable" at all times (check our [release process](/contributing/release_process/))
-* Follow [Semantic Versioning](/contributing/code/#picking-the-right-version) by putting any changes into the correct branch
-* Be inclusive. Ensure a wide range of Silverstripe CMS developers can obtain an understanding of your code and docs, and you're not the only one who can maintain it.
-* Avoid `git push --force`, and be careful with your git remotes (no accidental pushes)
+- Be friendly, encouraging and constructive towards other community members
+- Frequently review pull requests and new issues (in particular, respond quickly to @mentions)
+- Treat issues according to our [issue guidelines](/contributing/issues_and_bugs/), and use the [triage resources](/contributing/triage_resources/)
+- Don't commit directly to existing branches, raise pull requests instead
+- Use forks to create feature branches for pull requests
+- Only merge code you have tested and fully understand. If in doubt, ask for a second opinion.
+- Follow the [Supported Modules Standard](https://www.silverstripe.org/software/addons/supported-modules-definition/)
+- Ensure contributions have appropriate [test coverage](/developer_guides/testing/), are documented, and adhere to our [coding conventions](/getting_started/coding_conventions/)
+- Keep the codebase "releasable" at all times (check our [release process](/contributing/release_process/))
+- Follow [Semantic Versioning](/contributing/code/#picking-the-right-version) by putting any changes into the correct branch
+- Be inclusive. Ensure a wide range of Silverstripe CMS developers can obtain an understanding of your code and docs, and you're not the only one who can maintain it.
+- Avoid `git push --force`, and be careful with your git remotes (no accidental pushes)

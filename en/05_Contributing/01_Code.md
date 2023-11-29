@@ -4,9 +4,9 @@ summary: Fix bugs and add new features to help make Silverstripe CMS better.
 icon: code
 ---
 
-# Contributing Code - Submitting Bugfixes and Enhancements
+# Contributing code - submitting bugfixes and enhancements
 
-The Silverstripe CMS core and supported modules are hosted on [GitHub](https://github.com) - mostly in [github.com/silverstripe](https://github.com/silverstripe/). To contribute code, you will need to [create a GitHub account](https://docs.github.com/en/get-started/onboarding/getting-started-with-your-github-account).
+The Silverstripe CMS core and supported modules are hosted on [GitHub](https://github.com) - mostly in the [Silverstripe GitHub organisation](https://github.com/silverstripe/). To contribute code, you will need to [create a GitHub account](https://docs.github.com/en/get-started/onboarding/getting-started-with-your-github-account).
 
 This documentation assumes you are fairly confident with git and GitHub. If that isn't the case, you may want to read some guides for [GitHub](https://docs.github.com/en/get-started/quickstart), [git](https://docs.github.com/en/get-started/using-git), and [pull requests](https://docs.github.com/en/pull-requests).
 
@@ -38,7 +38,7 @@ Whether you're fixing a bug, updating documentation, making an ehancement for an
 
 If there's an existing GitHub issue, there may already be some discussion there about the preferred approach. Make sure you read through the comments.
 
-If there _isn't_ an existing issue, you should create one. Make sure you mention in your issue that you intend to make a pull request to implement the change (especially if this is for a new feature).
+If there *isn't* an existing issue, you should create one. Make sure you mention in your issue that you intend to make a pull request to implement the change (especially if this is for a new feature).
 
 If you are planning to develop an extensive feature or fix a bug that could have wide-reaching effects, try to get some discussion in your issue before you do much coding. Make it clear in the issue that you want to discuss it before working on it, and consider discussing the problem in one of the [community channels](https://www.silverstripe.org/community/) (and summarise the discussion in the issue afterward).
 
@@ -52,15 +52,15 @@ The examples below assume you are making a change that applies to the `4.13` bra
 Please adjust the commands as appropriate for the version of Silverstripe CMS that you're targeting. See [picking the right version](#picking-the-right-version).
 [/notice]
 
-### Editing files directly on GitHub.com
+### Editing files directly on GitHub
 
-If you see a typo or another small fix that needs to be made, and you don't have an installation set up for contributions, you can edit files directly in the github.com web interface.
+If you see a typo or another small fix that needs to be made, and you don't have an installation set up for contributions, you can edit files directly in the GitHub web interface.
 
 After you have edited the file, GitHub will offer to create a pull request for you. This pull request will be reviewed along with other pull requests.
 
 Make sure you read the [picking the right version](#picking-the-right-version), [create the pull request](#create-the-pr), and [recieve and respond to feedback](#recieve-feedback) sections below.
 
-### Step 1: Picking the right version {#picking-the-right-version}
+### Step 1: picking the right version {#picking-the-right-version}
 
 The Silverstripe CMS project follows [Semantic Versioning](https://semver.org), which clarifies what to expect from different releases and also guides you in choosing the right branch to base your pull request on.
 
@@ -75,7 +75,7 @@ If after reading this section you are still unsure what branch your pull request
 Refer to our [definition of public API](/project_governance/public_api/) for the following sections.
 [/hint]
 
-Any updates to third party dependencies in composer.json should aim to target the default branch for a minor release if possible. Targeting a patch release branch is acceptable if updating dependencies is required to fix a high impact or critical bug and is unlikely to result in regressions.
+Any updates to third party dependencies in `composer.json` should aim to target the default branch for a minor release if possible. Targeting a patch release branch is acceptable if updating dependencies is required to fix a high impact or critical bug and is unlikely to result in regressions.
 
 #### For changes to public API or new/enhanced features
 
@@ -90,9 +90,9 @@ For example, if your bug fix is applicable for Silverstripe CMS 4, and is for th
 #### For API breaking changes
 
 Do not make a pull request that includes a breaking change, including changing public API, unless there is a major release branch ready to merge into.
-e.g. if the latest stable release is `5.2.7`, the major release branch would be `6`.
+For example if the latest stable release is `5.2.7`, the major release branch would be `6`.
 
-### Step 2: Install the project {#install-the-project}
+### Step 2: install the project {#install-the-project}
 
 Install the project through composer. The process is described in detail in the [getting started](../getting_started/composer#contributing) docs.
 
@@ -108,7 +108,7 @@ Note that if you already have a working project and would like to implement the 
 composer reinstall <org>/<module> --prefer-source
 ```
 
-### Step 3: Prepare your working directory {#prepare-your-working-directory}
+### Step 3: prepare your working directory {#prepare-your-working-directory}
 
 - Create a [fork](https://help.github.com/articles/about-forks/) of the module you want to contribute to by going to the repository in your browser, clicking the "fork" button, and following the instructions.
 
@@ -133,7 +133,7 @@ composer reinstall <org>/<module> --prefer-source
 Use a descriptive name for your branch. For example if you are fixing a bug related to swapping preview modes targetting the `4.13` branch: `pulls/4.13/fix-preview-modes`
 [/hint]
 
-### Step 4: Work on your pull request {#work-on-your-pr}
+### Step 4: work on your pull request {#work-on-your-pr}
 
 Work on the code as much as you want and commit as often as you need to, but keep the following in mind:
 
@@ -165,7 +165,7 @@ at the beginning of the commit message.
 | ENH    | Improvements of existing functionality (with no API changes), UI/UX enhancements, refactoring and configuration updates.                         |
 | FIX    | Bugfix on something developers or users are likely to encounter.                                                                                 |
 | DOC    | Any documentation changes.                                                                                                                       |
-| DEP    | Dependency version updates (updates for composer.json, package.json etc)                                                                         |
+| DEP    | Dependency version updates (updates for `composer.json`, package.json etc)                                                                         |
 | TLN    | Translation commits                                                                                                                              |
 | MNT    | Maintenance commits that have no impact on users and applications (e.g. CI configs) - ommitted from the changelog                                |
 | Merge  | PR merges and merge-ups - ommitted from the changelog                                                                                            |
@@ -182,7 +182,7 @@ relation list a second time - so with each iteration your relation list
 count doubled (though it was the same records time and again).
 ```
 
-### Step 5: Create the pull request {#create-the-pr}
+### Step 5: create the pull request {#create-the-pr}
 
 When you are ready, push your branch to your GitHub fork. It's also a good idea to do this during development if the process is taking more than one day since this effectively backs up your work for you.
 
@@ -205,7 +205,7 @@ Following these additional guidelines for your pull request will improve the cha
 - Link to your pull request from that issue (in the description if you can edit it, or in a comment otherwise)
 - Explain your implementation. If there's anything which you needed to do a deep dive to find the best way to do it, or anything potentially controversial, etc, you can add a comment to your own pull request explaining what you did and why you did it that way.
 
-### Step 6: Recieve and respond to feedback {#recieve-feedback}
+### Step 6: recieve and respond to feedback {#recieve-feedback}
 
 Once your pull request is created, it's not the end of the road.
 
@@ -213,7 +213,7 @@ Once your pull request is created, it's not the end of the road.
 
 Most of the core and supported repositories have an automated GitHub Actions workflow which will run on your pull request. When it finishes running, check for any failed builds.
 
-If you think a build has failed for reasons unrelated to the changes you've made, point that out in a comment. If the failure _is_ related to your changes, then make any adjustments necessary to resolve the problems.
+If you think a build has failed for reasons unrelated to the changes you've made, point that out in a comment. If the failure *is* related to your changes, then make any adjustments necessary to resolve the problems.
 
 #### Peer review feedback
 

@@ -19,12 +19,10 @@ Like with any Composer package, we recommend declaring your PHP classes through
 Silverstripe CMS will automatically discover templates and configuration settings
 within your module when you next flush your cache.
 
+## Finding modules
 
-## Finding Modules
-
-* [Official module list on silverstripe.org](http://addons.silverstripe.org/)
-* [Packagist.org "silverstripe" tag](https://packagist.org/search/?tags=silverstripe)
-* [GitHub.com "silverstripe" search](https://github.com/search?q=silverstripe)
+- [Packagist "Silverstripe" tag](https://packagist.org/search/?tags=silverstripe)
+- [GitHub "Silverstripe" search](https://github.com/search?q=silverstripe)
 
 ## Installation
 
@@ -34,7 +32,7 @@ to track development branches of them. To install modules using this method, you
 with [Composer](../../getting_started/composer).
 
 Each module has a unique identifier, consisting of a vendor prefix and name. For example, the "blog" module has the
-identifier `silverstripe/blog` as it is published by *silverstripe*. To install, use the following command executed in
+identifier `silverstripe/blog` as it is published by *Silverstripe*. To install, use the following command executed in
 the root folder:
 
 ```bash
@@ -53,10 +51,10 @@ To lock down to a specific version, branch or commit, read up on
 ["lock" files](http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file).
 
 [notice]
-After you add or remove modules, make sure you rebuild the database, class and configuration manifests by going to http://yoursite.com/dev/build?flush=1
+After you add or remove modules, make sure you rebuild the database, class and configuration manifests by going to <http://yoursite.com/dev/build?flush=1>
 [/notice]
 
-## Creating a Module {#create}
+## Creating a module {#create}
 
 Creating a module is a good way to re-use code and templates across multiple projects,
 or share your code with the community. Silverstripe CMS already
@@ -68,7 +66,7 @@ are also abstracted into modules allowing developers the freedom to choose what 
 The easiest way to get started is our [Module Skeleton](https://github.com/silverstripe/silverstripe-module).
 
 First, create a new directory named after your intended module in your main project. It should sit alongside the other modules
-such as *silverstripe/framework* and *silverstripe/cms* and use it for the module development:
+such as `silverstripe/framework` and `silverstripe/cms` and use it for the module development:
 
 `mkdir /vendor/my_vendor/nice_feature`
 
@@ -76,7 +74,7 @@ Then clone the Module Skeleton to get a headstart with the module files:
 
 ```bash
 cd /vendor/my_vendor/nice_feature
-git clone git@github.com:silverstripe/silverstripe-module.git .
+git clone git@github.com:silverstripe/silverstripe-module.g.it .
 ```
 
 ### Allow your module to be importable by composer
@@ -87,14 +85,14 @@ requirement):
 
 ```json
 {
-	"name": "my_vendor/nice_feature",
-	"description": "Short module description",
-	"type": "silverstripe-vendormodule",
-	"require": {
-		"silverstripe/cms": "^4.0",
-		"silverstripe/framework": "^4.0",
-		"silverstripe/blog": "^4@dev"
-	}
+    "name": "my_vendor/nice_feature",
+    "description": "Short module description",
+    "type": "silverstripe-vendormodule",
+    "require": {
+        "silverstripe/cms": "^4.0",
+        "silverstripe/framework": "^4.0",
+        "silverstripe/blog": "^4@dev"
+    }
 }
 ```
 
@@ -104,11 +102,11 @@ will constitute a project in itself. The below assumes you are using GitHub and 
 Push your module upstream to the empty repository just created:
 
 ```bash
-	git init
-	git add -A
-	git commit -m 'first commit'
-	git remote add origin git@github.com:my_vendor/nice_feature.git
-	git push -u origin master
+ git init
+ git add -A
+ git commit -m 'first commit'
+ git remote add origin git@github.com:my_vendor/nice_feature.g.it
+ git push -u origin master
 ```
 
 Once the module is pushed to the repository you should see the code on GitHub. From now on it will be available for
@@ -123,22 +121,21 @@ modules](../../getting_started/composer/#working-with-project-forks-and-unreleas
 For our *nice_module* example module we have just pushed upstream and can add the following lines to your `composer.json` file in the root directory of your main project.
 
 ```json
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "git@github.com:my_vendor/nice_feature.git",
-		}
-	]
+"repositories": [
+    {
+        "type": "vcs",
+        "url": "git@github.com:my_vendor/nice_feature.g.it",
+    }
+]
 ```
 
 This will add the repository to the list of URLs composer checks when updating the project dependencies. Hence you can
 now include the following requirement in the same `composer.json`:
 
-```
-	"require": {
-		...
-		"my_vendor.nice_feature": "*"
-	}
+```json
+"require": {
+    "my_vendor.nice_feature": "*"
+}
 ```
 
 Add the module directory name (`nice_feature/`) to `.gitignore` - we will rely on *composer* to update the dependencies so
@@ -162,58 +159,58 @@ composer](https://docs.silverstripe.org/en/4/getting_started/composer/#deploying
 
 In case you want to share your creation with the community, read more about [publishing a module](how_tos/publish_a_module).
 
-## Module Standard
+## Module standard
 
 The Silverstripe CMS module standard defines a set of conventions that high-quality Silverstripe CMS modules should follow. It’s a bit like PSR for Silverstripe CMS. Suggested improvements can be raised as pull requests.
 This standard is also part of the more highlevel
 [Supported Modules Definition](https://www.silverstripe.org/software/addons/supported-modules-definition/)
 which the Silverstripe CMS project applies to the modules it creates and maintains directly.
 
-### Coding Guidelines
+### Coding guidelines
 
- * Declaration of level of support is provided for each module (either via README.md or composer) including the following:
-   * Level of support provided.
-   * Supporting user(s) and/or organisation(s).
- * Complies to a well defined module directory structure and coding standards:
-   * `templates/` (for `.ss` templates)
-   * `src/` (for `.php` files)
-   * `tests/` (for `*Test.php` test files), and;
-   * `_config/` (for `.yml` config files)
- * The module is a Composer package.
- * All Composer dependencies are bound to a single major release (e.g. `^4.0` not `>=4` or `*`).
- * There is a level of test coverage.
- * A clear [public API](/project_governance/public_api/) documented in the docblock tags.
- * Code follows [PSR-1](http://www.php-fig.org/psr/psr-1/) and [PSR-2](http://www.php-fig.org/psr/psr-2/) style guidelines.
- * `.gitattributes` will be used to exclude non-essential files from the distribution. At a minimum tests, docs, and IDE/dev-tool config should be excluded.
- * Add a [PSR-4 compatible autoload reference](https://getcomposer.org/doc/04-schema.md#psr-4) for your module.
+- Declaration of level of support is provided for each module (either via README.md or composer) including the following:
+  - Level of support provided.
+  - Supporting user(s) and/or organisation(s).
+- Complies to a well defined module directory structure and coding standards:
+  - `templates/` (for `.ss` templates)
+  - `src/` (for `.php` files)
+  - `tests/` (for `*Test.php` test files), and;
+  - `_config/` (for `.yml` config files)
+- The module is a Composer package.
+- All Composer dependencies are bound to a single major release (e.g. `^4.0` not `>=4` or `*`).
+- There is a level of test coverage.
+- A clear [public API](/project_governance/public_api/) documented in the docblock tags.
+- Code follows [PSR-1](http://www.php-fig.org/psr/psr-1/) and [PSR-2](http://www.php-fig.org/psr/psr-2/) style guidelines.
+- `.gitattributes` will be used to exclude non-essential files from the distribution. At a minimum tests, docs, and IDE/dev-tool config should be excluded.
+- Add a [PSR-4 compatible autoload reference](https://getcomposer.org/doc/04-schema.md#psr-4) for your module.
 
-### Documentation Guidelines
+### Documentation guidelines
 
 Documentation will use the following format:
 
- * README.md provides:
-   * Links or badges to CI and code quality tools.
-   * A short summary of the module, end-user.
-   * Installation instructions.
-   * Testing/development instructions and a link to contributing instructions.
-   * How to report security vulnerabilities. Note that PSR-9 / PSR-10 may be recommended once released.
-   * Security, license, links to more detailed docs.
- * CONTRIBUTING.md explaining terms of contribution.
- * A changelog: CHANGELOG.md (may link to other more detailed docs or GitHub releases if you want). You could [use a changelog generator](https://github.com/skywinder/Github-Changelog-Generator) to help create this.
- * Has a licence (`LICENSE` file) - for Silverstripe CMS supported this needs to be BSD.
- * Detailed documentation in `/docs/en` as a nested set of GitHub-compatible Markdown files.
- * It is suggested to use a documentation page named `userguide.md` in `docs/en/` that includes documentation of module features that have CMS user functionality (if applicable). For modules with large userguides, this should be in a directory named `userguide` with an `index.md` linking to any other userguide pages.
- * Links and image references are relative, and are able to be followed in viewers such as GitHub.
- * Markdown may include non-visible comments or meta-data.
+- README.md provides:
+  - Links or badges to CI and code quality tools.
+  - A short summary of the module, end-user.
+  - Installation instructions.
+  - Testing/development instructions and a link to contributing instructions.
+  - How to report security vulnerabilities. Note that PSR-9 / PSR-10 may be recommended once released.
+  - Security, license, links to more detailed docs.
+- CONTRIBUTING.md explaining terms of contribution.
+- A changelog: CHANGELOG.md (may link to other more detailed docs or GitHub releases if you want). You could [use a changelog generator](https://github.com/skywinder/Github-Changelog-Generator) to help create this.
+- Has a licence (`LICENSE` file) - for Silverstripe CMS supported this needs to be BSD.
+- Detailed documentation in `/docs/en` as a nested set of GitHub-compatible Markdown files.
+- It is suggested to use a documentation page named `userguide.md` in `docs/en/` that includes documentation of module features that have CMS user functionality (if applicable). For modules with large userguides, this should be in a directory named `userguide` with an `index.md` linking to any other userguide pages.
+- Links and image references are relative, and are able to be followed in viewers such as GitHub.
+- Markdown may include non-visible comments or meta-data.
 
 Documentation will cover:
 
- * Installation
- * Configuration
- * Usage guides for key features; screenshots are recommended.
- * A committers guide, covering pull request merging and release guidelines.
+- Installation
+- Configuration
+- Usage guides for key features; screenshots are recommended.
+- A committers guide, covering pull request merging and release guidelines.
 
 ## Related
 
-* [Module Skeleton](https://github.com/silverstripe/silverstripe-module)
-* [Publishing a module](how_tos/publish_a_module)
+- [Module Skeleton](https://github.com/silverstripe/silverstripe-module)
+- [Publishing a module](how_tos/publish_a_module)

@@ -1,6 +1,6 @@
 ---
 title: How To's
 ---
-# How To's: Forms
+# How to's: forms
 
 [CHILDREN]

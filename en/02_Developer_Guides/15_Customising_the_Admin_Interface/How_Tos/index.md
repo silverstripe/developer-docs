@@ -1,6 +1,6 @@
 ---
 title: How To's
 ---
-# How To's: Customising the Admin Interface
+# How to's: customising the admin interface
 
 [CHILDREN]

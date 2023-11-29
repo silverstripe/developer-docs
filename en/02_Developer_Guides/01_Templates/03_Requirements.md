@@ -6,8 +6,8 @@ iconBrand: js
 
 # Requirements
 
-The requirements class takes care of including CSS and JavaScript into your applications. This is preferred to hard 
-coding any references in the `<head>` tag of your template, as it enables a more flexible handling through the 
+The requirements class takes care of including CSS and JavaScript into your applications. This is preferred to hard
+coding any references in the `<head>` tag of your template, as it enables a more flexible handling through the
 [Requirements](api:SilverStripe\View\Requirements) class.
 
 The examples below are using certain folder naming conventions (CSS files in `css/`, JavaScript files in `javascript/`).
@@ -54,18 +54,21 @@ This Composer plugin automatically tries to expose assets from your project and 
 
 Developers can explicitly expose static assets by calling `composer vendor-expose`. This is necessary after updating your `resources-dir` or `expose` configuration in your `composer.json` file.
 
-`composer vendor-expose` accepts an optional `method` argument (e.g.: `composer vendor-expose auto`). This controls how the files are exposed in the "resources" directory:
-* `none` disables all symlink / copy
-* `copy` copies the exposed files
-* `symlink` create symbolic links to the exposed folder
-* `junction` uses a junction (Windows only)
-* `auto` creates symbolic links (or junctions on Windows), but fails over to copy.
+`composer vendor-expose` accepts an optional `method` argument (e.g: `composer vendor-expose auto`). This controls how the files are exposed in the "resources" directory:
+
+- `none` disables all symlink / copy
+- `copy` copies the exposed files
+- `symlink` create symbolic links to the exposed folder
+- `junction` uses a junction (Windows only)
+- `auto` creates symbolic links (or junctions on Windows), but fails over to copy.
 
 ### Referencing exposed assets
 
-When referencing exposed static assets, use either the project file path (relative to the project root folder) or a module name and relative file path to that module's root folder. E.g.:
+When referencing exposed static assets, use either the project file path (relative to the project root folder) or a module name and relative file path to that module's root folder. e.g:
 
 ```php
+use SilverStripe\View\Requirements;
+
 // When referencing project files, use the same path defined in your `composer.json` file.
 Requirements::javascript('app/client/dist/bundle.js');
 
@@ -78,11 +81,10 @@ Requirements::javascript('silverstripe/admin:client/dist/js/bundle.js');
 
 When rendered in HTML code, these URLs will be rewritten to their matching path inside the "resources" directory.
 
-## Template Requirements API
+## Template requirements API
 
-**<my-module-dir>/templates/SomeTemplate.ss**
-
-```
+```ss
+<%-- <my-module-dir>/templates/SomeTemplate.ss --%>
 <% require css("<my-module-dir>/css/some_file.css") %>
 <% require themedCSS("some_themed_file") %>
 <% require javascript("<my-module-dir>/javascript/some_file.js") %>
@@ -92,13 +94,14 @@ When rendered in HTML code, these URLs will be rewritten to their matching path 
 Requiring assets from the template is restricted compared to the PHP API.
 [/alert]
 
-## PHP Requirements API
+## PHP requirements API
 
 It is common practice to include most Requirements either in the *init()*-method of your [controller](../controllers/), or
 as close to rendering as possible (e.g. in [FormField](api:SilverStripe\Forms\FormField)).
 
 ```php
-use SilverStripe\Control\Director;
+namespace App\Control;
+
 use SilverStripe\View\Requirements;
 
 class MyCustomController extends Controller
@@ -107,13 +110,13 @@ class MyCustomController extends Controller
     {
         parent::init();
 
-        Requirements::javascript("<my-module-dir>/javascript/some_file.js");
-        Requirements::css("<my-module-dir>/css/some_file.css");
+        Requirements::javascript('<my-module-dir>/javascript/some_file.js');
+        Requirements::css('<my-module-dir>/css/some_file.css');
     }
 }
 ```
 
-### CSS Files
+### CSS files
 
 ```php
 use SilverStripe\View\Requirements;
@@ -121,28 +124,33 @@ use SilverStripe\View\Requirements;
 Requirements::css($path, $media);
 ```
 
-If you're using the CSS method a second argument can be used. This argument defines the 'media' attribute of the 
+If you're using the CSS method a second argument can be used. This argument defines the 'media' attribute of the
 `<link>` element, so you can define 'screen' or 'print' for example.
 
 ```php
-Requirements::css("<my-module-dir>/css/some_file.css", "screen,projection");
+Requirements::css('<my-module-dir>/css/some_file.css', 'screen,projection');
 ```
 
-### Javascript Files
+### JavaScript files
 
 ```php
+use SilverStripe\View\Requirements;
+
 Requirements::javascript($path, $options);
 ```
 
-A variant on the inclusion of custom javascript is the inclusion of *templated* javascript.  Here, you keep your
-JavaScript in a separate file and instead load, via search and replace, several PHP-generated variables into that code.
+A variant on the inclusion of custom JavaScript is the inclusion of *templated* JavaScript.  Here, you keep your
+JavaScript in a separate file and instead load, via search and replace, several PHP generated variables into that code.
 
 ```php
+use SilverStripe\Security\Security;
+use SilverStripe\View\Requirements;
+
 $vars = [
-    "MemberID" => Security::getCurrentUser()->ID,
+    'MemberID' => Security::getCurrentUser()->ID,
 ];
 
-Requirements::javascriptTemplate("<my-module-dir>/javascript/some_file.js", $vars);
+Requirements::javascriptTemplate('<my-module-dir>/javascript/some_file.js', $vars);
 ```
 
 In this example, `some_file.js` is expected to contain a replaceable variable expressed as `MemberID`.
@@ -153,34 +161,41 @@ Requirement calls that rely on those included scripts will not double include th
 files.
 
 ```php
+use SilverStripe\View\Requirements;
+
 Requirements::javascript('<my-module-dir>/javascript/dist/bundle.js', ['provides' => [
     '<my-module-dir>/javascript/jquery.js'
     '<my-module-dir>/javascript/src/main.js',
-    '<my-module-dir>/javascript/src/functions.js'
+    '<my-module-dir>/javascript/src/functions.js',
 ]]);
-Requirements::javascript('<my-module-dir>/javascript/jquery.js'); // Will skip this file
+// Will skip this file
+Requirements::javascript('<my-module-dir>/javascript/jquery.js');
 ```
 
 You can also use the second argument to add the 'async' and/or 'defer attributes to the script tag generated:
 
 ```php
+use SilverStripe\View\Requirements;
+
 Requirements::javascript(
-    "<my-module-dir>/javascript/some_file.js", 
+    '<my-module-dir>/javascript/some_file.js',
     [
-        "async" => true,
-        "defer" => true,
+        'async' => true,
+        'defer' => true,
     ]
 );
 ```
 
-### Custom Inline CSS or Javascript
+### Custom inline CSS or JavaScript
 
 You can also quote custom scripts directly. This may seem a bit ugly, but is useful when you need to transfer some kind
-of 'configuration' from the database in a raw format.  You'll need to use the `heredoc` syntax to quote JS and CSS, 
+of 'configuration' from the database in a raw format.  You'll need to use the `heredoc` syntax to quote JS and CSS,
 this is generally speaking the best way to do these things - it clearly marks the copy as belonging to a different
 language.
 
 ```php
+use SilverStripe\View\Requirements;
+
 Requirements::customScript(<<<JS
   alert("hi there");
 JS
@@ -194,12 +209,14 @@ CSS
 );
 ```
 
-## Combining Files
+## Combining files
 
-You can concatenate several CSS or javascript files into a single dynamically generated file. This increases performance
+You can concatenate several CSS or JavaScript files into a single dynamically generated file. This increases performance
 by reducing HTTP requests.
 
 ```php
+use SilverStripe\View\Requirements;
+
 Requirements::combine_files(
     'foobar.js',
     [
@@ -216,7 +233,7 @@ mode. You can re-enable dev combination by setting `Requirements_Backend.combine
 
 ### Configuring combined file storage
 
-In some situations or server configurations, it may be necessary to customise the behaviour of generated javascript
+In some situations or server configurations, it may be necessary to customise the behaviour of generated JavaScript
 files in order to ensure that current files are served in requests.
 
 By default, files will be generated on demand in the format `assets/_combinedfiles/name-<hash>.js`,
@@ -226,28 +243,27 @@ other backend.
 
 You can also use any of the below options in order to tweak this behaviour:
 
- * `Requirements.disable_flush_combined` - By default all combined files are deleted on flush.
+- `Requirements.disable_flush_combined` - By default all combined files are deleted on flush.
    If combined files are stored in source control, and thus updated manually, you might want to
    turn this on to disable this behaviour.
- * `Requirements_Backend.combine_hash_querystring` - By default the `<hash>` of the source files is appended to
+- `Requirements_Backend.combine_hash_querystring` - By default the `<hash>` of the source files is appended to
    the end of the combined file (prior to the file extension). If combined files are versioned in source control,
    or running in a distributed environment (such as one where the newest version of a file may not always be
    immediately available) then it may sometimes be necessary to disable this. When this is set to true, the hash
    will instead be appended via a querystring parameter to enable cache busting, but not in the
    filename itself. I.e. `assets/_combinedfiles/name.js?m=<hash>`
- * `Requirements_Backend.default_combined_files_folder` - This defaults to `_combinedfiles`, and is the folder
+- `Requirements_Backend.default_combined_files_folder` - This defaults to `_combinedfiles`, and is the folder
    within the configured asset backend that combined files will be stored in. If using a backend shared with
    other systems, it is usually necessary to distinguish combined files from other assets.
- * `Requirements_Backend.combine_in_dev` - By default combined files will not be combined except in test
+- `Requirements_Backend.combine_in_dev` - By default combined files will not be combined except in test
    or live environments. Turning this on will allow for pre-combining of files in development mode.
- * `Requirements_Backend.resolve_relative_css_refs` - Enables rewriting of relative paths to image/font assets
-   to accommodate the fact that the combined CSS is placed in a totally different folder than the source css 
+- `Requirements_Backend.resolve_relative_css_refs` - Enables rewriting of relative paths to image/font assets
+   to accommodate the fact that the combined CSS is placed in a totally different folder than the source CSS
    files. Disabled by default.
 
 In some cases it may be necessary to create a new storage backend for combined files, if the default location
 is not appropriate. Normally a single backend is used for all site assets, so a number of objects must be
 replaced. For instance, the below will set a new set of dependencies to write to `app/javascript/combined`
-
 
 ```yml
 ---
@@ -284,7 +300,7 @@ SilverStripe\Core\Injector\Injector:
 
 In the above configuration, automatic expiry of generated files has been disabled, and it is necessary for
 the developer to maintain these files manually. This may be useful in environments where assets must
-be pre-cached, where scripts must be served alongside static files, or where no framework php request is
+be pre-cached, where scripts must be served alongside static files, or where no framework PHP request is
 guaranteed. Alternatively, files may be served from instances other than the one which generated the
 page response, and file synchronisation might not occur fast enough to propagate combined files to
 mirrored filesystems.
@@ -292,21 +308,25 @@ mirrored filesystems.
 In any case, care should be taken to determine the mechanism appropriate for your development
 and production environments.
 
-### Combined CSS Files
+### Combined CSS files
 
 You can also combine CSS files into a media-specific stylesheets as you would with the `Requirements::css` call - use
 the third parameter of the `combine_files` function:
 
 ```php
-$loader = SilverStripe\View\ThemeResourceLoader::inst();
-$themes = SilverStripe\View\SSViewer::get_themes();
+use SilverStripe\View\Requirements;
+use SilverStripe\View\SSViewer;
+use SilverStripe\View\ThemeResourceLoader;
+
+$loader = ThemeResourceLoader::inst();
+$themes = SSViewer::get_themes();
 
 $printStylesheets = [
     $loader->findThemedCSS('print_HomePage.css', $themes),
-    $loader->findThemedCSS('print_Page.css', $themes)
+    $loader->findThemedCSS('print_Page.css', $themes),
 ];
 
-SilverStripe\View\Requirements::combine_files('print.css', $printStylesheets, 'print');
+Requirements::combine_files('print.css', $printStylesheets, 'print');
 ```
 
 By default, all requirements files are flushed (deleted) when ?flush querystring parameter is set.
@@ -317,30 +337,34 @@ When combining CSS files, take care of relative urls, as these will not be re-wr
 the destination location of the resulting combined CSS.
 [/alert]
 
-### Combined JS Files
+### Combined JS files
 
-You can also add the 'async' and/or 'defer' attributes to combined Javascript files as you would with the 
+You can also add the 'async' and/or 'defer' attributes to combined JavaScript files as you would with the
 `Requirements::javascript` call - use the third parameter of the `combine_files` function:
 
 ```php
-$loader = SilverStripe\View\ThemeResourceLoader::inst();
-$themes = SilverStripe\View\SSViewer::get_themes();
+use SilverStripe\View\Requirements;
+use SilverStripe\View\SSViewer;
+use SilverStripe\View\ThemeResourceLoader;
+
+$loader = ThemeResourceLoader::inst();
+$themes = SSViewer::get_themes();
 
 $scripts = [
     $loader->findThemedJavascript('some_script.js', $themes),
-    $loader->findThemedJavascript('some_other_script.js', $themes)
+    $loader->findThemedJavascript('some_other_script.js', $themes),
 ];
 
-SilverStripe\View\Requirements::combine_files('scripts.js', $scripts, ['async' => true, 'defer' => true]);
+Requirements::combine_files('scripts.js', $scripts, ['async' => true, 'defer' => true]);
 ```
 
 ### Minification of CSS and JS files
 
-You can minify combined Javascript and CSS files at runtime using an implementation of the
+You can minify combined JavaScript and CSS files at runtime using an implementation of the
 `SilverStripe\View\Requirements_Minifier` interface.
 
 ```php
-namespace MyProject;
+namespace App;
 
 use SilverStripe\View\Requirements_Minifier;
 
@@ -353,8 +377,8 @@ class MyMinifier implements Requirements_Minifier
      * @param string $type Either js or css
      * @param string $filename Name of file to display in case of error
      * @return string minified content
-     */    
-    public function minify ($content, $type, $fileName)
+     */
+    public function minify($content, $type, $fileName)
     {
         // Minify $content;
 
@@ -365,12 +389,12 @@ class MyMinifier implements Requirements_Minifier
 
 Then, inject this service in `Requirements_Backend`.
 
-```yaml
+```yml
 SilverStripe\Core\Injector\Injector:
   SilverStripe\View\Requirements_Backend:
     properties:
       MinifyCombinedFiles: true
-      Minifier: '%$MyProject\MyMinifier'
+      Minifier: '%$App\MyMinifier'
 ```
 
 [alert]
@@ -378,16 +402,19 @@ While the framework does afford you the option of minification at runtime, we re
 tools to do this for you, e.g. [Webpack](https://webpack.github.io/), [Gulp](http://gulpjs.com/), or [Grunt](https://gruntjs.com/).
 [/alert]
 
-
 ## Clearing assets
 
 ```php
+use SilverStripe\View\Requirements;
+
 Requirements::clear();
 ```
 
 Clears all defined requirements. You can also clear specific requirements.
 
 ```php
+use SilverStripe\View\Requirements;
+
 Requirements::clear('modulename/javascript/some-lib.js');
 ```
 
@@ -397,58 +424,64 @@ Depending on where you call this command, a Requirement might be *re-included* a
 
 ## Blocking
 
-Requirements can also be explicitly blocked from inclusion, which is useful to avoid conflicting JavaScript logic or 
-CSS rules. These blocking rules are independent of where the `block()` call is made. It applies both for already 
+Requirements can also be explicitly blocked from inclusion, which is useful to avoid conflicting JavaScript logic or
+CSS rules. These blocking rules are independent of where the `block()` call is made. It applies both for already
 included requirements, and ones included after the `block()` call.
 
-One common example is to block the core `jquery.js` added by various form fields and core controllers, and use a newer 
+One common example is to block the core `jquery.js` added by various form fields and core controllers, and use a newer
 version in a custom location. This assumes you have tested your application with the newer version.
 
 ```php
+use SilverStripe\View\Requirements;
+
 Requirements::block('silverstripe/admin:thirdparty/jquery/jquery.js');
 ```
 
 [alert]
-The CMS also uses the `Requirements` system, and its operation can be affected by `block()` calls. Avoid this by 
+The CMS also uses the `Requirements` system, and its operation can be affected by `block()` calls. Avoid this by
 limiting the scope of your blocking operations, e.g. in `init()` of your controller.
 [/alert]
 
-## Inclusion Order
+## Inclusion order
 
 Requirements acts like a stack, where everything is rendered sequentially in the order it was included. There is no way
-to change inclusion-order, other than using *Requirements::clear* and rebuilding the whole set of requirements. 
+to change inclusion-order, other than using *Requirements::clear* and rebuilding the whole set of requirements.
 
 [alert]
-Inclusion order is both relevant for CSS and Javascript files in terms of dependencies, inheritance and overlays - be 
+Inclusion order is both relevant for CSS and JavaScript files in terms of dependencies, inheritance and overlays - be
 careful when messing with the order of requirements.
 [/alert]
 
-## Javascript placement
+## JavaScript placement
 
-By default, Silverstripe CMS includes all Javascript files at the bottom of the page body, unless there's another script 
+By default, Silverstripe CMS includes all JavaScript files at the bottom of the page body, unless there's another script
 already loaded, then, it's inserted before the first `<script>` tag. If this causes problems, it can be configured.
 
 ```php
+use SilverStripe\View\Requirements;
+
 Requirements::set_force_js_to_bottom(true);
 ```
 
-`Requirements.force_js_to_bottom`, will force Silverstripe CMS to write the Javascript to the bottom of the page body, even 
+`Requirements.force_js_to_bottom`, will force Silverstripe CMS to write the JavaScript to the bottom of the page body, even
 if there is an earlier script tag.
 
-If the Javascript files are preferred to be placed in the `<head>` tag rather than in the `<body>` tag,
+If the JavaScript files are preferred to be placed in the `<head>` tag rather than in the `<body>` tag,
 `Requirements.write_js_to_body` should be set to false.
 
 ```php
+use SilverStripe\View\Requirements;
+
 Requirements::set_write_js_to_body(false);
 ```
 
 ## Direct resource urls
 
 In templates, you can use the `$resourcePath()` or `$resourceURL()` helper methods to inject links to
-resources directly. If you want to link to resources within a specific module you can use 
+resources directly. If you want to link to resources within a specific module you can use
 the `vendor/module:some/path/to/file.jpg` syntax.
 
-E.g.
+For example:
 
 ```ss
 <div class="loading">
@@ -459,15 +492,18 @@ E.g.
 In PHP you can directly resolve these urls using the `ModuleResourceLoader` helper.
 
 ```php
+use SilverStripe\Core\Manifest\ModuleResourceLoader;
+
 $file = ModuleResourceLoader::singleton()
   ->resolveURL('silverstripe/admin:client/dist/images/spinner.gif');
 ```
 
-## Related Lessons
-* [Creating your first theme](https://www.silverstripe.org/learn/lessons/v4/creating-your-first-theme-1)
-* [AJAX behaviour and ViewableData](https://www.silverstripe.org/learn/lessons/v4/ajax-behaviour-and-viewabledata-1)
+## Related lessons
 
-## API Documentation
+- [Creating your first theme](https://www.silverstripe.org/learn/lessons/v4/creating-your-first-theme-1)
+- [AJAX behaviour and ViewableData](https://www.silverstripe.org/learn/lessons/v4/ajax-behaviour-and-viewabledata-1)
 
- * [Requirements](api:SilverStripe\View\Requirements)
- * [CMS Architecture and Build Tooling](/developer_guides/customising_the_admin_interface/cms_architecture)
+## API documentation
+
+- [Requirements](api:SilverStripe\View\Requirements)
+- [CMS Architecture and Build Tooling](/developer_guides/customising_the_admin_interface/cms_architecture)

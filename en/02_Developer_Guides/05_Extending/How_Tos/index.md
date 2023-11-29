@@ -1,6 +1,6 @@
 ---
 title: How To's
 ---
-# How To's: Extending Silverstripe CMS
+# How to's: extending Silverstripe CMS
 
 [CHILDREN]

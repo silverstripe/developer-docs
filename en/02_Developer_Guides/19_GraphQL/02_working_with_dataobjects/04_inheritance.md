@@ -1,16 +1,16 @@
 ---
 title: DataObject inheritance
-summary: Learn how inheritance is handled in DataObject types
+summary: Learn how inheritance is handled in DataObject model types
 ---
 
-# Working with DataObjects
+# Working with `DataObject` models
 
 [CHILDREN asList]
 
 [info]
 You are viewing docs for silverstripe/graphql 4.x.
 If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
+[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 [/info]
 
 ## `DataObject` inheritance
@@ -20,7 +20,7 @@ to the fact that there is no concept of inheritance in GraphQL types. The main t
 disposal are [interfaces](https://graphql.org/learn/schema/#interfaces) and [unions](https://graphql.org/learn/schema/#union-types)
 to deal with this type of architecture, and we leverage both of them when working with DataObjects.
 
-### Key concept: Querying types that have descendants
+### Key concept: querying types that have descendants
 
 When you query a type that has descendant classes, you are by definition getting a polymorphic return. There
 is no guarantee that each result will be of one specific type. Take this example:
@@ -51,11 +51,11 @@ query {
 }
 ```
 
-To solve this problem, the graphql module will automatically change these types of queries to return interfaces.
+To solve this problem, the GraphQL module will automatically change these types of queries to return interfaces.
 
 ```graphql
 query {
-  readPages { 
+  readPages {
     nodes { # <--- [PageInterface]
       title
       content
@@ -72,8 +72,8 @@ on `HomePage` objects, and we query `date` and `author` only for `BlogPage` obje
 
 ```graphql
 query {
-  readPages { 
-    nodes { 
+  readPages {
+    nodes {
       title # Common field
       content # Common field
       ... on HomePage {
@@ -98,7 +98,7 @@ that only appear on some types, we need to be explicit.
 
 Now let's take this a step further. What if there's another class in between? Imagine this ancestry:
 
-```
+```text
 Page
   -> EventPage extends Page
      -> ConferencePage extends EventPage
@@ -110,8 +110,8 @@ We can use the intermediary interface `EventPageInterface` to consolidate fields
 
 ```graphql
 query {
-  readPages { 
-    nodes { 
+  readPages {
+    nodes {
       title # Common to all types
       content # Common to all types
       ... on EventPageInterface {
@@ -148,14 +148,14 @@ A good way to determine whether you need an inline fragment is to ask
 which is usually the parent class with the "Interface" suffix.
 [/info]
 
-### Inheritance: A deep dive
+### Inheritance: a deep dive
 
 There are several ways inheritance is handled at build time:
 
-* Implicit field / type exposure
-* Interface generation
-* Assignment of generated interfaces to types
-* Assignment of generated interfaces to queries
+- Implicit field / type exposure
+- Interface generation
+- Assignment of generated interfaces to types
+- Assignment of generated interfaces to queries
 
 We'll look at each of these in detail.
 
@@ -163,21 +163,22 @@ We'll look at each of these in detail.
 
 Here are the rules for how inheritance affects types and fields:
 
-* Exposing a type implicitly exposes all of its ancestors.
-* Ancestors receive any fields exposed by their descendants, if applicable.
-* Exposing a type applies all of its fields to descendants only if they are explicitly exposed also.
+- Exposing a type implicitly exposes all of its ancestors.
+- Ancestors receive any fields exposed by their descendants, if applicable.
+- Exposing a type applies all of its fields to descendants only if they are explicitly exposed also.
 
 All of this is serviced by: [`InheritanceBuilder`](api:SilverStripe\GraphQL\Schema\DataObject\InheritanceBuilder)
 
-##### Example:
+##### Example {#fields-example}
 
-```yaml
-BlogPage:
-  fields: 
+```yml
+App\PageType\BlogPage:
+  fields:
     title: true
     content: true
     date: true
-GalleryPage:
+
+App\PageType\GalleryPage:
   fields:
     images: true
     urlSegment: true
@@ -204,9 +205,9 @@ schema.
 
 All of this is serviced by: [`InterfaceBuilder`](api:SilverStripe\GraphQL\Schema\DataObject\InterfaceBuilder)
 
-##### Example
+##### Example {#interface-example}
 
-```
+```text
 Page
   -> BlogPage extends Page
   -> EventsPage extends Page
@@ -262,9 +263,9 @@ The generated interfaces then get applied to the appropriate types, like so:
 ```graphql
 type Page implements PageInterface {}
 type BlogPage implements BlogPageInterface & PageInterface {}
-type EventsPage implements EventsPageInterface & PageInterface {} 
-type ConferencePage implements ConferencePageInterface & EventsPageInterface & PageInterface {} 
-type WebinarPage implements WebinarPageInterface & EventsPageInterface & PageInterface {} 
+type EventsPage implements EventsPageInterface & PageInterface {}
+type ConferencePage implements ConferencePageInterface & EventsPageInterface & PageInterface {}
+type WebinarPage implements WebinarPageInterface & EventsPageInterface & PageInterface {}
 ```
 
 Lastly, for good measure, we create a `DataObjectInterface` that applies to everything.
@@ -291,7 +292,7 @@ type Query {
 }
 
 type BlogPage {
-  download: File   
+  download: File
 }
 ```
 
@@ -310,6 +311,7 @@ type BlogPage {
 All of this is serviced by: [`InterfaceBuilder`](api:SilverStripe\GraphQL\Schema\DataObject\InterfaceBuilder)
 
 #### Elemental
+
 This section refers to types added via `dnadesign/silverstripe-elemental`.
 
 Almost by definition, content blocks are always abstractions. You're never going to query for a `BaseElement` type
@@ -322,9 +324,9 @@ query {
     nodes {
       elementalArea {
         elements {
-          nodes {            
+          nodes {
             title
-            id            
+            id
             ... on ContentBlock {
               html
             }
@@ -345,7 +347,7 @@ The above example shows a query for elements on all elemental pages - but for mo
 probably only want to query the elements on one page at a time.
 [/info]
 
-### Optional: Use unions instead of interfaces
+### Optional: use unions instead of interfaces
 
 You can opt out of using interfaces as your return types for queries and instead use a union of all the concrete
 types. This comes at a cost of potentially breaking your API unexpectedly (described below), so it is not enabled by
@@ -354,8 +356,8 @@ typically only be done for conceptual purposes.
 
 To use unions, turn on the `useUnionQueries` setting.
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
 modelConfig:
   DataObject:
     plugins:
@@ -368,19 +370,19 @@ For queries that return those models, a union is put in its place.
 
 Serviced by: [`InheritanceUnionBuilder`](api:SilverStripe\GraphQL\Schema\DataObject\InheritanceUnionBuilder)
 
-#### Example
+#### Example {#unions-example}
 
-```
+```text
 type Page implements PageInterface {}
 type BlogPage implements BlogPageInterface & PageInterface {}
-type EventsPage implements EventsPageInterface & PageInterface {} 
-type ConferencePage implements ConferencePageInterface & EventsPageInterface & PageInterface {} 
-type WebinarPage implements WebinarPageInterface & EventsPageInterface & PageInterface {} 
+type EventsPage implements EventsPageInterface & PageInterface {}
+type ConferencePage implements ConferencePageInterface & EventsPageInterface & PageInterface {}
+type WebinarPage implements WebinarPageInterface & EventsPageInterface & PageInterface {}
 ```
 
 Creates the following unions:
 
-```
+```text
 union PageInheritanceUnion = Page | BlogPage | EventsPage | ConferencePage | WebinarPage
 union EventsPageInheritanceUnion = EventsPage | ConferencePage | WebinarPage
 ```
@@ -413,7 +415,7 @@ query {
 }
 ```
 
-#### Lookout for the footgun!
+#### Lookout for the footgun
 
 Because unions are force substituted for your queries when a model has exposed descendants, it is possible that adding
 a subclass to a model will break your queries without much warning to you.
@@ -421,6 +423,8 @@ a subclass to a model will break your queries without much warning to you.
 For instance:
 
 ```php
+namespace App\Model;
+
 class Product extends DataObject
 {
     private static $db = ['Price' => 'Int'];
@@ -439,9 +443,11 @@ query {
 }
 ```
 
-But if we create a subclass for product and expose it to graphql:
+But if we create a subclass for product and expose it to GraphQL:
 
 ```php
+namespace App\Model;
+
 class DigitalProduct extends Product
 {
     private static $db = ['DownloadURL' => 'Varchar'];

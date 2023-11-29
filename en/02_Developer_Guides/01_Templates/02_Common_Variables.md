@@ -3,7 +3,7 @@ title: Common Variables
 summary: Some of the common variables and methods your templates can use, including Menu, SiteConfig, and more.
 ---
 
-# Common Variables
+# Common variables
 
 The page below describes a few of common variables and methods you'll see in a Silverstripe CMS template. This is not an
 exhaustive list. From your template you can call any method, database field, or relation on the object which is
@@ -29,8 +29,7 @@ Some of the following only apply when you have the `CMS` module installed. If yo
 functionality may not be included.
 [/alert]
 
-
-## Base Tag
+## Base tag
 
 ```ss
 <head>
@@ -42,7 +41,7 @@ functionality may not be included.
 
 The `<% base_tag %>` placeholder is replaced with the HTML base element. Relative links within a document (such as `<img
 src="someimage.jpg" alt="">`) will become relative to the URI specified in the base tag. This ensures the browser knows where
-to locate your site’s images and css files.
+to locate your site’s images and CSS files.
 
 It renders in the template as `<base href="http://www.yoursite.com" /><!--[if lte IE 6]></base><![endif]-->`
 
@@ -50,7 +49,7 @@ It renders in the template as `<base href="http://www.yoursite.com" /><!--[if lt
 A `<% base_tag %>;` is nearly always required or assumed by Silverstripe CMS to exist.
 [/alert]
 
-## CurrentMember
+## `CurrentMember`
 
 Returns the currently logged in [Member](api:SilverStripe\Security\Member) instance, if there is one logged in.
 
@@ -60,14 +59,14 @@ Returns the currently logged in [Member](api:SilverStripe\Security\Member) insta
 <% end_if %>
 ```
 
-## Title and Menu Title
+## Title and menu title
 
 ```ss
 $Title
 $MenuTitle
 ```
 
-Most objects within Silverstripe CMS will respond to `$Title` (i.e they should have a `Title` database field or at least a
+Most objects within Silverstripe CMS will respond to `$Title` (i.e. they should have a `Title` database field or at least a
 `getTitle()` method).
 
 The CMS module in particular provides two fields to label a page: `Title` and `MenuTitle`. `Title` is the title
@@ -77,7 +76,7 @@ displayed on the web page, while `MenuTitle` can be a shorter version suitable f
 If `MenuTitle` is left blank by the CMS author, it'll just default to the value in `Title`.
 [/notice]
 
-## Page Content
+## Page content
 
 ```ss
 $Content
@@ -95,7 +94,7 @@ requested (e.g. by the "preview" feature in the CMS) (see the [versioning docume
 more details).
 [/info]
 
-### SiteConfig: Global settings
+### `SiteConfig`: global settings
 
 [notice]
 `SiteConfig` is a module that is bundled with the CMS. If you wish to include `SiteConfig` in your framework only
@@ -112,8 +111,7 @@ than PHP code. By default, this includes a Website title and a Tagline.
 `SiteConfig` can be extended to hold other data, for example a logo image which can be uploaded through the CMS or
 global content such as your footer content.
 
-
-## Meta Tags
+## Meta tags
 
 The `$MetaTags` placeholder in a template returns a segment of HTML appropriate for putting into the `<head>` tag. It
 will set up title, keywords and description meta-tags, based on the CMS content and is editable in the 'Meta-data' tab
@@ -165,24 +163,34 @@ SilverStripe\CMS\Model\SiteTree:
   show_meta_generator_version: false
 ```
 
-### Modifying Meta Tags
+### Modifying meta tags
 
 You can override the `MetaComponents()` method on your `SiteTree` sub-classes or make use of the `MetaComponents` extension point to manipulate the underlying data that is rendered by `$MetaTags`. Example (for `Page` class):
 
 ```php
-public function MetaComponents()
+namespace App\PageType;
+
+use Page;
+
+class MyPage extends Page
 {
-    $tags = parent::MetaComponents();
-    // Override the content of the Title tag (needs to be html)
-    if ($this->MetaTitle) {
-        $tags['title']['content'] = $this->obj('MetaTitle')->forTemplate();
+    // ...
+
+    public function MetaComponents()
+    {
+        $tags = parent::MetaComponents();
+        // Override the content of the Title tag (needs to be html)
+        if ($this->MetaTitle) {
+            $tags['title']['content'] = $this->obj('MetaTitle')->forTemplate();
+        }
+        // Provide a default Meta Description
+        if (!$tags['description']['attributes']['content']) {
+            // provide raw text as attributes will be escaped later
+            $tags['description']['attributes']['content']
+                = $this->dbObject('Content')->LimitCharactersToClosestWord(300);
+        }
+        return $tags;
     }
-    // Provide a default Meta Description
-    if (!$tags['description']['attributes']['content']) {
-        // provide raw text as attributes will be escaped later
-        $tags['description']['attributes']['content'] = $this->dbObject('Content')->LimitCharactersToClosestWord(300);
-    }
-    return $tags;
 }
 ```
 
@@ -204,7 +212,7 @@ $AbsoluteLink
 <!-- returns http://yoursite.com/about-us/offices/ -->
 ```
 
-### Linking Modes
+### Linking modes
 
 ```ss
 $isSection
@@ -230,9 +238,9 @@ An example for checking for `current` or `section` is as follows:
 <a class="<% if $isCurrent %>current<% else_if $isSection %>section<% end_if %>" href="$Link">$MenuTitle</a>
 ```
 
-**Additional Utility Method**
+#### Additional utility method
 
- * `$InSection(page-url)`: This if block will pass if we're currently on the page-url page or one of its children.
+- `$InSection('page-url')`: This if block will pass if we're currently on the page with the URLSegment `page-url` or one of its children.
 
 ```ss
 <% if $InSection(about-us) %>
@@ -240,7 +248,7 @@ An example for checking for `current` or `section` is as follows:
 <% end_if %>
 ```
 
-### URLSegment
+### `URLSegment`
 
 This returns the part of the URL of the page you're currently on. For example on the `/about-us/offices/` web page the
 `URLSegment` will be `offices`. `URLSegment` cannot be used to generate a link since it does not output the full path.
@@ -254,7 +262,7 @@ It can be used within templates to generate anchors or other CSS classes.
 <!-- returns <div id="section-offices"> -->
 ```
 
-##  ClassName
+## `ClassName`
 
 Returns the class of the current object in [scope](syntax#scope) such as `Page` or `HomePage`. The `$ClassName` can be
 handy for a number of uses. A common use case is to add to your `<body>` tag to influence CSS styles and JavaScript
@@ -266,7 +274,7 @@ behavior based on the page type used:
 <!-- returns <body class="HomePage">, <body class="BlogPage"> -->
 ```
 
-## Children Loops
+## `Children` loops
 
 ```ss
 <% loop $Children %>
@@ -282,7 +290,7 @@ For doing your website navigation most likely you'll want to use `$Menu` since i
 context.
 [/alert]
 
-### ChildrenOf
+### `ChildrenOf`
 
 ```ss
 <% loop $ChildrenOf(<my-page-url>) %>
@@ -294,8 +302,7 @@ Will create a list of the children of the given page, as identified by its `URLS
 because it's not dependent on the context of the current page. For example, it would allow you to list all staff member
 pages underneath a "staff" holder on any page, regardless if its on the top level or elsewhere.
 
-
-### AllChildren
+### `AllChildren`
 
 Content authors have the ability to hide pages from menus by un-selecting the `ShowInMenus` checkbox within the CMS.
 This option will be honored by `<% loop $Children %>` and `<% loop $Menu %>` however if you want to ignore the user
@@ -307,7 +314,7 @@ preference, `AllChildren` does not filter by `ShowInMenus`.
 <% end_loop %>
 ```
 
-### Menu Loops
+### `Menu` loops
 
 ```ss
 <% loop $Menu(1) %>
@@ -321,7 +328,7 @@ preference, `AllChildren` does not filter by `ShowInMenus`.
 Pages with the `ShowInMenus` property set to `false` will be filtered out.
 [/notice]
 
-## Access to a specific Page
+## Access to a specific page
 
 ```ss
 <% with $Page(my-page) %>
@@ -331,9 +338,9 @@ Pages with the `ShowInMenus` property set to `false` will be filtered out.
 
 Page will return a single page from site, looking it up by URL.
 
-## Access to Parent and Level Pages
+## Access to parent and level pages
 
-### Level
+### `Level`
 
 ```ss
 <% with $Level(1) %>
@@ -346,11 +353,11 @@ looking back through its parent pages. `Level(1)` being the top most level.
 
 For example, imagine you're on the "bob marley" page, which is three levels in: "about us > staff > bob marley".
 
-*  `$Level(1).Title` would return "about us"
-*  `$Level(2).Title` would return "staff"
-*  `$Level(3).Title` would return "bob marley"
+- `$Level(1).Title` would return "about us"
+- `$Level(2).Title` would return "staff"
+- `$Level(3).Title` would return "bob marley"
 
-### Parent
+### `Parent`
 
 ```ss
 <!-- given we're on 'Bob Marley' in "about us > staff > bob marley" -->
@@ -362,11 +369,11 @@ $Parent.Parent.Title
 <!-- returns 'about us' -->
 ```
 
-## Navigating Scope
+## Navigating scope
 
 See [scope](syntax#scope).
 
-## Breadcrumbs
+## `Breadcrumbs`
 
 Breadcrumbs are the path of pages which need to be taken to reach the current page, and can be a great navigation aid
 for website users.
@@ -391,7 +398,7 @@ of the `silverstripe/cms` module.
 
 [info]
 To customise the markup that `$Breadcrumbs` generates, copy `templates/BreadcrumbsTemplate.ss`
- from the `silverstripe/cms` module to your theme (e.g.: `themes/you-theme/templates/BreadcrumbsTemplate.ss`).
+ from the `silverstripe/cms` module to your theme (e.g: `themes/you-theme/templates/BreadcrumbsTemplate.ss`).
  Modify the newly copied template and flush your Silverstripe CMS cache.
 [/info]
 
@@ -405,18 +412,18 @@ A page will normally contain some content and potentially a form of some kind. F
 Silverstripe CMS log-in form. If you are on such a page, the `$Form` variable will contain the HTML content of the form.
 Placing it just below `$Content` is a good default.
 
+## Related lessons
 
-## Related Lessons
-* [Adding dynamic content](https://www.silverstripe.org/learn/lessons/v4/adding-dynamic-content-1)
+- [Adding dynamic content](https://www.silverstripe.org/learn/lessons/v4/adding-dynamic-content-1)
 
-## Related Documentation
+## Related documentation
 
- * [Casting and Formatting Variables](casting)
- * [Template Inheritance](template_inheritance)
+- [Casting and Formatting Variables](casting)
+- [Template Inheritance](template_inheritance)
 
-## API Documentation
+## API documentation
 
- * [ContentController](api:SilverStripe\CMS\Controllers\ContentController): The main controller responsible for handling pages.
- * [Controller](api:SilverStripe\Control\Controller): Generic controller (not specific to pages.)
- * [DataObject](api:SilverStripe\ORM\DataObject): Underlying model class for page objects.
- * [ViewableData](api:SilverStripe\View\ViewableData): Underlying object class for pretty much anything displayable.
+- [ContentController](api:SilverStripe\CMS\Controllers\ContentController): The main controller responsible for handling pages.
+- [Controller](api:SilverStripe\Control\Controller): Generic controller (not specific to pages.)
+- [DataObject](api:SilverStripe\ORM\DataObject): Underlying model class for page objects.
+- [ViewableData](api:SilverStripe\View\ViewableData): Underlying object class for pretty much anything displayable.

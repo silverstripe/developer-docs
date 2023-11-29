@@ -9,7 +9,7 @@ summary: Protect destructive actions from cross-site request forgery
 [info]
 You are viewing docs for silverstripe/graphql 4.x.
 If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
+[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 [/info]
 
 ## CSRF tokens (required for mutations)
@@ -37,7 +37,7 @@ If you are using HTTP basic authentication or a token-based system like OAuth or
 you will want to remove the CSRF protection, as it just adds unnecessary overhead. You can do this by setting
 the middleware to `false`.
 
-```yaml
+```yml
 SilverStripe\Core\Injector\Injector:
   SilverStripe\GraphQL\QueryHandler\QueryHandlerInterface.default:
     class: SilverStripe\GraphQL\QueryHandler\QueryHandler

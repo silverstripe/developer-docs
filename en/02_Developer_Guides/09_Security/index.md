@@ -4,9 +4,9 @@ summary: This guide covers user authentication, the permission system and how to
 icon: user-shield
 ---
 
-# Security and User Authentication
+# Security and user authentication
 
-This guide covers using and extending the user authentication in Silverstripe CMS, permissions, user groups and roles, and 
+This guide covers using and extending the user authentication in Silverstripe CMS, permissions, user groups and roles, and
 how to secure your code against malicious behaviors of both your users and hackers.
 
 [CHILDREN Exclude=How_to]

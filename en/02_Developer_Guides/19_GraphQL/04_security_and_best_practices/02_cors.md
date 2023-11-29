@@ -10,14 +10,14 @@ summary: Ensure that requests to your API come from a whitelist of origins
 [info]
 You are viewing docs for silverstripe/graphql 4.x.
 If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
+[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 [/info]
 
-## Cross-Origin Resource Sharing (CORS)
+## Cross-Origin resource sharing (CORS)
 
 By default [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS) is disabled in the GraphQL Server. This can be easily enabled via YAML:
 
-```yaml
+```yml
 SilverStripe\GraphQL\Controller:
   cors:
     Enabled: true
@@ -30,40 +30,40 @@ Once you have enabled CORS you can then control four new headers in the HTTP Res
    This lets you define which domains are allowed to access your GraphQL API. There are
    4 options:
 
-   * **Blank**: Deny all domains (except localhost)
+   - **Blank**: Deny all domains (except localhost)
 
-     ```yaml
+     ```yml
      Allow-Origin:
      ```
 
-   * **'\*'**: Allow requests from all domains.
+   - **'\*'**: Allow requests from all domains.
 
-     ```yaml
+     ```yml
      Allow-Origin: '*'
      ```
 
-   * **Single Domain**: Allow requests from one specific external domain.
+   - **Single Domain**: Allow requests from one specific external domain.
 
-     ```yaml
+     ```yml
      Allow-Origin: 'https://my.domain.com'
      ```
 
-   * **Multiple Domains**: Allow requests from multiple specified external domains.
+   - **Multiple Domains**: Allow requests from multiple specified external domains.
 
-     ```yaml
+     ```yml
      Allow-Origin:
        - 'https://my.domain.com'
        - 'https://your.domain.org'
      ```
 
-2. **Access-Control-Allow-Headers.**
+1. **Access-Control-Allow-Headers.**
 
    Access-Control-Allow-Headers is part of a CORS 'pre-flight' request to identify
    what headers a CORS request may include. By default, the GraphQL server enables the
    `Authorization` and `Content-Type` headers. You can add extra allowed headers that
    your GraphQL may need by adding them here. For example:
 
-   ```yaml
+   ```yml
    Allow-Headers: 'Authorization, Content-Type, Content-Language'
    ```
 
@@ -72,17 +72,17 @@ Once you have enabled CORS you can then control four new headers in the HTTP Res
    custom resolver function to handle the response.
    [/notice]
 
-3. **Access-Control-Allow-Methods.**
+1. **Access-Control-Allow-Methods.**
 
    This defines the HTTP request methods that the GraphQL server will handle. By
    default this is set to `GET, PUT, OPTIONS`. Again, if you need to support extra
    methods you will need to write a custom resolver to handle this. For example:
 
-   ```yaml
+   ```yml
    Allow-Methods: 'GET, PUT, DELETE, OPTIONS'
    ```
 
-4. **Access-Control-Max-Age.**
+1. **Access-Control-Max-Age.**
 
    Sets the maximum cache age (in seconds) for the CORS pre-flight response. When
    the client makes a successful OPTIONS request, it will cache the response
@@ -92,11 +92,11 @@ Once you have enabled CORS you can then control four new headers in the HTTP Res
    This is set to 86400 seconds (24 hours) by default but can be changed in YAML as
    in this example:
 
-   ```yaml
+   ```yml
    Max-Age: 600
    ```
 
-5. **Access-Control-Allow-Credentials.**
+1. **Access-Control-Allow-Credentials.**
 
    When a request's credentials mode (Request.credentials) is "include", browsers
    will only expose the response to frontend JavaScript code if the
@@ -112,13 +112,13 @@ Once you have enabled CORS you can then control four new headers in the HTTP Res
 
    This is set to empty by default but can be changed in YAML as in this example:
 
-   ```yaml
+   ```yml
    Allow-Credentials: 'true'
    ```
 
 ### Apply a CORS config to all GraphQL endpoints
 
-```yaml
+```yml
 ## CORS Config
 SilverStripe\GraphQL\Controller:
   cors:
@@ -132,7 +132,7 @@ SilverStripe\GraphQL\Controller:
 
 ### Apply a CORS config to a single GraphQL endpoint
 
-```yaml
+```yml
 ## CORS Config
 SilverStripe\Core\Injector\Injector:
   SilverStripe\GraphQL\Controller.default:
