@@ -3,6 +3,8 @@ title: Upgrading Fluent
 summary: Upgrade your Silverstripe CMS project to use the latest version of tractorcow/silverstripe-fluent
 ---
 
+# Upgrading fluent
+
 Silverstripe only commercially supports version 4.x of [tractorcow/silverstripe-fluent](https://github.com/tractorcow-farm/silverstripe-fluent) with the 4.x major release line of Silverstripe CMS - however, the fluent module also has versions 5.x and 6.x which are compatible with Silverstripe CMS 4.x.
 
 This documents some of the breaking and functional changes across these three major release lines of the fluent module, as well as some key things to look out for and general guidelines on how to adapt your code to be compatible with the latest version.
@@ -12,7 +14,7 @@ This documents some of the breaking and functional changes across these three ma
   - [Locale fallback](#locale-fallback)
   - [User permissions](#user-permissions)
   - [Enhanced CMS UI](#enhanced-cms-ui)
-- [Localised versioned history](#localised-versioned-history)
+- [Localised versioned history](#localised-version-history)
   - [Standard Versioned methods](#standard-versioned-methods)
 - [Localised relations](#localised-relations)
 - [Quality of life changes](#quality-of-life-changes)
@@ -57,10 +59,10 @@ Locale fallback logic and options have changed significantly.
 In Fluent v5, the `DataObject.cms_publish_required` configuration property was renamed to `DataObject.cms_localisation_required`.
 
 [info]
-If you have set `cms_publish_required` configuration in your yaml configuration files, `Extension` class, or `DataObject` models, change these to `cms_localisation_required` instead.
+If you have set `cms_publish_required` configuration in your YAML configuration files, `Extension` class, or `DataObject` models, change these to `cms_localisation_required` instead.
 [/info]
 
-#### Fallback changes in Fluent v6 {#locale-fallback-v6}
+#### Fallback changes in fluent v6 {#locale-fallback-v6}
 
 The values for the `DataObject.frontend_publish_required` and `DataObject.cms_localisation_required` config properties changed from boolean to the strings "any", "fallback", and "exact".
 
@@ -79,10 +81,10 @@ Here's what the new values actually mean:
 
 | "any" | "fallback" | "exact"
 |-----|-----|-----|
-| Content for this record must exist in any locale _or the base (unlocalised) record_. | Content for this record must exist in the current locale _or_ a specific fallback locale, as defined through the Locales admin section. | Content for this record _must_ exist in the current locale to be used. |
+| Content for this record must exist in any locale *or the base (unlocalised) record*. | Content for this record must exist in the current locale *or* a specific fallback locale, as defined through the Locales admin section. | Content for this record *must* exist in the current locale to be used. |
 
 [notice]
-Review localisation settings on all of your models and migrate to the correct value. _Do not_ just swap to the new equivalent of your old value unless you explicitly want to keep that behaviour. Instead, consider whether the new functionality warrants a change to a different option.
+Review localisation settings on all of your models and migrate to the correct value. *Do not* just swap to the new equivalent of your old value unless you explicitly want to keep that behaviour. Instead, consider whether the new functionality warrants a change to a different option.
 [/notice]
 
 ### User permissions
@@ -114,9 +116,9 @@ As mentioned in the table above, the `batch_actions_enabled` configuration value
 Review available CMS UI components and enable those that you need.
 [/hint]
 
-## Localised versioned history
+## Localised version history
 
-One of the major improvements in Fluent v6 is that version history actually works correctly _out of the box_ now. For example, you can see all of the version history for a record _for each locale_, and rollback changes _per locale_. This wasn't possible in version 4 and 5.
+One of the major improvements in Fluent v6 is that version history actually works correctly *out of the box* now. For example, you can see all of the version history for a record *for each locale*, and rollback changes *per locale*. This wasn't possible in version 4 and 5.
 
 The following actions in the history tab in the CMS are affected:
 
@@ -130,7 +132,7 @@ The following actions in the history tab in the CMS are affected:
 | Out of the box support of [Versioned snapshots module](https://github.com/silverstripe/silverstripe-versioned-snapshot-admin) | No | No | Yes |
 | Data source of standard Versioned methods | Base record | Base record | Localised record |
 
-### Standard Versioned methods
+### Standard `Versioned` methods
 
 Fluent 6 alters how many of the [`Versioned`](api:SilverStripe\Versioned\Versioned) methods work as the data source is changed to use the localised tables. This has a large impact on the CMS UI and behaviour (as mentioned in the previous section).
 
@@ -143,7 +145,7 @@ Examples of impacted methods:
 
 Simply put, any code you have checking the versioned state of a record used to return results for the base (unlocalised) record. To get the result for the localised record, specialised methods had to be called.
 
-Now the result for the _localised_ record is returned instead. To get the result for the unlocalised record, you must wrap the call with `FluentState::singleton()->withState()` and set the temporary state to null. For example:
+Now the result for the *localised* record is returned instead. To get the result for the unlocalised record, you must wrap the call with `FluentState::singleton()->withState()` and set the temporary state to null. For example:
 
 #### Code examples {#fluent-versioned-examples}
 
@@ -195,6 +197,8 @@ If the locales you support in your project all have the same structure (i.e. you
 If your locales have a different structure (i.e. you may want different related objects in different locales), you will need to set the `$localised_copy` configuration for the relation. This works very similarly to [`$cascade_duplicates`](/developer_guides/model/relations/#cascading-duplications), except it is explicitly for when you copy content across locales.
 
 ```php
+namespace App\PageType;
+
 class HomePage extends Page
 {
     private static $db = [
@@ -231,7 +235,7 @@ These changes aren't likely to break anything in your project, but we recommend 
 
 - **Record locale** - Object that represents details of a specific `DataObject` record in a specific locale
   - returned from the `LocaleInformation()` method on every localised model
-  - you can also get the `RecordLocale` for _all locales_ available for a record by calling `Locales()`
+  - you can also get the `RecordLocale` for *all locales* available for a record by calling `Locales()`
 - **Current locale object** - The current locale model available as a global template provider
   - use `$CurrentLocaleObject` in a template
   - provides all the information about the current locale, not just the locale code or title
@@ -242,9 +246,9 @@ These changes aren't likely to break anything in your project, but we recommend 
 
 Some unit tests may break. There's no one solution for problems you may encounter, but some general recommendations that might help are:
 
-- avoid localised tables in yaml fixtures
+- avoid localised tables in YAML fixtures
   - localise models in your PHP code instead, either in the `setUp()` method or via ORM calls (for example explicitly calling [`$obj->write()`](api:SilverStripe\ORM\DataObject::write()) after fetching the fixture object)
-- avoid including version history in your yaml fixtures
+- avoid including version history in your YAML fixtures
   - use ORM methods like [`$obj->publishRecursive()`](api:SilverStripe\Versioned\RecursivePublishable:publishRecursive()) after fetching the fixture objects instead
 
 ## Further reading

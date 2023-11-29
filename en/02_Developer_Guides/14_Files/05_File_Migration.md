@@ -15,8 +15,8 @@ has been added to assist in migration of legacy files.
 
 You can run this task on the command line:
 
-```
-$ ./vendor/bin/sake dev/tasks/MigrateFileTask
+```bash
+vendor/bin/sake dev/tasks/MigrateFileTask
 ```
 
 This task will perform a number of subtasks:
@@ -50,6 +50,7 @@ The output is quite verbose by default. Look for `WARNING` and `ERROR` in the lo
 When executing the task on CLI, you'll get colour coded error messages.
 
 ### Specialised opt-in file migration subtasks
+
 Some subtasks are only necessary in specific situations. Those subtasks will not be run by default and must be explicitly referenced via the `only` parameter.
 
 - `normalise-access`: This subtask identifies physical files that are
@@ -74,7 +75,7 @@ locations.
 Read the [Silverstripe CMS 4.4.6 change logs](/changelogs/4.4.6) to learn more
 about the `normalise-access` and `relocate-userform-uploads-2020-9280` subtasks.
 
-## Background migration through the Queuedjobs module
+## Background migration through the queuedjobs module
 
 In general, it's safest to run the file migration on a non-production environment,
 and switch over to the migrated assets and new database. That's not always feasible.
@@ -111,8 +112,7 @@ Note that any File object which is not in the `File.allowed_extensions` config w
 from the database during migration. Any invalid file on the filesystem will not be deleted,
 but will no longer be attached to a dataobject anymore, and should be cleaned up manually.
 
-
-### If you were using the versionedfiles on your 3.x site
+### If you were using the versionedfiles on your 3.X site
 
 If you have had [versionedfiles](https://github.com/symbiote/silverstripe-versionedfiles) module installed, it is very important to run
 an extra task that would clean up the `_versions` folders. Otherwise, files in those folders may be left exposed to public access
@@ -124,10 +124,10 @@ The task for the job is `VersionedFilesMigrationTask`, and you may run it as fol
 
 Before you run it, it is important to choose an appropriate strategy that suits your project best.
 
-  - `delete` (default) - delete all `_versions` folders
-  - `protect` - create a protective `.htaccess` file in every `_versions` folder (Apache specific)
+- `delete` (default) - delete all `_versions` folders
+- `protect` - create a protective `.htaccess` file in every `_versions` folder (Apache specific)
 
-If you choose `delete`, it may be wise to take a snapshot of your `public/assets` folder. 
+If you choose `delete`, it may be wise to take a snapshot of your `public/assets` folder.
 Shall you consider `protect` as the method, please beware that it may not always work, depending on your server setup.
 In that case it is important to make sure your web server is Apache and that it allows `.htaccess` for all subfolders.
 
@@ -135,7 +135,7 @@ In that case it is important to make sure your web server is Apache and that it 
 
 To disable this, set the following config:
 
-```yaml
+```yml
 SilverStripe\Assets\Dev\Tasks\FileMigrationHelper:
   delete_invalid_files: false
 ```
@@ -151,7 +151,7 @@ historical database entries with the file metadata, but the actual file contents
 in order to avoid bloat. If you need to retain file contents (e.g. for auditing purposes),
 you can opt-in to this behaviour:
 
-```yaml
+```yml
 SilverStripe\Assets\File:
   keep_archived_assets: true
 ```
@@ -180,13 +180,13 @@ In general, the migration task can be restarted if it times out, and will contin
 
 If you are migrating a substantial number of files, you should run the file migration task either as a queued job or on the command line. If the migration task fails or times out, you can start it again and it will pick up where it left off.
 
-If your environment supports the _Imagick_ PHP library, you may want to use that library instead of _GD_. Imagick is considerably faster when resizing images. You can switch back to _GD_ after running the file migration task.
+If your environment supports the *Imagick* PHP library, you may want to use that library instead of *GD*. Imagick is considerably faster when resizing images. You can switch back to *GD* after running the file migration task.
 
 [Changing the image manipulation driver to Imagick](images#changing-the-manipulation-driver-to-imagick)
 
 If your project hosts big images (e.g. 4K images), this can also affect the amount of memory used to generate the thumbnails. The file migration task assumes that it will have at least 512MB of memory available.
 
-By default the file migration task will not generate thumbnails for files greater than 9MB to avoid exhausting the available memory. To increase this limit, add the following code to your YML configuration:
+By default the file migration task will not generate thumbnails for files greater than 9MB to avoid exhausting the available memory. To increase this limit, add the following code to your YAML configuration:
 
 ```yml
 SilverStripe\Core\Injector\Injector:
@@ -197,7 +197,7 @@ SilverStripe\Core\Injector\Injector:
 
 You can also set this to `0` to disable the limit.
 
-## System Requirements
+## System requirements
 
 The approach to running your file migration depends on your system and how many files you are migrating.
 
@@ -210,16 +210,16 @@ Use the following estimates to decide how you will run your file migration:
 | < 10000 | Command Line | 10000 seconds | 950 MB |
 | 10000+ | Command Line or contact support | n/a | n/a |
 
-Your exact experience will vary based on your host server, the size of your files and other conditions. If your site is hosted on a managed environment (e.g.: [Common Web Platform](https://www.cwp.govt.nz/service-desk) or [Silverstripe Cloud](https://docs.platform.silverstripe.com/support/)), you may not have access to the command line to manually run the migration task. Contact your hosting provider's helpdesk if that's your case.
+Your exact experience will vary based on your host server, the size of your files and other conditions. If your site is hosted on a managed environment (e.g: [Common Web Platform](https://www.cwp.govt.nz/service-desk) or [Silverstripe Cloud](https://docs.platform.silverstripe.com/support/)), you may not have access to the command line to manually run the migration task. Contact your hosting provider's helpdesk if that's your case.
 
-
-## Natural path vs Hash Path
+## Natural path vs hash path
 
 Two types of paths are used by Silverstripe CMS when serving files:
-* Natural paths and
-* Hash paths.
 
-Natural paths will match the path displayed in Silverstripe CMS's asset management section (e.g.: `assets/Folder/form.pdf`). Hash paths will include a partial hash as directory name (e.g.: `assets/Folder/282318025b/form.pdf`). The hash is generated by computing the sha1 hash of the provided file and keeping the first ten characters.
+- Natural paths and
+- Hash paths.
+
+Natural paths will match the path displayed in Silverstripe CMS's asset management section (e.g: `assets/Folder/form.pdf`). Hash paths will include a partial hash as directory name (e.g: `assets/Folder/282318025b/form.pdf`). The hash is generated by computing the sha1 hash of the provided file and keeping the first ten characters.
 
 The hash path has the advantage of being unique for every version of the file your users might upload. This allows multiple versions of the same file to co-exist, enabling features like [file archives](04_File_Storage#archived). This is why hash path is the default file format for the protected file store.
 
@@ -247,17 +247,18 @@ After running the file migration, you can run the short code migration task to u
 
 ```bash
 sake dev/tasks/TagsToShortcodeTask
-``` 
+```
 
 This will rewrite your existing shortcodes to the newer format Silverstripe CMS 4 expects as well as convert `img` and `a` tags to use shortcodes.
 
 ### Migrating from Silverstripe CMS 3.2 (or below) to Silverstripe CMS 4.4
 
 The format for image variants was changed in Silverstripe CMS 3.3. In Silverstripe CMS 3.2 and below variants would be included in the file name with a dash:
-* `Uploads/_resampled/FitWzQwLDMwXQ-image.jpg` in Silverstripe CMS 3.2 and below
-* `Uploads/_resampled/FitWzQwLDMwXQ/image.jpg` in Silverstripe CMS 3.3 and above
 
-The file migration task didn't account for this nuance until the Silverstripe CMS 4.4.4 release. If you ran the file migration task using a prior version, your Silverstripe CMS 3.2 thumbnails might not have been migrated, or their paths might have been appended as variants. e.g.: `FitWzQwLDMwXQ-image__Uploads__resampled.jpg`
+- `Uploads/_resampled/FitWzQwLDMwXQ-image.jpg` in Silverstripe CMS 3.2 and below
+- `Uploads/_resampled/FitWzQwLDMwXQ/image.jpg` in Silverstripe CMS 3.3 and above
+
+The file migration task didn't account for this nuance until the Silverstripe CMS 4.4.4 release. If you ran the file migration task using a prior version, your Silverstripe CMS 3.2 thumbnails might not have been migrated, or their paths might have been appended as variants. e.g: `FitWzQwLDMwXQ-image__Uploads__resampled.jpg`
 
 Those variants will need to be regenerated. Thumbnails generated through templates or code will automatically be regenerated on the next uncached request to Silverstripe CMS. Thumbnails embedded in HTML fields will be regenerated when the page is republished. Variants that were improperly renamed must be removed manually.
 
@@ -273,13 +274,13 @@ This will take all existing files under a hash path and move them to their natur
 
 ### Do I need to re-migrate my files?
 
-No, you do not need to run the file migration task when upgrading to Silverstripe CMS 4.4 or later. 
+No, you do not need to run the file migration task when upgrading to Silverstripe CMS 4.4 or later.
 
 Your existing files will still resolve. Old hash paths will be redirected to the latest version of the file. As newer versions of existing files are published, they will be moved to their natural path.
 
 You can choose to run the migration task at any point.
 
-### What if I’m using `legacy_filenames`?
+### What if I use `legacy_filenames`?
 
 Silverstripe CMS 4.0 to 4.3 allowed you to enable a `legacy_filenames` mode. This would be equivalent to using natural paths for both the public store and the protected store.
 
@@ -287,9 +288,9 @@ With the introduction of natural paths for the public store, the primary reason 
 
 After upgrading to Silverstripe CMS 4.4 or later, you should run the file migration task to normalise your protected files. This will move your protected files to their equivalent hash path.
 
-###  What if I want to keep using hash paths for my public files?
+### What if I want to keep using hash paths for my public files?
 
-If you want to keep using hash paths for your public store, you can add the following entries to your YML configuration files.
+If you want to keep using hash paths for your public store, you can add the following entries to your YAML configuration files.
 
 ```yml
 SilverStripe\Core\Injector\Injector:
@@ -315,7 +316,7 @@ SilverStripe\Core\Injector\Injector:
 
 When starting a brand new project, or after you’ve ran the file migration task, all your files will be in their default locations. This gives you the option to disable alternative resolution formats. This will slightly speed up file resolution.
 
-You can do this by adding this snippet to your YML configuration.
+You can do this by adding this snippet to your YAML configuration.
 
 ```yml
 SilverStripe\Core\Injector\Injector:
@@ -339,38 +340,35 @@ SilverStripe\Core\Injector\Injector:
 
 If you're starting a brand new project using the `silverstripe/installer` 4.4 or above, this code snippet will already be part of your project.
 
-## Customise the File Migration Task (Advanced)
+## Customise the file migration task (advanced)
 
 In some context, you may want to disable some other process when the file migration is running. For example, if you have a module that indexes files when they get modified, you'll probably want to wait until the file migration is done to reindex.
 
 The `MigrateFileTask` exposes 4 extension point that can be use to detect the progress of the migration.
-* `preFileMigration` that gets fired at the start of the task
-* `postFileMigration` that gets fired at the end of the task
-* `preFileMigrationSubtask`  that gets fired at the start of each subtasks
-* `postFileMigrationSubtask` that gets fired at the end of each subtasks.
 
-`preFileMigrationSubtask` and `postFileMigrationSubtask` will provide a single string parameter matching the name of the subtask (e.g.: `move-files`)
+- `preFileMigration` that gets fired at the start of the task
+- `postFileMigration` that gets fired at the end of the task
+- `preFileMigrationSubtask`  that gets fired at the start of each subtasks
+- `postFileMigrationSubtask` that gets fired at the end of each subtasks.
+
+`preFileMigrationSubtask` and `postFileMigrationSubtask` will provide a single string parameter matching the name of the subtask (e.g: `move-files`)
 
 ### Example migrate file task extension
+
 ```php
-<?php
+namespace App\Extension;
 
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\Extension;
 
 class MigrateFileTaskExtension extends Extension
 {
-
     private static $dependencies = [
         'logger' => '%$' . LoggerInterface::class . '.quiet',
     ];
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /**
-     * @param LoggerInterface $logger
-     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
@@ -395,14 +393,13 @@ class MigrateFileTaskExtension extends Extension
     {
         $this->logger->info(sprintf('Run some extension code AFTER the %s subtask', $subtaskName));
     }
-
 }
 ```
 
-Add the following snippet to your YML config to enable the extension.
+Add the following snippet to your YAML config to enable the extension.
 
-```yaml
+```yml
 SilverStripe\Dev\Tasks\MigrateFileTask:
   extensions:
-    - MigrateFileTaskExtension
+    - App\Extension\MigrateFileTaskExtension
 ```

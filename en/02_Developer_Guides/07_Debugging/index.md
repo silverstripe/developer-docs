@@ -16,13 +16,13 @@ built-in helpers for dealing with application errors.
 See the [Profiling](../performance/profiling) documentation for more information on profiling Silverstripe CMS to track down
 bottle-necks and identify slow moving parts of your application chain.
 
-## Debugging Utilities
+## Debugging utilities
 
 The [Debug](api:SilverStripe\Dev\Debug) class contains a number of static utility methods for more advanced debugging.
 
 ```php
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\Backtrace;
+use SilverStripe\Dev\Debug;
 
 Debug::show($myVariable);
 // similar to print_r($myVariable) but shows it in a more useful format.
@@ -34,7 +34,7 @@ Backtrace::backtrace();
 // prints a calls-stack
 ```
 
-## API Documentation
+## API documentation
 
-* [Backtrace](api:SilverStripe\Dev\Backtrace)
-* [Debug](api:SilverStripe\Dev\Debug)
+- [Backtrace](api:SilverStripe\Dev\Backtrace)
+- [Debug](api:SilverStripe\Dev\Debug)

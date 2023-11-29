@@ -4,7 +4,7 @@ summary: The SS_List interface allows you to iterate through and manipulate a li
 icon: list
 ---
 
-# Managing Lists
+# Managing lists
 
 Whenever using the ORM to fetch records or navigate relationships you will receive an [SS_List](api:SilverStripe\ORM\SS_List) instance commonly as
 either [DataList](api:SilverStripe\ORM\DataList) or [RelationList](api:SilverStripe\ORM\RelationList). This object gives you the ability to iterate over each of the results or
@@ -19,7 +19,7 @@ use SilverStripe\Security\Member;
 
 $members = Member::get();
 
-foreach($members as $member) {
+foreach ($members as $member) {
     echo $member->Name;
 }
 ```
@@ -37,7 +37,6 @@ Or in the template engine:
 ```php
 // $list->find($key, $value);
 
-//
 $members = Member::get();
 
 echo $members->find('ID', 4)->FirstName;
@@ -111,9 +110,10 @@ foreach ($members as $member) {
 ```
 
 There are some limitations:
-* `chunkedFetch()` will ignore any limit or offset you have applied to your DataList
-* you cannot "count" a chunked list or do any other call against it aside from iterating it
-* while iterating over a chunked list, you cannot perform any operation that would alter the order of the items.
+
+- `chunkedFetch()` will ignore any limit or offset you have applied to your DataList
+- you cannot "count" a chunked list or do any other call against it aside from iterating it
+- while iterating over a chunked list, you cannot perform any operation that would alter the order of the items.
 
 ## ArrayList
 
@@ -131,13 +131,14 @@ echo $list->Count();
 // returns '2'
 ```
 
-## Related Lessons
-* [Lists and pagination](https://www.silverstripe.org/learn/lessons/v4/lists-and-pagination-1)
+## Related lessons
 
-## API Documentation
+- [Lists and pagination](https://www.silverstripe.org/learn/lessons/v4/lists-and-pagination-1)
 
-* [SS_List](api:SilverStripe\ORM\SS_List)
-* [RelationList](api:SilverStripe\ORM\RelationList)
-* [DataList](api:SilverStripe\ORM\DataList)
-* [ArrayList](api:SilverStripe\ORM\ArrayList)
-* [Map](api:SilverStripe\ORM\Map)
+## API documentation
+
+- [SS_List](api:SilverStripe\ORM\SS_List)
+- [RelationList](api:SilverStripe\ORM\RelationList)
+- [DataList](api:SilverStripe\ORM\DataList)
+- [ArrayList](api:SilverStripe\ORM\ArrayList)
+- [Map](api:SilverStripe\ORM\Map)

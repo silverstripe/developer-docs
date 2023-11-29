@@ -8,7 +8,7 @@ summary: Upgrade your Silverstripe CMS project to use graphQL version 4
 [info]
 You are viewing docs for silverstripe/graphql 4.x.
 If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
+[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 [/info]
 
 The 4.0 release of `silverstripe/graphql` underwent a massive set of changes representing an
@@ -16,7 +16,7 @@ entire rewrite of the module. This was done as part of a year-long plan to impro
 there is no specific upgrade path, there are some key things to look out for and general guidelines on how
 to adapt your code from the 3.x release to 4.x.
 
-Note that this document is aimed towards developers who have a custom graphql schema. If you are updating from graphql
+Note that this document is aimed towards developers who have a custom GraphQL schema. If you are updating from GraphQL
 3 to 4 but do not have a custom schema, you should familiarise yourself with the
 [building the schema](/developer_guides/graphql/getting_started/building_the_schema) documentation, but you do not need to read this document.
 
@@ -42,14 +42,15 @@ different ways to build your schema.
 scaffolding, registration of types, running queries and middleware, error handling, and more. This
 class has been broken up into two separate concerns:
 
-* [`Schema`](api:SilverStripe\GraphQL\Schema\Schema) <- register your stuff here
-* [`QueryHandlerInterface`](api:SilverSTripe\GraphQL\QueryHandler\QueryHandlerInterface) <- Handles GraphQL queries, applies middlewares and context.
+- [`Schema`](api:SilverStripe\GraphQL\Schema\Schema) <- register your stuff here
+- [`QueryHandlerInterface`](api:SilverSTripe\GraphQL\QueryHandler\QueryHandlerInterface) <- Handles GraphQL queries, applies middlewares and context.
   You'll probably never have to touch it.
 
-### Upgrading
+### Upgrading {#manager-upgrading}
 
-**before**
-```yaml
+#### Before {#manager-before}
+
+```yml
 SilverStripe\GraphQL\Manager:
   schemas:
     default:
@@ -58,8 +59,9 @@ SilverStripe\GraphQL\Manager:
       mutations: {}
 ```
 
-**after**
-```yaml
+#### After {#manager-after}
+
+```yml
 SilverStripe\GraphQL\Schema\Schema:
   schemas:
     default:
@@ -67,10 +69,10 @@ SilverStripe\GraphQL\Schema\Schema:
         - app/_graphql # A directory of your choice
 ```
 
-Add the appropriate yaml files to the directory. For more information on this pattern, see
+Add the appropriate YAML files to the directory. For more information on this pattern, see
 the [configuring your schema](/developer_guides/graphql/getting_started/configuring_your_schema) section.
 
-```
+```text
 app/_graphql
   types.yml
   queries.yml
@@ -87,16 +89,19 @@ A thorough look at how these classes were being used revealed that they were rea
 as value objects that effectively created configuration in a static context. That is, they had no
 real reason to be instance-based. Most of the time, they can easily be ported to configuration.
 
-### Upgrading
+### Upgrading {#creators-upgrading}
 
-**before**
+#### Before {#creators-before}
+
 ```php
+namespace App\GraphQL;
+
 class GroupTypeCreator extends TypeCreator
 {
     public function attributes()
     {
         return [
-            'name' => 'group'
+            'name' => 'group',
         ];
     }
 
@@ -105,16 +110,16 @@ class GroupTypeCreator extends TypeCreator
         return [
             'ID' => ['type' => Type::nonNull(Type::id())],
             'Title' => ['type' => Type::string()],
-            'Description' => ['type' => Type::string()]
+            'Description' => ['type' => Type::string()],
         ];
     }
 }
 ```
 
-**after**
+#### After {#creators-after}
 
-**app/_graphql/types.yml**
-```yaml
+```yml
+# app/_graphql/types.yml
 group:
   fields:
     ID: ID!
@@ -132,14 +137,17 @@ You can no longer use instance methods for resolvers. They can't be easily trans
 PHP code in the schema build step. These resolvers should be refactored to use the `static` declaration
 and moved into a class.
 
-### Upgrading
+### Upgrading {#resolvers-upgrading}
 
 Move your resolvers into one or many classes, and register them. Notice that the name of the method
 determines what is being resolved, where previously that would be the name of a resolver class. Now,
 multiple resolver methods can exist within a single resolver class.
 
-**before**
+#### Before {#resolvers-before}
+
 ```php
+namespace App\GraphQL;
+
 class LatestPostResolver implements OperationResolver
 {
     public function resolve($object, array $args, $context, ResolveInfo $info)
@@ -149,16 +157,18 @@ class LatestPostResolver implements OperationResolver
 }
 ```
 
-**after**
+#### After {#resolvers-after}
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
 resolvers:
-  - MyProject\Resolvers\MyResolverClassA
-  - MyProject\Resolvers\MyResolverClassB
+  - App\GraphQL\MyResolverClassA
+  - App\GraphQL\MyResolverClassB
 ```
 
 ```php
+namespace App\GraphQL;
+
 class MyResolverClassA
 {
     public static function resolveLatestPost($object, array $args, $context, ResolveInfo $info)
@@ -171,13 +181,13 @@ class MyResolverClassA
 This method relies on [resolver discovery](/developer_guides/graphql/getting_started/working_with_generic_types/resolver_discovery),
 which you can learn more about in the documentation.
 
-Alternatively, you can [hardcode the resolver into your config](/developer_guides/graphql/getting_started/working_with_generic_types/resolver_discovery#field-resolvers). Note that the resolver value here is a yaml array, which PHP will interpret as a `callable`.
+Alternatively, you can [hardcode the resolver into your config](/developer_guides/graphql/getting_started/working_with_generic_types/resolver_discovery#field-resolvers). Note that the resolver value here is a YAML array, which PHP will interpret as a `callable`.
 
-**app/_graphql/queries.yml**
-```yaml
+```yml
+# app/_graphql/queries.yml
 latestPost:
   type: Post
-  resolver: ['MyApp\Resolvers\MyResolvers', 'resolveLatestPost']
+  resolver: ['App\GraphQL\MyResolvers', 'resolveLatestPost']
 ```
 
 ## `ScaffoldingProvider`s are now `SchemaUpdater`s
@@ -186,20 +196,23 @@ The `ScaffoldingProvider` interface has been replaced with [`SchemaUpdater`](api
 If you were updating your schema with procedural code, you'll need to implement `SchemaUpdater`
 and implement the [`updateSchema()`](api:SilverStripe\GraphQL\Schema\Interfaces\SchemaUpdater::updateSchema()) method.
 
-### Upgrading
+### Upgrading {#schemaupdater-upgrading}
 
 Register your schema builder, and change the code.
 
-**before**
-```yaml
+#### Before {#schemaupdater-before}
+
+```yml
 SilverStripe\GraphQL\Manager:
   schemas:
     default:
       scaffolding_providers:
-        - 'MyProject\MyProvider'
+        - 'App\GraphQL\MyProvider'
 ```
 
 ```php
+namespace App\GraphQL;
+
 class MyProvider implements ScaffoldingProvider
 {
     public function provideGraphQLScaffolding(SchemaScaffolder $scaffolder)
@@ -209,16 +222,19 @@ class MyProvider implements ScaffoldingProvider
 }
 ```
 
-**after**
-```yaml
+#### After {#schemaupdater-after}
+
+```yml
 SilverStripe\GraphQL\Schema\Schema:
   schemas:
     default:
       execute:
-        - 'MyProject\MyProvider'
+        - 'App\GraphQL\MyProvider'
 ```
 
 ```php
+namespace App\GraphQL;
+
 class MyProvider implements SchemaUpdater
 {
     public function updateSchema(Schema $schema): void
@@ -243,19 +259,20 @@ approach has been replaced with a concept called **model types**.
 A model type is just a type that is backed by a class that has awareness of its schema (like a `DataObject`!).
 At a high-level, it needs to answer questions like:
 
-* Do you have field X?
-* What type is field Y?
-* What are all the fields you offer?
-* What operations do you provide?
-* Do you require any extra types to be added to the schema?
+- Do you have field X?
+- What type is field Y?
+- What are all the fields you offer?
+- What operations do you provide?
+- Do you require any extra types to be added to the schema?
 
-### Upgrading
+### Upgrading {#scaffolding-upgrading}
 
 The 4.x release ships with a model type implementation specifically for DataObjects, which you can use
 a lot like the old scaffolding API. It's largely the same syntax, but a lot easier to read.
 
-**before**
-```yaml
+#### Before {#scaffolding-before}
+
+```yml
 SilverStripe\GraphQL\Manager:
   schemas:
     default:
@@ -270,13 +287,12 @@ SilverStripe\GraphQL\Manager:
               content: true
             operations:
               read: true
-
 ```
 
-**after**
+#### After {#scaffolding-after}
 
-**app/_graphql/models.yml**
-```yaml
+```yml
+# app/_graphql/models.yml
 SilverStripe\Security\Member:
   fields: '*'
   operations: '*'
@@ -296,11 +312,12 @@ map directly to the conventions of the ORM. This makes frontend code look awkwar
 for the Silverstripe CMS GraphQL server to break convention. In this major release, the **lowerCamelCase**
 approach is encouraged.
 
-### Upgrading
+### Upgrading {#case-upgrading}
 
 Change the casing in your queries.
 
-**before**
+#### Before {#case-before}
+
 ```graphql
 query readPages {
   edges {
@@ -312,7 +329,8 @@ query readPages {
 }
 ```
 
-**after**
+#### After {#case-after}
+
 ```graphql
 query readPages {
   edges {
@@ -347,14 +365,16 @@ uniqueness when converting a `DataObject` class name to a GraphQL type name, whi
 In the 4.x release, the typename is just the `shortName` by default, which is based on the assumption that
 most of what you'll be exposing is in your own app code, so collisions aren't that likely.
 
-### Upgrading
+### Upgrading {#type-names-upgrading}
 
 Change any references to DataObject type names in your queries
 
-**before**
+#### Before {#type-names-before}
+
 `query SilverStripeSiteTrees {}`
 
-**after**
+#### After {#type-names-after}
+
 `query SiteTrees {}`
 
 [info]
@@ -379,7 +399,7 @@ Additionally, the sorting features that were provided by `Connection` have been 
 sortable fields by default - though this is configurable. See the [query plugins](/developer_guides/graphql/getting_started/working_with_dataobjects/query_plugins)
 section for more information.
 
-### Upgrading
+### Upgrading {#connection-upgrading}
 
 There isn't much you have to do here to maintain compatibility. If you prefer to have a lot of control over
 what your sort fields are, check out the linked documentation above.
@@ -391,7 +411,7 @@ read queries by default, and should include all filterable fields including nest
 this is configurable. See the [query plugins](/developer_guides/graphql/getting_started/working_with_dataobjects/query_plugins)
 section for more information.
 
-### Upgrading
+### Upgrading {#query-filters-upgrading}
 
 There isn't much you have to do here to maintain compatibility. If you prefer to have a lot of control over
 what your filter fields are, check out the linked documentation above.
@@ -406,14 +426,14 @@ on how it works you can [read the permissions documentation](/developer_guides/g
 In the 3.x release, there was no clear path to creating enum types, but in 4.x, they have a prime spot in the
 configuration layer.
 
-**before**
+### Before {#enums-before}
 
 (A type creator that has been hacked to return an `Enum` singleton?)
 
-**after**
+### After {#enums-after}
 
-**app/_graphql/enums.yml**
-```yaml
+```yml
+# app/_graphql/enums.yml
 Status:
   values:
     SHIPPED: Shipped

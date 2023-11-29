@@ -4,22 +4,22 @@ summary: The Javascript style guidelines we follow in our open source software
 iconBrand: js
 ---
 
-# JavaScript Coding Conventions
+# JavaScript coding conventions
 
 ## Overview
 
 This document provides guidelines for code formatting to developers contributing
-to SilverStripe. It applies to all JavaScript files in the `framework/` and `cms/` modules.
+to Silverstripe. It applies to all JavaScript files in the `framework/` and `cms/` modules.
 
-In 2016, SilverStripe started a rewrite of its CMS interface in
+In 2016, Silverstripe started a rewrite of its CMS interface in
 [ES6](https://en.wikipedia.org/wiki/ECMAScript) and
 [ReactJS](http://facebook.github.io/react/). Code written prior to this rewrite
 might not follow these conventions, and is placed in a `legacy/` folder structure.
 
-## NPM Packages
+## NPM packages
 
-SilverStripe authored npm dependencies are posted under the
-[silverstripe npm](https://www.npmjs.com/org/silverstripe) organisation.
+Silverstripe authored npm dependencies are posted under the
+[Silverstripe npm](https://www.npmjs.com/org/silverstripe) organisation.
 
 ## Browser support
 
@@ -35,9 +35,9 @@ and can be checked locally via `yarn run lint`.
 ## Spelling
 
 All symbols and documentation should use UK-English spelling (e.g. "behaviour" instead of "behavior"),
-except when necessitated by third party conventions (e.g using "color" for CSS styles).
+except when necessitated by third party conventions (e.g. using "color" for CSS styles).
 
-## File and Folder Naming
+## File and folder naming
 
 - All frontend files (CSS, JavaScript, images) should be placed in
   a `client/` folder on the top level of the module
@@ -59,5 +59,5 @@ except when necessitated by third party conventions (e.g using "color" for CSS s
 
 ## Related
 
-* [PHP Coding Conventions](/contributing/php_coding_conventions)
-* [CSS Coding Conventions](/contributing/css_coding_conventions)
+- [PHP Coding Conventions](/contributing/php_coding_conventions)
+- [CSS Coding Conventions](/contributing/css_coding_conventions)

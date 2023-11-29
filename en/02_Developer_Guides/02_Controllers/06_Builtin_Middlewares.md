@@ -3,10 +3,10 @@ title: Built-in Middleware
 summary: Middleware components that come with Silverstripe CMS
 ---
 
-# Built-in Middleware
+# Built-in middleware
 
 Silverstripe CMS has a number of Middleware components.
-You may find them in the [SilverStripe\Control\Middleware](api:SilverStripe\Control\Middleware) namespace.
+You may find them in the [`SilverStripe\Control\Middleware`](api:SilverStripe\Control\Middleware) namespace.
 
 | Name | Description |
 | ---- | ----------- |

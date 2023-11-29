@@ -1,16 +1,16 @@
 ---
 title: Versioned content
-summary: A guide on how DataObjects with the Versioned extension behave in GraphQL schemas
+summary: A guide on how DataObject models with the Versioned extension behave in GraphQL schemas
 ---
 
-# Working with DataObjects
+# Working with `DataObject` models
 
 [CHILDREN asList]
 
 [info]
 You are viewing docs for silverstripe/graphql 4.x.
 If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
+[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 [/info]
 
 ## Versioned content
@@ -26,9 +26,9 @@ See [model versioning](/developer_guides/model/versioning) for general informati
 There are several plugins provided by the `silverstripe/versioned` module that affect how versioned DataObjects
 appear in the schema. These include:
 
-* The `versioning` plugin, applied to the `DataObject` type
-* The `readVersion` plugin, applied to the queries for the DataObject
-* The `unpublishOnDelete` plugin, applied to the delete mutation
+- The `versioning` plugin, applied to the `DataObject` type
+- The `readVersion` plugin, applied to the queries for the DataObject
+- The `unpublishOnDelete` plugin, applied to the delete mutation
 
 Let's walk through each one.
 
@@ -41,15 +41,15 @@ several fields to the `DataObject` type, including:
 
 The `version` field on your `DataObject` will include the following fields:
 
-* `author`: Member (Object -- the author of the version)
-* `publisher`: Member (Object -- the publisher of the version)
-* `published`: Boolean (True if the version is published)
-* `liveVersion`: Boolean (True if the version is the one that is currently live)
-* `latestDraftVersion`: Boolean (True if the version is the latest draft version)
+- `author`: Member (Object -- the author of the version)
+- `publisher`: Member (Object -- the publisher of the version)
+- `published`: Boolean (True if the version is published)
+- `liveVersion`: Boolean (True if the version is the one that is currently live)
+- `latestDraftVersion`: Boolean (True if the version is the latest draft version)
 
 [info]
-Note that `author` and `publisher` are in relation to the given _version_ of the object - these are
-not necessarily the same as the author and publisher of the _original_ record (i.e. the author may not
+Note that `author` and `publisher` are in relation to the given *version* of the object - these are
+not necessarily the same as the author and publisher of the *original* record (i.e. the author may not
 be the person who created the object, they're the person who saved a specific version of it).
 [/info]
 
@@ -93,10 +93,10 @@ query readPages {
 This plugin updates the `read` operation to include a `versioning` argument that contains the following
 fields:
 
-* `mode`: VersionedQueryMode (An enum of [`ARCHIVE`, `LATEST`, `DRAFT`, `LIVE`, `STATUS`, `VERSION`])
-* `archiveDate`: String (The archive date to read from)
-* `status`: VersionedStatus (An enum of [`PUBLISHED`, `DRAFT`, `ARCHIVED`, `MODIFIED`])
-* `version`: Int (The exact version to read)
+- `mode`: VersionedQueryMode (An enum of [`ARCHIVE`, `LATEST`, `DRAFT`, `LIVE`, `STATUS`, `VERSION`])
+- `archiveDate`: String (The archive date to read from)
+- `status`: VersionedStatus (An enum of [`PUBLISHED`, `DRAFT`, `ARCHIVED`, `MODIFIED`])
+- `version`: Int (The exact version to read)
 
 The query will automatically apply the settings from the `versioning` input type to the query and affect
 the resulting `DataList`.
@@ -110,31 +110,31 @@ This is mostly for internal use. It's an escape hatch for tidying up after a del
 DataObjects with the `Versioned` extension applied will also receive four extra operations
 by default. They include:
 
-* `publish`
-* `unpublish`
-* `copyToStage`
-* `rollback`
+- `publish`
+- `unpublish`
+- `copyToStage`
+- `rollback`
 
 All of these identifiers can be used in the `operations` config for your versioned
 `DataObject`. They will all be included if you use `operations: '*'`.
 
-**app/_graphql/models.yml**
-```yaml
-  MyProject\Models\MyObject:
-    fields: '*'
-    operations:
-      publish: true
-      unpublish: true
-      rollback: true
-      copyToStage: true
-
+```yml
+# app/_graphql/models.yml
+App\Model\MyObject:
+  fields: '*'
+  operations:
+    publish: true
+    unpublish: true
+    rollback: true
+    copyToStage: true
 ```
 
 #### Using the operations
 
 Let's look at a few examples:
 
-**Publishing**
+##### Publishing
+
 ```graphql
 mutation publishSiteTree(id: 123) {
   id
@@ -142,7 +142,8 @@ mutation publishSiteTree(id: 123) {
 }
 ```
 
-**Unpublishing**
+##### Unpublishing
+
 ```graphql
 mutation unpublishSiteTree(id: 123) {
   id
@@ -150,7 +151,8 @@ mutation unpublishSiteTree(id: 123) {
 }
 ```
 
-**Rolling back**
+##### Rolling back
+
 ```graphql
 mutation rollbackSiteTree(id: 123, toVersion: 5) {
   id
@@ -158,7 +160,8 @@ mutation rollbackSiteTree(id: 123, toVersion: 5) {
 }
 ```
 
-**Copying to stage**
+##### Copying to stage
+
 ```graphql
 mutation copySiteTreeToStage(id: 123, fromStage: DRAFT, toStage: LIVE) {
   id
@@ -171,9 +174,8 @@ mutation copySiteTreeToStage(id: 123, fromStage: DRAFT, toStage: LIVE) {
 Versioning is great for Content APIs (e.g. previews), but often not necessary for public APIs focusing on published data.
 You can disable versioning for your schema in the `modelConfig` section:
 
-**app/_graphql/config.yml**
-
-```yaml
+```yml
+# app/_graphql/config.yml
 modelConfig:
   DataObject:
     plugins:

@@ -1,6 +1,6 @@
 ---
 title: How To's
 ---
-# How To's: Templates and Views
+# How to's: templates and views
 
 [CHILDREN]

@@ -4,12 +4,12 @@ summary: Report bugs or problems with Silverstripe CMS, feature requests or othe
 icon: bug
 ---
 
-# Issues and Bug Reports
+# Issues and bug reports
 
-## Reporting Bugs
+## Reporting bugs
 
 [alert]
-If you think you've found a security issue, please use [the specific process](#reporting-security-issues) for those. Do _not_ raise a security issue in GitHub.
+If you think you've found a security issue, please use [the specific process](#reporting-security-issues) for those. Do *not* raise a security issue in GitHub.
 [/alert]
 
 If you have discovered a bug in Silverstripe CMS, we'd be glad to hear about it -
@@ -25,25 +25,25 @@ We don't provide support through GitHub issues. If you're having trouble using o
 
 ### Before submitting a bug
 
- * Ask for assistance in our [community channels](https://www.silverstripe.org/community) if you're unsure if it's really a bug.
- * Search for similar, existing issues.
+- Ask for assistance in our [community channels](https://www.silverstripe.org/community) if you're unsure if it's really a bug.
+- Search for similar, existing issues.
    You can [list all issues across modules](https://www.silverstripe.org/community/contributing-to-silverstripe/github-all-core-issues),
    then add your search phrase at the start of the existing search filters (for example [all issues with label "type/ux"](https://www.silverstripe.org/community/contributing-to-silverstripe/github-all-open-ux-issues))
- * Is this a security issue? Please follow our [security reporting guidelines](#reporting-security-issues) below.
- * Try to reproduce your issue on a [clean installation](/getting_started/composer#create-a-new-site) to rule out bugs in your own code.
+- Is this a security issue? Please follow our [security reporting guidelines](#reporting-security-issues) below.
+- Try to reproduce your issue on a [clean installation](/getting_started/composer#create-a-new-site) to rule out bugs in your own code.
 
 ### If the issue does look like a new bug
 
- * Create an issue on the right module repository in GitHub
-   * If you are unsure, [create an issue](https://github.com/silverstripe/silverstripe-framework/issues/new) on the the "framework" repository.
-   * Note that [documentation issues](https://github.com/silverstripe/developer-docs/issues) are tracked in the "developer-docs" repository.
- * Describe the steps required to reproduce your issue, and the expected outcome. Example code, screenshots, and videos can help here.
+- Create an issue on the right module repository in GitHub
+  - If you are unsure, [create an issue](https://github.com/silverstripe/silverstripe-framework/issues/new) on the the "framework" repository.
+  - Note that [documentation issues](https://github.com/silverstripe/developer-docs/issues) are tracked in the "developer-docs" repository.
+- Describe the steps required to reproduce your issue, and the expected outcome. Example code, screenshots, and videos can help here.
    Be as clear as you can, but don't miss any steps out. Simply saying "create a page" is less useful than guiding us through the steps you're taking to create a page, for example.
- * If the bug is too complex to reproduce with some short code samples, please reproduce it in a public repository and provide a link to the repository along with steps for setting up and reproducing the bug using that repository.
+- If the bug is too complex to reproduce with some short code samples, please reproduce it in a public repository and provide a link to the repository along with steps for setting up and reproducing the bug using that repository.
    A repository like this should only contain code that is required to set up and reproduce the bug.
- * Describe your environment in as much detail as possible. Include the versions of relevant modules, the PHP version, webserver, and operating system used to run the project, the browser(s) you see the issue in, etc.
- * If part of the bug includes an error or exception, please provide a full stack trace. Be wary that stack traces may contain sensitive information, and if that is the case, be sure to redact them prior to posting your stack trace.
- * You are strongly encouraged to [submit a pull request](/contributing/code/#step-by-step-from-forking-to-sending-the-pull-request) which fixes the issue. Bug reports which are accompanied with a pull request are a lot more likely to be resolved quickly.
+- Describe your environment in as much detail as possible. Include the versions of relevant modules, the PHP version, webserver, and operating system used to run the project, the browser(s) you see the issue in, etc.
+- If part of the bug includes an error or exception, please provide a full stack trace. Be wary that stack traces may contain sensitive information, and if that is the case, be sure to redact them prior to posting your stack trace.
+- You are strongly encouraged to [submit a pull request](/contributing/code/#step-by-step-from-forking-to-sending-the-pull-request) which fixes the issue. Bug reports which are accompanied with a pull request are a lot more likely to be resolved quickly.
 
 Lastly, don't get your hopes up too high. Unless your issue is a blocker
 affecting a large number of users, don't expect Silverstripe developers to jump
@@ -52,10 +52,10 @@ problem can collaborate with you to develop a fix. If this bug is a blocker
 for you, then [submitting a pull request](/contributing/code/#step-by-step-from-forking-to-sending-the-pull-request)
 is the best way to ensure it gets fixed.
 
-## Feature Requests
+## Feature requests
 
 [warning]
-Please don't file feature requests as Github issues. If there's a new feature
+Please don't file feature requests as GitHub issues. If there's a new feature
 you'd like to see in Silverstripe CMS, you either need to write it yourself (and
 [submit a pull request](/contributing/code/#step-by-step-from-forking-to-sending-the-pull-request)) or convince somebody else to
 write it for you. Any "wishlist" type issues without code attached can be
@@ -65,7 +65,7 @@ expected to be closed as soon as they're reviewed.
 In order to gain interest and feedback in your feature, we encourage you to
 present it to the community through the [community channels](https://www.silverstripe.org/community).
 
-## Reporting Security Issues
+## Reporting security issues
 
 [warning]
 If you think a bug may have security implications, do not create a GitHub issue for it. This may lead to a zero-day vulnerability.
@@ -82,17 +82,17 @@ Review our [Managing Security Issues](managing_security_issues) process to under
 Silverstripe CMS aims to ship security patches at pre-defined intervals when those issues are not actively exploited in the wild.
 Review the [Security patch windows](../Project_Governance/Minor_release_policy#security-patch-windows) section of our minor release policy for more details.
 
-Silverstripe CMS does not operate a _bug bounty_ program.
+Silverstripe CMS does not operate a *bug bounty* program.
 
-## GitHub Labels {#labels}
+## GitHub labels {#labels}
 
 The current GitHub labels are grouped into five sections:
 
 1. *Impact* - What impact does this issue have, does it break a feature completely, is it just a side effect or is it trivial and not a big problem (but a bit annoying), etc. Impact is evaluated in the context of the CMS as a whole, rather than against the individual module the issue is raised on.
-2. *Complexity* - What level of technical proficiency is required to address this issue?
-3. *Type* - The type of solution required to address this issue
-4. *Affects* - The release line this issue is relevant to
-5. *RFC* - The issue is a request-for-comment
+1. *Complexity* - What level of technical proficiency is required to address this issue?
+1. *Type* - The type of solution required to address this issue
+1. *Affects* - The release line this issue is relevant to
+1. *RFC* - The issue is a request-for-comment
 
 | Label | Purpose |
 | ----- | ------- |
@@ -105,7 +105,7 @@ The current GitHub labels are grouped into five sections:
 | complexity/high | Only an expert with Silverstripe CMS could resolve |
 | type/bug | Does not function as intended, or is inadequate for the purpose it was created for |
 | type/enhancement | New feature or improvement for either users or developers |
-| type/api-break | An API-breaking change requiring a new major release |
+| type/api-break | An breaking API change requiring a new major release |
 | type/ux | Impact on the CMS user interface |
 | type/docs | A docs change |
 | type/userhelp | A userhelp documentation change |

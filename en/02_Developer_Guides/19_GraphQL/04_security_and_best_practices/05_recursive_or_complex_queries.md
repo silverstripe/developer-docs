@@ -16,9 +16,8 @@ Before parsing queries, if a query is found to have more than 500 nodes, it is r
 
 You can customise the node limit and query depth and complexity limits by setting the following configuration:
 
-**app/_config/graphql.yml**
-
-```yaml
+```yml
+# app/_config/graphql.yml
 ---
 After: 'graphql-schema-global'
 ---
@@ -35,11 +34,10 @@ SilverStripe\GraphQL\Schema\Schema:
 For calculating the query complexity, every field in the query gets a default score 1 (including ObjectType nodes). Total complexity of the query is the sum of all field scores.
 [/info]
 
-You can also configure these settings for individual schemas. This allows you to fine-tune the security of your custom public-facing schema without affecting the security of the schema used in the CMS. To do so, either replace `'*'` with the name of your schema in the yaml configuration above, or set the values under the `config` key for your schema using preferred file structure as defined in [configuring your schema](../getting_started/configuring_your_schema/). For example:
+You can also configure these settings for individual schemas. This allows you to fine-tune the security of your custom public-facing schema without affecting the security of the schema used in the CMS. To do so, either replace `'*'` with the name of your schema in the YAML configuration above, or set the values under the `config` key for your schema using preferred file structure as defined in [configuring your schema](../getting_started/configuring_your_schema/). For example:
 
-**app/_graphql/config.yml**
-
-```yaml
+```yml
+# app/_graphql/config.yml
 max_query_nodes: 250
 max_query_depth: 20
 max_query_complexity: 100

@@ -12,7 +12,7 @@ server.
 For each of these environments we may require slightly different configurations for our servers. This could be our debug
 level, caching backends, or - of course - sensitive information such as database credentials.
 
-To manage environment variables, as well as other server globals, the [api:SilverStripe\Core\Environment] class provides
+To manage environment variables, as well as other server globals, the [`Environment`](api:SilverStripe\Core\Environment) class provides
 a set of APIs and helpers.
 
 ## Security considerations
@@ -24,7 +24,7 @@ environment variables.
 If you do use a `.env` file on your servers, you must ensure that external access to `.env` files is blocked by the
 webserver.
 
-## Managing environment variables with .env files
+## Managing environment variables with `.env` files
 
 By default a file named `.env` must be placed in your project root (ie: the same folder as your `composer.json`) or the
 parent directory. If this file exists, it will be automatically loaded by the framework and the environment variables
@@ -65,7 +65,7 @@ Environment::setEnv('API_KEY', 'AABBCCDDEEFF012345');
 To use environment variables in `.yaml` configs you can reference them using backticks. You can have multiple
 environment variables within a single value, though the overall value must start and end with backticks.
 
-```yaml
+```yml
 SilverStripe\Core\Injector\Injector:
     MyServiceClass:
         properties:
@@ -78,7 +78,7 @@ SilverStripe\Core\Injector\Injector:
 Environment variables cannot be used outside of Injector config as of version 4.2.
 [/info]
 
-## Including an extra .env file
+## Including an extra `.env` file
 
 Sometimes it may be useful to include an extra `.env` file - on a shared local development environment where all
 database credentials could be the same. To do this, you can add this snippet to your `app/_config.php` file:
@@ -127,7 +127,7 @@ Silverstripe core environment variables are listed here, though you're free to d
 | `SS_ALLOWED_HOSTS` | A comma deliminated list of hostnames the site is allowed to respond to |
 | `SS_MANIFESTCACHE` | The manifest cache to use (defaults to file based caching). Must be a CacheInterface or CacheFactory class name |
 | `SS_IGNORE_DOT_ENV` | If set the .env file will be ignored. This is good for live to mitigate any performance implications of loading the .env file |
-| `SS_BASE_URL` | The url to use when it isn't determinable by other means (eg: for CLI commands) |
+| `SS_BASE_URL` | The URL to use when it isn't determinable by other means (eg: for CLI commands) |
 | `SS_DATABASE_SSL_KEY` | Absolute path to SSL key file |
 | `SS_DATABASE_SSL_CERT` | Absolute path to SSL certificate file |
 | `SS_DATABASE_SSL_CA` | Absolute path to SSL Certificate Authority bundle file |

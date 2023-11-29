@@ -4,6 +4,8 @@ summary: A visual overview of the architecture and design of GraphQL 4
 icon: sitemap
 ---
 
+# Architecture diagrams
+
 ## GraphQL 3 vs GraphQL 4
 
 ![A high-level view of the differences between GraphQL v3 and v4 lifecycle](../../_images/graphql/graphql3_vs_4.png)
@@ -20,17 +22,17 @@ A useful analog to these two different approaches is a dynamic website versus a 
 
 ![A high-level view of the GraphQL v4 build process](../../_images/graphql/build_process.png)
 
-* **dev/graphql/build**: This is the command that builds the schema. It also runs as a side effect of `dev/build` as a fallback. It accepts a `schema` parameter if you only want to build one schema.
+- **`/dev/graphql/build`**: This is the command that builds the schema. It also runs as a side effect of `dev/build` as a fallback. It accepts a `schema` parameter if you only want to build one schema.
 
-* **Schema Factory**: This class is responsible for rebuilding a schema or fetching an existing one (i.e. as cached generated code)
+- **Schema Factory**: This class is responsible for rebuilding a schema or fetching an existing one (i.e. as cached generated code)
 
-* **Schema**: The most central class that governs the composition of your GraphQL schema and all of the connected services. It is largely a value object hydrated by config files and executable PHP code.
+- **Schema**: The most central class that governs the composition of your GraphQL schema and all of the connected services. It is largely a value object hydrated by config files and executable PHP code.
 
-* **Plugins**: Plugins are the primary input for mutating the schema through thirdparty code. They can also be used in app code to augment core features, e.g. default resolvers for DataObjects.
+- **Plugins**: Plugins are the primary input for mutating the schema through thirdparty code. They can also be used in app code to augment core features, e.g. default resolvers for DataObjects.
 
-* **Storable Schema**: A value object that is agnostic of domain-specific entities like plugins and models, and just contains the finalised set of types, queries, mutations, interfaces, unions, and scalars. It cannot be mutated once created.
+- **Storable Schema**: A value object that is agnostic of domain-specific entities like plugins and models, and just contains the finalised set of types, queries, mutations, interfaces, unions, and scalars. It cannot be mutated once created.
 
-* **Schema Storage**: By default, there is only one implementation of the schema storage service -- the code generator. It produces two artefacts that are accessed at request time: the schema config (a giant multi-dimensional array), and the schema code (a massive bank of classes that implement the `webonyx/graphql-php` library)
+- **Schema Storage**: By default, there is only one implementation of the schema storage service -- the code generator. It produces two artefacts that are accessed at request time: the schema config (a giant multi-dimensional array), and the schema code (a massive bank of classes that implement the `webonyx/graphql-php` library)
 
 ## The request process
 
@@ -52,7 +54,7 @@ The `Schema` class is largely a value object that serves as the air traffic cont
 
 Models are the layers of abstraction that create plain types and queries based on DataObjects. Imagine these few lines of config:
 
-```yaml
+```yml
 App\Models\MyModel:
   fields:
     '*': true
@@ -74,10 +76,10 @@ Model types are created by providing a class name to the schema. From there, it 
 
 The model type composes itself by interrogating the model, an implementation of `SchemaModelInterface`. This will almost always be `DataObjectModel`. The model is responsible for solving domain-specific problems pertaining to a Silverstripe project, including:
 
-* What type should be used for this field?
-* Create an operation for this class, e.g. "read", "update"
-* Add all the fields for this class
-* How do I resolve this field?
+- What type should be used for this field?
+- Create an operation for this class, e.g. "read", "update"
+- Add all the fields for this class
+- How do I resolve this field?
 
 All model types eventually become plain GraphQL types when the `Schema` class creates a `StorableSchema` instance.
 
@@ -112,13 +114,17 @@ The word "context" is a bit overloaded here. This section has nothing to do with
 When resolvers have context, they must be factories, or functions that return functions, using the following pattern:
 
 ```php
-public static function resolve(array $resolverContext)
+namespace App\GraphQL\Resolvers;
+
+class MyResolver
 {
-    $someInfo = $resolverContext['foo'];
-    return function ($obj, $args, $context, $info) use ($someInfo)
+    public static function resolve(array $resolverContext)
     {
-        //... 
-    };
+        $someInfo = $resolverContext['foo'];
+        return function ($obj, $args, $context, $info) use ($someInfo) {
+            // ...
+        };
+    }
 }
 ```
 

@@ -4,7 +4,7 @@ summary: This document highlights how the Silverstripe CMS security team handles
 iconBrand: shield-alt
 ---
 
-# Managing Security Issues
+# Managing security issues
 
 This document aims to provide a high level overview of how the Silverstripe CMS security team handles security issues. Only members of the Silverstripe CMS security team can perform the actions outlined in this document.
 
@@ -63,14 +63,14 @@ Make sure you read the [special circumstances](#special-circumstances) section b
 
 GitHub security advisories allow you to request a CVE and attached them a CVSS score. A draft security advisory should be created against the repository where the vulnerability will be patched. If a vulnerability requires patches against multiple modules, aim to create the advisory against the module most directly affected.
 
-In the GitHub _draft security advisory_, we follow certain conventions on fields:
+In the GitHub *draft security advisory*, we follow certain conventions on fields:
 
 - **Affected product** should have one entry for each composer package affected by the vulnerability. If the patch is backported to older release lines, there should be entries for those older releases.
   - **Ecosystem** should always be `composer`.
   - **Package name** must match the package name in Packagist.
   - **Affected versions** must be a string representing a range of versions affected by the vulnerability.
   - **Patched versions** must list the versions where the vulnerability was/will be patched.
-- **Severity** must be set to _Assess severity using CVSS_ and the CVSS option must be specified in the calculator.
+- **Severity** must be set to *Assess severity using CVSS* and the CVSS option must be specified in the calculator.
 - **Common weakness enumerator (CWE)** should be left blank if no suitable option can be found in the list.
 - **CVE identifier** must be set to "Request CVE ID later" until we have had a CVE assigned.
 - **Title** and **Description** should be descriptive enough that people can evaluate the risk without being so specific that would-be-hackers can start exploiting them right away.
@@ -84,7 +84,7 @@ These settings can be changed later, so if you are missing information when you 
 - Identify the oldest supported minor release where the vulnerability should be patched for each major release line. (see [minor release support timeline](/project_governance/minor_release_policy/#minor-release-support-timeline)).
 - Make sure the target branches on the private repo are up-to-date with the public repo branches.
 - Create a fix for each supported major release line and open PRs against the appropriate branches on the private repo.
-- Ensure that all security commit messages are prefixed with the CVE. E.g. "[CVE-2019-001] Fixed invalid XSS"
+- Ensure that all security commit messages are prefixed with the CVE. For example "[CVE-2019-001] Fixed invalid XSS"
   - If there is no CVE assigned yet, use "[CVE-????-???]" for the prefix, and update it once a CVE is assigned.
   - If we are not assigning a CVE for this issue, use the `SS-` style identifier (e.g. "[SS-2019-001]") as the prefix.
 - Once peer review is completed on the private PRs, do **not** merge it. The PRs should remain open until the fix is released publicly.
@@ -93,13 +93,13 @@ These settings can be changed later, so if you are missing information when you 
 
 - For issues rated "high" or "critical" (CVSS of >=7.0), post a pre-announcement to the [security pre-announcement list](https://groups.google.com/a/silverstripe.com/forum/#!forum/security-preannounce).
   It should include a basic "preannouncement description" which doesn't give away too much, the CVSS score, and the CVE identifier.
-- Create a draft page under `Open Source > Download > Security Releases` on silverstripe.org. Populate it with the information from the security issue.
-- Update the _draft security advisory_ on GitHub to use the latest wording and link to the advisory on silverstripe.org.
+- Create a draft page under `Open Source > Download > Security Releases` on `silverstripe.org`. Populate it with the information from the security issue.
+- Update the *draft security advisory* on GitHub to use the latest wording and link to the advisory on `silverstripe.org`.
 - Move the issue to "Awaiting Release" in the [project board](https://github.com/silverstripe-security/security-issues/projects/1)
 
 ### After release
 
-- Publish the security advisory release page on silverstripe.org.
+- Publish the security advisory release page on `silverstripe.org`.
 - Publish the security advisory on GitHub. This will also publish the CVE.
 - Respond to the issue reporter with a link to the security advisory on the same discussion thread (cc <security@silverstripe.org>).
 - Open a pull request to the [FriendsOfPHP/security-advisories](https://github.com/FriendsOfPHP/security-advisories/tree/master/silverstripe) repository.
@@ -124,7 +124,7 @@ If it's likely that the issue was noticed publicly, it should be handle as a zer
 - People reporting vulnerabilities via Huntr are not always familiar with Silverstripe CMS. Don't assume that they have much context on what Silverstripe CMS is used for.
 - Take some time to review the reporter's profile to see how serious and reliable they are.
 - Validate what CVSS score the reporter has suggested for the issue.
-- Once we "confirm" an issue in Huntr, it means that we agree the bug exists and that it's a vulnerability. Only confirm an issue if you have concluded that it is a valid security vulnerability that we will fix through the normal security process and have validated this conclusion with at least one other member of the security team. Security _enhancements_ should not be marked as confirmed.
+- Once we "confirm" an issue in Huntr, it means that we agree the bug exists and that it's a vulnerability. Only confirm an issue if you have concluded that it is a valid security vulnerability that we will fix through the normal security process and have validated this conclusion with at least one other member of the security team. Security *enhancements* should not be marked as confirmed.
 - By default, Huntr will issue CVEs for issues reported through their platform. We've disabled this functionality - follow the process in [when receiving a report](#when-receiving-a-report) to request a CVE.
 - Mark the issue as "fixed" in hunter once a patched has been released.
 
@@ -151,7 +151,7 @@ Simply ignore these emails and mark them as SPAM in the mailing list.
 
 ### Email that is not reporting a security vulnerability
 
-Bots can our security email address by crawling this documentation. As a result, we get a lot of generic requests. e.g. _Your site is awesome, would you like me to contribute a guest post?_
+Bots can our security email address by crawling this documentation. As a result, we get a lot of generic requests. For example *Your site is awesome, would you like me to contribute a guest post?*
 
 Provide a cursory response such as:
 

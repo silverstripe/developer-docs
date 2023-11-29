@@ -2,14 +2,14 @@
 title: Nested type definitions
 summary: Define dependent types inline with a parent type
 ---
-# Working with DataObjects
+# Working with `DataObject` models
 
 [CHILDREN asList]
 
 [info]
 You are viewing docs for silverstripe/graphql 4.x.
 If you are using 3.x, documentation can be found
-[in the github repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
+[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 [/info]
 
 ## Nested type definitions
@@ -18,9 +18,9 @@ For readability and ergonomics, you can take advantage of nested type definition
 we have a `Blog` and we want to expose `Author` and `Categories`, but while we're at it, we want
 to specify what fields they should have.
 
-**app/_graphql/models.yml**
-```yaml
-MyProject\Pages\Blog:
+```yml
+# app/_graphql/models.yml
+App\PageType\Blog:
   fields:
     title: true
     author:
@@ -34,9 +34,9 @@ MyProject\Pages\Blog:
 
 Alternatively, we could flatten that out:
 
-**app/_graphql/models.yml**
-```yaml
-MyProject\Pages\Blog:
+```yml
+# app/_graphql/models.yml
+App\PageType\Blog:
   fields:
     title: true
     author: true
@@ -46,7 +46,7 @@ SilverStripe\Security\Member:
     firstName: true
     surname: true
     email: true
-MyProject\Models\BlogCategory:
+App\Model\BlogCategory:
   fields: '*'
 ```
 

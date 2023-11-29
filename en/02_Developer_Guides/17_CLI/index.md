@@ -5,6 +5,8 @@ introduction: Automate Silverstripe CMS, run Cron Jobs or sync with other platfo
 icon: terminal
 ---
 
+# Command line interface
+
 Silverstripe CMS can call [Controllers](../controllers) through a command line interface (CLI) just as easily as through a
 web browser. This functionality can be used to automate tasks with cron jobs, run unit tests, or anything else that
 needs to interface over the command line.
@@ -18,26 +20,26 @@ php vendor/silverstripe/framework/cli-script.php dev/build
 ```
 
 [notice]
-Your command line php version is likely to use a different configuration as your webserver (run `php -i` to find out
+Your command line PHP version is likely to use a different configuration as your webserver (run `php -i` to find out
 more). This can be a good thing, your CLI can be configured to use higher memory limits than you would want your website
 to have.
 [/notice]
 
-## Sake - Silverstripe CMS Make
+## Sake - Silverstripe CMS make
 
 Sake is a simple wrapper around `cli-script.php`. It also tries to detect which `php` executable to use if more than one
 are available. It is accessible via `vendor/bin/sake`.
 
 [info]
 If you are using a Debian server: Check you have the php-cli package installed for sake to work. If you get an error
-when running the command php -v, then you may not have php-cli installed so sake won't work.
+when running the command PHP -v, then you may not have php-cli installed so sake won't work.
 [/info]
 
 ### Installation
 
 `sake` can be invoked using `./vendor/bin/sake`. For easier access, copy the `sake` file into `/usr/bin/sake`.
 
-```
+```bash
 cd your-webroot/
 sudo ./vendor/bin/sake installsake
 ```
@@ -54,14 +56,13 @@ command line, it has no way of knowing.
 
 You can use the `SS_BASE_URL` environment variable to specify this.
 
-```
+```bash
 SS_BASE_URL="http://localhost/base-url"
 ```
 
 ### Usage
 
 `sake` can run any controller by passing the relative URL to that controller.
-
 
 ```bash
 sake /
@@ -100,23 +101,29 @@ sleep when the process is in the middle of doing things, and a long sleep when d
 
 This code provides a good template:
 
-
 ```php
+namespace App\CLI;
+
 use SilverStripe\Control\Controller;
 
 class MyProcess extends Controller
 {
+    private static $url_segment = 'my_process';
 
     private static $allowed_actions = [
-        'index'
+        'index',
     ];
 
-    function index()
+    public function index()
     {
+        // This isn't allowed to be accessed via the browser
+        if (!Director::is_cli()) {
+            $this->httpError(401);
+        }
+
         set_time_limit(0);
 
         while (memory_get_usage() < 32 * 1024 * 1024) {
-            
             if ($this->somethingToDo()) {
                 $this->doSomething();
                 sleep(1);
@@ -125,14 +132,18 @@ class MyProcess extends Controller
             }
         }
     }
+
+    // ...
 }
 ```
+
+Make sure you [route the controller](/developer_guides/controllers/routing/).
 
 Then the process can be managed through `sake`
 
 ```bash
-sake -start MyProcess
-sake -stop MyProcess
+sake -start my_process
+sake -stop my_process
 ```
 
 [notice]
@@ -154,7 +165,7 @@ Or if you're using `sake`
 vendor/bin/sake myurl "myparam=1&myotherparam=2"
 ```
 
-## Running Regular Tasks With Cron
+## Running regular tasks with cron
 
 On a UNIX machine, you can typically run a scheduled task with a [cron job](http://en.wikipedia.org/wiki/Cron). Run
 `BuildTask` in Silverstripe CMS as a cron job using `sake`.
