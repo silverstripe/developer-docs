@@ -1,0 +1,31 @@
+extends: substitution
+message: Use '%s' instead of '%s'.
+level: error
+ignorecase: true
+swap:
+  "(?:LetsEncrypt|Let's Encrypt)": Let's Encrypt
+  "Mac ?OS ?X": macOS
+  "mongoDB": MongoDB
+  "node[.]?js": Node.js
+  "mysql": MySQL
+  "Post?gr?e(?:SQL)": PostgreSQL
+  "java[ -]?scripts?": JavaScript
+  centOS: CentOS
+  cloudflare: Cloudflare
+  debian: Debian
+  homebrew: Homebrew
+  kubernetes: Kubernetes
+  markdown: Markdown
+  macOS: macOS
+  npm: NPM
+  ubuntu: Ubuntu
+  yaml: YAML (or yml for syntax highlighting code blocks)
+  url: URL
+  urls: URLs
+  uri: URI
+  uris: URIs
+  gpu: GPU
+  typescript: TypeScript
+  'getters?': getter method(s)
+  'setters?': setter method(s)
+  'dataobjects?': 'models(s)|record(s) (or wrap it in backticks if referencing `DataObject` specifically)'

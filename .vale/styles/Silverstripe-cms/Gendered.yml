@@ -1,0 +1,51 @@
+---
+extends: substitution
+message: "Consider using '%s' instead of '%s'."
+ignorecase: true
+level: warning
+action:
+  name: replace
+swap:
+  man: person
+  men: people
+  boy: person
+  boys: people
+  woman: person
+  women: people
+  girl: person
+  girls: people
+  he: they
+  him: them
+  his: their
+  she: they
+  her: them
+  hers: their
+  air(?:m[ae]n|wom[ae]n): pilot(s)
+  anchor(?:m[ae]n|wom[ae]n): anchor(s)
+  camera(?:m[ae]n|wom[ae]n): camera operator(s)
+  chair(?:m[ae]n|wom[ae]n): chair(s)
+  door(?:m[ae]|wom[ae]n): concierge(s)
+  fire(?:m[ae]n|wom[ae]n): firefighter(s)
+  fisher(?:m[ae]n|wom[ae]n): fisher(s)
+  fresh(?:m[ae]n|wom[ae]n): first-year student(s)
+  garbage(?:m[ae]n|wom[ae]n): waste collector(s)
+  ladylike: courteous
+  land(?:lady|lord): building manager
+  mail(?:m[ae]n|wom[ae]n): mail carriers
+  man and wife: spouses
+  husband: spouse
+  wife: spouse
+  mankind: humankind
+  manmade: manufactured|artificial|synthetic|machine-made|constructed
+  manned: staffed|crewed|piloted
+  manpower: human resources|workforce|personnel|staff|labor|personnel|labor force|staffing|combat
+    personnel
+  middle(?:m[ae]n|wom[ae]n): intermediary
+  police(?:m[ae]n|wom[ae]n): police officer(s)
+  repair(?:m[ae]n|wom[ae]n): technician(s)
+  sales(?:m[ae]n|wom[ae]n): salesperson or sales people
+  steward(?:ess)?: flight attendant
+  unmanned: robotic|automated
+  workmanship: quality construction|expertise
+  waitress: waiter
+  work(?:m[ae]n|wom[ae]n): worker(s)

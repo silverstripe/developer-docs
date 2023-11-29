@@ -1,0 +1,15 @@
+extends: substitution
+message: Use '%s' instead of '%s'.
+level: error
+nonword: true
+ignorecase: true
+swap:
+  '…': '...'
+  '\(c\)': ©
+  '\(tm\)': ™
+  '\(r\)': ®
+  '×': 'x'
+  '[“”„]': '"'
+  '[‘’‚]': "'"
+  '[‹«]': "<"
+  '[›»]': ">"

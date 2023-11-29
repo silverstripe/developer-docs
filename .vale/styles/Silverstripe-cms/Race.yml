@@ -1,0 +1,18 @@
+---
+extends: substitution
+message: Consider using '%s' instead of '%s'.
+ignorecase: true
+level: warning
+action:
+  name: replace
+swap:
+  master copy: pass key|original
+  master key: pass key|original
+  master plan: grand scheme|guiding principles
+  master the art: become skilled
+  master: main|primary|hub|reference
+  masters: main|primaries|hubs|references
+  masterful: skilled|authoritative|commanding
+  mastermind: genius|creator|instigator|oversee|launch|originate
+  masterpiece: "work of genius|chef d\u2019oeuvre"
+  masterplan: vision|comprehensive plan

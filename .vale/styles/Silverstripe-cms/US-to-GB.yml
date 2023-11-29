@@ -1,0 +1,26 @@
+extends: substitution
+message: Use '%s' instead of '%s'.
+level: error
+ignorecase: true
+swap:
+  apologize: apologise
+  armor: armour
+  behavior: behaviour
+  centralize: centralise
+  color: colour
+  customize: customise
+  decentralize: decentralise
+  defence: defense
+  emphasize: emphasise
+  finalize: finalise
+  flavor: flavour
+  labeled: labelled
+  labor: labour
+  localize: localise
+  offense: offence
+  organize: organise
+  organized: organised
+  organizing: organising
+  recognize: recognise
+  theater: theatre
+  unauthorized: unauthorised

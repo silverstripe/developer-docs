@@ -1,0 +1,9 @@
+{
+  "name": "docs",
+  "scripts": {
+    "lint-language": "vale sync && vale en"
+  },
+  "dependencies": {
+    "@ocular-d/vale-bin": "^2.29.6"
+  }
+}
