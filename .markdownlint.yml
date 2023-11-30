@@ -1,0 +1,155 @@
+# Enable all rules with default settings as a baseline
+default: true
+
+# MD041: Ignore the frontmatter (metadata) title when checking for H1s
+first-line-h1:
+  front_matter_title: ''
+
+# MD025: Ignore the frontmatter (metadata) title when checking for H1s
+single-h1:
+  front_matter_title: ''
+
+# MD003: Enforce ATX style headings
+heading-style:
+  style: 'atx'
+
+# MD049: Use asterisks for italics
+emphasis-style:
+  style: 'asterisk'
+
+# MD050: Use asterisks for bold
+strong-style:
+  style: 'asterisk'
+
+# MD004: Use hyphens for unordered lists
+ul-style:
+  style: 'dash'
+
+# MD029: Always use 1. for ordered lists
+ol-prefix:
+  style: 'one'
+
+# MD013: Disable line-length rule for now as it touches too many lines of doc
+line-length: false
+# line_length: 120
+
+# MD010: Use two spaces for each tab (default was 1)
+no-hard-tabs:
+  spaces_per_tab: 2
+
+# MD031: Don't require empty lines after code blocks in lists
+blanks-around-fences:
+  list_items: false
+
+# MD035: Enforce a style for horizontal rules.
+# Hyphens would be confusing since we use those for frontmatter (metadata)
+hr-style:
+  style: '___'
+
+# MD046: Don't allow indented codeblocks
+code-block-style:
+  style: 'fenced'
+
+# MD048: Use backticks for codeblocks
+code-fence-style:
+  style: 'backtick'
+
+# MD040: Explicitly only allow some languages for code blocks
+# This helps with consistency (e.g. avoid having both yml and yaml)
+fenced-code-language:
+  language_only: true
+  allowed_languages:
+    - 'bash' # use this instead of shell or env
+    - 'css'
+    - 'diff'
+    - 'graphql'
+    - 'html'
+    - 'js'
+    - 'json'
+    - 'php'
+    - 'scss'
+    - 'ss'
+    - 'sql'
+    - 'text'
+    - 'xml'
+    - 'yml'
+
+# MD044: Disable in favour of the enhanced version which ignores custom anchors for headings
+# markdownlint-rule-enhanced-proper-names: Enforces capitalisation for specific names
+proper-names: off
+enhanced-proper-names:
+  code_blocks: false
+  heading_id: false
+  names:
+    - 'API'
+    - 'type/api-break' # the GitHub label
+    - 'CI'
+    - 'CMS'
+    - '/cms' # e.g. "silverstripe/cms"
+    - '-cms' # e.g. "silverstripe/recipe-cms"
+    - 'CSS'
+    - 'GitHub'
+    - 'GraphQL'
+    - '/graphql' # e.g. "silverstripe/graphql"
+    - 'HTTP'
+    - 'JavaScript'
+    - 'JS'
+    - '.js' # e.g. "Node.js"
+    - 'jQuery'
+    - 'ORM'
+    - 'PHP'
+    - 'php-' # e.g. "php-intl extension"
+    - 'SCSS'
+    - 'Silverstripe'
+    - 'silverstripe/' # e.g. "silverstripe/framework"
+    - 'silverstripe-' # e.g. "silverstripe-vendormodule"
+    - '@silverstripe.org'
+    - 'TinyMCE'
+    - 'UI'
+    - 'URL'
+    - 'YAML'
+
+# markdownlint-rule-title-case-style: Use sentence-style headings
+title-case-style:
+  case: 'sentence'
+  # commas in the following list are intentional and necessary since the plugin makes no distinction
+  # between words and punctuation
+  ignore:
+    - 'Apache'
+    - 'APIs'
+    - 'Composer'
+    - 'CTE'
+    - 'GitHub'
+    - 'GraphQL'
+    - 'Huntr'
+    - 'JavaScript'
+    - 'I'
+    - 'InnoDB'
+    - 'Git'
+    - 'jQuery'
+    - 'jQuery,'
+    - 'Lighttpd'
+    - 'MyISAM'
+    - 'MySQL'
+    - 'Nginx'
+    - 'Nginx,'
+    - 'PHPUnit'
+    - 'RFCs'
+    - 'Silverstripe'
+    - 'TinyMCE'
+    - 'Transifex'
+    - 'URLs'
+    - 'WebP'
+
+# MD033: Allow specific HTML tags
+no-inline-html:
+  allowed_elements:
+    # br is necessary for new lines in tables
+    - 'br'
+    # accordians are okay
+    - 'details'
+    - 'summary'
+    # description lists are okay
+    - 'dl'
+    - 'dd'
+    - 'dt'

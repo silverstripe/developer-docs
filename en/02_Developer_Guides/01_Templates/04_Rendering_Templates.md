@@ -12,43 +12,63 @@ scope (see [scope](syntax#scope) in the syntax section).
 
 The following will render the given data into a template. Given the template:
 
-**app/templates/Coach_Message.ss**
-    
 ```ss
+<%-- app/templates/Coach_Message.ss --%>
 <strong>$Name</strong> is the $Role on our team.
 ```
 
 Our application code can render into that view using the [`renderWith()`](api:SilverStripe\View\ViewableData) method provided by `ViewableData`. Call this method on any instance of `ViewableData` or its subclasses, passing in a template name or an array of templates to render.
 
-**app/src/Page.php**
-
 ```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
 use SilverStripe\View\ArrayData;
 
-$arrayData = new ArrayData([
-    'Name' => 'John',
-    'Role' => 'Head Coach'
-]);
+class MyModel extends DataObject
+{
+    // ...
 
-// prints "<strong>John</strong> is the Head Coach on our team."
-echo $arrayData->renderWith('Coach_Message');
+    public function getRenderedMessage()
+    {
+        $arrayData = ArrayData::create([
+            'Name' => 'John',
+            'Role' => 'Head Coach',
+        ]);
+
+        // renders "<strong>John</strong> is the Head Coach on our team."
+        return $arrayData->renderWith('Coach_Message');
+    }
+}
 ```
 
 If you want to render an arbitrary template into the `$Layout` section of a page, you need to render your layout template and pass that as the `Layout` parameter to the Page template.
 
 ```php
-$data = [
-    'Title' => 'Message from the Head Coach'
-];
+namespace App\Model;
 
-return $this->customise([
-    'Layout' => $this
-                ->customise($data)
-                ->renderWith(['Coach_Message']) // If your template was templates/Layout/Coach_Message.ss you could put 'Layout/Coach_Message' here.
-])->renderWith(['Page']);
+use SilverStripe\ORM\DataObject;
+
+class MyModel extends DataObject
+{
+    // ...
+
+    public function getRenderedMessageAsPage()
+    {
+        $data = [
+            'Title' => 'Message from the Head Coach',
+        ];
+
+        return $this->customise([
+            'Layout' => $this
+                        ->customise($data)
+                        ->renderWith(['Layout/Coach_Message']),
+        ])->renderWith(['Page']);
+    }
+}
 ```
 
-However, in this case it may be better to use an explicit `Layout` type template, and rely on template inheritance to figure out which templates to use.
+In this case it may be better to use an *implicit* `Layout` type template, and rely on template inheritance to figure out which templates to use.
 
 ```php
 // This assumes you have moved the Coach_Message template to `templates/Layout/Coach_Message.ss`
@@ -62,7 +82,6 @@ You will often have templates named after specific classes, as discussed in [tem
 
 ```php
 use App\Model\Coach;
-use \Page;
 
 $this->customise($data)->renderWith([Coach::class . '_Message', Page::class]);
 ```
@@ -73,12 +92,13 @@ This will search for the following templates:
 - `templates/Page.ss`
 - `templates/App/Model/Layout/Coach_Message.ss`
 - `templates/Layout/Page.ss`
+
 [/hint]
 
 See [template types and locations](template_inheritance/#template-types-and-locations) for more information.
 
 [info]
-Most classes in Silverstripe CMS you want in your template extend `ViewableData` and allow you to call `renderWith`. This 
+Most classes in Silverstripe CMS you want in your template extend `ViewableData` and allow you to call `renderWith`. This
 includes [Controller](api:SilverStripe\Control\Controller), [FormField](api:SilverStripe\Forms\FormField) and [DataObject](api:SilverStripe\ORM\DataObject) instances.
 
 ```php
@@ -96,12 +116,16 @@ Security::getCurrentUser()->renderWith('Member_Profile');
 template.
 
 ```php
-use SilverStripe\CMS\Controllers\ContentController;
+namespace App\PageType;
+
+use PageController;
 use SilverStripe\Control\Director;
 
-class PageController extends ContentController
+class MyPageController extends PageController
 {
-    private static $allowed_actions = ['iwantmyajax'];
+    private static $allowed_actions = [
+        'iwantmyajax',
+    ];
 
     public function iwantmyajax()
     {
@@ -125,7 +149,8 @@ public function iwantmyajax()
     if (!Director::is_ajax()) {
         return $this->httpError(400);
     }
-    // will feed $this into $this->prepareResponse(), which will render $this using templates defined in $this->getViewer()
+    // will feed $this into $this->prepareResponse(), which will render $this using templates defined
+    // in $this->getViewer()
     return $this;
 }
 ```
@@ -141,14 +166,17 @@ Any data you want to render into the template that does not extend `ViewableData
 does, such as `ArrayData` or `ArrayList`.
 
 ```php
-use SilverStripe\View\ArrayData;
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\Control\Director;
-use SilverStripe\CMS\Controllers\ContentController;
+namespace App\PageType;
 
-class PageController extends ContentController
+use PageController;
+use SilverStripe\Control\Director;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\View\ArrayData;
+
+class MyPageController extends PageController
 {
-    // ..
+    // ...
+
     public function iwantmyajax()
     {
         if (Director::is_ajax()) {
@@ -161,7 +189,7 @@ class PageController extends ContentController
                     ])
                     ArrayData::create([
                         'Title' => 'Second Job',
-                    ])
+                    ]),
                 ]),
             ])->renderWith('AjaxTemplate');
         } else {
@@ -175,8 +203,9 @@ class PageController extends ContentController
 A common mistake is trying to loop over an array directly in a template - this won't work. You'll need to wrap the array in some `ViewableData` instance as mentioned above.
 [/notice]
 
-## Related Lessons
-* [Controller actions/DataObjects as pages](https://www.silverstripe.org/learn/lessons/v4/controller-actions-dataobjects-as-pages-1)
-* [AJAX behaviour and ViewableData](https://www.silverstripe.org/learn/lessons/v4/ajax-behaviour-and-viewabledata-1)
-* [Dealing with arbitrary template data](https://www.silverstripe.org/learn/lessons/v4/dealing-with-arbitrary-template-data-1)
-* [Creating filtered views](https://www.silverstripe.org/learn/lessons/v4/creating-filtered-views-1)
+## Related lessons
+
+- [Controller actions/DataObjects as pages](https://www.silverstripe.org/learn/lessons/v4/controller-actions-dataobjects-as-pages-1)
+- [AJAX behaviour and ViewableData](https://www.silverstripe.org/learn/lessons/v4/ajax-behaviour-and-viewabledata-1)
+- [Dealing with arbitrary template data](https://www.silverstripe.org/learn/lessons/v4/dealing-with-arbitrary-template-data-1)
+- [Creating filtered views](https://www.silverstripe.org/learn/lessons/v4/creating-filtered-views-1)

@@ -1,6 +1,6 @@
 ---
 title: How To's
 ---
-# How To's: Integration and Web Services
+# How to's: integration and web services
 
 [CHILDREN]

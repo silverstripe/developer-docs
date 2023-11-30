@@ -5,13 +5,15 @@ introduction: This guide will work through how to create Silverstripe CMS forms,
 iconBrand: wpforms
 ---
 
-The [Form](api:SilverStripe\Forms\Form) class provides a way to create interactive forms in your web application with very little effort. 
-Silverstripe CMS handles generating the correct semantic HTML markup for the form and each of the fields, as well as the 
+# Forms
+
+The [`Form`](api:SilverStripe\Forms\Form) class provides a way to create interactive forms in your web application with very little effort.
+Silverstripe CMS handles generating the correct semantic HTML markup for the form and each of the fields, as well as the
 framework for dealing with submissions and validation.
 
 [CHILDREN Exclude="How_Tos,Fields"]
 
-## FormField Documentation
+## FormField documentation
 
 [CHILDREN Folder="Field_types"]
 
@@ -19,7 +21,7 @@ framework for dealing with submissions and validation.
 
 [CHILDREN Folder="How_Tos"]
 
-## API Documentation
+## API documentation
 
-* [Form](api:SilverStripe\Forms\Form)
-* [FormField](api:SilverStripe\Forms\FormField)
+- [Form](api:SilverStripe\Forms\Form)
+- [FormField](api:SilverStripe\Forms\FormField)

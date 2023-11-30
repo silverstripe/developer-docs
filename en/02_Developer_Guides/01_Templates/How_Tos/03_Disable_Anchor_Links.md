@@ -3,9 +3,9 @@ title: Disable Anchor Rewriting
 summary: Get more control over how hash links are rendered.
 ---
 
-# Disable Anchor Rewriting
+# Disable anchor rewriting
 
-Anchor links are links with a "#" in them. A frequent use-case is to use anchor links to point to different sections of 
+Anchor links are links with a "#" in them. A frequent use-case is to use anchor links to point to different sections of
 the current page.  For example, we might have this in our template:
 
 ```ss
@@ -29,13 +29,12 @@ would be created in the final HTML
 </ul>
 ```
 
-There are cases where this can be unhelpful, for example when HTML anchors are created from Ajax responses, or you are using a javascript framework in the frontend that uses hash links as part of its functionality. In these
-situations, you can disable anchor link rewriting by setting the `SSViewer.rewrite_hash_links` configuration value to 
+There are cases where this can be unhelpful, for example when HTML anchors are created from Ajax responses, or you are using a JavaScript framework in the frontend that uses hash links as part of its functionality. In these
+situations, you can disable anchor link rewriting by setting the `SSViewer.rewrite_hash_links` configuration value to
 `false`.
 
-**app/_config/app.yml**
-
 ```yml
+# app/_config/config.yml
 SilverStripe\View\SSViewer:
   rewrite_hash_links: false
 ```
@@ -43,7 +42,7 @@ SilverStripe\View\SSViewer:
 Alternatively, it's possible to disable anchor link rewriting for specific controllers and routes using the `SSViewer::setRewriteHashLinksDefault()` method in the controller:
 
 ```php
-namespace Example\HashLink;
+namespace App\PageType;
 
 use PageController;
 use SilverStripe\View\SSViewer;

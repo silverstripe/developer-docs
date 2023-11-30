@@ -4,7 +4,7 @@ summary: Relate models together using the ORM using has_one, has_many, and many_
 icon: link
 ---
 
-# Relations between Records
+# Relations between records
 
 In most situations you will likely see more than one [`DataObject`](api:SilverStripe\ORM\DataObject) and several classes in your data model may relate
 to one another. An example of this is a `Player` object may have a relationship to one or more `Team` or `Coach` classes
@@ -13,11 +13,13 @@ and could take part in many `Games`. Relations are a key part of designing and b
 Relations are built through static array definitions on a class, in the format `<relationship-name> => <classname>`.
 Silverstripe CMS supports a number of relationship types and each relationship type can have any number of relations.
 
-## has_one
+## `has_one`
 
 Many-to-one and one-to-one relationships create a database-column called `<relationship-name>ID`, in the example below this would be `TeamID` on the `Player` table.
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class Player extends DataObject
@@ -25,17 +27,25 @@ class Player extends DataObject
     private static $has_one = [
         'Team' => Team::class,
     ];
+    // ...
 }
+```
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
 
 class Team extends DataObject
 {
     private static $db = [
-        'Title' => 'Varchar'
+        'Title' => 'Varchar',
     ];
 
     private static $has_many = [
         'Players' => Player::class,
     ];
+    // ...
 }
 ```
 
@@ -46,16 +56,19 @@ and provides a short syntax for accessing the related object.
 Relations don't only apply to your own `DataObject` models - you can make relations to core models such as `File` and `Image` as well:
 
 ```php
-use SilverStripe\ORM\DataObject;
-use SilverStripe\Assets\Image;
+namespace App\Model;
+
 use SilverStripe\Assets\File;
+use SilverStripe\Assets\Image;
+use SilverStripe\ORM\DataObject;
 
 class Team extends DataObject
 {
     private static $has_one = [
         'Teamphoto' => Image::class,
-        'Lineup' => File::class
-    ];    
+        'Lineup' => File::class,
+    ];
+    // ...
 }
 ```
 
@@ -74,7 +87,7 @@ echo $player->Team()->Title;
 ```
 
 [info]
-Even if the `$player` record doesn't have any team record saved in its `Team` relation, `$player->Team()` will return a `Team` object. In that case, it will be an _empty_ record, with only default values applied. You can validate if that is the case by calling [`exists()`](api:SilverStripe\ORM\DataObject::exists()) on the record (e.g. `$player->Team()->exists()`).
+Even if the `$player` record doesn't have any team record saved in its `Team` relation, `$player->Team()` will return a `Team` object. In that case, it will be an *empty* record, with only default values applied. You can validate if that is the case by calling [`exists()`](api:SilverStripe\ORM\DataObject::exists()) on the record (e.g. `$player->Team()->exists()`).
 [/info]
 
 The relationship can also be navigated in [templates](../templates).
@@ -87,7 +100,7 @@ The relationship can also be navigated in [templates](../templates).
 <% end_with %>
 ```
 
-### Polymorphic has_one
+### Polymorphic `has_one` {#polymorphic-has-one}
 
 A `has_one` relation can also be polymorphic, which allows any type of object to be associated.
 This is useful where there could be many use cases for a particular data structure.
@@ -95,24 +108,41 @@ This is useful where there could be many use cases for a particular data structu
 An additional column is created called `<relationship-name>Class`, which along
 with the `<relationship-name>ID` column identifies the object.
 
-To specify that a `has_one` relation is polymorphic set the type to [api:SilverStripe\ORM\DataObject].
+To specify that a `has_one` relation is polymorphic set the type to [`DataObject`](api:SilverStripe\ORM\DataObject).
 Ideally, the associated `has_many` (or `belongs_to`) should be specified with ["dot notation"](#dot-notation).
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class Player extends DataObject
 {
     private static $has_many = [
-        'Fans' => Fan::class.'.FanOf',
+        'Fans' => Fan::class . '.FanOf',
     ];
+    // ...
 }
+```
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+
 class Team extends DataObject
 {
     private static $has_many = [
-        'Fans' => Fan::class.'.FanOf',
+        'Fans' => Fan::class . '.FanOf',
     ];
+    // ...
 }
+```
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
 
 class Fan extends DataObject
 {
@@ -121,6 +151,7 @@ class Fan extends DataObject
     private static $has_one = [
         'FanOf' => DataObject::class,
     ];
+    // ...
 }
 ```
 
@@ -128,17 +159,17 @@ class Fan extends DataObject
 Note: The use of polymorphic relationships can affect query performance, especially
 on joins, and also increases the complexity of the database and necessary user code.
 They should be used sparingly, and only where additional complexity would otherwise
-be necessary. E.g. Additional parent classes for each respective relationship, or
+be necessary. For example additional parent classes for each respective relationship, or
 duplication of code.
 [/warning]
 
-### belongs_to
+### `belongs_to`
 
 Defines a one-to-one relationship with another object, which declares the other end of the relationship with a
 corresponding `has_one`. A single database column named `<relationship-name>ID` will be created in the object with the
 `has_one`, but the `belongs_to` by itself will not create a database field.
 
-Similarly with `has_many` below, [dot notation](#dot-notation) can (and for best practice _should_) be used to explicitly specify the `has_one` which refers to this relation.
+Similarly with `has_many` below, [dot notation](#dot-notation) can (and for best practice *should*) be used to explicitly specify the `has_one` which refers to this relation.
 This is not mandatory unless the relationship would be otherwise ambiguous.
 
 [hint]
@@ -146,29 +177,37 @@ You can use `RelationValidationService` for validation of relationships. This to
 [/hint]
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class Team extends DataObject
 {
     private static $has_one = [
-        'Coach' => Coach::class
-    ];
-}
-
-class Coach extends DataObject
-{
-    private static $belongs_to = [
-        'Team' => Team::class.'.Coach'
+        'Coach' => Coach::class,
     ];
 }
 ```
 
-## has_many
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+
+class Coach extends DataObject
+{
+    private static $belongs_to = [
+        'Team' => Team::class . '.Coach',
+    ];
+}
+```
+
+## `has_many`
 
 Defines one-to-many joins. As you can see from the previous example, `$has_many` goes hand in hand with `$has_one`.
 
 [alert]
-When defining a `has_many` relation, you _must_ specify a `has_one` relationship on the related class as well. To add a `has_one` relation on core classes, yml config settings can be used:
+When defining a `has_many` relation, you *must* specify a `has_one` relationship on the related class as well. To add a `has_one` relation on core classes, yml config settings can be used:
 
 ```yml
 SilverStripe\Assets\Image:
@@ -180,6 +219,8 @@ Note that in some cases you may be better off using a `many_many` relation inste
 [/alert]
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class Team extends DataObject
@@ -191,13 +232,21 @@ class Team extends DataObject
     private static $has_many = [
         'Players' => Player::class,
     ];
+    // ...
 }
+```
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
 
 class Player extends DataObject
 {
     private static $has_one = [
         'Team' => Team::class,
     ];
+    // ...
 }
 ```
 
@@ -205,8 +254,6 @@ Much like the `has_one` relationship, `has_many` can be navigated through the OR
 you will get an instance of [`HasManyList`](api:SilverStripe\ORM\HasManyList) rather than the object.
 
 ```php
-use SilverStripe\ORM\HasManyList;
-
 $team = Team::get()->first();
 
 /** @var HasManyList $players */
@@ -215,7 +262,7 @@ $players = $team->Players();
 /** @var int $numPlayers */
 $numPlayers = $players->Count();
 
-foreach($players as $player) {
+foreach ($players as $player) {
     echo $player->FirstName;
 }
 ```
@@ -223,6 +270,10 @@ foreach($players as $player) {
 If you're using the default scaffolded form fields with multiple `has_one` relationships, you will end up with a CMS field for each relation. If you don't want these you can remove them, referring to them with as `<relation-name>ID`:
 
 ```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+
 class Company extends DataObject
 {
     // ...
@@ -241,15 +292,24 @@ class Company extends DataObject
 To specify multiple `has_many`, `many_many`, `belongs_to`, or `belongs_many_many` relationships to the same model class (and as a general best practice) you can use dot notation to distinguish them like below:
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class Person extends DataObject
 {
     private static $has_many = [
-        'Managing' => Company::class.'.Manager',
-        'Cleaning' => Company::class.'.Cleaner',
+        'Managing' => Company::class . '.Manager',
+        'Cleaning' => Company::class . '.Cleaner',
     ];
+    // ...
 }
+```
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
 
 class Company extends DataObject
 {
@@ -257,16 +317,17 @@ class Company extends DataObject
         'Manager' => Person::class,
         'Cleaner' => Person::class,
     ];
+    // ...
 }
 ```
 
-Multiple `has_many` or `belongs_to` relationships are okay _without_ dot notation if they aren't linking to the same model class. Otherwise, using dot notation is required. With that said, dot notation is recommended in all cases as it makes your code more resilient to change. Adding new relationships is easier when you don't need to review and update existing ones.
+Multiple `has_many` or `belongs_to` relationships are okay *without* dot notation if they aren't linking to the same model class. Otherwise, using dot notation is required. With that said, dot notation is recommended in all cases as it makes your code more resilient to change. Adding new relationships is easier when you don't need to review and update existing ones.
 
 [hint]
 You can use `RelationValidationService` for validation of relationships. This tool will point out the relationships which may need a review. See [Validating relations](#validating-relations) for more information.
 [/hint]
 
-## many_many relationships {#many-many}
+## `many_many` relationships {#many-many}
 
 [warning]
 Please specify a `belongs_many_many` relationship on the related class as well in order to have the necessary accessors available on both ends. See [`belongs_many_many`](#belongs-many-many) for more information.
@@ -280,7 +341,7 @@ There are two ways this relationship can be declared which are (described below)
 You can use `RelationValidationService` for validation of relationships. This tool will point out the relationships which may need a review. See [Validating relations](#validating-relations) for more information.
 [/hint]
 
-### Automatic many_many table
+### Automatic `many_many` table {#automatic-many-many-table}
 
 If you specify only a single class as the other side of the many-many relationship, then a
 table will be automatically created between the two. It will be the table name of the class which declares the `many_many` relationship, suffixed with the relationship name (e.g. `Team_Supporters`).
@@ -290,6 +351,8 @@ Extra fields on the mapping table can be created by declaring a `many_many_extra
 config to add extra columns.
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class Team extends DataObject
@@ -300,40 +363,49 @@ class Team extends DataObject
 
     private static $many_many_extraFields = [
         'Supporters' => [
-          'Ranking' => 'Int'
-        ]
+          'Ranking' => 'Int',
+        ],
     ];
+    // ...
 }
+```
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
 
 class Supporter extends DataObject
 {
     private static $belongs_many_many = [
         'Supports' => Team::class,
     ];
+    // ...
 }
 ```
 
 To ensure this `many_many` is sorted by "Ranking" by default you can add this to your config:
 
-```yaml
+```yml
 Team_Supporters:
   default_sort: 'Ranking ASC'
 ```
 
 `Team_Supporters` is the table name automatically generated for the `many_many` relation in this case.
 
-### many_many through relationship joined on a separate DataObject {#many-many-through}
+### `many_many` through relationship joined on a separate `DataObject` {#many-many-through}
 
 If necessary, a third `DataObject` class can instead be specified as the joining table,
 rather than having the ORM generate an automatically scaffolded table. This has the following
 advantages:
 
 - Allows versioning of the mapping table, including support for the
-ownership api (see [Versioning](/developer_guides/model/versioning) for more information).
+ownership API (see [Versioning](/developer_guides/model/versioning) for more information).
 - Allows support of other extensions on the mapping table (e.g. for [subsites](https://github.com/silverstripe/silverstripe-subsites) or localisation via [fluent](https://github.com/tractorcow-farm/silverstripe-fluent)).
 - Extra fields can easily be managed separately via the joined dataobject, even via a separate `GridField` or form.
 
 This is declared via array syntax, with the following keys on the `many_many` relation:
+
 - `through`: Class name of the mapping table
 - `from`: Name of the `has_one` relationship pointing back at the object declaring `many_many`
 - `to`: Name of the `has_one` relationship pointing to the object declaring `belongs_many_many`.
@@ -347,18 +419,27 @@ or child record.
 The [syntax for `belongs_many_many`](#belongs-many-many) is unchanged.
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class Team extends DataObject
 {
     private static $many_many = [
-        "Supporters" => [
+        'Supporters' => [
             'through' => TeamSupporter::class,
             'from' => 'Team',
             'to' => 'Supporter',
-        ]
+        ],
     ];
+    // ...
 }
+```
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
 
 class Supporter extends DataObject
 {
@@ -367,7 +448,14 @@ class Supporter extends DataObject
     private static $belongs_many_many = [
         'Supports' => Team::class,
     ];
+    // ...
 }
+```
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
 
 class TeamSupporter extends DataObject
 {
@@ -395,10 +483,11 @@ $supporters = $team->Supporters()->filter(['Ranking' => 1]);
 For records accessed in a [`ManyManyThroughList`](api:SilverStripe\ORM\ManyManyThroughList), you can access the join record (e.g. for our example above a `TeamSupporter` instance) by calling [`getJoin()`](api:SilverStripe\ORM\DataObject::getJoin()) or as the `$Join` property in templates.
 [/hint]
 
-#### Polymorphic many_many
+#### Polymorphic `many_many`
 
 Using many_many through it is possible to support polymorphic relations on the mapping table.
 Note, that this feature has certain limitations:
+
 - This feature only works with many_many through
 - This feature will only allow polymorphic `many_many`, but not `belongs_many_many`.
   - You can have a `has_many` relation to the join table where you would normally use `belongs_many_many`, and iterate through it
@@ -409,6 +498,8 @@ Note that this works by leveraging a polymorphic `has_one` relation on the join 
 For instance, this is how you would link an arbitrary object to `many_many` tags.
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class SomeObject extends DataObject
@@ -419,9 +510,16 @@ class SomeObject extends DataObject
             'through' => TagMapping::class,
             'from' => 'Parent',
             'to' => 'Tag',
-        ]
+        ],
     ];
+    // ...
 }
+```
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
 
 class Tag extends DataObject
 {
@@ -436,33 +534,37 @@ class Tag extends DataObject
      * This is a list of arbitrary types of objects
      * @return Generator
      */
-    public function TaggedObjects()
+    public function getTaggedObjects()
     {
         foreach ($this->TagMappings() as $mapping) {
             yield $mapping->Parent();
         }
     }
 }
+```
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
 
 class TagMapping extends DataObject
-{   
+{
     private static $has_one = [
-        'Parent' => DataObject::class, // Polymorphic has_one
+        // Polymorphic has_one
+        'Parent' => DataObject::class,
         'Tag' => Tag::class,
     ];
 }
 ```
 
-### Using many_many relationships
+### Using `many_many` relationships
 
 Much like `has_one` and `has_many` relationships, `many_many` can be navigated through the ORM as well.
 The only difference being you will get an instance of [ManyManyList](api:SilverStripe\ORM\ManyManyList) or
 [ManyManyThroughList](api:SilverStripe\ORM\ManyManyThroughList) returned.
 
 ```php
-use SilverStripe\ORM\ManyManyList;
-use SilverStripe\ORM\ManyManyThroughList;
-
 $team = Team::get()->byId(1);
 
 /** @var MayManyList|ManyManyThroughList $supporters */
@@ -508,7 +610,7 @@ $joinRecord->Ranking = 2;
 $joinRecord->write();
 ```
 
-#### Using many_many in templates
+#### Using `many_many` in templates
 
 The relationship can also be navigated in [templates](../templates).
 
@@ -534,9 +636,10 @@ This also provides three ways to access the extra fields on a many_many through 
     <% end_loop %>
 <% end_with %>
 ```
+
 [/hint]
 
-## belongs_many_many
+## `belongs_many_many` {#belongs-many-many}
 
 The `belongs_many_many` relation represents the other side of the `many_many` relationship.
 When using either a basic `many_many` or a `many_many` through, the syntax for `belongs_many_many` is the same.
@@ -545,6 +648,8 @@ To specify multiple `many_many` relationships between the same classes, specify 
 distinguish them like below:
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class Category extends DataObject
@@ -553,14 +658,22 @@ class Category extends DataObject
         'Products' => Product::class,
         'FeaturedProducts' => Product::class,
     ];
+    // ...
 }
+```
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
 
 class Product extends DataObject
-{   
+{
     private static $belongs_many_many = [
-        'Categories' => Category::class.'.Products',
-        'FeaturedInCategories' => Category::class.'.FeaturedProducts',
+        'Categories' => Category::class . '.Products',
+        'FeaturedInCategories' => Category::class . '.FeaturedProducts',
     ];
+    // ...
 }
 ```
 
@@ -575,6 +688,10 @@ more likely that the user will select categories for a product than vice-versa.
 Querying nested relationships inside a loop using the ORM is prone to the N + 1 query problem. To illustrate the N + 1 query problem, imagine a scenario where there are Teams with many child Players
 
 ```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+
 class Team extends DataObject
 {
     private static $has_many = [
@@ -628,6 +745,10 @@ SELECT * FROM Player WHERE TeamID IN (1, 2, 3, ...)
 Suppose we have the following related classes:
 
 ```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+
 class Team extends DataObject
 {
     private static $has_many = [
@@ -635,6 +756,12 @@ class Team extends DataObject
         'Fans' => Fan::class,
     ];
 }
+```
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
 
 class Player extends DataObject
 {
@@ -646,6 +773,12 @@ class Player extends DataObject
         'Games' => Game::class,
     ];
 }
+```
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
 
 class Game extends DataObject
 {
@@ -688,7 +821,7 @@ You can get the results for multiple nested relations with multiple arguments:
 ```php
 $teams = Team::get()->eagerLoad(
     'Players.Games.Officials',
-    'Players.Games.Sponsors',
+    'Players.Games.Sponsors'
 );
 ```
 
@@ -723,6 +856,8 @@ Built-in controllers using delete operations check `canDelete()` on the owner, b
 [/alert]
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class ParentObject extends DataObject
@@ -734,6 +869,7 @@ class ParentObject extends DataObject
     private static $cascade_deletes = [
         'Child',
     ];
+    // ...
 }
 ```
 
@@ -746,7 +882,7 @@ on a parent object will trigger unpublish on the child, similarly to how `owns` 
 See the [versioning docs](/developer_guides/model/versioning) for more information on ownership.
 
 [alert]
-If the child model is not versioned, `cascade_deletes` will result in the child record being _deleted_ if the parent is unpublished! Be sure to check whether both sides of the relationship are versioned before declaring `cascade_deletes`.
+If the child model is not versioned, `cascade_deletes` will result in the child record being *deleted* if the parent is unpublished! Be sure to check whether both sides of the relationship are versioned before declaring `cascade_deletes`.
 [/alert]
 
 ## Cascading duplications
@@ -759,12 +895,14 @@ and saved against the new clone object.
 Note that duplications will act differently depending on the kind of relation:
 
 - Records in one-to-many or many-to-many relationships (e.g. `has_many`, `has_one`, and `belongs_to`) will be explicitly duplicated.
-- Records in many-to-many (i.e. `many_many` and `belongs_many_many`) relationships will _not_ be duplicated, but the mapping table values will instead
+- Records in many-to-many (i.e. `many_many` and `belongs_many_many`) relationships will *not* be duplicated, but the mapping table values will instead
 be copied so that the original records are related to the new duplicate record.
 
 For example:
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class ParentObject extends DataObject
@@ -805,7 +943,8 @@ $parent = ParentObject::get()->first();
 // Only duplicate the `$parent` record
 $dupe = $parent->duplicate(relations: false);
 
-// Duplicate the `$parent` record, and cascade duplicate the "Children" relation (ignoring any cascade_duplicates configuration)
+// Duplicate the `$parent` record, and cascade duplicate the "Children" relation
+// (ignoring any cascade_duplicates configuration)
 $dupe = $parent->duplicate(relations: ['Children']);
 ```
 
@@ -823,8 +962,8 @@ and `remove()` method).
 $team = Team::get()->byId(1);
 
 // create a new supporter
-$supporter = new Supporter();
-$supporter->Name = "Foo";
+$supporter = Supporter::create();
+$supporter->Name = 'Foo';
 $supporter->write();
 
 // add the supporter.
@@ -839,7 +978,7 @@ To set what record is in a `has_one` relation, just set the `<relation-name>ID` 
 Don't forget to write the record (`$player->write();`)!
 [/hint]
 
-## Custom Relations
+## Custom relations
 
 You can use the ORM to get a filtered result list without writing any SQL. For example, this snippet gets you the
 `Players` relation on a team, but only containing active players.
@@ -847,20 +986,22 @@ You can use the ORM to get a filtered result list without writing any SQL. For e
 See [Filtering Results](/developer_guides/model/data_model_and_orm/#filtering-results) for more information.
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class Team extends DataObject
 {
     private static $has_many = [
-        'Players' => Player::class
+        'Players' => Player::class,
     ];
 
-    public function ActivePlayers()
+    public function getActivePlayers()
     {
         return $this->Players()->filter('Status', 'Active');
     }
+    // ...
 }
-
 ```
 
 [notice]
@@ -876,9 +1017,10 @@ $playersList->add($newPlayer);
 // Still returns 'Inactive'
 $status = $newPlayer->Status;
 ```
+
 [/notice]
 
-## Relations on Unsaved Objects
+## Relations on unsaved objects
 
 You can also set `has_many` and `many_many` relations before the `DataObject` is saved. This behavior uses the
 [UnsavedRelationList](api:SilverStripe\ORM\UnsavedRelationList) and converts it into the correct [`RelationList`](api:SilverStripe\ORM\RelationList) subclass when saving the `DataObject` for the first
@@ -894,16 +1036,16 @@ for displaying the objects contained in the relation.
 
 The [`RelationValidationService`](api:SilverStripe\Dev\Validation\RelationValidationService) can be used to check if your relations are set up according to best practices, and is very useful for debugging unexpected behaviour with relations. It is disabled by default.
 
-To enable this service, set the following yaml configuration, which will give you validation output every time you run `dev/build`.
+To enable this service, set the following YAML configuration, which will give you validation output every time you run `dev/build`.
 
-```yaml
+```yml
 SilverStripe\Dev\Validation\RelationValidationService:
   output_enabled: true
 ```
 
 By default, this service only inspects relations for classes which have either no namespace or a namespace beginning with `App\`. You can declare your own namespace prefixes by setting the `allow_rules` configuration:
 
-```yaml
+```yml
 SilverStripe\Dev\Validation\RelationValidationService:
   allow_rules:
     # using the "app" key you can override the default "App" namespace
@@ -917,7 +1059,7 @@ SilverStripe\Dev\Validation\RelationValidationService:
 
 You can also tell the service to ignore classes whose namespace starts a certain way:
 
-```yaml
+```yml
 SilverStripe\Dev\Validation\RelationValidationService:
   deny_rules:
     - 'MyApp\SpecialCases'
@@ -925,7 +1067,7 @@ SilverStripe\Dev\Validation\RelationValidationService:
 
 If you have relations that you've intentionally set up in a way that the validation service warns against, you can tell it to ignore those specific relations by setting `deny_relations` config. Syntax for this is `<class>.<relation>`.
 
-```yaml
+```yml
 SilverStripe\Dev\Validation\RelationValidationService:
   deny_relations:
     - 'App\Model\Player.Teams'
@@ -949,26 +1091,24 @@ use SilverStripe\Dev\Validation\RelationValidationService;
 $messages = RelationValidationService::singleton()->inspectClasses([Team::class, Player::class]);
 ```
 
-## Link Tracking
+## Link tracking
 
 You can control the visibility of the `Link Tracking` tab by setting the `show_sitetree_link_tracking` config.
 This defaults to `false` for most `DataObject`'s.
 
 It is also possible to control the visibility of the `File Tracking` tab by setting the `show_file_link_tracking` config.
 
-## Related Lessons
-* [Working with data relationships -- has_many](https://www.silverstripe.org/learn/lessons/v4/working-with-data-relationships-has-many-1)
-* [Working with data relationships -- many_many](https://www.silverstripe.org/learn/lessons/v4/working-with-data-relationships-many-many-1)
+## Related lessons
 
-## Related Documentation
+- [Working with data relationships -- has_many](https://www.silverstripe.org/learn/lessons/v4/working-with-data-relationships-has-many-1)
+- [Working with data relationships -- many_many](https://www.silverstripe.org/learn/lessons/v4/working-with-data-relationships-many-many-1)
 
-* [Introduction to the Data Model and ORM](data_model_and_orm)
-* [Lists](lists)
+## Related documentation
 
-## API Documentation
-
-* [HasManyList](api:SilverStripe\ORM\HasManyList)
-* [ManyManyList](api:SilverStripe\ORM\ManyManyList)
-* [ManyManyThroughList](api:SilverStripe\ORM\ManyManyThroughList)
-* [DataObject](api:SilverStripe\ORM\DataObject)
-* [LinkTracking](api:SilverStripe\CMS\Model\SiteTreeLinkTracking)
+- [Introduction to the Data Model and ORM](data_model_and_orm)
+- [Lists](lists)
+- [HasManyList](api:SilverStripe\ORM\HasManyList)
+- [ManyManyList](api:SilverStripe\ORM\ManyManyList)
+- [ManyManyThroughList](api:SilverStripe\ORM\ManyManyThroughList)
+- [DataObject](api:SilverStripe\ORM\DataObject)
+- [LinkTracking](api:SilverStripe\CMS\Model\SiteTreeLinkTracking)

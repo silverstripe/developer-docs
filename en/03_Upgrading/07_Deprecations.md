@@ -7,6 +7,7 @@ title: Deprecations
 You'll need to go through your codebase to remove references to deprecated APIs and update your project logic.
 
 Major releases of Silverstripe CMS introduce many API changes. They include a deprecation message that will either tell you:
+
 - to simply use a different yet equivalent API instead, or
 - the API in question has no replacement. This is usually for API that was mostly irrelevant.
 
@@ -18,7 +19,7 @@ To enable deprecation warnings, set the `SS_DEPRECATION_ENABLED` environment var
 If the `SS_DEPRECATION_ENABLED` environment variable is set, this takes precedence over use of the `Deprecation::enable()` static method.
 [/info]
 
-```env
+```bash
 SS_DEPRECATION_ENABLED=true
 ```
 
@@ -48,7 +49,7 @@ By default, deprecation warnings will be emitted to the error logger, and will b
 
 ### Viewing deprecation warnings in the logs
 
-Deprecation warnings are output to the same error logger as all other warnings and errors. You will need to make sure you have a logging handler attached to the default `Psr\Log\LoggerInterface` or `Psr\Log\LoggerInterface.errorhandler` singletons. For example, to log to a file you can add this to your yml configuration:
+Deprecation warnings are output to the same error logger as all other warnings and errors. You will need to make sure you have a logging handler attached to the default `Psr\Log\LoggerInterface` or `Psr\Log\LoggerInterface.errorhandler` singletons. For example, to log to a file you can add this to your YAML configuration:
 
 ```yml
 SilverStripe\Core\Injector\Injector:
@@ -63,15 +64,15 @@ SilverStripe\Core\Injector\Injector:
 ```
 
 [notice]
-The log file path must be an absolute file path, as relative paths may behave differently between CLI and HTTP requests. If you want to use a _relative_ path, you can use the `SS_ERROR_LOG` environment variable to declare a file path that is relative to your project root:
+The log file path must be an absolute file path, as relative paths may behave differently between CLI and HTTP requests. If you want to use a *relative* path, you can use the `SS_ERROR_LOG` environment variable to declare a file path that is relative to your project root:
 
-```sh
+```bash
 SS_ERROR_LOG="./silverstripe.log"
 ```
 
-You don't need any of the yaml configuration above if you are using the `SS_ERROR_LOG` environment variable - but you can use a combination of the environment variable and yaml configuration if you want to configure multiple error log files.
+You don't need any of the YAML configuration above if you are using the `SS_ERROR_LOG` environment variable - but you can use a combination of the environment variable and YAML configuration if you want to configure multiple error log files.
 
-You will also need to make sure the user running the php process has write access to the log file, wherever you choose to put it.
+You will also need to make sure the user running the PHP process has write access to the log file, wherever you choose to put it.
 [/notice]
 
 See [Configuring error logging](/developer_guides/debugging/error_handling/#configuring-error-logging) to learn about other ways you can handle error logs.
@@ -86,7 +87,7 @@ Deprecation warnings can be set to output in HTTP responses by setting `SS_DEPRE
 If the `SS_DEPRECATION_SHOW_HTTP` environment variable is set, this takes precedence over use of the `Deprecation::setShouldShowForHttp()` static method.
 [/info]
 
-```env
+```bash
 SS_DEPRECATION_SHOW_HTTP=true
 ```
 
@@ -99,12 +100,12 @@ Deprecation::setShouldShowForHttp(true);
 Note that the output for this won't be very easy to read. You might prefer instead to install [lekoala/silverstripe-debugbar](https://github.com/lekoala/silverstripe-debugbar) as a dev dependency. Deprecation warnings will be logged in the "messages" tab of the debugbar.
 
 [warning]
-The debugbar will _not_ show you any deprecation warnings that are triggered from XHR/AJAX requests or which are triggered after the middleware has finished generating the debugbar for the response.
+The debugbar will *not* show you any deprecation warnings that are triggered from XHR/AJAX requests or which are triggered after the middleware has finished generating the debugbar for the response.
 [/warning]
 
 ## Deprecation warnings in the CLI
 
-Deprecation warnings are output for CLI responses by default (assuming they're enabled in general). The warnings are always output at the _end_ of the request, so you don't have to go looking through the output for them. You might want to disable outputting these warnings in CLI responses if, for example, you need to validate the output via code and don't want to add special cases for deprecation warnings.
+Deprecation warnings are output for CLI responses by default (assuming they're enabled in general). The warnings are always output at the *end* of the request, so you don't have to go looking through the output for them. You might want to disable outputting these warnings in CLI responses if, for example, you need to validate the output via code and don't want to add special cases for deprecation warnings.
 
 You can suppress deprecation warnings from CLI output by setting `SS_DEPRECATION_SHOW_CLI` to a falsy value in your .env file.
 
@@ -112,7 +113,7 @@ You can suppress deprecation warnings from CLI output by setting `SS_DEPRECATION
 If the `SS_DEPRECATION_SHOW_CLI` environment variable is set, this takes precedence over use of the `Deprecation::SS_DEPRECATION_SHOW_CLI()` static method.
 [/info]
 
-```env
+```bash
 SS_DEPRECATION_SHOW_CLI=false
 ```
 

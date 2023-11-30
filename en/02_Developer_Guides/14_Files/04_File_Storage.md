@@ -7,48 +7,46 @@ icon: hdd
 # File storage
 
 This section describes how the asset store abstraction layer stores the physical files underlying the ORM,
-and explains some of the considerations. 
+and explains some of the considerations.
 
-## Component Overview
+## Component overview
 
 The assets module is composed of these major storage classes:
 
-* [api:SilverStripe\Assets\File]: This is the main DataObject that user code interacts with when working with files.
+- [`File`](api:SilverStripe\Assets\File): This is the main DataObject that user code interacts with when working with files.
  This class has the following subclasses:
-  - [api:SilverStripe\Assets\Folder]: Logical folder which holds a set of files. These can be nested.
-  - [api:SilverStripe\Assets\Image]: Specialisation of File representing an image which can be resized.
+  - [`Folder`](api:SilverStripe\Assets\Folder): Logical folder which holds a set of files. These can be nested.
+  - [`Image`](api:SilverStripe\Assets\Image): Specialisation of File representing an image which can be resized.
   Note that this does not include non-resizable image files.
-* [api:SilverStripe\Assets\Storage\DBFile]: This is the DB field used by the File dataobject internally for
+- [`DBFile`](api:SilverStripe\Assets\Storage\DBFile): This is the DB field used by the File dataobject internally for
   storing references to physical files in the asset backend.
-* [api:SilverStripe\Assets\Flysystem\FlysystemAssetStore]: The default backend, provided by
+- [`FlysystemAssetStore`](api:SilverStripe\Assets\Flysystem\FlysystemAssetStore): The default backend, provided by
   [Flysystem](https://flysystem.thephpleague.com/docs/), which Silverstripe CMS uses as an asset persistence layer.
-* [api:SilverStripe\Assets\InterventionBackend]: Default image resizing mechanism, provided by
+- [`InterventionBackend`](api:SilverStripe\Assets\InterventionBackend): Default image resizing mechanism, provided by
   [intervention image](https://image.intervention.io/).
 
 These interfaces are also provided to abstract certain behaviour:
 
-* [api:SilverStripe\Assets\Storage\AssetContainer]: Abstract interface for a file reference. Implemented by both
+- [`AssetContainer`](api:SilverStripe\Assets\Storage\AssetContainer): Abstract interface for a file reference. Implemented by both
   File and DBFile. Declare API for reading to and writing an single file.
-* [api:SilverStripe\Assets\Storage\AssetStore]: Abstract interface for the backend store for the asset system.
+- [`AssetStore`](api:SilverStripe\Assets\Storage\AssetStore): Abstract interface for the backend store for the asset system.
   Implemented by FlysystemAssetStore. Declares API for reading and writing assets from and to the store.
 
 ## Storage via database columns
 
-Asset storage is provided out of the box via a [Flysystem](https://flysystem.thephpleague.com/docs/) backed store.
+Asset storage is provided out of the box via a [Flysystem](https://flysystem.thephpleague.com/docs/) backend store.
 However, any class that implements the `AssetStore` interface could be substituted to provide storage backends
 via other mechanisms.
 
-Internally, files are stored as [DBFile](api:SilverStripe\Assets\Storage\DBFile) records on the rows of parent objects.
+Internally, files are stored as [`DBFile`](api:SilverStripe\Assets\Storage\DBFile) records on the rows of parent objects.
 These records are composite fields which contain sufficient information useful to the configured asset backend in order
 to store, manage, and  publish files. By default this composite field behind this field stores the following details:
 
-
 | Field name     | Description |
-| ----------     | -----------   
+| ----------     | -----------
 | `Hash`         | The sha1 of the file content, useful for versioning (if supported by the backend) |
 | `Filename`     | The internal identifier for this file, which may contain a directory path (not including assets). Multiple versions of the same file will have the same filename. |
 | `Variant`      | The variant for this file. If a file has multiple derived versions (such as resized files or reformatted documents) then you can point to one of the variants here. |
-
 
 Note that the `Hash` and `Filename` always point to the original file, if a `Variant` is specified. It is up to the
 storage backend to determine how variants are managed.
@@ -62,7 +60,7 @@ Public files are published either directly through the "Assets" CMS UI,
 or indirectly as part of a [versioned ownership structure](/developer_guides/model/versioning).
 They are stored as you'd expect on the filesystem: In their folder, by their file name.
 
-```
+```text
 assets/
     my-public-folder/
         my-public-file.jpg
@@ -71,7 +69,7 @@ assets/
 The URL for this file will match the physical location on disk:
 `https://www.example.com/assets/my-public-folder/my-public-file.jpg`.
 
-## Variant file paths (e.g. resized images) {#variant-file-paths}
+## Variant file paths (e.G. Resized images) {#variant-file-paths}
 
 Each file can have variants, most commonly resized versions of an image.
 These can be generated by resizing an image in the CMS rich text editor,
@@ -79,7 +77,7 @@ through template logic, or programmatically with PHP.
 They are stored in the same folder alongside the original file,
 but contain a special variant suffix.
 
-```
+```text
 assets/
     my-public-folder/
         my-public-file.jpg
@@ -96,7 +94,7 @@ that requires permissions to view them. Protected files can also be published
 but access restricted. In either case, they're stored in a special `assets/.protected` folder.
 In this case, they're stored in a folder matching the truncated hash of the file's content.
 
-```
+```text
 assets/
     my-public-folder/
         my-public-file.jpg
@@ -127,7 +125,7 @@ see [Server Requirements: Secure Assets](/getting_started/server_requirements#se
 Older versions of file contents are kept in the `.protected` folder,
 following the same rules as [protected file paths](#protected-file-paths).
 
-```
+```text
 assets/
     my-file.jpg <- current published file
     .protected/
@@ -141,7 +139,7 @@ assets/
 
 By default, when files are replaced or removed, their original file contents
 aren't retained in order to avoid bloat on the filesystem.
-Changes are only tracked for file metadata (e.g. the `Title` attribute). 
+Changes are only tracked for file metadata (e.g. the `Title` attribute).
 
 You can opt-in to retaining the file content for replaced or removed files.
 
@@ -152,7 +150,7 @@ SilverStripe\Assets\File:
 
 The filesystem structure follows the same rules as [protected file paths](#protected-file-paths):
 
-```
+```text
 assets/
     my-file.jpg <- current published file
     .protected/
@@ -160,7 +158,7 @@ assets/
             my-file.jpg
         b63923d8d4/ <- old content hash of replaced file version
             my-file.jpg
-``` 
+```
 
 ## Loading content into `DBFile`
 
@@ -170,16 +168,22 @@ within the assets folder).
 For example, to load a temporary file into a DataObject you could use the below:
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
-class Banner extends DataObject 
+class Banner extends DataObject
 {
     private static $db = [
-        'Image' => 'DBFile'
+        'Image' => 'DBFile',
     ];
 }
+```
+
+```php
+use App\Model\Banner;
 
 // Image could be assigned in other parts of the code using the below
-$banner = new Banner();
+$banner = Banner::create();
 $banner->Image->setFromLocalFile($tempfile['path'], 'my-folder/my-file.jpg');
 ```

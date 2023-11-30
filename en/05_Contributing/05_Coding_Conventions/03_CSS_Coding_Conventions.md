@@ -3,12 +3,12 @@ title: CSS coding conventions
 summary: The CSS style guidelines we follow in our open source software
 iconBrand: css3
 ---
-# CSS and SCSS Coding Conventions
+# CSS and SCSS coding conventions
 
 ## Overview
 
 This document provides guidelines for code formatting to developers contributing
-to SilverStripe. It applies to all CSS/Sass files in the SilverStripe core modules.
+to Silverstripe. It applies to all CSS/Sass files in the Silverstripe core modules.
 
 ## Browser support
 
@@ -41,7 +41,7 @@ We strongly recommend installing one of these into the editor of your choice, to
 avoid the frustration of failed pull requests. You can run the checks on console
 via `yarn lint` (see [Build Tooling](/contributing/build_tooling)).
 
-## File and Folder Naming
+## File and folder naming
 
 - All frontend files (CSS, JavaScript, images) should be placed in
   a `client/` folder on the top level of the module
@@ -56,25 +56,25 @@ via `yarn lint` (see [Build Tooling](/contributing/build_tooling)).
 - The `client/src/styles` folder contains base styles (reset, typography, variables)
   as well as layout-related styles which arranges components together.
 
-## Icons and Graphics
+## Icons and graphics
 
 Most graphics used in the CMS are vector based, and stored as generated
 webfonts in `admin/client/src/font`, which also contains a HTML reference.
 The webfonts are generated through the [Fontastic](https://app.fontastic.me) service.
-If you need new icons to be added, please ping us on Github.  
+If you need new icons to be added, please ping us on GitHub.
 
 ## Legacy conventions
 
 There is some legacy code that may not follow the conventions outlined above. If you modify any of these,
 consider porting them over into the new structure. Otherwise, follow these conventions:
 
-- Class naming: Use the `cms-` class prefix for major components in the cms interface,
+- Class naming: Use the `cms-` class prefix for major components in the CMS interface,
   and the `ss-ui-` prefix for extensions to jQuery UI. Don't use the `ui-` class prefix, its reserved for jQuery UI built-in styles.
 - Use jQuery UI's built-in styles where possible, e.g. `ui-widget` for a generic container, or `ui-state-highlight`
   to highlight a specific component. See the [jQuery UI Theming API](https://api.jqueryui.com/category/theming/) for a full list.
 
 ## Related
 
-* [PHP Coding Conventions](/contributing/php_coding_conventions)
-* [JavaScript Coding Conventions](/contributing/javascript_coding_conventions)
-* [Browser support](/getting_started/server_requirements/)
+- [PHP Coding Conventions](/contributing/php_coding_conventions)
+- [JavaScript Coding Conventions](/contributing/javascript_coding_conventions)
+- [Browser support](/getting_started/server_requirements/)

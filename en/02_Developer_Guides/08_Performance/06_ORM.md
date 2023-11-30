@@ -3,13 +3,13 @@ title: ORM Performance
 summary: Configuration and tips for improving ORM performance
 ---
 
-# ORM Performance
+# ORM performance
 
 ## Indexes
 
 You can define indexes for your ORM queries using the `$indexes` configuration property in your `DataObject` subclasses. See the [Indexes](/developer_guides/model/indexes) section for more information.
 
-### TreeDropdownField SearchFilter configuration {#treedropdownfield}
+### `TreeDropdownField` `SearchFilter` configuration {#treedropdownfield}
 
 The [`TreeDropdownField`](api:SilverStripe\Forms\TreeDropdownField) uses a [`PartialMatchFilter`](api:SilverStripe\ORM\Filters\PartialMatchFilter) by default to match against records. Indexes aren't effective when this filter is used, so you may find this field is slow with large datasets.
 

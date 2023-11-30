@@ -4,7 +4,7 @@ summary: The SS_List interface allows you to iterate through and manipulate a li
 icon: list
 ---
 
-# Managing Lists
+# Managing lists
 
 Whenever using the ORM to fetch records or navigate relationships you will receive an [SS_List](api:SilverStripe\ORM\SS_List) instance commonly as
 either [DataList](api:SilverStripe\ORM\DataList) or [RelationList](api:SilverStripe\ORM\RelationList). This object gives you the ability to iterate over each of the results or
@@ -21,7 +21,7 @@ use SilverStripe\Security\Member;
 
 $members = Member::get();
 
-foreach($members as $member) {
+foreach ($members as $member) {
     echo $member->Name;
 }
 ```
@@ -79,12 +79,13 @@ $emailAddresses = Member::get()->column('Email');
 
 ## Iterating over a large list {#chunkedFetch}
 
-When iterating over a `DataList`, the ORM will create a [`Generator`](https://www.php.net/manual/en/language.generators.overview.php). This means we don't have all of the `DataObject` records in the list instantiated in memory, but the ORM _does_ fetch all of the data about those records and loads that data in memory. This can consume a lot of memory when working with a large data set.
+When iterating over a `DataList`, the ORM will create a [`Generator`](https://www.php.net/manual/en/language.generators.overview.php). This means we don't have all of the `DataObject` records in the list instantiated in memory, but the ORM *does* fetch all of the data about those records and loads that data in memory. This can consume a lot of memory when working with a large data set.
 
 To limit the amount of data loaded in memory, you can use the [`chunkedFetch()`](api:SilverStripe\ORM\DataList::chunkedFetch()) method on your `DataList`. In most cases, you can iterate over the results of `chunkedFetch()` the same way you would iterate over your `DataList`. Internally, `chunkedFetch()` will split the database query into smaller queries and keep running through them until it runs out of results.
 
 ```php
-// Without using chunked fetch, all of the data for all of the Member records will be fetched from the database in a single query
+// Without using chunked fetch, all of the data for all of the Member records will be fetched from the database
+// in a single query
 $members = Member::get();
 foreach ($members as $member) {
     echo $member->Email;
@@ -113,9 +114,10 @@ foreach ($members as $member) {
 ```
 
 There are some limitations:
-* `chunkedFetch()` will ignore any limit or offset you have applied to your `DataList`
-* you cannot "count" a chunked list or do any other call against it aside from iterating it
-* while iterating over a chunked list, you cannot perform any operation that would alter the order of the items.
+
+- `chunkedFetch()` will ignore any limit or offset you have applied to your `DataList`
+- you cannot "count" a chunked list or do any other call against it aside from iterating it
+- while iterating over a chunked list, you cannot perform any operation that would alter the order of the items.
 
 ## ArrayList
 
@@ -133,13 +135,14 @@ $list->push($sig);
 $numItems = $list->Count();
 ```
 
-## Related Lessons
-* [Lists and pagination](https://www.silverstripe.org/learn/lessons/v4/lists-and-pagination-1)
+## Related lessons
 
-## API Documentation
+- [Lists and pagination](https://www.silverstripe.org/learn/lessons/v4/lists-and-pagination-1)
 
-* [SS_List](api:SilverStripe\ORM\SS_List)
-* [RelationList](api:SilverStripe\ORM\RelationList)
-* [DataList](api:SilverStripe\ORM\DataList)
-* [ArrayList](api:SilverStripe\ORM\ArrayList)
-* [Map](api:SilverStripe\ORM\Map)
+## API documentation
+
+- [SS_List](api:SilverStripe\ORM\SS_List)
+- [RelationList](api:SilverStripe\ORM\RelationList)
+- [DataList](api:SilverStripe\ORM\DataList)
+- [ArrayList](api:SilverStripe\ORM\ArrayList)
+- [Map](api:SilverStripe\ORM\Map)

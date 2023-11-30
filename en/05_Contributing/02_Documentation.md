@@ -16,22 +16,22 @@ In order to contribute changes to documentation, you will need to [create a GitH
 
 Note that there are two sources of documentation, depending on the intended audience.
 
-* End-user help: [silverstripe/silverstripe-userhelp-content](https://github.com/silverstripe/silverstripe-userhelp-content/)
-* Developer guides: [silverstripe/developer-docs](https://github.com/silverstripe/developer-docs/)
+- End-user help: [`silverstripe/silverstripe-userhelp-content`](https://github.com/silverstripe/silverstripe-userhelp-content/)
+- Developer guides: [`silverstripe/developer-docs`](https://github.com/silverstripe/developer-docs/)
 
 If you find a problem related to how the documentation is displayed which can't be fixed in the documentation source files, you can [raise an issue](./issues_and_bugs) or [submit a pull request](./code) to the relevant repository below:
 
-* Website code for user and developer docs: [silverstripe/doc.silverstripe.org](https://github.com/silverstripe/doc.silverstripe.org)
-* Website code for automatically generated Developer API documentation: [silverstripe/api.silverstripe.org](https://github.com/silverstripe/api.silverstripe.org)
+- Website code for user and developer docs: [`silverstripe/doc.Silverstripe.org`](https://github.com/silverstripe/doc.silverstripe.org)
+- Website code for automatically generated Developer API documentation: [`silverstripe/api.Silverstripe.org`](https://github.com/silverstripe/api.silverstripe.org)
 
 ## Branches and commit messages
 
-* All documentation commits must follow the [commit message guidelines](./code#commit-messages), and must be prefixed with the `DOC` prefix.
-* If you are fixing incorrect or incomplete information, you should create a PR that targets the most recent patch release branch branch for the relevant major release line (e.g. `5.1`).
-* If you are adding documentation for functionality that has not yet been released, you should target the most recent minor release branch branch (e.g. `5`).
+- All documentation commits must follow the [commit message guidelines](./code#commit-messages), and must be prefixed with the `DOC` prefix.
+- If you are fixing incorrect or incomplete information, you should create a PR that targets the most recent patch release branch branch for the relevant major release line (e.g. `5.1`).
+- If you are adding documentation for functionality that has not yet been released, you should target the most recent minor release branch branch (e.g. `5`).
 
 [warning]
-You should make your changes in the lowest major branch they apply to. For instance, if you fix a spelling issue that you found in the CMS 4 documentation, submit your fix to the `4.13` branch in Github and it'll be copied to the most recent major version of the documentation automatically. *Don't submit multiple pull requests for the same change*.
+You should make your changes in the lowest major branch they apply to. For instance, if you fix a spelling issue that you found in the CMS 4 documentation, submit your fix to the `4.13` branch in GitHub and it'll be copied to the most recent major version of the documentation automatically. *Don't submit multiple pull requests for the same change*.
 [/warning]
 
 ## Editing online
@@ -72,31 +72,53 @@ Once you've made the pull request, make sure the pull request follows the guidel
 
 If you prefer to edit content on your local machine, follow the instructions on the [contributing code](code) page, since editing documentation on your computer follows that same process.
 
+### Linting locally
+
+When you submit your pull request, the documentation will be automatically linted. You may want to run this process locally. To do so, you'll need to have both [Composer](https://getcomposer.org/download/) and Yarn installed. See [client-side build tooling](/contributing/build_tooling/#installation) for yarn installation instructions.
+
+You can then run the following commands from the command line to lint the documentation:
+
+```bash
+yarn install
+composer install
+yarn lint
+```
+
+If there are linting issues, you may find the output easier to work with by running the separate types of linting individually. You can find the commands for those inside the `package.json` file.
+
+You can also fix any automatically fixable problems by passing the `--fix` option to the lint command.
+
+```bash
+yarn lint --fix
+```
+
 ## Writing style
 
-* Write in second person form, addressing the reader. For example "First you'll install a webserver" is good style.
-* If referring to maintainers of Silverstripe CMS, either explicitly say "the maintainers", or write in second person plural form (use "we" instead of "I")
-* Use gender neutral language throughout the document, unless referencing a specific person. Use them, they, their, instead of he and she, his or her.
-* Use simple language and words. Avoid uncommon jargon and overly long words. Remember that not everyone speaks English as their primary language.
-* Use UK English, not US English. Silverstripe CMS is proudly a New Zealand open source project we use the UK spelling and forms of English. The most common of these differences are -ize vs -ise, or -or vs our (eg color vs colour).
-* Write in an active and direct voice.
-* Avoid saying words like "obviously" or "of course". Things that are obvious to you as the writer may not be so obvious to the person reading the documentation.
-* Keep documentation lines shorter than 120 characters.
-* Avoid FAQs. FAQs are not a replacement for coherent, well explained documentation. If you've done a good job
+- Write in second person form, addressing the reader. For example "First you'll install a webserver" is good style.
+- If referring to maintainers of Silverstripe CMS, either explicitly say "the maintainers", or write in second person plural form (use "we" instead of "I")
+- Use gender neutral language throughout the document, unless referencing a specific person. Use them, they, their, instead of he and she, his or her.
+- Use simple language and words. Avoid uncommon jargon and overly long words. Remember that not everyone speaks English as their primary language.
+- Use UK English, not US English. Silverstripe CMS is proudly a New Zealand open source project we use the UK spelling and forms of English. The most common of these differences are -ize vs -ise, or -or vs our (eg color vs colour).
+- Write in an active and direct voice.
+- Avoid saying words like "obviously" or "of course". Things that are obvious to you as the writer may not be so obvious to the person reading the documentation.
+- Keep documentation lines shorter than 120 characters.
+- Avoid FAQs. FAQs are not a replacement for coherent, well explained documentation. If you've done a good job
 documenting, there shouldn't be any "frequently asked questions" left.
-* We use sentence case for titles. Only capitalise the first letter of the first word of a title. The only exceptions to this are when using brand names (e.g. GitHub), acronyms (e.g. PHP) and class names (e.g. ModelAdmin).
-* Use `example.com` as the domain of sample URLs and `example.org` and `example.net` when additional domains are required. All of these domains are [reserved by the IANA](https://tools.ietf.org/html/rfc2606#section-3).
-* Use appropriate markdown. The use of code blocks, emphasis, lists, and tables make technical writing easier to scan.
-* Never leave spaces at the end of a line.
-* Use an empty line to separate paragraphs.
-* Sentence case your bullet points. If a bullet point is a full sentence then end with a full stop. If it is a sentence fragment or a comma separated list, full stops are not required.
-* All code blocks must have an appropriate syntax highlighting hint. For plain text, use "text".
-* Code examples should follow our [coding conventions](./coding_conventions).
-* Use `App` when the code requires a vendor name (e.g. as the root for namespaces).
-* Do not put a `$` in front of lines of bash code examples.
-* When referencing directories, always add a trailing slash to avoid confusions with regular files
-* "Silverstripe CMS" is used to refer to the Silverstripe CMS open source project as a whole.
-* "Silverstripe" is used to refer to the company, where appropriate.
+- We use sentence case for titles. Only capitalise the first letter of the first word of a title. The only exceptions to this are when using brand names (e.g. GitHub), acronyms (e.g. PHP) and class names (e.g. ModelAdmin).
+- Use `example.com` as the domain of sample URLs and `example.org` and `example.net` when additional domains are required. All of these domains are [reserved by the IANA](https://tools.ietf.org/html/rfc2606#section-3).
+- Use appropriate markdown. The use of code blocks, emphasis, lists, and tables make technical writing easier to scan.
+- Never leave spaces at the end of a line.
+- Use an empty line to separate paragraphs.
+- Sentence case your bullet points. If a bullet point is a full sentence then end with a full stop. If it is a sentence fragment or a comma separated list, full stops are not required.
+- All code blocks must have an appropriate syntax highlighting hint. For plain text, use "text".
+- If it's useful to include the filename that a code block relates to, do so in a comment in the first line of the code block.
+  - Don't place a blank line after this comment, unless the next line is also a comment.
+- Code examples should follow our [coding conventions](./coding_conventions).
+- Use `App` when the code requires a vendor name (e.g. as the root for namespaces).
+- Do not put a `$` in front of lines of bash code examples.
+- When referencing directories, always add a trailing slash to avoid confusions with regular files
+- "Silverstripe CMS" is used to refer to the Silverstripe CMS open source project as a whole.
+- "Silverstripe" is used to refer to the company, where appropriate.
 
 ## Extended markdown syntax
 
@@ -195,15 +217,15 @@ You can list child/sibling pages using the special `[CHILDREN]` syntax. By defau
 
 You can change what is displayed using one of the `Exclude`, `Folder`, or `Only` modifiers. These all take folder and/or file names as arguments. Exclude the `.md` extension when referencing files. Arguments can include a single item, or multiple items using commas to separate them.
 
-* `[CHILDREN Exclude="How_tos,01_Relations"]`: Exclude specific folders or files from the list. Note that folders don't need to be excluded unless the `includeFolders` modifier is also used.
-* `[CHILDREN Only="rc,beta"]`: Only include the listed items. This is the inverse of the `Exclude` modifier.
-* `[CHILDREN Folder="How_Tos"]`: List the children of the named folder, instead of the children of the *current* folder. This modifier only accepts a single folder as an argument.
+- `[CHILDREN Exclude="How_tos,01_Relations"]`: Exclude specific folders or files from the list. Note that folders don't need to be excluded unless the `includeFolders` modifier is also used.
+- `[CHILDREN Only="rc,beta"]`: Only include the listed items. This is the inverse of the `Exclude` modifier.
+- `[CHILDREN Folder="How_Tos"]`: List the children of the named folder, instead of the children of the *current* folder. This modifier only accepts a single folder as an argument.
 
 The above can be combined with any of the `asList`, `includeFolders`, and `reverse` modifiers:
 
-* `[CHILDREN asList]`: Render the children as a description list instead of as cards. The icon is not used when rendering as a list.
-* `[CHILDREN includeFolders]`: Include folders as well as files.
-* `[CHILDREN reverse]`: Reverse the order of the list. The list is sorted in case sensitive ascending alphabetical order by default.
+- `[CHILDREN asList]`: Render the children as a description list instead of as cards. The icon is not used when rendering as a list.
+- `[CHILDREN includeFolders]`: Include folders as well as files.
+- `[CHILDREN reverse]`: Reverse the order of the list. The list is sorted in case sensitive ascending alphabetical order by default.
 
 The following would render links for all children as a description list in reverse order, including folders but excluding anything called "How_tos":
 
@@ -243,8 +265,8 @@ icon: file-alt
 
 The available keys for this metadata are:
 
-* `title`: The title of the page when rendered as a child, and in the navigation.
-* `summary`: A short sumary of the page which is used when the page is rendered as a child.
-* `icon`: An icon which is used when the page is rendered as a child in card format. Must be one of the icons provided by fontawesome 5, excluding brand icons.
-* `iconBrand`: An icon which is used when the page is rendered as a child in card format. Must be one of the brand icons provided by fontawesome 5.
-* `hideChildren`: If true, doesn't display children of this page in the navigation. Doesn't affect child lists.
+- `title`: The title of the page when rendered as a child, and in the navigation.
+- `summary`: A short sumary of the page which is used when the page is rendered as a child.
+- `icon`: An icon which is used when the page is rendered as a child in card format. Must be one of the icons provided by fontawesome 5, excluding brand icons.
+- `iconBrand`: An icon which is used when the page is rendered as a child in card format. Must be one of the brand icons provided by fontawesome 5.
+- `hideChildren`: If true, doesn't display children of this page in the navigation. Doesn't affect child lists.

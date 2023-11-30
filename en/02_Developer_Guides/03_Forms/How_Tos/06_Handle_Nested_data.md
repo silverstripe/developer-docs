@@ -4,7 +4,7 @@ summary: Forms can save into arrays, including has_one relations
 iconBrand: wpforms
 ---
 
-# How to: Save nested data
+# How to: save nested data
 
 ## Overview
 
@@ -14,7 +14,8 @@ There are a number of ways to save nested data into those records, including the
 Let's take the following data structure, and walk through different approaches.
 
 ```php
-<?php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class Player extends DataObject
@@ -34,7 +35,8 @@ class Player extends DataObject
 ```
 
 ```php
-<?php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
 class Team extends DataObject
@@ -58,8 +60,9 @@ trigger the form field to write into the relationship.
 Example: Select teams for an existing player
 
 ```php
-<?php
+namespace App\Control;
 
+use App\Model\Player;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\Forms\FieldList;
@@ -71,13 +74,17 @@ use SilverStripe\Forms\TextField;
 
 class MyController extends Controller
 {
-    private static $allowed_actions = [
-        'Form',
-    ];
-
     private static $url_segment = 'MyController';
 
-    public function Form()
+    private static $allowed_actions = [
+        'getForm',
+    ];
+
+    private static $url_handlers = [
+        'Form' => 'getForm',
+    ];
+
+    public function getForm()
     {
         $player = Player::get()->byID(1);
         return Form::create(
@@ -90,7 +97,7 @@ class MyController extends Controller
                 HiddenField::create('ID'),
             ]),
             FieldList::create([
-                FormAction::create('doSubmitForm', 'Submit')
+                FormAction::create('doSubmitForm', 'Submit'),
             ]),
             RequiredFields::create([
                 'Name',
@@ -124,19 +131,19 @@ class MyController extends Controller
 }
 ```
 
-
 ## Dot notation
 
 For single record relationships (e.g. `has_one`),
 forms can automatically traverse into this relationship by using dot notation
-in the form field name. This also works with custom getters returning 
-`DataObject` instances. 
+in the form field name. This also works with custom getters returning
+`DataObject` instances.
 
 Example: Update team name (via a `has_one` relationship) on an existing player.
 
 ```php
-<?php
+namespace App\Control;
 
+use App\Model\Player;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
@@ -147,11 +154,17 @@ use SilverStripe\Forms\TextField;
 
 class MyController extends Controller
 {
-    private static $allowed_actions = ['Form'];
-
     private static $url_segment = 'MyController';
 
-    public function Form()
+    private static $allowed_actions = [
+        'getForm',
+    ];
+
+    private static $url_handlers = [
+        'Form' => 'getForm',
+    ];
+
+    public function getForm()
     {
         return Form::create(
             $this,
@@ -162,7 +175,7 @@ class MyController extends Controller
                 HiddenField::create('ID'),
             ]),
             FieldList::create([
-                FormAction::create('doSubmitForm', 'Submit')
+                FormAction::create('doSubmitForm', 'Submit'),
             ]),
             RequiredFields::create([
                 'Name',
@@ -205,13 +218,15 @@ class MyController extends Controller
 ## Array notation
 
 This is the most advanced technique, since it works with the form submission directly,
-rather than relying on form field logic. 
+rather than relying on form field logic.
 
 Example: Create one or more new teams for existing player
 
 ```php
-<?php
+namespace App\Control;
 
+use App\Model\Player;
+use App\Model\Team;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
@@ -222,11 +237,17 @@ use SilverStripe\Forms\TextField;
 
 class MyController extends Controller
 {
-    private static $allowed_actions = ['Form'];
-
     private static $url_segment = 'MyController';
 
-    public function Form()
+    private static $allowed_actions = [
+        'getForm',
+    ];
+
+    private static $url_handlers = [
+        'Form' => 'getForm',
+    ];
+
+    public function getForm()
     {
         $player = Player::get()->byID(1);
         return Form::create(
@@ -239,7 +260,7 @@ class MyController extends Controller
                 HiddenField::create('ID'),
             ]),
             FieldList::create([
-                FormAction::create('doSubmitForm', 'Submit')
+                FormAction::create('doSubmitForm', 'Submit'),
             ]),
             RequiredFields::create([
                 'Name',

@@ -9,7 +9,7 @@ summary: Add descriptions to just about anything in your schema to improve your 
 ## Adding descriptions
 
 One of the great features of a schema-backed API is that it is self-documenting. If you use
-the [silverstripe/graphql-devtools](https://github.com/silverstripe/silverstripe-graphql-devtools)
+the [`silverstripe/graphql-devtools`](https://github.com/silverstripe/silverstripe-graphql-devtools)
 module you can see the documentation by navigating to /dev/graphql/ide in your browser anc clicking
 on "DOCS" on the right.
 
@@ -20,8 +20,8 @@ The trade-off for using descriptions is that the YAML configuration becomes a bi
 
 Let's add some descriptions to our types and fields.
 
-**app/_graphql/schema.yml**
-```yaml
+```yml
+# app/_graphql/schema.yml
 types:
   Country:
     description: A record that describes one of the world's sovereign nations
@@ -37,8 +37,8 @@ types:
 We can also add descriptions to our query arguments. We'll have to remove the inline argument
 definition to do that.
 
-**app/_graphql/schema.yml**
-```yaml
+```yml
+# app/_graphql/schema.yml
 queries:
   readCountries:
     type: '[Country]'

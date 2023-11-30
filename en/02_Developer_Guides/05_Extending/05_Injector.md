@@ -4,32 +4,31 @@ summary: Introduction to using Dependency Injection within Silverstripe CMS.
 icon: code
 ---
 
-# Dependency Injection
+# Dependency injection
 
 > ...dependency injection is a design pattern in which an object or function receives other objects or functions that it depends on
 [Wikipedia](https://en.wikipedia.org/wiki/Dependency_injection)
 
-In Silverstripe a combination of the [Injector API](#Injector) and the [Configuration API](../configuration) provide a comprehensive dependency injection pattern. 
+In Silverstripe a combination of the [Injector API](#injector) and the [Configuration API](../configuration) provide a comprehensive dependency injection pattern.
 Some of the goals of dependency injection are:
 
-* Simplified instantiation of objects
-* Providing a uniform way of declaring and managing inter-object dependencies
-* Promoting abstraction of logic
+- Simplified instantiation of objects
+- Providing a uniform way of declaring and managing inter-object dependencies
+- Promoting abstraction of logic
 
-In practical terms it allows developers to: 
+In practical terms it allows developers to:
 
-* Make class dependencies configurable rather than hard-coded
-* Override or replace core behaviour without needing to alter core code
-* Write more testable code
+- Make class dependencies configurable rather than hard-coded
+- Override or replace core behaviour without needing to alter core code
+- Write more testable code
 
+## `Injector`
 
-# Injector
+The [Injector](api:SilverStripe\Core\Injector\Injector) class is the central manager of inter-class dependencies in Silverstripe CMS. It offers developers the
+ability to declare the dependencies a class type has, or to change the nature of the dependencies defined by other
+developers.
 
-The [Injector](api:SilverStripe\Core\Injector\Injector) class is the central manager of inter-class dependencies in Silverstripe CMS. It offers developers the 
-ability to declare the dependencies a class type has, or to change the nature of the dependencies defined by other 
-developers. 
-
-## Basic usage
+### Basic usage
 
 The following snippet shows `Injector` creating a new object of type `App\MyClient` through its `create` method:
 
@@ -64,7 +63,7 @@ $object = Injector::inst()->create(MyClient::class, $arg1, $arg2);
 
 Note that for classes that use the [`Injectable`](api:SilverStripe\Core\Injector\Injectable) trait, there is a simpler syntax for this and for the singleton pattern mentioned below. See [Injectable Trait](#injectable-trait) below for details.
 
-### Singleton Pattern
+### Singleton pattern
 
 The `Injector` API can be used for the [singleton pattern](https://en.wikipedia.org/wiki/Singleton_pattern) through `get()`. Unlike `create()` subsequent calls to `get` return the same object instance as the first call.
 
@@ -99,7 +98,7 @@ $object = Injector::inst()->get(MyClient::class, constructorArgs: [$arg1, $arg2]
 It is possible to tell `Injector` to always instantiate a new object for a given service even if it's requested it as a singleton.
 This is particularly useful when a service is intended to be [declared as a dependency](#dependencies-and-properties) for some other class, and you don't want that dependency to be a singleton.
 
-This is done by setting the 'type' for a given service definition to "prototype" in yaml configuration like so:
+This is done by setting the 'type' for a given service definition to "prototype" in YAML configuration like so:
 
 ```yml
 SilverStripe\Core\Injector\Injector:
@@ -144,13 +143,12 @@ Note that `App\MyClient` [does not have to be an existing class](#service-inheri
 
 Using Injector imperatively like this is most common [in testing](#testing-with-injector). Usually, the configuration API is used instead.
 
-## Injector API 🤝 Configuration API {#injector-via-config}
+## Injector API 🤝 configuration API {#injector-via-config}
 
 The Injector API combined with the Configuration API is a powerful way to declare and manage dependencies in your code. For example, `App\MyClient` can be swapped out using the following config:
 
-**app/_config/app.yml**
-
 ```yml
+# app/_config/class-overrides.yml
 SilverStripe\Core\Injector\Injector:
   App\MyClient:
     class: App\MyBetterClient
@@ -172,7 +170,7 @@ This allows you to concisely override classes in Silverstripe core or other thir
 When overriding other configuration beware the [order that configuration is applied](../configuration/#configuration-values). You may have to use the [Before/After](../configuration/#before-after-rules) syntax to apply your override.
 [/info]
 
-### Special YML Syntax
+### Special YAML syntax
 
 You can use the special `%$` prefix in the injector configuration yml to fetch items via the Injector. For example:
 
@@ -199,7 +197,7 @@ SilverStripe\Core\Injector\Injector:
 
 The Injector configuration has the special ability to include core constants or environment variables. They can be used by quoting with back ticks "`". Please ensure you also quote the entire value (see below).
 
-```yaml
+```yml
 SilverStripe\Core\Injector\Injector:
   CachingService:
     class: SilverStripe\Cache\CacheProvider
@@ -235,26 +233,27 @@ SilverStripe\Core\Injector\Injector:
       ThisWillNotSubstitute: 'lorem `REGULAR_TEXT` ipsum'
 ```
 
-## Dependencies and Properties
+## Dependencies and properties
 
-Silverstripe classes can declare a special `$dependencies` array which can quickly configure dependencies when used with the injector API. The `Injector` will evaluate the array values and assign the appropriate value to a property that matches the array key. For example: 
+Silverstripe classes can declare a special `$dependencies` array which can quickly configure dependencies when used with the injector API. The `Injector` will evaluate the array values and assign the appropriate value to a property that matches the array key. For example:
 
 [info]
-Just like the yaml syntax discussed above, constants and environment variables can be substitutes in dependency values using backticks.
+Just like the YAML syntax discussed above, constants and environment variables can be substitutes in dependency values using backticks.
 [/info]
 
 ```php
-namespace App;
+namespace App\Control;
 
 use SilverStripe\Control\Controller;
 use ThirdParty\PermissionService;
 
-class MyController extends Controller 
+class MyController extends Controller
 {
     /**
      * Properties matching the array keys in $dependencies will be automatically
      * set by the injector on object creation.
      */
+    // phpcs:ignore SlevomatCodingStandard.Classes.ForbiddenPublicProperty.ForbiddenPublicProperty
     public $textProperty;
 
     /**
@@ -285,15 +284,16 @@ class MyController extends Controller
 ```
 
 [info]
-Note the properties set by Injector must be public properties, or have a public setter method.
+Note the properties set by `Injector` must be public properties, or have a public setter method.
 [/info]
 
-When creating a new instance of `App\MyController` via Injector the permissions property will contain an instance of the `ThirdParty\PermissionService` that was resolved by Injector, and the `defaultText` property will contain the string defined in the `$dependencies` array.
+When creating a new instance of `App\Control\MyController` via Injector the permissions property will contain an instance of the `ThirdParty\PermissionService` that was resolved by Injector, and the `defaultText` property will contain the string defined in the `$dependencies` array.
 
 ```php
+use App\Control\MyController;
 use SilverStripe\Core\Injector\Injector;
 
-$object = Injector::inst()->get(App\MyController::class);
+$object = Injector::inst()->get(MyController::class);
 
 // prints 'ThirdParty\PermissionService'
 echo get_class($object->permissions);
@@ -304,13 +304,12 @@ echo $object->getDefaultText();
 
 We can then change or override any of those dependencies via the [Configuration YAML](../configuration) and Injector does the hard work of wiring it up.
 
-**app/_config/app.yml**
-
 ```yml
+# app/_config/services.yml
 SilverStripe\Core\Injector\Injector:
   ThirdParty\PermissionService:
     class: App\MyCustomPermissionService
-  App\MyController:
+  App\Control\MyController:
     properties:
       defaultText: 'Replaces the old text'
 ```
@@ -318,9 +317,10 @@ SilverStripe\Core\Injector\Injector:
 Now the dependencies will be replaced with our configuration.
 
 ```php
+use App\Control\MyController;
 use SilverStripe\Core\Injector\Injector;
 
-$object = Injector::inst()->get(App\MyController::class);
+$object = Injector::inst()->get(MyController::class);
 
 // prints 'App\MyCustomPermissionService'
 echo get_class($object->permissions);
@@ -329,9 +329,9 @@ echo get_class($object->permissions);
 echo $object->getDefaultText();
 ```
 
-### Dependent Calls
+### Dependent calls
 
-As well as properties, method calls the class depends on (i.e. method calls that should be done after instantiating the object) can also be specified via the `calls` property in yaml:
+As well as properties, method calls the class depends on (i.e. method calls that should be done after instantiating the object) can also be specified via the `calls` property in YAML:
 
 ```yml
 SilverStripe\Core\Injector\Injector:
@@ -347,36 +347,51 @@ Note that [configuration is merged](../configuration/#configuration-values) so t
 
 ### Managed objects
 
-While dependencies can be specified in PHP with the `$dependencies` configuration property, it is common to define them in yaml - especially when there is a chain of dependencies and other related configuration which needs to be defined.
+While dependencies can be specified in PHP with the `$dependencies` configuration property, it is common to define them in YAML - especially when there is a chain of dependencies and other related configuration which needs to be defined.
 
 For example. assuming a class structure such as this:
 
 ```php
-namespace App;
+namespace App\Control;
 
-class MyController 
+class MyController
 {
-  public $permissions;
+    private $permissions;
 
-  private static $dependencies = [];
+    private static $dependencies = [];
+
+    public function setPermissions($permissions): static
+    {
+        $this->permissions = $permissions;
+        return $this;
+    }
 }
+```
 
-class RestrictivePermissionService 
+```php
+namespace App\Control;
+
+class RestrictivePermissionService
 {
     private $database;
 
-    public function setDatabase($d) 
-    {    
-        $this->database = $d;
+    public function setDatabase($db): static
+    {
+        $this->database = $db;
     }
 }
+```
 
-class MySQLDatabase 
+```php
+namespace App\ORM;
+
+class MySQLDatabase
 {
     private $username;
+
     private $password;
-    
-    public function __construct($username, $password) 
+
+    public function __construct($username, $password)
     {
         $this->username = $username;
         $this->password = $password;
@@ -390,15 +405,15 @@ And the following configuration..
 ---
 name: MyController
 ---
-App\MyController:
+App\Control\MyController:
   dependencies:
-    permissions: '%$App\PermissionService'
+    permissions: '%$PermissionService'
 SilverStripe\Core\Injector\Injector:
-  App\PermissionService:
-    class: App\RestrictivePermissionService
+  PermissionService:
+    class: App\Control\RestrictivePermissionService
     properties:
-      database: '%$App\MySQLDatabase'
-  App\MySQLDatabase:
+      database: '%$App\ORM\MySQLDatabase'
+  App\ORM\MySQLDatabase:
     constructor:
       0: '`dbusername`'
       1: '`dbpassword`'
@@ -407,7 +422,7 @@ SilverStripe\Core\Injector\Injector:
 Calling..
 
 ```php
-use App\MyController;
+use App\Control\MyController;
 use SilverStripe\Core\Injector\Injector;
 
 $controller = Injector::inst()->get(MyController::class);
@@ -415,19 +430,19 @@ $controller = Injector::inst()->get(MyController::class);
 
 Would perform the following steps:
 
-* Fetches a singleton of the `App\MyController` service
-* If there no existing instance for the `App\MyController` singleton:
-  * Instantiates the service as an instance of the `App\MyController` class
-  * Look through the `dependencies` for the `App\MyController` service and fetch a singleton of the `App\PermissionService` service
-  * If there no existing instance for the `App\PermissionService` singleton:
-    * Instantiates the service as an instance of the `App\RestrictivePermissionService` class
-    * Look at the properties to be injected for the `App\PermissionService` service fetch a singleton of the `App\MySQLDatabase` service
-    * If there no existing instance for the `App\MySQLDatabase` singleton:
-      * Instantiates the service as an instance of the `App\MySQLDatabase` class
-      * Evaluates and passes in the values of the constants or environment variables `dbusername` and `dbpassword` as arguments to the constructor
-    * Sets the `App\MySQLDatabase` singleton as the private `database` property on the `App\PermissionService` singleton by passing it in to a call to the `setDatabase()` method
-  * Sets the `App\PermissionService` singleton as the public `permissions` property on the `App\MyController` singleton
-* Returns the `App\MyController` singleton
+- Fetches a singleton of the `App\Control\MyController` service
+- If there no existing instance for the `App\Control\MyController` singleton:
+  - Instantiates the service as an instance of the `App\Control\MyController` class
+  - Look through the `dependencies` for the `App\Control\MyController` service and fetch a singleton of the `App\PermissionService` service
+  - If there no existing instance for the `App\PermissionService` singleton:
+    - Instantiates the service as an instance of the `App\RestrictivePermissionService` class
+    - Look at the properties to be injected for the `App\PermissionService` service fetch a singleton of the `App\ORM\MySQLDatabase` service
+    - If there no existing instance for the `App\ORM\MySQLDatabase` singleton:
+      - Instantiates the service as an instance of the `App\ORM\MySQLDatabase` class
+      - Evaluates and passes in the values of the constants or environment variables `dbusername` and `dbpassword` as arguments to the constructor
+    - Sets the `App\ORM\MySQLDatabase` singleton as the private `database` property on the `App\PermissionService` singleton by passing it in to a call to the `setDatabase()` method
+  - Sets the `App\PermissionService` singleton as the public `permissions` property on the `App\Control\MyController` singleton
+- Returns the `App\Control\MyController` singleton
 
 ## Factories
 
@@ -442,24 +457,22 @@ and the factory service will be used.
 
 An example using the `App\MyFactory` service to create instances of the `App\MyService` service is shown below:
 
-**app/_config/app.yml**
-
 ```yml
+# app/_config/services.yml
 SilverStripe\Core\Injector\Injector:
   App\MyService:
     factory: App\MyFactory
 ```
 
-**app/src/MyFactory.php**
-
 ```php
+// app/src/MyFactory.php
 namespace App;
 
 use SilverStripe\Core\Injector\Factory;
 
 class MyFactory implements Factory
 {
-    public function create($service, array $params = []) 
+    public function create($service, array $params = [])
     {
         return new MyServiceImplementation(...$params);
     }
@@ -490,9 +503,8 @@ The method can be (but does not have to be) a static method.
 
 An example of HTTP Client service with extra logging middleware which uses factories to be instantiated:
 
-**app/_config/app.yml**
-
 ```yml
+# app/_config/services.yml
 SilverStripe\Core\Injector\Injector:
   App\LogMiddleware:
     factory: 'GuzzleHttp\Middleware'
@@ -518,10 +530,10 @@ By default, services registered with Injector do not inherit from one another; T
 named services, which may not be actual classes, and thus should not behave as though they were.
 
 Thus if you want an object to have the injected dependencies of a service of another name, you must
-assign a reference to that service. References are denoted by using a percent and dollar sign, like in the 
+assign a reference to that service. References are denoted by using a percent and dollar sign, like in the
 YAML configuration example below.
 
-```yaml
+```yml
 SilverStripe\Core\Injector\Injector:
   App\JSONServiceDefinition:
     class: App\JSONServiceImplementor
@@ -550,17 +562,16 @@ instances will be classes which match their respective service names (i.e. `App\
 and `App\ServiceConnector` will be an instance of `App\ServiceConnector`), due to the lack of a `class` specification
 on either service definition.
 
-## Testing with Injector
+## Testing with injector
 
 In situations where service definitions must be temporarily overridden, it is possible to create nested Injector instances
 which may be later discarded, reverting the application to the original state. This is done through `nest` and `unnest`.
 
 This is useful when writing test cases, as certain services may be necessary to override for a single method call.
 
-
 ```php
-use App\MyService;
 use App\LiveService;
+use App\MyService;
 use App\TestingService;
 use SilverStripe\Core\Injector\Injector;
 
@@ -578,7 +589,7 @@ $service = Injector::inst()->get(MyService::class);
 Injector::unnest();
 ```
 
-## Injectable Trait
+## Injectable trait
 
 The [`Injectable`](api:SilverStripe\Core\Injector\Injectable) trait can be used to indicate your class is able to be used with Injector (though it is not required). It provides the `create` and `singleton` methods to shortcut creating objects through Injector.
 
@@ -586,10 +597,12 @@ For example with the following class:
 
 ```php
 namespace App;
+
 use SilverStripe\Core\Injector\Injectable;
 
-class MyClass {
-  use Injectable;
+class MyClass
+{
+    use Injectable;
 }
 ```
 
@@ -618,7 +631,7 @@ $singletonObject = Injector::inst()->get(MyClass::class);
 
 this might look familar as it is the standard way to instantiate a `DataObject` (e.g `Page::create()`) and many other objects in Silverstripe CMS. Using this syntax rather than `new Page()` allows the object to be overridden by dependency injection.
 
-## API Documentation
+## API documentation
 
-* [Injector](api:SilverStripe\Core\Injector\Injector)
-* [Factory](api:SilverStripe\Core\Injector\Factory)
+- [Injector](api:SilverStripe\Core\Injector\Injector)
+- [Factory](api:SilverStripe\Core\Injector\Factory)

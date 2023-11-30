@@ -4,7 +4,7 @@ summary: Write and modify direct database queries through SQLExpression subclass
 iconBrand: searchengin
 ---
 
-# SQL Queries
+# SQL queries
 
 Most of the time you will be using the ORM abstraction layer to interact with the database
 (see [Introduction to the Data Model and ORM](/developer_guides/model/data_model_and_orm)),
@@ -42,14 +42,14 @@ $count = SQLSelect::create('COUNT(*)', $memberTable)->execute()->value();
 $count = Member::get()->count();
 ```
 
-If you do use raw SQL, you'll run the risk of breaking 
+If you do use raw SQL, you'll run the risk of breaking
 various assumptions the ORM and code based on it have:
 
-*  Custom getters/setters (object property values can differ from database column values)
-*  DataObject hooks like `onBeforeWrite()` and `onBeforeDelete()` if running low-level `INSERT` or `UPDATE` queries
-*  Automatic casting
-*  Default values set through objects
-*  Database abstraction (some `DataObject` classes may not have their own tables, or may need a `JOIN` with other tables to get all of their field values)
+- Custom getter/setter methods (object property values can differ from database column values)
+- `DataObject` hooks like `onBeforeWrite()` and `onBeforeDelete()` if running low-level `INSERT` or `UPDATE` queries
+- Automatic casting
+- Default values set through objects
+- Database abstraction (some `DataObject` classes may not have their own tables, or may need a `JOIN` with other tables to get all of their field values)
 
 We'll explain some ways to use the low-level APIs with the full power of SQL,
 but still maintain a connection to the ORM where possible.
@@ -65,11 +65,11 @@ how to properly prepare user input and variables for use in queries
 
 While you could hardcode table names into your SQL queries, that invites human error and means you have to make sure you know exactly what table stores which data for every class in the class hierarchy of the model you're interested in. Luckily, the [`DataObjectSchema`](api:SilverStripe\ORM\DataObjectSchema) class knows all about the database schema for your `DataObject` models. The following methods in particular may be useful to you:
 
-* [`baseDataTable()`](api:SilverStripe\ORM\DataObjectSchema::baseDataTable()): Get the name of the database table which holds the base data (i.e. `ID`, `ClassName`, `Created`, etc) for a given `DataObject` class
-* [`classHasTable()`](api:SilverStripe\ORM\DataObjectSchema::classHasTable()): Check if there is a table in the database for a given `DataObject` class (i.e. whether that class defines columns not already present in another class further up the class hierarchy)
-* [`sqlColumnForField()`](api:SilverStripe\ORM\DataObjectSchema::sqlColumnForField()): Get the ANSI-quoted table and column name for a given `DataObject` field (in `"Table"."Field"` format)
-* [`tableForField()`](api:SilverStripe\ORM\DataObjectSchema::tableForField()): Get the table name in the class hierarchy which contains a given field column.
-* [`tableName()`](api:SilverStripe\ORM\DataObjectSchema::tableName()): Get table name for the given class. Note that this does not confirm a table actually exists (or should exist), but returns the name that would be used if this table did exist. Male sure to call `classHasTable()` before using this table name in a query.
+- [`baseDataTable()`](api:SilverStripe\ORM\DataObjectSchema::baseDataTable()): Get the name of the database table which holds the base data (i.e. `ID`, `ClassName`, `Created`, etc) for a given `DataObject` class
+- [`classHasTable()`](api:SilverStripe\ORM\DataObjectSchema::classHasTable()): Check if there is a table in the database for a given `DataObject` class (i.e. whether that class defines columns not already present in another class further up the class hierarchy)
+- [`sqlColumnForField()`](api:SilverStripe\ORM\DataObjectSchema::sqlColumnForField()): Get the ANSI-quoted table and column name for a given `DataObject` field (in `"Table"."Field"` format)
+- [`tableForField()`](api:SilverStripe\ORM\DataObjectSchema::tableForField()): Get the table name in the class hierarchy which contains a given field column.
+- [`tableName()`](api:SilverStripe\ORM\DataObjectSchema::tableName()): Get table name for the given class. Note that this does not confirm a table actually exists (or should exist), but returns the name that would be used if this table did exist. Male sure to call `classHasTable()` before using this table name in a query.
 
 [hint]
 While the default database connector will work fine without explicitly ANSI-quoting table names in queries, it is good practice to make sure they are quoted (especially if you're writing these queries in a module that will be publicly shared) to ensure your queries will work on other database connectors such as [`PostgreSQLDatabase`](https://github.com/silverstripe/silverstripe-postgresql) which explicitly require ANSI quoted table names.
@@ -87,7 +87,7 @@ Selection can be done by creating an instance of [`SQLSelect`](api:SilverStripe\
 management of all elements of a SQL `SELECT` query, including columns, joined tables,
 conditional filters, grouping, limiting, and sorting.
 
-E.g:
+For example:
 
 ```php
 $schema = DataObject::getSchema();
@@ -102,7 +102,9 @@ $sqlQuery->selectField('FieldName');
 $sqlQuery->selectField('YEAR("Birthday")', 'Birthyear');
 
 // Join another table onto the query
-$joinOnClause = $schema->sqlColumnForField(Player::class, 'TeamID') . ' = ' . $schema->sqlColumnForField(Team::class, 'ID');
+$teamIdField = $schema->sqlColumnForField(Player::class, 'TeamID');
+$idField = $schema->sqlColumnForField(Team::class, 'ID');
+$joinOnClause = "$teamIdField = $idField";
 $sqlQuery->addLeftJoin($teamTableName, $joinOnClause);
 
 // Combine another query using a union
@@ -123,7 +125,7 @@ $rawSQL = $sqlQuery->sql($parameters);
 $result = $sqlQuery->execute();
 
 // Iterate over results
-foreach($result as $row) {
+foreach ($result as $row) {
     echo $row['BirthYear'];
 }
 ```
@@ -144,8 +146,8 @@ For example, creating a `SQLDelete` object:
 
 ```php
 use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLDelete;
 
 $schema = DataObject::getSchema();
@@ -187,40 +189,40 @@ Each of these classes implement the [`SQLWriteExpression`](api:SilverStripe\ORM\
 accepts key/value pairs in a number of similar ways. These include the following
 API methods:
 
- * [`addAssignments()`](api:SilverStripe\ORM\Queries\SQLWriteExpression::addAssignments()) - Takes a list of assignments as an associative array of key => value pairs,
+- [`addAssignments()`](api:SilverStripe\ORM\Queries\SQLWriteExpression::addAssignments()) - Takes a list of assignments as an associative array of key => value pairs,
    where the value can also be an SQL expression.
- * [`setAssignments()`](api:SilverStripe\ORM\Queries\SQLWriteExpression::setAssignments()) - Replaces all existing assignments with the specified list
- * [`getAssignments()`](api:SilverStripe\ORM\Queries\SQLWriteExpression::getAssignments()) - Returns all currently given assignments, as an associative array
+- [`setAssignments()`](api:SilverStripe\ORM\Queries\SQLWriteExpression::setAssignments()) - Replaces all existing assignments with the specified list
+- [`getAssignments()`](api:SilverStripe\ORM\Queries\SQLWriteExpression::getAssignments()) - Returns all currently given assignments, as an associative array
    in the format `['Column' => ['SQL' => ['parameters]]]`
- * [`assign()`](api:SilverStripe\ORM\Queries\SQLWriteExpression::assign()) - Singular form of `addAssignments()`, but only assigns a single column value
- * [`assignSQL()`](api:SilverStripe\ORM\Queries\SQLWriteExpression::assignSQL()) - Assigns a column the value of a specified SQL expression without parameters -
+- [`assign()`](api:SilverStripe\ORM\Queries\SQLWriteExpression::assign()) - Singular form of `addAssignments()`, but only assigns a single column value
+- [`assignSQL()`](api:SilverStripe\ORM\Queries\SQLWriteExpression::assignSQL()) - Assigns a column the value of a specified SQL expression without parameters -
    `assignSQL('Column', 'SQL')` is shorthand for `assign('Column', ['SQL' => []])`
 
 `SQLUpdate` also includes the following API methods:
 
- * [`clear()`](api:SilverStripe\ORM\Queries\SQLUpdate::clear()) - Clears all assignments
- * [`getTable()`](api:SilverStripe\ORM\Queries\SQLUpdate::getTable()) - Gets the table to update
- * [`setTable()`](api:SilverStripe\ORM\Queries\SQLUpdate::setTable()) - Sets the table to update (this should be ANSI-quoted)
+- [`clear()`](api:SilverStripe\ORM\Queries\SQLUpdate::clear()) - Clears all assignments
+- [`getTable()`](api:SilverStripe\ORM\Queries\SQLUpdate::getTable()) - Gets the table to update
+- [`setTable()`](api:SilverStripe\ORM\Queries\SQLUpdate::setTable()) - Sets the table to update (this should be ANSI-quoted)
    e.g. `$query->setTable('"Page"');`
 
 `SQLInsert` also includes the following API methods:
 
- * [`clear()`](api:SilverStripe\ORM\Queries\SQLInsert::clear()) - Clears all rows
- * [`clearRow()`](api:SilverStripe\ORM\Queries\SQLInsert::clearRow()) - Clears all assignments on the current row
- * [`addRow()`](api:SilverStripe\ORM\Queries\SQLInsert::addRow()) - Adds another row of assignments, and sets the current row to the new row
- * [`addRows()`](api:SilverStripe\ORM\Queries\SQLInsert::addRows()) - Adds a number of arrays, each representing a list of assignment rows,
+- [`clear()`](api:SilverStripe\ORM\Queries\SQLInsert::clear()) - Clears all rows
+- [`clearRow()`](api:SilverStripe\ORM\Queries\SQLInsert::clearRow()) - Clears all assignments on the current row
+- [`addRow()`](api:SilverStripe\ORM\Queries\SQLInsert::addRow()) - Adds another row of assignments, and sets the current row to the new row
+- [`addRows()`](api:SilverStripe\ORM\Queries\SQLInsert::addRows()) - Adds a number of arrays, each representing a list of assignment rows,
    and sets the current row to the last one
- * [`getColumns()`](api:SilverStripe\ORM\Queries\SQLInsert::getColumns()) - Gets the names of all distinct columns assigned
- * [`getInto()`](api:SilverStripe\ORM\Queries\SQLInsert::getInto()) - Gets the table to insert into
- * [`setInto()`](api:SilverStripe\ORM\Queries\SQLInsert::setInto()) - Sets the table to insert into (this should be ANSI-quoted),
+- [`getColumns()`](api:SilverStripe\ORM\Queries\SQLInsert::getColumns()) - Gets the names of all distinct columns assigned
+- [`getInto()`](api:SilverStripe\ORM\Queries\SQLInsert::getInto()) - Gets the table to insert into
+- [`setInto()`](api:SilverStripe\ORM\Queries\SQLInsert::setInto()) - Sets the table to insert into (this should be ANSI-quoted),
    e.g. `$query->setInto('"Page"');`
 
-E.g.:
+For example:
 
 ```php
 use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLUpdate;
 
 $schema = DataObject::getSchema();
@@ -231,7 +233,7 @@ $update = SQLUpdate::create($siteTreeTable)->addWhere(['"ID"' => 3]);
 // assigning a list of items
 $update->addAssignments([
     '"Title"' => 'Our Products',
-    '"MenuTitle"' => 'Products'
+    '"MenuTitle"' => 'Products',
 ]);
 
 // Assigning a single value
@@ -241,7 +243,7 @@ $update->assign('"MenuTitle"', 'Products');
 $title = 'Products';
 $update->assign('"MenuTitle"', [
     'CASE WHEN LENGTH("MenuTitle") > LENGTH(?) THEN "MenuTitle" ELSE ? END' =>
-        [$title, $title]
+        [$title, $title],
 ]);
 
 // Assigning a value using a pure SQL expression
@@ -259,8 +261,8 @@ For example:
 
 ```php
 use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLInsert;
 
 $schema = DataObject::getSchema();
@@ -271,7 +273,7 @@ $insert = SQLInsert::create($siteTreeTable);
 // Add multiple rows in a single call. Note that column names do not need to be symmetric
 $insert->addRows([
     ['"Title"' => 'Home', '"Content"' => '<p>This is our home page</p>'],
-    ['"Title"' => 'About Us', '"ClassName"' => 'AboutPage']
+    ['"Title"' => 'About Us', '"ClassName"' => 'AboutPage'],
 ]);
 
 // Adjust an assignment on the last row
@@ -286,16 +288,15 @@ $columns = $insert->getColumns();
 $insert->execute();
 ```
 
-### Value Checks
+### Value checks
 
-Raw SQL is handy for performance-optimized calls,
-e.g. when you want a single column rather than a full-blown object representation.
+Raw SQL is handy for performance-optimized calls, e.g. when you want a single column rather than a full-blown object representation.
 
 Example: Get the count from a relationship.
 
 ```php
-use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLSelect;
 
 $schema = DataObject::getSchema();
@@ -336,8 +337,8 @@ Also note that you can pass an integer in as the first argument rather than an a
 Example: Get the fields for all players in a team which has more than 15 wins.
 
 ```php
-use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLSelect;
 
 $schema = DataObject::getSchema();
@@ -348,7 +349,7 @@ $placeholders = DB::placeholders($teamIds);
 
 $sqlQuery = new SQLSelect();
 $sqlQuery->setFrom($playerTableName)->where([
-    $schema->sqlColumnForField(Player::class, 'ID') . ' in (' . $placeholders . ')' => $ids
+    $schema->sqlColumnForField(Player::class, 'ID') . ' in (' . $placeholders . ')' => $ids,
 ]);
 $results = $sqlQuery->execute();
 ```
@@ -359,17 +360,18 @@ This is obviously a contrived example - this could easily (and more efficiently)
 ```php
 $players = Player::get()->filter('Teams.Wins:GreaterThan', 15);
 ```
+
 [/info]
 
-### Joining tables for a DataObject inheritance chain {#joins-for-inheritance}
+### Joining tables for a `DataObject` inheritance chain {#joins-for-inheritance}
 
 In the [Introduction to the Data Model and ORM](data_model_and_orm/#subclasses) we discussed how `DataObject` inheretance chains can spread their data across multiple tables. The ORM handles this seemlessly, but when using the lower-level APIs we need to account for this ourselves by joining all of the relevant tables manually.
 
-We also want to make sure to _only_ select the records which are relevant for the actual class in the class hierarchy we're looking at. To do that, we can either use an `INNER JOIN`, or we can use a `WHERE` clause on the `ClassName` field. In the below example we're using a `WHERE` clause with a `LEFT JOIN` because it is likely more intuitive for developers who aren't intimately familar with SQL.
+We also want to make sure to *only* select the records which are relevant for the actual class in the class hierarchy we're looking at. To do that, we can either use an `INNER JOIN`, or we can use a `WHERE` clause on the `ClassName` field. In the below example we're using a `WHERE` clause with a `LEFT JOIN` because it is likely more intuitive for developers who aren't intimately familar with SQL.
 
 ```php
-use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLSelect;
 
 $schema = DataObject::getSchema();
@@ -400,7 +402,7 @@ foreach ($columns as $alias => $ansiQuotedColumn) {
 ```
 
 [hint]
-If we want all of the fields for _all_ models in the class hierarchy (mimicking `Product::get()` where `Product` is the first subclass of `DataObject` - see the example in the [Introduction to the Data Model and ORM](data_model_and_orm/#subclasses)), we can do this by using a `LEFT JOIN` (like above), ommitting the `WHERE` clause on the `ClassName` field, and making sure we join _all_ tables for the inheritance chain regardless of the fields being selected. To do that, make sure you're using the first `DataObject` class as your first main query class (replace `Computer` above with `Product`, in this example), remove the call to `$select->addWhere()`, and add the following code to the end of the above example:
+If we want all of the fields for *all* models in the class hierarchy (mimicking `Product::get()` where `Product` is the first subclass of `DataObject` - see the example in the [Introduction to the Data Model and ORM](data_model_and_orm/#subclasses)), we can do this by using a `LEFT JOIN` (like above), ommitting the `WHERE` clause on the `ClassName` field, and making sure we join *all* tables for the inheritance chain regardless of the fields being selected. To do that, make sure you're using the first `DataObject` class as your first main query class (replace `Computer` above with `Product`, in this example), remove the call to `$select->addWhere()`, and add the following code to the end of the above example:
 
 ```php
 // Make sure we join all the tables for the model inheritance chain
@@ -415,9 +417,10 @@ foreach (ClassInfo::subclassesFor(Product::class, includeBaseClass: false) as $c
     }
 }
 ```
+
 [/hint]
 
-### Common Table Expressions (CTEs aka the `WITH` clause) {#cte}
+### Common table expressions (CTE aka the `WITH` clause) {#cte}
 
 Common Table Expressions are a powerful tool both for optimising complex queries, and for creating recursive queries. You can use these by calling the [`SQLSelect::addWith()`](api:SilverStripe\ORM\Queries\SQLSelect::addWith()) method.
 
@@ -438,8 +441,8 @@ For an example of how to use this abstraction and how powerful it is, here is an
 ```php
 use App\Model\ObjectWithParent;
 use SilverStripe\Core\Convert;
-use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLSelect;
 
 $schema = DataObject::getSchema();
@@ -468,7 +471,8 @@ if (DB::get_conn()->supportsCteQueries(true)) {
         ]
     );
     $cteQuery->addUnion($recursiveQuery);
-    $baseQuery->addWith('hierarchy_cte', $cteQuery, ['parent_id'], true)->addInnerJoin('hierarchy_cte', "$idField = $cteIdField");
+    $baseQuery->addWith('hierarchy_cte', $cteQuery, ['parent_id'], true)
+        ->addInnerJoin('hierarchy_cte', "$idField = $cteIdField");
     // This query result will include only the ancestors of whatever record is stored in the $someRecord variable.
     $ancestors = $baseQuery->execute();
 } else {
@@ -488,22 +492,22 @@ WITH RECURSIVE "hierarchy_cte" ("parent_id") AS (
         WHERE ("ObjectWithParent"."ParentID" > 0) AND ("ObjectWithParent"."ID" = "hierarchy_cte"."parent_id")
     )
 )
-SELECT * FROM "ObjectWithParent" INNER JOIN "hierarchy_cte" ON "ObjectWithParent"."ID" = "hierarchy_cte"."parent_id" 
+SELECT * FROM "ObjectWithParent" INNER JOIN "hierarchy_cte" ON "ObjectWithParent"."ID" = "hierarchy_cte"."parent_id"
 ```
 
 The PHPDoc for the [`SQLSelect::addWith()`](api:SilverStripe\ORM\Queries\SQLSelect::addWith()) method has more details about what each of the arguments are and how they're used, though note that you should ensure you understand the underlying SQL concept of CTE queries before using this API.
 
 ### Mapping
 
-Creates a map based on the first two columns of the query result. 
+Creates a map based on the first two columns of the query result.
 This can be useful for creating dropdowns.
 
 Example: Show player names with their birth year, but set their birth dates as values.
 
 ```php
 use SilverStripe\Forms\DropdownField;
-use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLSelect;
 
 $schema = DataObject::getSchema();
@@ -515,7 +519,8 @@ $sqlQuery->setSelect('"ID"');
 $sqlQuery->selectField('CONCAT("Name", \' - \', YEAR("Birthdate")', 'NameWithBirthyear');
 $map = $sqlQuery->execute()->map();
 
-// The value of the selected option will be the record ID, and the display label will be the name and birthyear concatenation.
+// The value of the selected option will be the record ID, and the display label will be the name and
+// birthyear concatenation.
 $field = new DropdownField('Birthdates', 'Birthdates', $map);
 ```
 
@@ -524,13 +529,15 @@ because of the custom SQL value transformation (`YEAR()`).
 An alternative approach would be a custom getter in the object definition:
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
-class Player extends DataObject 
+class Player extends DataObject
 {
     private static $db = [
-        'Name' =>  'Varchar',
-        'Birthdate' => 'Date'
+        'Name' => 'Varchar',
+        'Birthdate' => 'Date',
     ];
 
     public function getNameWithBirthyear()
@@ -538,8 +545,13 @@ class Player extends DataObject
         return date('y', $this->Birthdate);
     }
 }
+```
 
-$map = Player::get()->map('ID', 'NameWithBirthyear');
+```php
+use App\Model\Player;
+
+$players = Player::get();
+$map = $players->map('ID', 'NameWithBirthyear');
 ```
 
 ### True raw SQL
@@ -550,8 +562,8 @@ Directly querying the database:
 
 ```php
 use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;
 
 $schema = DataObject::getSchema();
 $siteTreeBaseTable = DB::get_conn()->escapeIdentifier($schema->baseDataTable(SiteTree::class));
@@ -568,31 +580,31 @@ foreach ($results as $row) {
 ```
 
 [hint]
-Note that you do _not_ have to call `execute()` with these methods, unlike the abstraction layer in the other examples. This is because you're passing the entire query into the method - you can't change the query after it's passed in, so it gets executed right away. The return type for these methods is the same as the return type for the [`execute()`](api::SilverStripe\ORM\Queries\SQLExpression::execute()) methods on the `SQLExpression` classes.
+Note that you do *not* have to call `execute()` with these methods, unlike the abstraction layer in the other examples. This is because you're passing the entire query into the method - you can't change the query after it's passed in, so it gets executed right away. The return type for these methods is the same as the return type for the [`execute()`](api::SilverStripe\ORM\Queries\SQLExpression::execute()) methods on the `SQLExpression` classes.
 [/hint]
 
 ### Data types
 
 The following PHP types are used to return database content:
 
- * booleans will be an integer 1 or 0, to ensure consistency with MySQL that doesn't have native booleans
- * integer types returned as integers
- * floating point / decimal types returned as floats
- * strings returned as strings
- * dates / datetimes returned as strings
+- booleans will be an integer 1 or 0, to ensure consistency with MySQL that doesn't have native booleans
+- integer types returned as integers
+- floating point / decimal types returned as floats
+- strings returned as strings
+- dates / datetimes returned as strings
 
-## Related Lessons
-* [Building custom SQL](https://www.silverstripe.org/learn/lessons/v4/beyond-the-orm-building-custom-sql-1)
+## Related lessons
 
+- [Building custom SQL](https://www.silverstripe.org/learn/lessons/v4/beyond-the-orm-building-custom-sql-1)
 
-## Related Documentation
+## Related documentation
 
-* [Introduction to the Data Model and ORM](data_model_and_orm)
+- [Introduction to the Data Model and ORM](data_model_and_orm)
 
-## API Documentation
+## API documentation
 
-* [DataObject](api:SilverStripe\ORM\DataObject)
-* [SQLSelect](api:SilverStripe\ORM\Queries\SQLSelect)
-* [DB](api:SilverStripe\ORM\DB)
-* [Query](api:SilverStripe\ORM\Connect\Query)
-* [Database](api:SilverStripe\ORM\Connect\Database)
+- [DataObject](api:SilverStripe\ORM\DataObject)
+- [SQLSelect](api:SilverStripe\ORM\Queries\SQLSelect)
+- [DB](api:SilverStripe\ORM\DB)
+- [Query](api:SilverStripe\ORM\Connect\Query)
+- [Database](api:SilverStripe\ORM\Connect\Database)

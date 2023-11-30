@@ -17,21 +17,22 @@ Email configuration is done using Symfony's [DSN](https://symfony.com/doc/curren
 The `Sendmail` transport is the most common one and is used by default in Silverstripe. The `sendmail` binary is widely available across most Linux/Unix servers. By default the sendmail command used is `/usr/sbin/sendmail -bs`, but this [can be configured](#dsn-sendmail) as part of the `DSN`.
 
 Alternatively you can provide a different `DSN` to select any of the Transport classes provided natively by `symfony/mailer` or other compatible third-party transports. For more information and to see what other transports are available see the [symfony/mailer transport types](https://symfony.com/doc/current/mailer.html#using-a-3rd-party-transport).
+
 [hint]
 The format for the DSN is exactly as defined in the symfony docs linked above. Some common examples are listed below.
 [/hint]
 
 To set the DSN string in an environment variable (recommended):
 
-**.env**
-```
+```bash
+# .env
 MAILER_DSN="<my-dsn>"
 ```
 
 To set the DSN string in project yml:
 
-**app/_config/mailer-project.yml**
 ```yml
+# app/_config/mailer-project.yml
 ---
 Name: mailer-project
 After: 'mailer'
@@ -43,30 +44,31 @@ SilverStripe\Core\Injector\Injector:
 ```
 
 The configuration priority order is as follows, from highest to lowest:
+
 - The `MAILER_DSN` environment variable
 - Project yml containing `After: 'mailer'`
-- The default silverstripe DSN of `sendmail://default` which will use `/usr/sbin/sendmail -bs`
+- The default DSN of `sendmail://default` which will use `/usr/sbin/sendmail -bs`
 
 ### Common DSN strings
 
 #### To configure SMTP {#dsn-smtp}
 
-**.env**
-```
+```bash
+# .env
 MAILER_DSN="smtp://user:pass@smtp.example.com:1234"
 ```
 
 #### To configure a different sendmail binary and command {#dsn-sendmail}
 
-**.env**
-```
+```bash
+# .env
 MAILER_DSN="sendmail://default?command=/path/to/mysendmailbinary%20-t"
 ```
 
 #### To suppress all emails {#dsn-null}
 
-**.env**
-```
+```bash
+# .env
 MAILER_DSN="null://default"
 ```
 
@@ -74,7 +76,7 @@ Read more about other available DSN strings in [the symfony documentation](https
 
 ### Testing that email works
 
-You _must_ ensure emails are being sent from your _production_ environment. You can do this by testing that the
+You *must* ensure emails are being sent from your *production* environment. You can do this by testing that the
 ***Lost password*** form available at `/Security/lostpassword` sends an email to your inbox, or with the following code snippet that can be run via a `SilverStripe\Dev\BuildTask`:
 
 ```php
@@ -99,8 +101,8 @@ $email->sendPlain();
 
 ### Sending combined HTML and plain text
 
-By default, emails are sent in both HTML and Plaintext format. A plaintext representation is automatically generated 
-from the system by stripping HTML markup, or transforming it where possible (e.g. `<strong>text</strong>` is converted 
+By default, emails are sent in both HTML and Plaintext format. A plaintext representation is automatically generated
+from the system by stripping HTML markup, or transforming it where possible (e.g. `<strong>text</strong>` is converted
 to `*text*`).
 
 You can also specify plain text and HTML content separately if you don't want the plain text to be automatically generated from HTML
@@ -116,18 +118,17 @@ $email->send();
 
 [info]
 The default HTML template for emails is `vendor/silverstripe/framework/templates/SilverStripe/Control/Email/Email.ss`.
-To customise this template, first copy it to `<project-root>/themes/<my-theme>/SilverStripe/Control/Email/Email.ss`. Alternatively, copy it to a different location and use `setHTMLTemplate` when you create the 
+To customise this template, first copy it to `<project-root>/themes/<my-theme>/SilverStripe/Control/Email/Email.ss`. Alternatively, copy it to a different location and use `setHTMLTemplate` when you create the
 `Email` instance. Note - by default the `$EmailContent` variable will escape HTML tags for security reasons. If you feel confident allowing this variable to be rendered as HTML, then update your custom email template to `$EmailContent.RAW`
 [/info]
 
 ### Templates
 
 HTML emails can use custom templates using the same template language as your website template. You can also pass the
-email object additional information using the `setData` and `addData` methods. 
-
-**app/templates/Email/MyCustomEmail.ss**
+email object additional information using the `setData` and `addData` methods.
 
 ```ss
+<%-- app/templates/Email/MyCustomEmail.ss --%>
 <h1>Hi $Member.FirstName</h1>
 <p>You can go to $Link.</p>
 ```
@@ -135,14 +136,14 @@ email object additional information using the `setData` and `addData` methods.
 The PHP Logic..
 
 ```php
-
 use SilverStripe\Control\Email\Email;
+use SilverStripe\Security\Security;
 
 $email = Email::create()
-    ->setHTMLTemplate('Email\\MyCustomEmail') 
+    ->setHTMLTemplate('Email\\MyCustomEmail')
     ->setData([
         'Member' => Security::getCurrentUser(),
-        'Link'=> $link,
+        'Link' => $link,
     ])
     ->from($from)
     ->to($to)
@@ -174,19 +175,19 @@ $email->setPlainTemplate('MyPlanTemplate');
 $email->send();
 ```
 
-## Administrator Emails
+## Administrator emails
 
 You can set the default sender address of emails through the `Email.admin_email` [configuration setting](/developer_guides/configuration).
 
-**app/_config/app.yml**
-```yaml
+```yml
+# app/_config/app.yml
 SilverStripe\Control\Email\Email:
   admin_email: support@example.com
 ```
 
 To add a display name, set `admin_email` as follow.
 
-```yaml
+```yml
 SilverStripe\Control\Email\Email:
   admin_email:
     support@example.com: 'Support team'
@@ -198,7 +199,7 @@ SilverStripe\Control\Email\Email:
 use SilverStripe\Control\Email\Email;
 
 $from = [
-  'from@mysite.exmaple.com' => 'Friendly business'
+  'from@mysite.exmaple.com' => 'Friendly business',
 ];
 $to = [
   'person.a@customer.example.com' => 'Person A',
@@ -207,7 +208,6 @@ $to = [
 ]
 $email = Email::create($from, $to, $subject, $body);
 ```
-
 
 [alert]
 Remember, setting a `from` address that doesn't come from your domain (such as the users email) will likely see your
@@ -218,36 +218,37 @@ You will also have to remove the `SS_SEND_ALL_EMAILS_FROM` environment variable 
 
 If you need greater control over this email address, for instance if are running the subsites modules, you can implement the `SilverStripe\Control\Email\Email::updateDefaultFrom()` extension hook.
 
-## Redirecting Emails
+## Redirecting emails
 
 There are several other [configuration settings](/developer_guides/configuration) to manipulate the email server.
 
-* `SilverStripe\Control\Email\Email.send_all_emails_to` will redirect all emails sent to the given address.
-All recipients will be removed (including CC and BCC addresses). This is useful for testing and staging servers where 
+- `SilverStripe\Control\Email\Email.send_all_emails_to` will redirect all emails sent to the given address.
+All recipients will be removed (including CC and BCC addresses). This is useful for testing and staging servers where
 you do not wish to send emails out. For debugging the original addresses are added as `X-Original-*` headers on the email.
-* `SilverStripe\Control\Email\Email.cc_all_emails_to` and `SilverStripe\Control\Email\Email.bcc_all_emails_to` will add
-an additional recipient in the BCC / CC header. These are good for monitoring system-generated correspondence on the 
+- `SilverStripe\Control\Email\Email.cc_all_emails_to` and `SilverStripe\Control\Email\Email.bcc_all_emails_to` will add
+an additional recipient in the BCC / CC header. These are good for monitoring system-generated correspondence on the
 live systems.
 
 Configuration of those properties looks like the following:
 
-**app/_config.php**
 ```php
+// app/_config.php
+use SilverStripe\Control\Director;
 use SilverStripe\Control\Email\Email;
 use SilverStripe\Core\Config\Config;
 
-if(Director::isLive()) {
-    Config::modify()->set(Email::class, 'bcc_all_emails_to', "client@example.com");
+if (Director::isLive()) {
+    Config::modify()->set(Email::class, 'bcc_all_emails_to', 'client@example.com');
 } else {
-    Config::modify()->set(Email::class, 'send_all_emails_to', "developer@example.com");
+    Config::modify()->set(Email::class, 'send_all_emails_to', 'developer@example.com');
 }
 ```
 
-### Setting custom "Reply To" email address.
+### Setting custom "Reply To" email address
 
-For email messages that should have an email address which is replied to that actually differs from the original "from" 
+For email messages that should have an email address which is replied to that actually differs from the original "from"
 email, do the following. This is encouraged especially when the domain responsible for sending the message isn't
-necessarily the same which should be used for return correspondence and should help prevent your message from being 
+necessarily the same which should be used for return correspondence and should help prevent your message from being
 marked as spam.
 
 ```php
@@ -280,6 +281,4 @@ For more information, refer to [handling sending failures](https://symfony.com/d
 
 Silverstripe Email is built on top of [symfony/mailer](https://github.com/symfony/mailer). For advanced customisation information refer to the [symfony/mailer docs](https://symfony.com/doc/current/mailer.html)
 
-## API Documentation
-
-* [Email](api:SilverStripe\Control\Email\Email)
+- [Email](api:SilverStripe\Control\Email\Email)

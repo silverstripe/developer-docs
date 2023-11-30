@@ -1,9 +1,9 @@
 ---
-title: Adding DataObjects to the schema
+title: Adding DataObject models to the schema
 summary: An overview of how the DataObject model can influence the creation of types, queries, and mutations
 ---
 
-# Working with DataObjects
+# Working with `DataObject` models
 
 [CHILDREN asList]
 
@@ -18,7 +18,7 @@ GraphQL schema definition is fast and simple.
 While it is possible to add DataObjects to your schema as generic types under the `types`
 section of the configuration, and their associated queries and mutations under `queries` and
 `mutations`, this will lead to a lot of boilerplate code and repetition. Unless you have some
-really custom needs, a much better approach is to embrace _convention over configuration_
+really custom needs, a much better approach is to embrace *convention over configuration*
 and use the `models` section of the config.
 
 **Model types** are types that rely on external classes to tell them who they are and what
@@ -29,8 +29,8 @@ Naturally, this module comes bundled with a model type for subclasses of `DataOb
 
 Let's use the `models` config to expose some content.
 
-**app/_graphql/models.yml**
-```
+```yml
+# app/_graphql/models.yml
 Page:
   fields: '*'
   operations: '*'
@@ -39,7 +39,7 @@ Page:
 The class `Page` is a subclass of `DataObject`, so the bundled model
 type will kick in here and provide a lot of assistance in building out this part of our API.
 
-Case in point, by supplying a value of `*` for `fields` , we're saying that we want _all_ of the fields
+Case in point, by supplying a value of `*` for `fields` , we're saying that we want *all* of the fields
 on the `Page` class. This includes the first level of relationships, as defined on `has_one`, `has_many`,
 or `many_many`.
 
@@ -51,17 +51,17 @@ To add additional fields for those relationships you will need to add the corres
 The `*` value on `operations` tells the schema to create all available queries and mutations
  for the DataObject, including:
 
-* `read`
-* `readOne`
-* `create`
-* `update`
-* `delete`
+- `read`
+- `readOne`
+- `create`
+- `update`
+- `delete`
 
 Now that we've changed our schema, we need to build it using the `dev/graphql/build` command:
 
 `vendor/bin/sake dev/graphql/build schema=default`
 
-Now we can access our schema on the default graphql endpoint, `/graphql`.
+Now we can access our schema on the default GraphQL endpoint, `/graphql`.
 
 Test it out!
 
@@ -119,18 +119,18 @@ Did you get a permissions error? Make sure you're authenticated as someone with 
 
 ### Configuring operations
 
-You may not always want to add _all_ operations with the `*` wildcard. You can allow those you
+You may not always want to add *all* operations with the `*` wildcard. You can allow those you
 want by setting them to `true` (or `false` to remove them).
 
-**app/_graphql/models.yml**
-```yaml
+```yml
+# app/_graphql/models.yml
 Page:
   fields: '*'
   operations:
     read: true
     create: true
 
-MyProject\Models\Product:
+App\Model\Product:
   fields: '*'
   operations:
     '*': true
@@ -139,8 +139,8 @@ MyProject\Models\Product:
 
 Operations are also configurable, and accept a nested map of config.
 
-**app/_graphql/models.yml**
-```
+```yml
+# app/_graphql/models.yml
 Page:
   fields: '*'
   operations:
@@ -152,10 +152,10 @@ Page:
 #### Customising the input types
 
 The input types, specifically in `create` and `update`, can be customised with a
-list of fields. The list can include explicitly _disallowed_ fields.
+list of fields. The list can include explicitly *disallowed* fields.
 
-**app/_graphql/models.yml**
-```yaml
+```yml
+# app/_graphql/models.yml
 Page:
   fields: '*'
   operations:
@@ -173,13 +173,13 @@ Page:
 
 Let's add some more DataObjects, but this time, we'll only add a subset of fields and operations.
 
-**app/_graphql/models.yml**
-```yaml
+```yml
+# app/_graphql/models.yml
 Page:
   fields: '*'
   operations: '*'
 
-MyProject\Models\Product:
+App\Model\Product:
   fields:
     onSale: true
     title: true
@@ -187,7 +187,7 @@ MyProject\Models\Product:
   operations:
     delete: true
 
-MyProject\Models\ProductCategory:
+App\Model\ProductCategory:
   fields:
     title: true
     featured: true
@@ -196,16 +196,16 @@ MyProject\Models\ProductCategory:
 [notice]
 A couple things to note here:
 
-* By assigning a value of `true` to the field, we defer to the model to infer the type for the field. To override that, we can always add a `type` property:
+- By assigning a value of `true` to the field, we defer to the model to infer the type for the field. To override that, we can always add a `type` property:
 
-    ```yaml
-    MyProject\Models\Product:
+    ```yml
+    App\Model\Product:
       fields:
         onSale:
           type: Boolean
     ```
 
-* The mapping of our field names to the `DataObject` property is case-insensitive. It is a
+- The mapping of our field names to the `DataObject` property is case-insensitive. It is a
 convention in GraphQL APIs to use lowerCamelCase fields, so this is given by default.
 
 [/notice]
@@ -219,16 +219,16 @@ GraphQL schema.
 
 Common use cases might be:
 
-* Add everything in `App\Models`
-* Add every implementation of `BaseElement`
-* Add anything with the `Versioned` extension
-* Add everything that matches `src/*Model.php`
+- Add everything in `App\Model`
+- Add every implementation of `BaseElement`
+- Add anything with the `Versioned` extension
+- Add everything that matches `src/*Model.php`
 
 You can create logic like this using the `bulkLoad` configuration file, which allows you to specify groups of directives
 that load a bundle of classes and apply the same set of configuration to all of them.
 
-**_graphql/bulkLoad.yml**
-```yaml
+```yml
+# app/_graphql/bulkLoad.yml
 elemental: # An arbitrary key to define what these directives are doing
   # Load all elemental blocks except MySecretElement
   load:
@@ -236,27 +236,28 @@ elemental: # An arbitrary key to define what these directives are doing
       include:
         - DNADesign\Elemental\Models\BaseElement
       exclude:
-        - MyApp\Elements\MySecretElement
+        - App\Model\Elemental\MySecretElement
   # Add all fields and read operations
   apply:
     fields:
       '*': true
     operations:
       read: true
-      readOne: true      
+      readOne: true
+
 app:
-  # Load everything in our MyApp\Models\ namespace that has the Versioned extension
+  # Load everything in our App\Model\ namespace that has the Versioned extension
   # unless the filename ends with .secret.php
   load:
     namespaceLoader:
       include:
-        - MyApp\Models\*
+        - App\Model\*
     extensionLoader:
       include:
         - SilverStripe\Versioned\Versioned
     filepathLoader:
       exclude:
-        - app/src/Models/*.secret.php
+        - app/src/Model/*.secret.php
   apply:
     fields:
       '*': true
@@ -268,32 +269,32 @@ By default, four loaders are provided to you to help gather specific classnames:
 
 #### By namespace
 
-* **Identifier**: `namespaceLoader`
-* **Description**: Include or exclude classes based on their namespace  
-* **Example**: `include: [MyApp\Models\*]`
-  
+- **Identifier**: `namespaceLoader`
+- **Description**: Include or exclude classes based on their namespace
+- **Example**: `include: [App\Model\*]`
+
 #### By inheritance
 
-* **Identifier**: `inheritanceLoader`
-* **Description**: Include or exclude everything that matches or extends a given base class
-* **Example**: `include: [DNADesign\Elemental\Models\BaseElement]`
+- **Identifier**: `inheritanceLoader`
+- **Description**: Include or exclude everything that matches or extends a given base class
+- **Example**: `include: [DNADesign\Elemental\Models\BaseElement]`
 
 #### By applied extension
 
-* **Identifier**: `extensionLoader`
-* **Description**: Include or exclude any class that has a given extension applied
-* **Example**: `include: [SilverStripe\Versioned\Versioned]`
-  
+- **Identifier**: `extensionLoader`
+- **Description**: Include or exclude any class that has a given extension applied
+- **Example**: `include: [SilverStripe\Versioned\Versioned]`
+
 #### By filepath
 
-* **Identifier**: `filepathLoader`
-* **Description**: Include or exclude any classes in files matching a given glob expression, relative to the base path. Module syntax is allowed.
-* **Examples**:
-  * `include: [ 'src/models/*.model.php' ]`
-  * `include: [ 'somevendor/somemodule: src/Models/*.php' ]`
+- **Identifier**: `filepathLoader`
+- **Description**: Include or exclude any classes in files matching a given glob expression, relative to the base path. Module syntax is allowed.
+- **Examples**:
+  - `include: [ 'src/Model/*.model.php' ]`
+  - `include: [ 'somevendor/somemodule: src/Model/*.php' ]`
 
 Each block starts with a collection of all classes that gets filtered as each loader runs. The primary job
-of a loader is to _remove_ classes from the entire collection, not add them in.
+of a loader is to *remove* classes from the entire collection, not add them in.
 
 [info]
 `exclude` directives will always supersede `include` directives.
@@ -301,7 +302,7 @@ of a loader is to _remove_ classes from the entire collection, not add them in.
 
 [info]
 If you find that this paints with too big a brush, you can always override individual models explicitly in `models.yml`.
-The bulk loaders run _before_ the `models.yml` config is loaded.
+The bulk loaders run *before* the `models.yml` config is loaded.
 [/info]
 
 #### `DataObject` subclasses are the default starting point
@@ -309,20 +310,20 @@ The bulk loaders run _before_ the `models.yml` config is loaded.
 Because this is Silverstripe CMS, and it's likely that you're using `DataObject` models only, the bulk loaders start with an
 initial filter which is defined as follows:
 
-```yaml
+```yml
 inheritanceLoader:
   include:
     - SilverStripe\ORM\DataObject
 ```
 
-This ensures that at a bare minimum, you're always filtering by `DataObject` classes _only_. If, for some reason, you
-have a non-`DataObject` class in `App\Models\*`, it will automatically be filtered out due to this default setting.
+This ensures that at a bare minimum, you're always filtering by `DataObject` classes *only*. If, for some reason, you
+have a non-`DataObject` class in `App\Model\*`, it will automatically be filtered out due to this default setting.
 
 This default is configured in the `defaultBulkLoad` setting in your schema config. Should you ever want to disable
 that, just set it to `false`.
 
-**_graphql/config.yml**
-```
+```yml
+# app/_graphql/config.yml
 defaultBulkLoad: false
 ```
 
@@ -341,13 +342,13 @@ in your `bulkLoad.yml` file.
 You don't have to rely on the model to tell you how fields should resolve. Just like
 generic types, you can customise them with arguments and resolvers.
 
-**app/_graphql/models.yml**
-```yaml
-MyProject\Models\Product:
+```yml
+# app/_graphql/models.yml
+App\Model\Product:
   fields:
     title:
       type: String
-      resolver: ['MyProject\Resolver', 'resolveSpecialTitle']
+      resolver: ['App\GraphQL\Resolver\ProductResolver', 'resolveSpecialTitle']
     'price(currency: String = "NZD")': true
 ```
 
@@ -358,16 +359,16 @@ For more information on custom arguments and resolvers, see the
 ### Excluding or customising "*" declarations
 
 You can use `*` as a field or operation, and anything that follows it will override the
-all-inclusive collection. This is almost like a spread operator in Javascript:
+all-inclusive collection. This is almost like a spread operator in JavaScript:
 
 ```js
-const newObj = {...oldObj, someProperty: 'custom'}
+const newObj = { ...oldObj, someProperty: 'custom' };
 ```
 
 Here's an example:
 
-**app/_graphql/models.yml**
-```yaml
+```yml
+# app/_graphql/models.yml
 Page:
   fields:
     '*': true # Get everything
@@ -391,10 +392,10 @@ on the public site, which now includes a sensitive field.
 
 The `graphql_blacklisted_fields` property on `DataObject` allows you to
 disallow fields globally for all GraphQL schemas.
-This block list applies for all operations (read, update, etc).  
+This block list applies for all operations (read, update, etc).
 
-**app/_config/graphql.yml**
-```yaml
+```yml
+# app/_config/graphql.yml
 SilverStripe\CMS\Model\SiteTree:
   graphql_blacklisted_fields:
     myPreviewTokenField: true
@@ -403,7 +404,7 @@ SilverStripe\CMS\Model\SiteTree:
 ### Model configuration
 
 There are several settings you can apply to your model class (typically `DataObjectModel`),
-but because they can have distinct values _per schema_, the standard `_config` layer is not
+but because they can have distinct values *per schema*, the standard `_config` layer is not
 an option. Model configuration has to be done within the schema config in the `modelConfig`
 subsection.
 
@@ -412,7 +413,7 @@ subsection.
 Most `DataObject` classes are namespaced, so converting them to a type name ends up
 being very verbose. As a default, the `DataObjectModel` class will use the "short name"
 of your `DataObject` as its typename (see: [`ClassInfo::shortName()`](api:SilverStripe/Core/ClassInfo::shortName())).
-That is, `MyProject\Models\Product` becomes `Product`.
+That is, `App\Model\Product` becomes `Product`.
 
 Given the brevity of these type names, it's not inconceivable that you could run into naming
 collisions, particularly if you use feature-based namespacing. Fortunately, there are
@@ -422,29 +423,29 @@ hooks you have available to help influence the typename.
 
 You can explicitly provide type name for a given class using the `typeMapping` setting in your schema config.
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
 typeMapping:
-  MyProject\MyApp\Page: SpecialPage
+  App\PageType\Page: SpecialPage
 ```
 
 It may be necessary to use `typeMapping` in projects that have a lot of similar class names in different namespaces, which will cause a collision
 when the type name is derived from the class name. The most case for this
-is the `Page` class, which is both at the root namespace and often in your
-app namespace, e.g. `MyApp\Models\Page`.
+is the `Page` class, which may be both at the root namespace and in your
+app namespace, e.g. `App\PageType\Page`.
 
 #### The type formatter
 
 The `type_formatter` is a callable that can be set on the `DataObjectModel` config. It takes
 the `$className` as a parameter.
 
-Let's turn `MyProject\Models\Product` into the more specific `MyProjectProduct`
+Let's turn the type for `App\Model\Product` from `Product` into the more specific `AppProduct`
 
-*app/_graphql/config.yml*
-```yaml
+```yml
+# app/_graphql/config.yml
 modelConfig:
-  DataObject: 
-    type_formatter: ['MyProject\GraphQL\Formatter', 'formatType']
+  DataObject:
+    type_formatter: ['App\GraphQL\Formatter', 'formatType']
 ```
 
 [info]
@@ -452,19 +453,24 @@ In the above example, `DataObject` is the result of [`DataObjectModel::getIdenti
 Each model class must declare one of these.
 [/info]
 
-The formatting function in your `MyProject\GraphQL\Formatter` class could look something like:
+The formatting function in your `App\GraphQL\Formatter` class could look something like:
 
 ```php
-public static function formatType(string $className): string
-{
-    $parts = explode('\\', $className);
-    if (count($parts) === 1) {
-        return $className;
-    }
-    $first = reset($parts);
-    $last = end($parts);
+namespace App\GraphQL;
 
-    return $first . $last;
+class Formatter
+{
+    public static function formatType(string $className): string
+    {
+        $parts = explode('\\', $className);
+        if (count($parts) === 1) {
+            return $className;
+        }
+        $first = reset($parts);
+        $last = end($parts);
+
+        return $first . $last;
+    }
 }
 ```
 
@@ -473,14 +479,14 @@ public static function formatType(string $className): string
 You can also add prefixes to all your `DataObject` types. This can be a scalar value or a callable,
 using the same signature as `type_formatter`.
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
 modelConfig:
   DataObject:
-    type_prefix: 'MyProject'
+    type_prefix: 'App'
 ```
 
-This would automatically set the type name for your `MyProject\Models\Product` class to `MyProjectProduct`
+This would automatically set the type name for your `App\Model\Product` class to `AppProduct`
 without needing to declare a `type_formatter`.
 
 ### Further reading

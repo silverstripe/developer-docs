@@ -4,9 +4,9 @@ summary: Reduce risk by securing models.
 icon: lock
 ---
 
-# Model-Level Permissions
+# Model-Level permissions
 
-Models can be modified in a variety of controllers and user interfaces, all of which can implement their own security 
+Models can be modified in a variety of controllers and user interfaces, all of which can implement their own security
 checks. Often it makes sense to centralize those checks on the model, regardless of the used controller.
 
 The API provides four methods for this purpose: `canEdit()`, `canCreate()`, `canView()` and `canDelete()`.
@@ -15,7 +15,7 @@ The API provides four methods for this purpose: `canEdit()`, `canCreate()`, `can
 Versioned models have additional permission methods - see [Version specific `can` methods](versioning#permission-methods).
 [/hint]
 
-Since they're PHP methods, they can contain arbitrary logic matching your own requirements. They can optionally receive 
+Since they're PHP methods, they can contain arbitrary logic matching your own requirements. They can optionally receive
 a `$member` argument, and default to the currently logged in member (through `Security::getCurrentUser()`).
 
 [notice]
@@ -26,43 +26,47 @@ Make sure you implement these methods for models which should be editable by mem
 In this example, the `MyDataObject` model can be viewed, edited, deleted, and created by any user with the `CMS_ACCESS_CMSMain` permission code, aka "Access to 'Pages' section".
 
 ```php
-use SilverStripe\Security\Permission;
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Permission;
 
-class MyDataObject extends DataObject 
+class MyDataObject extends DataObject
 {
-    public function canView($member = null) 
+    public function canView($member = null)
     {
         return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
     }
 
-    public function canEdit($member = null) 
+    public function canEdit($member = null)
     {
         return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
     }
 
-    public function canDelete($member = null) 
+    public function canDelete($member = null)
     {
         return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
     }
 
-    public function canCreate($member = null, $context = []) 
+    public function canCreate($member = null, $context = [])
     {
         return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
     }
 }
 ```
 
-It is good practice to let extensions extend permissions unless you _explicitly_ want a very restrictive permissions model. This is already done by default in the implementations of these methods in `DataObject`.
+It is good practice to let extensions extend permissions unless you *explicitly* want a very restrictive permissions model. This is already done by default in the implementations of these methods in `DataObject`.
 
 You might also want to validate that the parent class doesn't deny access for a given action.
 
 ```php
+namespace App\Model\MyDataObject;
+
 use SilverStripe\Security\Permission;
 
-class MyDataObject extends SomeParentObject 
+class MyDataObject extends SomeParentObject
 {
-    public function canView($member = null) 
+    public function canView($member = null)
     {
         // If any extension returns false, the result will be false
         // otherwise if any extension returns true, the result will be true
@@ -78,7 +82,7 @@ class MyDataObject extends SomeParentObject
         return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
     }
 
-    public function canEdit($member = null) 
+    public function canEdit($member = null)
     {
         // If the parent class says the member can't perform this action, don't let them do it.
         // Be careful though - if the parent class doesn't explicitly implement canEdit(), you will end up
@@ -91,7 +95,6 @@ class MyDataObject extends SomeParentObject
         return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
     }
 }
-
 ```
 
 See the [User Permissions](/developer_guides/security/permissions/) section for more information about defining permissions.
@@ -106,11 +109,13 @@ checked in the invoking code. The CMS default sections as well as custom interfa
 
 You can extend the permissions checks for and `DataObject` by implementing an [`Extension`](api:SilverStripe\Core\Extension).
 
-It is good practice to only return `null` or `false` from these methods. Returning `false` means the user is _not_ allowed to perform the action, and `null` means the record should perform the rest of its own permission checks to validate if the user can perform the action.
+It is good practice to only return `null` or `false` from these methods. Returning `false` means the user is *not* allowed to perform the action, and `null` means the record should perform the rest of its own permission checks to validate if the user can perform the action.
 
-If you return `true` from these methods, you're saying the user _is_ allowed to perform the action, and that the model shouldn't perform any more permissions checks.
+If you return `true` from these methods, you're saying the user *is* allowed to perform the action, and that the model shouldn't perform any more permissions checks.
 
 ```php
+namespace App\Extension;
+
 use SilverStripe\Core\Extension;
 use SilverStripe\Security\Permission;
 
@@ -128,7 +133,7 @@ class PermissionsExtension extends Extension
 
 See [Extensions and DataExtensions](/developer_guides/extending/extensions/) for more information about extensions.
 
-## API Documentation
+## API documentation
 
-* [DataObject](api:SilverStripe\ORM\DataObject)
-* [Permission](api:SilverStripe\Security\Permission)
+- [DataObject](api:SilverStripe\ORM\DataObject)
+- [Permission](api:SilverStripe\Security\Permission)

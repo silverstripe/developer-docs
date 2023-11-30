@@ -3,7 +3,7 @@ title: HTTP Middlewares
 summary: Create objects for modifying request and response objects across controllers.
 ---
 
-# HTTP Middlewares
+# HTTP middlewares
 
 HTTP Middlewares allow you to add code that will run before or after a request has been delegated to the router. These might be used for
 authentication, logging, caching, request processing, and many other purposes.
@@ -17,23 +17,28 @@ In addition, you should return an [`HTTPResponse`](api:SilverStripe\Control\HTTP
 value returned by `$delegate`, perhaps with some modification. However, sometimes you
 will deliberately return a different response, e.g. an error response or a redirection.
 
-**app/src/CustomMiddleware.php**
-
 ```php
+// app/src/Middleware/CustomMiddleware.php
 namespace App\Middleware;
 
-use SilverStripe\Control\Middleware\HTTPMiddleware;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Control\Middleware\HTTPMiddleware;
 
 class CustomMiddleware implements HTTPMiddleware
 {
-    public $Secret = 'SECRET';
+    private string $secret = '';
+
+    public function setSecret(string $secret): static
+    {
+        $this->secret = $secret;
+        return $this;
+    }
 
     public function process(HTTPRequest $request, callable $delegate)
     {
         // You can break execution by not calling $delegate.
-        if ($request->getHeader('X-Special-Header') !== $this->Secret) {
+        if ($request->getHeader('X-Special-Header') !== $this->secret) {
             return new HTTPResponse('You missed the special header', 400);
         }
 
@@ -60,9 +65,8 @@ use of it.
 
 By adding the service or class name to the `Director->Middlewares` array property via injector, a middleware will be executed on every request:
 
-**app/_config/app.yml**
-
-```yaml
+```yml
+# app/_config/middlewares.yml
 ---
 Name: myrequestprocessors
 After:
@@ -78,9 +82,8 @@ SilverStripe\Core\Injector\Injector:
 Because these are service names, you can configure properties into a custom service if you would
 like:
 
-**app/_config/app.yml**
-
-```yaml
+```yml
+# app/_config/middlewares.yml
 SilverStripe\Core\Injector\Injector:
   SilverStripe\Control\Director:
     properties:
@@ -102,9 +105,8 @@ as a replacement for your controller, and register it as a service with a `Middl
 property. The controller which does the work should be registered under the
 `RequestHandler` property.
 
-**app/_config/app.yml**
-
-```yaml
+```yml
+# app/_config/middlewares.yml
 SilverStripe\Core\Injector\Injector:
   SpecialRouteMiddleware:
     class: SilverStripe\Control\Middleware\RequestHandlerMiddlewareAdapter
@@ -112,8 +114,7 @@ SilverStripe\Core\Injector\Injector:
       RequestHandler: '%$App\Control\MyController'
       Middlewares:
         - '%$App\Middleware\CustomMiddleware'
-        - '%$AnotherMiddleware'
-
+        - '%$App\Middleware\AnotherMiddleware'
 SilverStripe\Control\Director:
   rules:
     special/section:
@@ -122,8 +123,8 @@ SilverStripe\Control\Director:
 
 ## Application middleware
 
-Some use cases will require a middleware to run before the Silverstripe CMS has been fully bootstrapped (e.g.: Updating 
-the HTTPRequest before Silverstripe CMS routes it to a controller). This can be achieved by editing the Silverstripe 
+Some use cases will require a middleware to run before the Silverstripe CMS has been fully bootstrapped (e.g: Updating
+the HTTPRequest before Silverstripe CMS routes it to a controller). This can be achieved by editing the Silverstripe
 CMS entry point file.
 
 This file will be located in your own codebase at `public/index.php`. Find the line that instantiate `HTTPApplication`. Call the
@@ -131,14 +132,19 @@ This file will be located in your own codebase at `public/index.php`. Find the l
 before the request is handled.
 
 ```php
-// Default application
+// public/index.php
+
+use App\Middleware\MyApplicationMiddleware;
+use SilverStripe\Control\HTTPApplication;
+use SilverStripe\Core\CoreKernel;
+
+// ...
+
 $kernel = new CoreKernel(BASE_PATH);
 $app = new HTTPApplication($kernel);
-
 $app->addMiddleware(new MyApplicationMiddleware());
 
-$response = $app->handle($request);
-$response->output();
+// ...
 ```
 
 [info]
@@ -164,7 +170,7 @@ require __DIR__ . '/../app/src/MyApplicationMiddleware.php';
 
 Note that using `require` in this way won't automatically load any additional classes your middleware relies on.
 
-## API Documentation
+## API documentation
 
-* [Built-in Middleware](/developer_guides/controllers/builtin_middlewares)
-* [HTTPMiddleware](api:SilverStripe\Control\Middleware\HTTPMiddleware)
+- [Built-in Middleware](/developer_guides/controllers/builtin_middlewares)
+- [HTTPMiddleware](api:SilverStripe\Control\Middleware\HTTPMiddleware)

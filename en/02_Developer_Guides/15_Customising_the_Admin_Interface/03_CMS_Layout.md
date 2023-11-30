@@ -29,11 +29,11 @@ $('.cms-container').redraw();
 
 This causes the framework to:
 
-* reset the _threeColumnCompressor_ algorithm with the current layout options (that can be set via
+- reset the *threeColumnCompressor* algorithm with the current layout options (that can be set via
 `updateLayoutOptions`)
-* trigger `layout` which cascades into all children resizing and positioning subordinate elements (this is internal
+- trigger `layout` which cascades into all children resizing and positioning subordinate elements (this is internal
 to the layout manager)
-* trigger `redraw` on children which also cascades deeper into the hierarchy (this is framework activity)
+- trigger `redraw` on children which also cascades deeper into the hierarchy (this is framework activity)
 
 [notice]
 Caveat: `layout` is also triggered when a DOM element is replaced with AJAX in `LeftAndMain::handleAjaxResponse`. In
@@ -51,25 +51,24 @@ avoid incorrect dimensions.
 
 ## Layout API
 
-### redraw
+### Redraw
 
 Define `redraw` methods on panels that need to adjust themselves after their sizes, positions or visibility have been
 changed.
 
 Call `redraw` on `.cms-container` to re-layout the CMS.
 
-### data-layout-type attribute
+### Data-layout-type attribute
 
 Layout manager will automatically apply algorithms to the children of `.cms-container` by inspecting the
 `data-layout-type` attribute. Let's take the content toolbar as an example of a second-level layout application:
 
-
-```ss
+```html
 <div class="cms-content-tools west cms-panel cms-panel-layout"
     data-expandOnClick="true"
     data-layout-type="border"
     id="cms-content-tools-CMSMain">
-    <%-- content utilising border's north, south, east, west and center classes --%>
+    <!-- content utilising border's north, south, east, west and center classes -->
 </div>
 ```
 
@@ -78,15 +77,15 @@ panel to the CMS UI.
 
 ### Methods
 
-The following methods are available as an interface to underlying _threeColumnCompressor_ algorithm on the
+The following methods are available as an interface to underlying *threeColumnCompressor* algorithm on the
 `.cms-container` entwine:
 
-* **getLayoutOptions**: get currently used _threeColumnCompressor_ options.
-* **updateLayoutOptions**: change specified options and trigger the laying out:
+- **getLayoutOptions**: get currently used *threeColumnCompressor* options.
+- **updateLayoutOptions**: change specified options and trigger the laying out:
 `$('.cms-container').updateLayoutOptions({mode: 'split'});`
-* **splitViewMode**: enable side by side editing.
-* **contentViewMode**: only menu and content areas are shown.
-* **previewMode**: only menu and preview areas are shown.
+- **splitViewMode**: enable side by side editing.
+- **contentViewMode**: only menu and content areas are shown.
+- **previewMode**: only menu and preview areas are shown.
 
 ### CSS classes
 
@@ -95,21 +94,21 @@ If as a result of alogorithm's calculations the column becomes hidden, `column-h
 ## ThreeColumnCompressor
 
 You might have noticed that the top-level `.cms-container` has the `data-layout-type` set to `custom`. We use an inhouse
-_threeColumnCompressor_ algorithm for the layout of the menu, content and preview columns of the CMS. The annotated code
+*threeColumnCompressor* algorithm for the layout of the menu, content and preview columns of the CMS. The annotated code
 for this algorithm can be found in `LeftAndMain.Layout.js`.
 
 Since the layout-type for the element is set to `custom` and will be ignored by the layout manager, we apply the
-_threeColumnCompressor_ explicitly `LeftAndMain::redraw`. This way we also get a chance to provide options expected
+*threeColumnCompressor* explicitly `LeftAndMain::redraw`. This way we also get a chance to provide options expected
 by the algorithm that are initially taken from the `LeftAndMain::LayoutOptions` entwine variable.
 
 ### Layout options
 
-* _minContentWidth_: minimum size for the content display as long as the preview is visible
-* _minPreviewWidth_: preview will not be displayed below this size
-* _mode_: one of "split", "content" (content-only), "preview" (preview-only)
+- *minContentWidth*: minimum size for the content display as long as the preview is visible
+- *minPreviewWidth*: preview will not be displayed below this size
+- *mode*: one of "split", "content" (content-only), "preview" (preview-only)
 
 ## Related
 
- * [Reference: CMS Architecture](cms_architecture)
- * [Reference: Preview](preview)
- * [Howto: Extend the CMS Interface](how_tos/extend_cms_interface)
+- [Reference: CMS Architecture](cms_architecture)
+- [Reference: Preview](preview)
+- [Howto: Extend the CMS Interface](how_tos/extend_cms_interface)

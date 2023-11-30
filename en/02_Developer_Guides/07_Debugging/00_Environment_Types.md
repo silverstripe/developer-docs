@@ -4,32 +4,31 @@ summary: Configure your Silverstripe CMS environment to define how your web appl
 icon: exclamation-circle
 ---
 
-# Environment Types
+# Environment types
 
 Silverstripe CMS knows three different environment types (or "modes"). Each of the modes gives you different tools
-and behaviors. The environment is managed by the `SS_ENVIRONMENT_TYPE` variable through an 
+and behaviors. The environment is managed by the `SS_ENVIRONMENT_TYPE` variable through an
 [environment configuration file](../../getting_started/environment_management).
 The three environment types you can set are `dev`, `test` and `live`.
 
-### Dev
+## Dev
 
 When developing your websites, adding page types or installing modules you should run your site in `dev`. In this mode
-you will see full error back traces and view the development tools without having to be logged in as an administrator 
+you will see full error back traces and view the development tools without having to be logged in as an administrator
 user.
 
 [alert]
-**dev mode should not be enabled long term on live sites for security reasons**. In dev mode by outputting back traces 
-of function calls a hacker can gain information about your environment (including passwords) so you should use dev mode 
+**dev mode should not be enabled long term on live sites for security reasons**. In dev mode by outputting back traces
+of function calls a hacker can gain information about your environment (including passwords) so you should use dev mode
 on a public server very carefully.
 [/alert]
 
-### Test Mode
+## Test mode
 
 Test mode is designed for staging environments or other private collaboration sites before deploying a site live.
 
-In this mode error messages are hidden from the user and Silverstripe CMS includes [BasicAuth](api:SilverStripe\Security\BasicAuth) integration if you 
+In this mode error messages are hidden from the user and Silverstripe CMS includes [BasicAuth](api:SilverStripe\Security\BasicAuth) integration if you
 want to password protect the site. You can enable that by adding this to your `app/_config/app.yml` file:
-
 
 ```yml
 ---
@@ -47,7 +46,7 @@ Consider using additional authentication and authorisation measures to secure ac
 
 When using CGI/FastCGI with Apache, you will have to add the `RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]` rewrite rule to your `.htaccess` file
 
-### Live Mode
+## Live mode
 
 All error messages are suppressed from the user and the application is in it's most *secure* state.
 
@@ -55,14 +54,12 @@ All error messages are suppressed from the user and the application is in it's m
 Live sites should always run in live mode. You should not run production websites in dev mode.
 [/alert]
 
-
-## Checking Environment Type
+## Checking environment type
 
 You can check for the current environment type in [config files](../configuration) through the `environment` variant.
 
-**app/_config/app.yml**
-
 ```yml
+# app/_config/app.yml
 ---
 Only:
   environment: 'live'
@@ -76,7 +73,8 @@ Only:
 MyClass:
   myvar: test_value
 ```
-Checking for what environment you're running in can also be done in PHP. Your application code may disable or enable 
+
+Checking for what environment you're running in can also be done in PHP. Your application code may disable or enable
 certain functionality depending on the environment type.
 
 ```php
@@ -91,5 +89,6 @@ if (Director::isLive()) {
 }
 ```
 
-## Related Lessons
-* [Advanced environment configuration](https://www.silverstripe.org/learn/lessons/v4/advanced-environment-configuration-1)
+## Related lessons
+
+- [Advanced environment configuration](https://www.silverstripe.org/learn/lessons/v4/advanced-environment-configuration-1)

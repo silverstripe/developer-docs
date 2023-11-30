@@ -1,7 +1,7 @@
 ---
 title: Customise the CMS pages list
 ---
-# Howto: Customize the Pages List in the CMS
+# Howto: customize the pages list in the CMS
 
 The pages "list" view in the CMS is a powerful alternative to visualizing
 your site's content, and can be better suited than a tree for large flat
@@ -20,23 +20,31 @@ You can use these two classes as a starting point for your customizations.
 Here's a brief example on how to add sorting and a new column for a
 hypothetical `NewsPageHolder` type, which contains `NewsPage` children.
 
-
-**app/src/NewsPageHolder.php**
-
 ```php
-class NewsPageHolder extends Page 
+// app/src/PageType/NewsPageHolder.php
+namespace App\PageType;
+
+use Page;
+
+class NewsPageHolder extends Page
 {
-    private static $allowed_children = ['NewsPage'];
+    private static $allowed_children = [
+        NewsPage::class,
+    ];
 }
 ```
 
-**app/src/NewsPage.php**
-
 ```php
-class NewsPage extends Page 
+// app/src/PageType/NewsPage.php
+namespace App\PageType;
+
+use Page;
+use SilverStripe\Security\Member;
+
+class NewsPage extends Page
 {
     private static $has_one = [
-        'Author' => 'Member',
+        'Author' => Member::class,
     ];
 }
 ```
@@ -47,27 +55,30 @@ before its rendered. In this case, we limit our logic to the desired page type,
 although it's just as easy to implement changes which apply to all page types,
 or across page types with common characteristics.
 
-**app/src/NewsPageHolderCMSMainExtension.php**
-
 ```php
-use SilverStripe\Core\Extension;
+// app/src/Extension/NewsPageHolderCMSMainExtension.php
+namespace App\Extension;
 
-class NewsPageHolderCMSMainExtension extends Extension 
+use SilverStripe\Core\Extension;
+// ...
+
+class NewsPageHolderCMSMainExtension extends Extension
 {
-    public function updateListView($listView) {
+    public function updateListView($listView)
+    {
         $parentId = $listView->getController()->getRequest()->requestVar('ParentID');
-        $parent = ($parentId) ? Page::get()->byId($parentId) : new Page();
+        $parent = ($parentId) ? Page::get()->byId($parentId) : Page::create();
 
         // Only apply logic for this page type
-        if($parent && $parent instanceof NewsPageHolder) {
+        if ($parent && $parent instanceof NewsPageHolder) {
             $gridField = $listView->Fields()->dataFieldByName('Page');
-            if($gridField) {
+            if ($gridField) {
                 // Sort by created
                 $list = $gridField->getList();
                 $gridField->setList($list->sort('Created', 'DESC'));
                 // Add author to columns
                 $cols = $gridField->getConfig()->getComponentByType('GridFieldDataColumns');
-                if($cols) {
+                if ($cols) {
                     $fields = $cols->getDisplayFields($gridField);
                     $fields['Author.Title'] = 'Author';
                     $cols->setDisplayFields($fields);
@@ -81,10 +92,10 @@ class NewsPageHolderCMSMainExtension extends Extension
 Now you just need to enable the extension in your [configuration file](../../configuration).
 
 ```yml
-// app/_config/config.yml
+# app/_config/extensions.yml
 SilverStripe\Admin\LeftAndMain:
   extensions:
-    - NewsPageHolderCMSMainExtension
+    - App\Extension\NewsPageHolderCMSMainExtension
 ```
 
 You're all set! Don't forget to flush the caches by appending `?flush=all` to the URL.

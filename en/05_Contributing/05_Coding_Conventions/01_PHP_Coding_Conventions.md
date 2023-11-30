@@ -4,7 +4,7 @@ summary: The code style guidelines we use in our open source software
 iconBrand: php
 ---
 
-# PHP Coding Conventions
+# PHP coding conventions
 
 This document provides guidelines for code formatting and documentation to developers contributing to Silverstripe CMS [core and supported modules](/project_governance/supported_modules/).
 
@@ -69,8 +69,8 @@ Use an appropriate suffix or prefix for classnames when making a subclass or imp
 - Avoid `public` properties, instead use a combination of `private` (or `protected`) properties and `public` getter and setter methods.
 - Prefer `private` over `protected` for all new properties. Subclasses can access the properties through the public getter and setter methods.
 - Prefer `private` over `protected` for new methods, unless:
-    - There is a clear use case for customising the specific functionality of that method on its own and the method implementation is unlikely to change in the near future
-    - The method is intended to be called by subclasses.
+  - There is a clear use case for customising the specific functionality of that method on its own and the method implementation is unlikely to change in the near future
+  - The method is intended to be called by subclasses.
 - Use `public` for constants that should be accessed outside the class hierarchy,
 - Prefer `private` over `protected` for non-public constants, unless they are intended to be used in subclasses.
 - If someone requests a `private` method, property, or constant be made `protected` so that they can use it in their project or module code, that change should be made unless there's a really good reason not to.
@@ -148,7 +148,7 @@ Order code in classes in the following order:
 - Use the `@dataProvider` annotation to provide test case data when you are testing the same method in multiple scenarios. It makes code much cleaner and it makes it very easy to add further test cases.
 - Data provider method names should be same as the test case method name they're providing for with the leading work `test` substituted for `provide` (for example for `testSomething()` the DataProvider is `provideSomething()`).
 - Data provider array keys should describe the scenario they're testing.
-- Unless you need to explicitly create dynamic fixtures, fixtures should be added via yaml fixture files.
+- Unless you need to explicitly create dynamic fixtures, fixtures should be added via YAML fixture files.
 - It's usually OK to use reflection to change the visibility of a private or protected method so that it can be tested independently. It is generally preferable to keep a smaller public API surface and use reflection to test functionality, rather than making the API public just so it can be tested.
 
 ## Raw SQL

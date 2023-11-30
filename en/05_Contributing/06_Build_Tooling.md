@@ -53,7 +53,7 @@ You may need to first run `composer reinstall silverstripe/admin --prefer-source
 that module without `--prefer-source` originally.
 [/notice]
 
-## Build Commands
+## Build commands
 
 The `script` property of a `package.json` file can be used to define command line
 [scripts](https://docs.npmjs.com/misc/scripts).
@@ -62,7 +62,7 @@ To run one of these scripts, open up your terminal, change to the directory wher
 is located, and run `yarn <SCRIPT_NAME>`. Where `<SCRIPT_NAME>` is the name of the
 script you wish to run.
 
-### build
+### Build
 
 During development, you'll want to build the core JavaScript and CSS files in development mode.
 This is faster than `yarn build` below and outputs the files in a format that is useful for debugging.
@@ -85,17 +85,17 @@ You will need to run this script before committing your changes to git.
 yarn build
 ```
 
-#### build JavaScript or CSS separately
+#### Build JavaScript or CSS separately
 
 If you are only working on JavaScript or only working on CSS you might want to only build what you're working on. You can do this by adding `WEBPACK_CHILD=css` or `WEBPACK_CHILD=js` before the relevant yarn command, for example:
 
-```sh
+```bash
 WEBPACK_CHILD=css yarn dev
 ```
 
 The `css` or `js` portion of this is defined in the `webpack.config.js` file. Some modules may also include other configured components that can be built independently as well.
 
-### lint and test
+### Lint and test
 
 You can lint and run JavaScript unit tests manually - though note that these are also automatically run as part of the `yarn build` script.
 You will not be able to build production-ready distribution files if either of these fails.
@@ -123,7 +123,7 @@ A shortened `webpack.config.js` in your own module could look as follows:
 ```js
 module.exports = {
   entry: {
-    'bundle': `mymodule/client/src/js/bundle.js`,
+    bundle: 'mymodule/client/src/js/bundle.js',
   },
   output: {
     path: './client/dist',

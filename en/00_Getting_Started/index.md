@@ -4,7 +4,9 @@ introduction: Silverstripe is a web application. This means that you will need t
 icon: rocket
 ---
 
-## Server Requirements
+# Getting started
+
+## Server requirements
 
 Silverstripe requires PHP 8.1 or newer. It runs on many webservers and databases, but is most commonly served using
 Apache and MySQL/MariaDB.
@@ -12,7 +14,7 @@ Apache and MySQL/MariaDB.
 If you are setting up your own environment, you'll need to consider a few configuration settings such as URL rewriting
 and protecting access to certain files. Refer to our [server requirements](server_requirements) for details.
 
-## Quickstart Installation
+## Quickstart installation
 
 If you're running Apache with MySQL/MariaDB already, and know your way around webservers, follow these steps to get
 started. Silverstripe is installed via [Composer](https://getcomposer.org), a package management tool for PHP that lets
@@ -55,7 +57,7 @@ Your website should be available on your domain now (e.g. `https://www.example.c
 For more information on how to maintain your installation or install projects, check
 out [Using Silverstripe with Composer](composer).
 
-## Guided Installation
+## Guided installation
 
 If you are unsure on how this all works, please jump on our [lessons](https://www.silverstripe.org/learn/lessons/v4/).
 Webserver setup is covered in

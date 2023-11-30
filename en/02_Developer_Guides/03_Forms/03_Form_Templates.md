@@ -4,18 +4,17 @@ summary: Customize the generated HTML for a FormField or an entire Form.
 icon: file-code
 ---
 
-# Form Templates
+# Form templates
 
 Most markup generated in Silverstripe CMS can be replaced by custom templates. Both [Form](api:SilverStripe\Forms\Form) and [FormField](api:SilverStripe\Forms\FormField) instances
 can be rendered out using custom templates using `setTemplate`.
 
-
 ```php
-$form = new Form(..);
+$form = Form::create(/* ... */);
 $form->setTemplate('MyCustomFormTemplate');
 
 // or, just a field
-$field = new TextField(..);
+$field = TextField::create(/* ... */);
 $field->setTemplate('MyCustomTextField');
 ```
 
@@ -23,7 +22,7 @@ To override the template for CMS forms, the custom templates should be located i
 
 [notice]
 It's recommended to copy the contents of the template you're going to replace and use that as a start. For instance, if
-you want to create a `MyCustomFormTemplate` copy the contents of `Form.ss` to a `MyCustomFormTemplate.ss` file and 
+you want to create a `MyCustomFormTemplate` copy the contents of `Form.ss` to a `MyCustomFormTemplate.ss` file and
 modify as you need.
 
 *The default Form.ss can be found at `/vendor/silverstripe/framework/templates/SilverStripe/Forms/Includes/Form.ss`*
@@ -38,11 +37,10 @@ While you can override all templates using normal view inheritance (i.e.defining
 the core template structure. It is recommended to use `setTemplate` and unique templates for specific forms.
 [/alert]
 
-For [FormField](api:SilverStripe\Forms\FormField) instances, there are several other templates that are used on top of the main `setTemplate`.
-
+For [`FormField`](api:SilverStripe\Forms\FormField) instances, there are several other templates that are used on top of the main `setTemplate()`.
 
 ```php
-$field = new TextField();
+$field = TextField::create();
 
 // Sets the template for the <input> tag. i.e.'<input $AttributesHTML />'
 $field->setTemplate('CustomTextField');
@@ -50,29 +48,29 @@ $field->setTemplate('CustomTextField');
 // Sets the template for the wrapper around the text field. i.e.
 //    '<div class="text">'
 //
-// The actual FormField is rendered into the holder via the `$Field` 
+// The actual FormField is rendered into the holder via the `$Field`
 // variable.
 //
-// setFieldHolder() is used in most `Form` instances and needs to output 
+// setFieldHolder() is used in most `Form` instances and needs to output
 // labels, error messages and the like.
 $field->setFieldHolderTemplate('CustomTextField_Holder');
 
 // Sets the template for the wrapper around the text field.
 //
-// The difference here is the small field holder template is used when the 
-// field is embedded within another field. For example, if the field is 
+// The difference here is the small field holder template is used when the
+// field is embedded within another field. For example, if the field is
 // part of a `FieldGroup` or `CompositeField` alongside other fields.
 $field->setSmallFieldHolderTemplate('CustomTextField_Holder_Small');
 ```
 
-All templates are rendered within the scope of the [FormField](api:SilverStripe\Forms\FormField). To understand more about Scope within Templates as 
+All templates are rendered within the scope of the [FormField](api:SilverStripe\Forms\FormField). To understand more about Scope within Templates as
 well as the available syntax, see the [Templates](../templates) documentation.
 
-## Related Documentation
+## Related documentation
 
-* [How to: Create a lightweight Form](how_tos/lightweight_form)
+- [How to: Create a lightweight Form](how_tos/lightweight_form)
 
-## API Documentation
+## API documentation
 
-* [Form](api:SilverStripe\Forms\Form)
-* [FormField](api:SilverStripe\Forms\FormField)
+- [Form](api:SilverStripe\Forms\Form)
+- [FormField](api:SilverStripe\Forms\FormField)

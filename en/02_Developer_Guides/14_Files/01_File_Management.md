@@ -14,23 +14,23 @@ control over the publishing and security of files.
 
 ![asset admin](../../_images/asset-admin-demo.png)
 
-## UploadField
+## `UploadField`
 
 If you have the [silverstripe/asset-admin](https://github.com/silverstripe/silverstripe-asset-admin)
-module installed then this provides a powerful component [api:SilverStripe\AssetAdmin\Forms\UploadField].
+module installed then this provides a powerful component [`UploadField`](api:SilverStripe\AssetAdmin\Forms\UploadField).
 
 ![upload field](../../_images/upload-field.png)
 
 You can add it to a page as below:
 
 ```php
-<?php
+namespace App\PageType;
 
+use Page;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\Image;
-use SilverStripe\CMS\Model\SiteTree;
 
-class Page extends SiteTree
+class LandingPage extends Page
 {
     private static $has_one = [
         'Banner' => Image::class,
@@ -47,24 +47,24 @@ class Page extends SiteTree
 
 UploadField options include:
 
- - setIsMultiUpload() - Set to allow many files per field, or one only.
- - setAllowedExtensions() - Set list of extensions this field can accept.
- - setAllowedFileCategories() - Alternatively specify allowed extensions via category instead.
- - setFolderName() - Name of folder to upload into
- - getValidator() - Get instance of validator to specify custom validation rules
+- setIsMultiUpload() - Set to allow many files per field, or one only.
+- setAllowedExtensions() - Set list of extensions this field can accept.
+- setAllowedFileCategories() - Alternatively specify allowed extensions via category instead.
+- setFolderName() - Name of folder to upload into
+- getValidator() - Get instance of validator to specify custom validation rules
 
 ## File permissions {#permissions}
 
-See [File Security](file_security). 
+See [File Security](file_security).
 
 ## File visibility
 
 In order to ensure that assets are made public you should check the following:
 
- - The "Who can view this file?" option is set to "Anyone" or "Inherit" in the asset-admin. This can be checked
+- The "Who can view this file?" option is set to "Anyone" or "Inherit" in the asset-admin. This can be checked
    via `File::canView()` or `File::$CanViewType` property.
- - The file is published, or is owned by a published record. This can be checked via `File::isPublished()`
- - The file exists on disk, and has not been removed. This can be checked by `File::exists()`
+- The file is published, or is owned by a published record. This can be checked via `File::isPublished()`
+- The file exists on disk, and has not been removed. This can be checked by `File::exists()`
 
 ## File shortcodes
 
@@ -78,9 +78,9 @@ of a page with a shortcode image:
 
 File shortcodes have the following properties:
 
- - canView() will not be checked for the file itself: Instead this will be inherited from the parent record
+- canView() will not be checked for the file itself: Instead this will be inherited from the parent record
    this is embedded within.
- - The file is automatically "owned", meaning that publishing the page will also publish the embedded file.
+- The file is automatically "owned", meaning that publishing the page will also publish the embedded file.
 
 Within the CMS shortcodes can be added via either the "Insert Media" modal, or the "Link to a file"
 buttons provided via the [silverstripe/asset-admin](https://github.com/silverstripe/silverstripe-asset-admin)
@@ -88,16 +88,14 @@ module.
 
 ## Creating files in PHP
 
-When working with files in PHP you can upload a file into a [api:SilverStripe\Assets\File] dataobject
+When working with files in PHP you can upload a file into a [`File`](api:SilverStripe\Assets\File) dataobject
 using one of the below methods:
-
 
 | Method                     | Description                             |
 | -------------------------- | --------------------------------------- |
 | `File::setFromLocalFile`   | Load a local file into the asset store  |
 | `File::setFromStream`      | Will store content from a stream        |
 | `File::setFromString`      | Will store content from a binary string |
-
 
 ### Upload conflict resolution
 
@@ -123,7 +121,7 @@ As with storage, there are also different ways of loading the content (or proper
 | ------------------------ | ---------------------------------------------------------- |
 | `File::getStream`        | Will get an output stream of the file content              |
 | `File::getString`        | Gets the binary content                                    |
-| `File::getURL`           | Gets the url for this resource. May or may not be absolute |
+| `File::getURL`           | Gets the URL for this resource. May or may not be absolute |
 | `File::getAbsoluteURL`   | Gets the absolute URL to this resource                     |
 | `File::getMimeType`      | Get the mime type of this file                             |
 | `File::getMetaData`      | Gets other metadata from the file as an array              |
@@ -157,8 +155,8 @@ $file = File::get()->filter('Name', 'oldname.jpg')->first();
 if ($file) {
   // The below will move 'oldname.jpg' and 'oldname__variant.jpg'
   // to 'newname.jpg' and 'newname__variant.jpg' respectively
-  $file->Name = 'newname.jpg';
-  $file->write();
+    $file->Name = 'newname.jpg';
+    $file->write();
 }
 ```
 
@@ -172,41 +170,42 @@ $file = File::get()->filter('Name', 'oldname.jpg')->first();
 if ($file) {
   // The below will immediately move 'oldname.jpg' and 'oldname__variant.jpg'
   // to 'newname.jpg' and 'newname__variant.jpg' respectively
-  $file->Name = 'newname.jpg';
-  Versioned::withVersionedMode(function() use ($file) {
-    Versioned::set_reading_mode('Stage.' . Versioned::DRAFT);
-    $file->write();
-    $file->publishSingle();
-  });
+    $file->Name = 'newname.jpg';
+    Versioned::withVersionedMode(function () use ($file) {
+        Versioned::set_reading_mode('Stage.' . Versioned::DRAFT);
+        $file->write();
+        $file->publishSingle();
+    });
 }
 ```
 
 ## Adding custom fields to files and images
 
-As with any customisation of a core class, adding fields to the `File` and `Image` classes 
+As with any customisation of a core class, adding fields to the `File` and `Image` classes
 is a two-phased approach. First, you have to update the model (i.e. the `$db` array) to include
 your new custom field. Second, you need to update the editform to provide a way of editing
 that field in the CMS. For most core classes, this can be done in a single extension, with an
-update to the `$db` array and definition of an `updateCMSFields` function, but for files 
+update to the `$db` array and definition of an `updateCMSFields` function, but for files
 and images, it works a bit differently. The edit form is generated by another class --
 `FileFormFactory`. You will therefore need two separate extensions.
 
 In this example, we'll add a `description` field to the `File` object and give it an editable
 field in the CMS.
 
-*app/_config/app.yml*
 ```yml
+# app/_config/extensions.yml
 SilverStripe\Assets\File:
   extensions:
-    - MyProject\MyFileExtension
+    - App\Extension\MyFileExtension
+
 SilverStripe\AssetAdmin\Forms\FileFormFactory:
   extensions:
-    - MyProject\MyFormFactoryExtension
+    - App\Extension\MyFormFactoryExtension
 ```
 
-*app/src/MyFileExtension.php*
 ```php
-namespace MyProject;
+// app/src/Extension/MyFileExtension.php
+namespace App\Extension;
 
 use SilverStripe\ORM\DataExtension;
 
@@ -218,9 +217,9 @@ class MyFileExtension extends DataExtension
 }
 ```
 
-*app/src/MyFormFactoryExtension.php*
 ```php
-namespace MyProject;
+// app/src/Extension/MyFormFactoryExtension.php
+namespace App\Extension;
 
 use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FieldList;
@@ -238,14 +237,13 @@ class MyFormFactoryExtension extends Extension
 }
 ```
 
-
 ## File versioning
 
 File versioning is extended with the [silverstripe/versioned](https://github.com/silverstripe/silverstripe-versioned/)
 module, which provides not only a separate draft and live stages for any file, but also allows a complete file
 history of modifications to be tracked.
 
-To support this feature the [api:SilverStripe\Assets\AssetControlExtension] provides support for tracking
+To support this feature the [`AssetControlExtension`](api:SilverStripe\Assets\AssetControlExtension) provides support for tracking
 references to physical files, ensuring published assets are accessible, protecting non-published assets,
 and archiving / deleting assets after the final reference has been deleted.
 
@@ -258,12 +256,12 @@ is published, all assets that are used by this record are published with it.
 For example:
 
 ```php
-<?php
+namespace App\PageType;
 
+use Page;
 use SilverStripe\Assets\Image;
-use SilverStripe\CMS\Model\SiteTree;
 
-class Page extends SiteTree
+class LandingPage extends Page
 {
     private static $has_one = [
         'Banner' => Image::class,
@@ -277,11 +275,10 @@ See [Versioned: Ownership](/developer_guides/model/versioning#ownership) for det
 ### Avoid exclusive relationships
 
 Due to the shared nature of assets, it is not recommended to assign any one-to-many (or exclusive one-to-one) relationship
-between any objects and a File. E.g. a Page has_many File, or Page belongs_to File.
-
+between any objects and a File. E.g. a Page `has_many` File, or Page `belongs_to` File.
 
 Instead it is recommended to use either a Page has_one File for many-to-one (or one-to-one) relationships, or
-Page many_many File for many-to-many relationships.
+Page `many_many` File for many-to-many relationships.
 
 ### Unpublishing assets
 
@@ -298,10 +295,11 @@ In order to permanently keep a record of all past physical files you can set the
 config option to true. This will ensure that historic files can always be restored, albeit at a cost to disk
 storage.
 
-```yaml
+```yml
 SilverStripe\Assets\File:
   keep_archived_assets: true
 ```
 
-## Related Lessons
-* [Working with files and images](https://www.silverstripe.org/learn/lessons/v4/working-with-files-and-images-1)
+## Related lessons
+
+- [Working with files and images](https://www.silverstripe.org/learn/lessons/v4/working-with-files-and-images-1)

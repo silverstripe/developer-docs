@@ -2,14 +2,14 @@
 title: How to add a custom action to a GridField row
 summary: Handle custom actions on your GridField
 ---
-# How to add a custom action to a GridField row
+# How to add a custom action to a `GridField` row
 
 You can add an action to the row(s) of a [GridField](/developer_guides/forms/field_types/gridfield), such as the built in edit or delete actions.
 
 In a [GridField](/developer_guides/forms/field_types/gridfield) instance each table row can have a
 number of actions located the end of the row.
 Each action is represented as a instance of a specific class
-(e.g [GridFieldEditButton](api:SilverStripe\Forms\GridField\GridFieldEditButton)) which has been added to the `GridFieldConfig`
+(e.g. [GridFieldEditButton](api:SilverStripe\Forms\GridField\GridFieldEditButton)) which has been added to the `GridFieldConfig`
 for that `GridField`
 
 As a developer, you can create your own custom actions to be located alongside
@@ -19,7 +19,7 @@ For example let's create a custom action on the GridField to allow the user to
 perform custom operations on a row:
 
 1. Create a custom action
-2. [Add your custom action to the `GridFieldConfig`](#add-action-to-config)
+1. [Add your custom action to the `GridFieldConfig`](#add-action-to-config)
 
 [info]
 To create a custom action follow the [Basic GridField custom action boilerplate](#custom-action-boilerplate) below.
@@ -28,35 +28,38 @@ If you would like to create a custom action in the GridField action menu follow 
 [Add a GridField custom action to the `GridField_ActionMenu`](#implement-gridfield-actionmenuitem)
 [/info]
 
-## Basic GridField custom action boilerplate {#custom-action-boilerplate}
+## Basic `GridField` custom action boilerplate {#custom-action-boilerplate}
 
 A basic outline of our new `GridFieldCustomAction.php` will look like something
 below:
 
 ```php
-use SilverStripe\Forms\GridField\AbstractGridFieldComponent;
-use SilverStripe\Forms\GridField\GridField_ColumnProvider;
-use SilverStripe\Forms\GridField\GridField_ActionProvider;
-use SilverStripe\Forms\GridField\GridField_FormAction;
-use SilverStripe\Forms\GridField\GridField;
+namespace App\Form\GridField;
+
 use SilverStripe\Control\Controller;
+use SilverStripe\Forms\GridField\AbstractGridFieldComponent;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridField_ActionProvider;
+use SilverStripe\Forms\GridField\GridField_ColumnProvider;
+use SilverStripe\Forms\GridField\GridField_FormAction;
 
-class GridFieldCustomAction extends AbstractGridFieldComponent implements GridField_ColumnProvider, GridField_ActionProvider 
+class GridFieldCustomAction extends AbstractGridFieldComponent implements
+    GridField_ColumnProvider,
+    GridField_ActionProvider
 {
-
-    public function augmentColumns($gridField, &$columns) 
+    public function augmentColumns($gridField, &$columns)
     {
         if (!in_array('Actions', $columns)) {
             $columns[] = 'Actions';
         }
     }
 
-    public function getColumnAttributes($gridField, $record, $columnName) 
+    public function getColumnAttributes($gridField, $record, $columnName)
     {
         return ['class' => 'grid-field__col-compact'];
     }
 
-    public function getColumnMetadata($gridField, $columnName) 
+    public function getColumnMetadata($gridField, $columnName)
     {
         if ($columnName === 'Actions') {
             return ['title' => ''];
@@ -64,12 +67,12 @@ class GridFieldCustomAction extends AbstractGridFieldComponent implements GridFi
         return [];
     }
 
-    public function getColumnsHandled($gridField) 
+    public function getColumnsHandled($gridField)
     {
         return ['Actions'];
     }
 
-    public function getColumnContent($gridField, $record, $columnName) 
+    public function getColumnContent($gridField, $record, $columnName)
     {
         if (!$record->canEdit()) {
             return null;
@@ -89,14 +92,15 @@ class GridFieldCustomAction extends AbstractGridFieldComponent implements GridFi
         return $field->Field();
     }
 
-    public function getActions($gridField) 
+    public function getActions($gridField)
     {
         return ['docustomaction'];
     }
 
-    public function handleAction(GridField $gridField, $actionName, $arguments, $data) 
+    public function handleAction(GridField $gridField, $actionName, $arguments, $data)
     {
-        // Note: The action name here MUST be lowercase. GridField does a strtolower transformation before passing it in.
+        // Note: The action name here MUST be lowercase. GridField does a strtolower transformation
+        // before passing it in.
         if ($actionName !== 'docustomaction') {
             return;
         }
@@ -122,11 +126,11 @@ implementing this interface we're required to define several methods to explain
 where we want the column to exist and how we need it to be formatted. This is
 done via the following methods:
 
-* [`augmentColumns()`](api:SilverStripe\Forms\GridField\GridField_ColumnProvider::augmentColumns()) - modifies the list of columns displayed in the table
-* [`getColumnAttributes()`](api:SilverStripe\Forms\GridField\GridField_ColumnProvider::getColumnAttributes()) - attributes for the element containing the content
-* [`getColumnMetadata()`](api:SilverStripe\Forms\GridField\GridField_ColumnProvider::getColumnMetadata()) - additional metadata about the column which can be used by other components
-* [`getColumnsHandled()`](api:SilverStripe\Forms\GridField\GridField_ColumnProvider::getColumnsHandled()) - names of all columns which are affected by this component
-* [`getColumnContent()`](api:SilverStripe\Forms\GridField\GridField_ColumnProvider::getColumnContent()) - HTML for the column, content of the element
+- [`augmentColumns()`](api:SilverStripe\Forms\GridField\GridField_ColumnProvider::augmentColumns()) - modifies the list of columns displayed in the table
+- [`getColumnAttributes()`](api:SilverStripe\Forms\GridField\GridField_ColumnProvider::getColumnAttributes()) - attributes for the element containing the content
+- [`getColumnMetadata()`](api:SilverStripe\Forms\GridField\GridField_ColumnProvider::getColumnMetadata()) - additional metadata about the column which can be used by other components
+- [`getColumnsHandled()`](api:SilverStripe\Forms\GridField\GridField_ColumnProvider::getColumnsHandled()) - names of all columns which are affected by this component
+- [`getColumnContent()`](api:SilverStripe\Forms\GridField\GridField_ColumnProvider::getColumnContent()) - HTML for the column, content of the element
 
 In this example, we're simply adding a new item to the existing `Actions` column
 located at the end of the table. Our `getColumnContent()` implementation produces
@@ -134,7 +138,7 @@ a custom button for the user to click on the page.
 
 We also make sure the `Actions` column exists if it wasn't already there (in `augmentColumns()`).
 This ensures that our action will still be rendered even if the `GridFieldActionMenu` component
-isn't used. `getColumnAttributes()` and `getColumnMetadata()` provide a css class and column
+isn't used. `getColumnAttributes()` and `getColumnMetadata()` provide a CSS class and column
 header title for the new column if it's created.
 
 The second interface we add is `GridField_ActionProvider`. This interface is
@@ -144,9 +148,9 @@ This action is triggered when a user clicks on the button defined in
 this interface we have to define two methods to describe the behavior of the
 action:
 
-* [`getActions`](api:SilverStripe\Forms\GridField\GridField_ActionProvider::getActions()) - returns an array of all the custom actions we want this class to
+- [`getActions`](api:SilverStripe\Forms\GridField\GridField_ActionProvider::getActions()) - returns an array of all the custom actions we want this class to
 handle
-* [`handleAction`](api:SilverStripe\Forms\GridField\GridField_ActionProvider::handleAction()) - contains the logic for performing the
+- [`handleAction`](api:SilverStripe\Forms\GridField\GridField_ActionProvider::handleAction()) - contains the logic for performing the
 specific action
 
 Inside `handleAction()` we have access to the current `GridField` instance, and the record row
@@ -157,7 +161,7 @@ called action is available as the `$actionName` argument.
 To finish off our basic example, the `handleAction()` method simply returns a
 message to the user interface indicating a successful message.
 
-## Add the GridField custom action to the `GridFieldConfig` {#add-action-to-config}
+## Add the `GridField` custom action to the `GridFieldConfig` {#add-action-to-config}
 
 To add this new action to the `GridField`, add
 a new instance of the class to the [`GridFieldConfig`](api:SilverStripe\Forms\GridField\GridFieldConfig) object.
@@ -179,37 +183,41 @@ $gridField->getConfig()->addComponent(GridFieldCustomAction::create());
 For documentation on adding a Component to a `GridField` created by `ModelAdmin`
 please view the relevant [`ModelAdmin` documentation`](/developer_guides/customising_the_admin_interface/modeladmin/#altering-the-modeladmin-gridfield-or-form).
 
-## Add a GridField custom action to the `GridField_ActionMenu` {#implement-gridfield-actionmenuitem}
+## Add a `GridField` custom action to the `GridField_ActionMenu` {#implement-gridfield-actionmenuitem}
 
 For an action to be included in the action menu dropdown, which appears on each row if `GridField_ActionMenu` is included in the `GridFieldConfig`, it must implement `GridField_ActionMenuItem` and relevant `get` functions to provide information to the frontend react action menu component.
 
 ```php
-use SilverStripe\Forms\GridField\AbstractGridFieldComponent;
-use SilverStripe\Forms\GridField\GridField_ColumnProvider;
-use SilverStripe\Forms\GridField\GridField_ActionProvider;
-use SilverStripe\Forms\GridField\GridField_ActionMenuItem;
-use SilverStripe\Forms\GridField\GridField_FormAction;
-use SilverStripe\Control\Controller;
+namespace App\Form\GridField;
 
-class GridFieldCustomAction extends AbstractGridFieldComponent implements GridField_ColumnProvider, GridField_ActionProvider, GridField_ActionMenuItem
+use SilverStripe\Forms\GridField\AbstractGridFieldComponent;
+use SilverStripe\Forms\GridField\GridField_ActionMenuItem;
+use SilverStripe\Forms\GridField\GridField_ActionProvider;
+use SilverStripe\Forms\GridField\GridField_ColumnProvider;
+use SilverStripe\Forms\GridField\GridField_FormAction;
+
+class GridFieldCustomAction extends AbstractGridFieldComponent implements
+    GridField_ColumnProvider,
+    GridField_ActionProvider,
+    GridField_ActionMenuItem
 {
     public function getTitle($gridField, $record, $columnName)
     {
         return 'Custom action';
     }
-    
+
     public function getExtraData($gridField, $record, $columnName)
     {
         $field = $this->getCustomAction($gridField, $record);
         if ($field) {
             return array_merge($field->getAttributes(), [
-                'classNames' => 'font-icon-circle-star action-detail'
+                'classNames' => 'font-icon-circle-star action-detail',
             ]);
         }
 
         return [];
     }
-    
+
     public function getGroup($gridField, $record, $columnName)
     {
         return GridField_ActionMenuItem::DEFAULT_GROUP;
@@ -225,7 +233,7 @@ class GridFieldCustomAction extends AbstractGridFieldComponent implements GridFi
         if (!$record->canEdit()) {
             return;
         }
-        
+
         return GridField_FormAction::create(
             $gridField,
             'CustomAction' . $record->ID,
@@ -245,13 +253,13 @@ Implement the other methods as per [Basic GridField custom action boilerplate](#
 
 The `GridField_ActionMenuItem` interface gives us three more methods we need to implement:
 
-* [`getTitle()`](api:SilverStripe\Forms\GridField\GridField_ActionMenuItem::getTitle()) - returns the title for this menu item
-* [`getExtraData()`](api:SilverStripe\Forms\GridField\GridField_ActionMenuItem::getExtraData()) - returns any extra data that could go in to the schema that the menu generates
-* [`getGroup()`](api:SilverStripe\Forms\GridField\GridField_ActionMenuItem::getGroup()) - returns the group this menu item will belong to
+- [`getTitle()`](api:SilverStripe\Forms\GridField\GridField_ActionMenuItem::getTitle()) - returns the title for this menu item
+- [`getExtraData()`](api:SilverStripe\Forms\GridField\GridField_ActionMenuItem::getExtraData()) - returns any extra data that could go in to the schema that the menu generates
+- [`getGroup()`](api:SilverStripe\Forms\GridField\GridField_ActionMenuItem::getGroup()) - returns the group this menu item will belong to
 
 Note that the classes in the array returned by `getExtraData()` are used in the action button within the collapsible action menu, while the classes passed into `addExtraClass()` on the `GridField_FormAction` instance are used for the fallback button, which will be rendered if the `GridFieldConfig` doesn't contain a `GridField_ActionMenu`. The `action-menu--handled` class in particular is important, as that class is used to hide the fallback button if the `GridField_ActionMenu` is available.
 
 ## Related
 
- * [GridField Reference](/developer_guides/forms/field_types/gridfield)
- * [ModelAdmin: A UI driven by GridField](/developer_guides/customising_the_admin_interface/modeladmin)
+- [GridField Reference](/developer_guides/forms/field_types/gridfield)
+- [ModelAdmin: A UI driven by GridField](/developer_guides/customising_the_admin_interface/modeladmin)

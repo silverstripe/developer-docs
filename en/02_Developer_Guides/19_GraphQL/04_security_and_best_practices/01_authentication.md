@@ -4,7 +4,7 @@ summary: Ensure your GraphQL api is only accessible to provisioned users
 icon: user-lock
 ---
 
-# Security & Best Practices
+# Security & best practices
 
 [CHILDREN asList]
 
@@ -48,7 +48,7 @@ so if MFA is enabled it is not recommended that you also use basic auth for Grap
 When using HTTP basic authentication, you can feel free to remove the [CSRF Middleware](csrf_protection),
 as it just adds unnecessary overhead to the request.
 
-#### In GraphiQL
+#### In graphiQL
 
 If you want to add basic authentication support to your GraphQL requests you can
 do so by adding a custom `Authorization` HTTP header to your GraphiQL requests.
@@ -56,12 +56,12 @@ do so by adding a custom `Authorization` HTTP header to your GraphiQL requests.
 If you are using the [GraphiQL macOS app](https://github.com/skevy/graphiql-app)
 this can be done from "Edit HTTP Headers".
 
-The `/dev/graphql/ide` endpoint in [silverstripe/graphql-devtools](https://github.com/silverstripe/silverstripe-graphql-devtools)
+The `/dev/graphql/ide` endpoint in [`silverstripe/graphql-devtools`](https://github.com/silverstripe/silverstripe-graphql-devtools)
 does not support custom HTTP headers at this point.
 
 Your custom header should follow the following format:
 
-```
+```text
 # Key: Value
 Authorization: Basic aGVsbG86d29ybGQ=
 ```
@@ -74,7 +74,7 @@ basic authentication. We strongly recommend using TLS for non-development use.
 
 Example:
 
-```shell
+```bash
 php -r 'echo base64_encode("hello:world");'
 # aGVsbG86d29ybGQ=
 ```
@@ -97,7 +97,7 @@ Here's an example for implementing HTTP basic authentication:
 Note that basic authentication for GraphQL will bypass Multi-Factor Authentication (MFA) if that's enabled. Using basic authentication for GraphQL is considered insecure if you are using MFA.
 [/notice]
 
-```yaml
+```yml
 SilverStripe\GraphQL\Auth\Handler:
   authenticators:
     - class: SilverStripe\GraphQL\Auth\BasicAuthAuthenticator

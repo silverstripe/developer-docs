@@ -5,4 +5,6 @@ introduction:  Silverstripe CMS provides several ways to store and modify your a
 icon: laptop-code
 ---
 
+# Configuration
+
 [CHILDREN]

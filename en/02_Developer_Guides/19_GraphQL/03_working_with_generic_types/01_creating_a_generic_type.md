@@ -3,7 +3,7 @@ title: Creating a generic type
 summary: Creating a type that doesn't map to a DataObject
 ---
 
-# Working with Generic Types
+# Working with generic types
 
 [CHILDREN asList]
 
@@ -12,8 +12,8 @@ summary: Creating a type that doesn't map to a DataObject
 Let's create a simple type that will work with the inbuilt features of Silverstripe CMS.
 We'll define some languages based on the `i18n` API.
 
-**app/_graphql/types.yml**
-```yaml
+```yml
+# app/_graphql/types.yml
 Country:
   fields:
     code: String!
@@ -26,7 +26,7 @@ could be something like:
 ```php
 [
     'code' => 'bt',
-    'name' => 'Bhutan'
+    'name' => 'Bhutan',
 ]
 ```
 

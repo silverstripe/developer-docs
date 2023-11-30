@@ -21,18 +21,18 @@ The default output of a [SearchContext](api:SilverStripe\ORM\Search\SearchContex
 
 Defining search-able fields on your DataObject.
 
-
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
-class MyDataObject extends DataObject 
+class MyDataObject extends DataObject
 {
-   private static $searchable_fields = [
-      'Name',
-      'ProductCode'
-   ];
+    private static $searchable_fields = [
+        'Name',
+        'ProductCode',
+    ];
 }
-
 ```
 
 ## Customizing fields and filters
@@ -41,36 +41,36 @@ In this example we're defining three attributes on our MyDataObject subclass: `P
 and `MyDate`. The attribute `HiddenProperty` should not be searchable, and `MyDate` should only search for dates
 *after* the search entry (with a `GreaterThanFilter`).
 
-
 ```php
-use SilverStripe\ORM\Filters\PartialMatchFilter;
-use SilverStripe\ORM\Filters\GreaterThanFilter;
-use SilverStripe\ORM\Search\SearchContext;
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\Filters\GreaterThanFilter;
+use SilverStripe\ORM\Filters\PartialMatchFilter;
+use SilverStripe\ORM\Search\SearchContext;
 
-class MyDataObject extends DataObject 
+class MyDataObject extends DataObject
 {
-
     private static $db = [
         'PublicProperty' => 'Text'
         'HiddenProperty' => 'Text',
-        'MyDate' => 'Date'
+        'MyDate' => 'Date',
     ];
-    
-    public function getDefaultSearchContext() 
+
+    public function getDefaultSearchContext()
     {
         $fields = $this->scaffoldSearchFields([
-            'restrictFields' => ['PublicProperty','MyDate']
+            'restrictFields' => ['PublicProperty','MyDate'],
         ]);
 
         $filters = [
-            'PublicProperty' => new PartialMatchFilter('PublicProperty'),
-            'MyDate' => new GreaterThanFilter('MyDate')
+            'PublicProperty' => PartialMatchFilter::create('PublicProperty'),
+            'MyDate' => GreaterThanFilter::create('MyDate'),
         ];
 
-        return new SearchContext(
-            static::class, 
-            $fields, 
+        return SearchContext::create(
+            static::class,
+            $fields,
             $filters
         );
     }
@@ -95,38 +95,42 @@ with advanced options. To customise this field, see the [Scaffolding documentati
 ### Generating a search form from the context
 
 ```php
-use SilverStripe\Forms\Form;
+namespace App\PageType;
+
+use App\Model\MyDataObject;
+use PageController;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
-use SilverStripe\CMS\Controllers\ContentController;
 
-
-// ..
-class PageController extends ContentController 
+class SearchPageController extends PageController
 {
+    // ...
 
-    public function SearchForm() 
+    public function searchForm()
     {
-        $context = singleton('MyDataObject')->getCustomSearchContext();
+        $context = MyDataObject::singleton()->getDefaultSearchContext();
         $fields = $context->getSearchFields();
 
-        $form = new Form($this, "SearchForm",
+        $form = Form::create(
+            $this,
+            'searchForm',
             $fields,
-            new FieldList(
-                new FormAction('doSearch')
+            FieldList::create(
+                FormAction::create('doSearch')
             )
         );
 
         return $form;
     }
 
-    public function doSearch($data, $form) 
+    public function doSearch($data, $form)
     {
-        $context = singleton('MyDataObject')->getCustomSearchContext();
+        $context = MyDataObject::singleton()->getDefaultSearchContext();
         $results = $context->getResults($data);
 
         return $this->customise([
-            'Results' => $results
+            'Results' => $results,
         ])->renderWith('Page_results');
     }
 }
@@ -139,55 +143,62 @@ For pagination records on multiple pages, you need to wrap the results in a
 in order to read page limit information. It is also passed the current
 `HTTPRequest` object so it can read the current page from a GET var.
 
-
-```php
-use SilverStripe\ORM\PaginatedList;
-
-public function getResults($searchCriteria = []) 
-{
-    $start = ($this->getRequest()->getVar('start')) ? (int)$this->getRequest()->getVar('start') : 0;
-    $limit = 10;
-        
-    $context = singleton('MyDataObject')->getCustomSearchContext();
-    $query = $context->getQuery($searchCriteria, null, ['start'=>$start,'limit'=>$limit]);
-    $records = $context->getResults($searchCriteria, null, ['start'=>$start,'limit'=>$limit]);
-    
-    if($records) {
-        $records = new PaginatedList($records, $this->getRequest());
-        $records->setPageStart($start);
-        $records->setPageLength($limit);
-        $records->setTotalItems($query->unlimitedRowCount());
-    }
-    
-    return $records;
-}
-```
-
-notice that if you want to use this getResults function, you need to change the function doSearch for this one:
-
-
-```php
-public function doSearch($data, $form) 
-{
-    $context = singleton('MyDataObject')->getCustomSearchContext();
-    $results = $this->getResults($data);
-    return $this->customise([
-        'Results' => $results
-    ])->renderWith(['Catalogo_results', 'Page']);
-}
-```
+Notice that if you want to use this getResults function, you need to change the function doSearch for this one.
 
 The change is in **$results = $this->getResults($data);**, because you are using a custom getResults function.
 
-Another thing you cant forget is to check the name of the singleton you are using in your project. the example uses
+```php
+namespace App\PageType;
+
+use App\Model\MyDataObject;
+use PageController;
+use SilverStripe\ORM\PaginatedList;
+// ...
+
+class SearchPageController extends PageController
+{
+    // ...
+
+    public function doSearch($data, $form)
+    {
+        $context = MyDataObject::singleton()->getDefaultSearchContext();
+        $results = $this->getResults($data);
+
+        return $this->customise([
+            'Results' => $results,
+        ])->renderWith('Page_results');
+    }
+
+    public function getResults($searchCriteria = [])
+    {
+        $start = ($this->getRequest()->getVar('start')) ? (int)$this->getRequest()->getVar('start') : 0;
+        $limit = 10;
+
+        $context = MyDataObject::singleton()->getDefaultSearchContext();
+        $query = $context->getQuery($searchCriteria, null, ['start' => $start,'limit' => $limit]);
+        $records = $context->getResults($searchCriteria, null, ['start' => $start,'limit' => $limit]);
+
+        if ($records) {
+            $records = PaginatedList::create($records, $this->getRequest());
+            $records->setPageStart($start);
+            $records->setPageLength($limit);
+            $records->setTotalItems($query->unlimitedRowCount());
+        }
+
+        return $records;
+    }
+}
+```
+
+Another thing you can't forget is to check the name of the singleton you are using in your project. the example uses
 **MyDataObject**, you need to change it for the one you are using
 
-### The Pagination Template
+### The pagination template
 
 to show the results of your custom search you need at least this content in your template, notice that
 Results.PaginationSummary(4) defines how many pages the search will show in the search results. something like:
 
-**Next   1 2  *3*  4  5 &hellip; 558**  
+**Next   1 2  *3*  4  5 &hellip; 558**
 
 ```ss
 <% if $Results %>
@@ -206,7 +217,7 @@ Results.PaginationSummary(4) defines how many pages the search will show in the 
             <% if $Results.NotFirstPage %>
                 <a class="prev" href="$Results.PrevLink" title="View the previous page">Prev</a>
             <% end_if %>
-        
+
             <span>
                     <% loop $Results.PaginationSummary(4) %>
                     <% if $CurrentBool %>
@@ -220,7 +231,7 @@ Results.PaginationSummary(4) defines how many pages the search will show in the 
                     <% end_if %>
                 <% end_loop %>
             </span>
-        
+
             <% if $Results.NotLastPage %>
                 <a class="next" href="$Results.NextLink" title="View the next page">Next</a>
             <% end_if %>
@@ -229,15 +240,15 @@ Results.PaginationSummary(4) defines how many pages the search will show in the 
 <% end_if %>
 ```
 
-## Available SearchFilters
+## Available `SearchFilter` classes
 
 See [SearchFilter](api:SilverStripe\ORM\Filters\SearchFilter) API Documentation
 
-## Related Documentation
+## Related documentation
 
-* [ModelAdmin](/developer_guides/customising_the_admin_interface/modeladmin)
+- [ModelAdmin](/developer_guides/customising_the_admin_interface/modeladmin)
 
-## API Documentation
+## API documentation
 
-* [SearchContext](api:SilverStripe\ORM\Search\SearchContext)
-* [DataObject](api:SilverStripe\ORM\DataObject)
+- [SearchContext](api:SilverStripe\ORM\Search\SearchContext)
+- [DataObject](api:SilverStripe\ORM\DataObject)

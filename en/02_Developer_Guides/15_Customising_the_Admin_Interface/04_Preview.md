@@ -9,7 +9,7 @@ summary: How content previews work in the CMS
 
 With the addition of side-by-side editing, the preview has the ability to appear
 within the CMS window when editing content in the CMS. This is enabled by default
-in the _Pages_ section for `SiteTree` models, but as outlined below can be enabled
+in the *Pages* section for `SiteTree` models, but as outlined below can be enabled
 in other sections and for other models as well.
 
 Within the preview panel, the site is rendered into an iframe. It will update
@@ -21,30 +21,34 @@ states necessary for rendering within the entwine properties. It provides
 function calls for transitioning between these states and has the ability to
 update the appearance of the option selectors.
 
-In terms of backend support, it relies on [SilverStripeNavigator](api:SilverStripe\Admin\Navigator\SilverStripeNavigator) to be rendered
-into the form. _LeftAndMain_ will automatically take care of generating it as long
+In terms of backend support, it relies on [`SilverStripeNavigator`](api:SilverStripe\Admin\Navigator\SilverStripeNavigator) to be rendered
+into the form. `LeftAndMain` will automatically take care of generating it as long
 as the `*_SilverStripeNavigator` template is found - first segment has to match the
-current _LeftAndMain_-derived class (e.g. `LeftAndMain_SilverStripeNavigator`).
+current *LeftAndMain*-derived class (e.g. `LeftAndMain_SilverStripeNavigator`).
 
 ## PHP
+
 For a DataObject to be previewed using the preview panel there are a few prerequisites:
 
 - The class must implement (or [have an extension](/developer_guides/extending/extensions/) which implements) the [CMSPreviewable](api:SilverStripe\ORM\CMSPreviewable) interface
 - At least one preview state must be enabled for the class
 - There must be some valid URL to use inside the preview panel
 
-### CMSPreviewable
+### `CMSPreviewable`
+
 The `CMSPreviewable` interface has three methods: `PreviewLink`, `CMSEditLink`, and
 `getMimeType`.
 
-#### PreviewLink
+#### `PreviewLink`
+
 The `PreviewLink` method is what determines the URL used inside the preview panel. If
 your `DataObject` is intended to always belong to a page, you might want to preview the
 item in the context of where it sits on the page using an anchor. You can also provide
 some route specific for previewing this object, for example an action on the ModelAdmin
 that is used to manage the object.
 
-#### CMSEditLink
+#### `CMSEditLink`
+
 This method exists so that when a user clicks on a link in the preview panel, the CMS
 edit form for the page the link leads to can be loaded. Unless your `DataObject` is
 [acting like a page](https://www.silverstripe.org/learn/lessons/v4/controller-actions-dataobjects-as-pages-1)
@@ -64,9 +68,9 @@ The easiest way to implement `CMSEditLink()` is by
 But for completeness, the other examples below show alternative implementations.
 
 ```php
-namespace MyProject\Model;
+namespace App\Model;
 
-use MyProject\Admin\MyModelAdmin;
+use App\Admin\MyModelAdmin;
 use SilverStripe\Admin\CMSEditLinkExtension;
 use SilverStripe\ORM\CMSPreviewable;
 use SilverStripe\ORM\DataObject;
@@ -84,20 +88,25 @@ class MyParentModel extends DataObject implements CMSPreviewable
         // Get the value returned by the extension
         return $this->extend('CMSEditLink')[0];
     }
+
+    // ...
 }
 ```
 
 [/hint]
 
-#### getMimeType
+#### `GetMimeType`
+
 In ~90% of cases will be 'text/html', but note it is also possible to display (for example)
 an inline PDF document in the preview panel.
 
-### Preview states
+### Preview states {#preview-states-php}
+
 The preview state(s) you apply to your `DataObject` will depend primarily on whether it uses
 the [Versioned](api:SilverStripe\Versioned\Versioned) extension or not.
 
-#### Versioned DataObjects
+#### Versioned `DataObject` models
+
 If your class does use the `Versioned` extension, there are two different states available
 to you. It is generally recommended that you enable both, so that content authors can toggle
 between viewing the draft and the published content.
@@ -105,16 +114,37 @@ between viewing the draft and the published content.
 To enable the draft preview state, use the `$show_stage_link` configuration variable.
 
 ```php
-private static $show_stage_link = true;
+namespace App\Model;
+
+use SilverStripe\ORM\CMSPreviewable;
+use SilverStripe\ORM\DataObject;
+
+class MyModel extends DataObject implements CMSPreviewable
+{
+    private static $show_stage_link = true;
+
+    // ...
+}
 ```
 
 To enable the published preview state, use the `$show_live_link` configuration variable.
 
 ```php
-private static $show_live_link = true;
+namespace App\Model;
+
+use SilverStripe\ORM\CMSPreviewable;
+use SilverStripe\ORM\DataObject;
+
+class MyModel extends DataObject implements CMSPreviewable
+{
+    private static $show_live_link = true;
+
+    // ...
+}
 ```
 
-#### Unversioned DataObjects
+#### Unversioned `DataObject` models
+
 If you are not using the `Versioned` extension for your class, there is only one preview
 state you can use. This state will always be active once you enable it.
 
@@ -122,26 +152,39 @@ To enable the unversioned preview state, use the `$show_unversioned_preview_link
 configuration variable.
 
 ```php
-private static $show_unversioned_preview_link = true;
+namespace App\Model;
+
+use SilverStripe\ORM\CMSPreviewable;
+use SilverStripe\ORM\DataObject;
+
+class MyModel extends DataObject implements CMSPreviewable
+{
+    private static $show_unversioned_preview_link = true;
+
+    // ...
+}
 ```
 
-### Enabling preview for DataObjects in a ModelAdmin
+### Enabling preview for `DataObject` records in a `ModelAdmin`
+
 For this example we will take the `Product` and `MyAdmin` classes from the
 [ModelAdmin documentation](./modeladmin).
 
-#### The DataObject implementation
+#### The `DataObject` implementation {#modeladmin-dataobject-implementation}
+
 As mentioned above, your `Product` class must implement the `CMSPreviewable` interface.
 It also needs at least one preview state enabled. This example assumes we aren't using
 the `Versioned` extension.
 
 ```php
+namespace App\Model;
+
 use SilverStripe\ORM\CMSPreviewable;
 use SilverStripe\ORM\DataObject;
 
 class Product extends DataObject implements CMSPreviewable
 {
     private static $show_unversioned_preview_link = true;
-
     // ...
 
     public function PreviewLink($action = null)
@@ -178,19 +221,31 @@ Note: The `if (!$this->isInDB())` check below is important! Without this, the pr
 `ModelAdmin` provides methods for generating a link for the correct model:
 
 ```php
-public function PreviewLink($action = null)
+namespace App\Model;
+
+use App\Admin\MyAdmin;
+use SilverStripe\Control\Controller;
+use SilverStripe\ORM\CMSPreviewable;
+use SilverStripe\ORM\DataObject;
+
+class Product extends DataObject implements CMSPreviewable
 {
-    if (!$this->isInDB()) {
-        return null;
+    // ...
+
+    public function PreviewLink($action = null)
+    {
+        if (!$this->isInDB()) {
+            return null;
+        }
+        $admin = MyAdmin::singleton();
+        $link = Controller::join_links(
+            $admin->getLinkForModelClass(static::class),
+            'cmsPreview',
+            $this->ID
+        );
+        $this->extend('updatePreviewLink', $link, $action);
+        return $link;
     }
-    $admin = MyAdmin::singleton();
-    $link = Controller::join_links(
-        $admin->getLinkForModelClass(static::class),
-        'cmsPreview',
-        $this->ID
-    );
-    $this->extend('updatePreviewLink', $link, $action);
-    return $link;
 }
 ```
 
@@ -201,10 +256,21 @@ If you aren't using [CMSEditLinkExtension](/developer_guides/model/managing_reco
 you can simply call `getCMSEditLinkForManagedDataObject()` on a singleton of the `ModelAdmin` subclass:
 
 ```php
-public function CMSEditLink()
+namespace App\Model;
+
+use App\Admin\MyAdmin;
+use SilverStripe\ORM\CMSPreviewable;
+use SilverStripe\ORM\DataObject;
+
+class Product extends DataObject implements CMSPreviewable
 {
-    $admin = MyAdmin::singleton();
-    return $admin->getCMSEditLinkForManagedDataObject($this);
+    // ...
+
+    public function CMSEditLink()
+    {
+        $admin = MyAdmin::singleton();
+        return $admin->getCMSEditLinkForManagedDataObject($this);
+    }
 }
 ```
 
@@ -221,14 +287,26 @@ CMS what to display in the preview panel.
 The `forTemplate` method will probably look something like this:
 
 ```php
-public function forTemplate()
+namespace App\Model;
+
+use SilverStripe\ORM\CMSPreviewable;
+use SilverStripe\ORM\DataObject;
+
+class Product extends DataObject implements CMSPreviewable
 {
-    // If the template for this DataObject is not an "Include" template, use the appropriate type here e.g. "Layout".
-    return $this->renderWith(['type' => 'Includes', self::class]);
+    // ...
+
+    public function forTemplate()
+    {
+        // If the template for this DataObject is not an "Include" template, use the appropriate type here
+        // e.g. "Layout".
+        return $this->renderWith(['type' => 'Includes', self::class]);
+    }
 }
 ```
 
-#### The ModelAdmin implementation
+#### The `ModelAdmin` implementation
+
 We need to add the `cmsPreview` action to the `MyAdmin` class, which will output the
 content which should be displayed in the preview panel.
 
@@ -237,11 +315,14 @@ in a back-end context using admin themes, it pays to ensure we're loading the fr
 themes whilst rendering out the preview content.
 
 ```php
+namespace App\Admin;
+
+use App\Model\Product;
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\View\Requirements;
 use SilverStripe\View\SSViewer;
 
-class MyAdmin extends ModelAdmin 
+class MyAdmin extends ModelAdmin
 {
     private static $managed_models = [
         Product::class,
@@ -294,13 +375,13 @@ protected properties are used above (e.g. `$this->urlParams['ID']` would become
 [/hint]
 
 [hint]
-If the css or js you have added via [the Requirements API](/developer_guides/templates/requirements/#php-requirements-api)
+If the CSS or JS you have added via [the Requirements API](/developer_guides/templates/requirements/#php-requirements-api)
 aren't coming through, you may need to add `<head>` and `<body>` tags to the markup. It may not be appropriate to do this in
 your main template (you don't want two `<body>` tags on a page that includes the template), so you might need a preview wrapper
 template, like so:
 
-**themes/mytheme/templates/PreviewBase.ss**
 ```ss
+<%-- themes/mytheme/templates/PreviewBase.ss --%>
 <!DOCTYPE html>
 <html>
 <%-- head tag is needed for css to be injected --%>
@@ -315,31 +396,45 @@ template, like so:
 </html>
 ```
 
-**in app/src/Admin/MyAdmin.php**
 ```php
-public function cmsPreview()
+// app/src/Admin/MyAdmin.php
+namespace App\Admin;
+
+use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\View\ArrayData;
+use SilverStripe\View\Requirements;
+use SilverStripe\View\SSViewer;
+
+class MyAdmin extends ModelAdmin
 {
-    //... ommitted for brevity
+    // ...
 
-    // Add in global css/js that would normally be added in the page base template (as needed)
-    Requirements::themedCSS('client/dist/css/style.css');
-    // Render the preview content
-    $preview = $obj->forTemplate();
-    // Wrap preview in proper html, body, etc so Requirements are used
-    $preview = SSViewer::create('PreviewBase')->process(ArrayData::create(['Preview' => $preview]));
+    public function cmsPreview()
+    {
+        // ... ommitted for brevity
 
-    //... ommitted for brevity
+        // Add in global css/js that would normally be added in the page base template (as needed)
+        Requirements::themedCSS('client/dist/css/style.css');
+        // Render the preview content
+        $preview = $obj->forTemplate();
+        // Wrap preview in proper html, body, etc so Requirements are used
+        $preview = SSViewer::create('PreviewBase')->process(ArrayData::create(['Preview' => $preview]));
+
+        // ... ommitted for brevity
+    }
 }
 ```
 
 [/hint]
 
-### Enabling preview for DataObjects which belong to a page
+### Enabling preview for `DataObject` models which belong to a page
+
 If the `DataObject` you want to preview belongs to a specific page, for example
 through a `has_one` or `has_many` relation, you will most likely want to preview
 it in the context of the page it belongs to.
 
-#### The Page implementation
+#### The page implementation
+
 For this example we will assume the `Product` class is `Versioned`.
 
 As discussed above, the `CMSEditLink` method is used to load the correct edit form
@@ -352,7 +447,7 @@ When rendering a full page in the preview panel to preview a `DataObject` on tha
 page, the meta tags for that page are present. When a content author toggles between
 the draft and published preview states, those meta tags are checked and the page's
 edit form would be loaded instead of the `DataObject`'s form. To avoid this
-unexpected behaviour, you can include an extra GET parameter in the value returned 
+unexpected behaviour, you can include an extra GET parameter in the value returned
 by `PreviewLink`. Then in the `MetaTags` method, when the extra parameter is
 detected, omit the relevant meta tags.
 
@@ -360,12 +455,16 @@ Note that this is not necessary for unversioned `DataObjects` as they only have
 one preview state.
 
 ```php
+namespace App\PageType;
+
+use App\Model\Product;
+use Page;
 use SilverStripe\Control\Controller;
 use SilverStripe\View\Parsers\HTMLValue;
 
 class ProductPage extends Page
 {
-    //...
+    // ...
 
     private static $has_many = [
         'Products' => Product::class,
@@ -396,11 +495,15 @@ class ProductPage extends Page
 }
 ```
 
-#### The DataObject Implementation
+#### The `DataObject` implementation {#page-dataobject-implementation}
+
 Make sure the Versioned `Product` class implements `CMSPreviewable` and enables
 the draft and published preview states.
 
 ```php
+namespace App\Model;
+
+use App\PageType\ProductPage;
 use SilverStripe\ORM\CMSPreviewable;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
@@ -408,6 +511,7 @@ use SilverStripe\Versioned\Versioned;
 class Product extends DataObject implements CMSPreviewable
 {
     private static $show_stage_link = true;
+
     private static $show_live_link = true;
 
     private static $extensions = [
@@ -417,7 +521,6 @@ class Product extends DataObject implements CMSPreviewable
     private static $has_one = [
         'ProductPage' => ProductPage::class,
     ];
-
     // ...
 
     public function PreviewLink($action = null)
@@ -436,7 +539,6 @@ class Product extends DataObject implements CMSPreviewable
     {
         return 'text/html';
     }
-
 }
 ```
 
@@ -444,32 +546,56 @@ Implement a method which gives you a unique repeatable anchor for each
 distinct `Product` object.
 
 ```php
-/**
- * Used to generate the id for the product element in the template.
- */
-public function getAnchor()
+namespace App\Model;
+
+use SilverStripe\ORM\CMSPreviewable;
+// ...
+
+class Product extends DataObject implements CMSPreviewable
 {
-    return 'product-' . $this->getUniqueKey();
+    // ...
+
+    /**
+     * Used to generate the id for the product element in the template.
+     */
+    public function getAnchor()
+    {
+        return 'product-' . $this->getUniqueKey();
+    }
 }
 ```
 
 For the `PreviewLink`, append the `DataObjectPreview` GET parameter to the
 page's frontend URL.
+
 ```php
-public function PreviewLink($action = null)
+namespace App\Model;
+
+use SilverStripe\ORM\CMSPreviewable;
+// ...
+
+class Product extends DataObject implements CMSPreviewable
 {
-    $link = null
-    if (!$this->isInDB()) {
+    // ...
+
+    public function PreviewLink($action = null)
+    {
+        $link = null
+        if (!$this->isInDB()) {
+            return $link;
+        }
+        // Let the page know it's being previewed from a DataObject edit form (see Page::MetaTags())
+        $action = $action . '?DataObjectPreview=' . mt_rand();
+
+        // Scroll the preview straight to where the object sits on the page.
+        $page = $this->ProductPage()
+        if ($page && $page->exists()) {
+            $link = $page->Link($action) . '#' . $this->getAnchor();
+        }
+
+        $this->extend('updatePreviewLink', $link, $action);
         return $link;
     }
-    // Let the page know it's being previewed from a DataObject edit form (see Page::MetaTags())
-    $action = $action . '?DataObjectPreview=' . mt_rand();
-    // Scroll the preview straight to where the object sits on the page.
-    if ($page = $this->ProductPage()) {
-        $link = $page->Link($action) . '#' . $this->getAnchor();
-    }
-    $this->extend('updatePreviewLink', $link, $action);
-    return $link;
 }
 ```
 
@@ -478,7 +604,8 @@ by the `CMSPreviewable` interface so some implementation must be provided, but
 you can safely return `null` or an empty string with no repercussions in this
 situation.
 
-#### The Page template
+#### The page template
+
 In your page template, make sure the anchor is used where you render the objects.
 This allows the preview panel to be scrolled automatically to where the object
 being edited sits on the page.
@@ -492,10 +619,9 @@ being edited sits on the page.
 <% end_loop %>
 ```
 
+## JavaScript
 
-## Javascript
-
-### Configuration and Defaults
+### Configuration and defaults
 
 We use `ss.preview` entwine namespace for all preview-related entwines.
 
@@ -506,42 +632,39 @@ In order to achieve this, create a new file `app/javascript/MyLeftAndMain.Previe
 
 In the following example we configure three aspects:
 
- * Set the default mode from "split view" to a full "edit view"
- * Make a wider mobile preview
- * Increase minimum space required by preview before auto-hiding
+- Set the default mode from "split view" to a full "edit view"
+- Make a wider mobile preview
+- Increase minimum space required by preview before auto-hiding
 
 Note how the configuration happens in different entwine namespaces
 ("ss.preview" and "ss"), as well as applies to different selectors
-(".cms-preview" and ".cms-container").
-
+(".CMS-preview" and ".CMS-container").
 
 ```js
-(function($) {
-    $.entwine('ss.preview', function($){
-        $('.cms-preview').entwine({
-            DefaultMode: 'content',
-            getSizes: function() {
-                var sizes = this._super();
-                sizes.mobile.width = '400px';
-                return sizes;
-            }
-        });
-    });
-    $.entwine('ss', function($){
-        $('.cms-container').entwine({
-            getLayoutOptions: function() {
-                var opts = this._super();
-                opts.minPreviewWidth = 600;
-                return opts;
-            }
-        });
-    });
-}(jQuery));
+jQuery.entwine('ss.preview', ($) => {
+  $('.cms-preview').entwine({
+    DefaultMode: 'content',
+    getSizes() {
+      const sizes = this._super();
+      sizes.mobile.width = '400px';
+      return sizes;
+    }
+  });
+});
+
+jQuery.entwine('ss', ($) => {
+  $('.cms-container').entwine({
+    getLayoutOptions() {
+      const opts = this._super();
+      opts.minPreviewWidth = 600;
+      return opts;
+    }
+  });
+});
 ```
 
-Load the file in the CMS via setting adding 'app/javascript/MyLeftAndMain.Preview.js'
+Load the file in the CMS via setting adding `app/javascript/MyLeftAndMain.Preview.js`
 to the `LeftAndMain.extra_requirements_javascript` [configuration value](../configuration)
-
 
 ```yml
 SilverStripe\Admin\LeftAndMain:
@@ -559,7 +682,7 @@ To understand how layouts are handled in the CMS UI, have a look at the
 
 The frontend decides on the preview being enabled or disabled based on the
 presence of the `.cms-previewable` class. If this class is not found the preview
-will remain hidden, and the layout will stay in the _content_ mode.
+will remain hidden, and the layout will stay in the *content* mode.
 
 If the class is found, frontend looks for the `SilverStripeNavigator` structure
 and moves it to the `.cms-preview-control` panel at the bottom of the preview.
@@ -572,9 +695,9 @@ The preview can be affected by calling `enablePreview` and `disablePreview`. You
 can check if the preview is active by inspecting the `IsPreviewEnabled` entwine
 property.
 
-### Preview states
+### Preview states {#preview-states-js}
 
-States are the site stages: _live_, _stage_ etc. Preview states are picked up
+States are the site stages: *live*, *stage* etc. Preview states are picked up
 from the `SilverStripeNavigator`. You can invoke the state change by calling:
 
 ```js
@@ -582,7 +705,7 @@ $('.cms-preview').entwine('.ss.preview').changeState('StageLink');
 ```
 
 Note the state names come from [SilverStripeNavigatorItem](api:SilverStripe\Admin\Navigator\SilverStripeNagivatorItem) class names - thus
-the _Link_ in their names. This call will also redraw the state selector to fit
+the `Link` in their names. This call will also redraw the state selector to fit
 with the internal state. See `AllowedStates` in `.cms-preview` entwine for the
 list of supported states.
 
@@ -598,10 +721,10 @@ This selector defines how the preview iframe is rendered, and try to emulate
 different device sizes. The options are hardcoded. The option names map directly
 to CSS classes applied to the `.cms-preview` and are as follows:
 
-* _auto_: responsive layout
-* _desktop_
-* _tablet_
-* _mobile_
+- *auto*: responsive layout
+- *desktop*
+- *tablet*
+- *mobile*
 
 You can switch between different types of display sizes programmatically, which
 has the benefit of redrawing the related selector and maintaining a consistent
@@ -619,7 +742,7 @@ $('.cms-preview').entwine('.ss.preview').getCurrentSizeName();
 
 ### Preview modes
 
-Preview modes map to the modes supported by the _threeColumnCompressor_ layout
+Preview modes map to the modes supported by the *threeColumnCompressor* layout
 algorithm, see [layout reference](cms_layout) for more details. You
 can change modes by calling:
 
@@ -646,16 +769,16 @@ option selectors, even if they try to appear as one horizontal bar.
 
 Namespace `ss.preview`, selector `.cms-preview`:
 
-* **getCurrentStateName**: get the name of the current state (e.g. _LiveLink_ or _StageLink_).
-* **getCurrentSizeName**: get the name of the current device size.
-* **getIsPreviewEnabled**: check if the preview is enabled.
-* **changeState**: one of the `AllowedStates`.
-* **changeSize**: one of _auto_, _desktop_, _tablet_, _mobile_.
-* **changeMode**: maps to _threeColumnLayout_ modes - _split_, _preview_, _content_.
-* **enablePreview**: activate the preview and switch to the _split_ mode. Try to load the relevant URL from the content.
-* **disablePreview**: deactivate the preview and switch to the _content_ mode. Preview will re-enable itself when new
+- **getCurrentStateName**: get the name of the current state (e.g. *LiveLink* or *StageLink*).
+- **getCurrentSizeName**: get the name of the current device size.
+- **getIsPreviewEnabled**: check if the preview is enabled.
+- **changeState**: one of the `AllowedStates`.
+- **changeSize**: one of *auto*, *desktop*, *tablet*, *mobile*.
+- **changeMode**: maps to *threeColumnLayout* modes - *split*, *preview*, *content*.
+- **enablePreview**: activate the preview and switch to the *split* mode. Try to load the relevant URL from the content.
+- **disablePreview**: deactivate the preview and switch to the *content* mode. Preview will re-enable itself when new
 previewable content is loaded.
 
 ### Related
 
- * [Reference: Layout](cms_layout)
+- [Reference: Layout](cms_layout)

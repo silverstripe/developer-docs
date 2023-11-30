@@ -4,68 +4,64 @@ summary: Learn how to move a form from a controller into its own class definitio
 iconBrand: wpforms
 ---
 
-# How to Encapsulate Forms
+# How to encapsulate forms
 
 Form definitions can often get long, complex and often end up cluttering up a `Controller` definition. We may also want
-to reuse the `Form` across multiple `Controller` classes rather than just one. A nice way to encapsulate the logic and 
-code for a `Form` is to create it as a subclass to `Form`. Let's look at a example of a `Form` which is on our 
+to reuse the `Form` across multiple `Controller` classes rather than just one. A nice way to encapsulate the logic and
+code for a `Form` is to create it as a subclass to `Form`. Let's look at a example of a `Form` which is on our
 `Controller` but would be better written as a subclass.
 
-**app/src/Page.php**
-
 ```php
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\RequiredFields;
-use SilverStripe\Forms\Form;
-use SilverStripe\Forms\HeaderField;
-use SilverStripe\Forms\OptionsetField;
-use SilverStripe\Forms\CompositeField;
+// app/src/PageType/SearchPageController.php
+namespace App\PageType;
+
+use PageController;
 use SilverStripe\Forms\CheckboxSetField;
-use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\CompositeField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
-use SilverStripe\CMS\Controllers\ContentController;
+use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\OptionsetField;
+use SilverStripe\Forms\RequiredFields;
 
-class PageController extends ContentController 
+class SearchPageController extends PageController
 {
-    private static $allowed_actions = [
-        'SearchForm',
-    ];
+    // ...
 
-    public function SearchForm() 
+    public function searchForm()
     {
-        $fields = new FieldList(
+        $fields = FieldList::create(
             HeaderField::create('Header', 'Step 1. Basics'),
             OptionsetField::create('Type', '', [
                 'foo' => 'Search Foo',
                 'bar' => 'Search Bar',
-                'baz' => 'Search Baz'
+                'baz' => 'Search Baz',
             ]),
-
             CompositeField::create(
                 HeaderField::create('Header2', 'Step 2. Advanced '),
                 CheckboxSetField::create('Foo', 'Select Option', [
-                    'qux' => 'Search Qux'
+                    'qux' => 'Search Qux',
                 ]),
-
                 CheckboxSetField::create('Category', 'Category', [
                     'Foo' => 'Foo',
-                    'Bar' => 'Bar'
+                    'Bar' => 'Bar',
                 ]),
-
                 NumericField::create('Minimum', 'Minimum'),
                 NumericField::create('Maximum', 'Maximum')
             )
         );
 
-        $actions = new FieldList(
+        $actions = FieldList::create(
             FormAction::create('doSearchForm', 'Search')
         );
 
-        $required = new RequiredFields([
-            'Type'
+        $required = RequiredFields::create([
+            'Type',
         ]);
 
-        $form = new Form($this, __FUNCTION__, $fields, $actions, $required);
+        $form = Form::create($this, __FUNCTION__, $fields, $actions, $required);
         $form->setFormMethod('GET');
 
         $form->addExtraClass('no-action-styles');
@@ -84,57 +80,55 @@ class PageController extends ContentController
 That's quite a lot of code to include on our controller and generally makes the file look much more complex than it
 should be. Good practice would be to move this to a `Form` subclass and create a new instance for your particular controller.
 
-**app/src/forms/SearchForm.php**
-
 ```php
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\RequiredFields;
-use SilverStripe\Forms\HeaderField;
-use SilverStripe\Forms\OptionsetField;
-use SilverStripe\Forms\CompositeField;
-use SilverStripe\Forms\CheckboxSetField;
-use SilverStripe\Forms\NumericField;
-use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\Form;
+// app/src/Form/SearchForm.php
+namespace App\Form;
 
-class SearchForm extends Form 
+use SilverStripe\Forms\CheckboxSetField;
+use SilverStripe\Forms\CompositeField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\OptionsetField;
+use SilverStripe\Forms\RequiredFields;
+
+class SearchForm extends Form
 {
     /**
      * Our constructor only requires the controller and the name of the form
      * method. We'll create the fields and actions in here.
      */
-    public function __construct($controller, $name) 
+    public function __construct($controller, $name)
     {
-        $fields = new FieldList(
+        $fields = FieldList::create(
             HeaderField::create('Header', 'Step 1. Basics'),
             OptionsetField::create('Type', '', [
                 'foo' => 'Search Foo',
                 'bar' => 'Search Bar',
-                'baz' => 'Search Baz'
+                'baz' => 'Search Baz',
             ]),
-
             CompositeField::create(
                 HeaderField::create('Header2', 'Step 2. Advanced '),
                 CheckboxSetField::create('Foo', 'Select Option', [
-                    'qux' => 'Search Qux'
+                    'qux' => 'Search Qux',
                 ]),
-
                 CheckboxSetField::create('Category', 'Category', [
                     'Foo' => 'Foo',
-                    'Bar' => 'Bar'
+                    'Bar' => 'Bar',
                 ]),
-
                 NumericField::create('Minimum', 'Minimum'),
                 NumericField::create('Maximum', 'Maximum')
             )
         );
-        
-        $actions = new FieldList(
+
+        $actions = FieldList::create(
             FormAction::create('doSearchForm', 'Search')
         );
-        
-        $required = new RequiredFields([
-            'Type'
+
+        $required = RequiredFields::create([
+            'Type',
         ]);
 
         // now we create the actual form with our fields and actions defined
@@ -143,7 +137,7 @@ class SearchForm extends Form
 
         // any modifications we need to make to the form.
         $this->setFormMethod('GET');
-    
+
         $this->addExtraClass('no-action-styles');
         $this->disableSecurityToken();
     }
@@ -161,29 +155,30 @@ class SearchForm extends Form
 
 Our controller will now just have to create a new instance of this form object. Keeping the file light and easy to read.
 
-**app/src/Page.php**
-
 ```php
-use SearchForm;
-use SilverStripe\CMS\Controllers\ContentController;
+// app/src/PageType/SearchPageController.php
+namespace App\PageType;
 
-class PageController extends ContentController 
+use App\Form\SearchForm;
+use PageController;
+
+class SearchPageController extends PageController
 {
     private static $allowed_actions = [
-        'SearchForm',
+        'searchForm',
     ];
-    
-    public function SearchForm() 
+
+    public function searchForm()
     {
-        return new SearchForm($this, __FUNCTION__);
+        return SearchForm::create($this, __FUNCTION__);
     }
 }
 ```
 
-## Related Documentation
+## Related documentation
 
-* [Introduction to Forms](../introduction)
+- [Introduction to Forms](../introduction)
 
-## API Documentation
+## API documentation
 
-* [Form](api:SilverStripe\Forms\Form)
+- [`Form`](api:SilverStripe\Forms\Form)

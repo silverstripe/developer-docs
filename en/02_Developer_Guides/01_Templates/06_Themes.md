@@ -1,19 +1,19 @@
 ---
 title: Themes
-summary: What makes up a Silverstripe CMS Theme. How to install one or write your own theme. 
+summary: What makes up a Silverstripe CMS Theme. How to install one or write your own theme.
 icon: paint-brush
 ---
 
 # Themes
 
 Themes can be used to kick start your Silverstripe CMS projects, can be stored outside of your application code and your
-application can provide multiple unique themes (i.e.a mobile theme).
+application can provide multiple unique themes (for example a mobile theme).
 
 ## Downloading
 
-Head to the [Packagist](https://packagist.org/search/?type=silverstripe-theme) to check out the range of themes the 
+Head to the [Packagist](https://packagist.org/search/?type=silverstripe-theme) to check out the range of themes the
 community has built. Themes are published and downloaded using Composer,
-just like any other [Silverstripe module](/developer_guides/extending/modules).
+just like any other [Silverstripe CMS module](/developer_guides/extending/modules).
 
 ## Installation
 
@@ -33,11 +33,10 @@ As you've added new files to your Silverstripe CMS installation, make sure you c
 ### Configuring themes
 
 After installing a new theme or manually adding one yourself, update the current theme in Silverstripe CMS. This can be done by
-altering the `SSViewer.themes` setting in a [yaml configuration](../configuration).
+altering the `SSViewer.themes` setting in a [YAML configuration](../configuration).
 
-**app/_config/app.yml**
-
-```yaml
+```yml
+# app/_config/themes.yml
 SilverStripe\View\SSViewer:
   themes:
     - '$public'
@@ -55,24 +54,24 @@ main styles of syntax:
 
 1. You can use the following to point to a theme or path within your root project:
 
-  - Refer to the theme directly by name. A simple name with no slash represents a theme in the `themes/` directory (e.g. "mytheme" refers to the `themes/mytheme` theme).
-  - `/some/path/to/theme` - Any string prefixed with `/` will be treated as a filesystem path to a theme root (relative to the project root).
-  - `$themeset` - Any `$` prefixed name will refer to a set of themes. By default only the `$default` and `$public` sets are configured (see [special themesets](#special-themesets) below).
+    - Refer to the theme directly by name. A simple name with no slash represents a theme in the `themes/` directory (e.g. "mytheme" refers to the `themes/mytheme` theme).
+    - `/some/path/to/theme` - Any string prefixed with `/` will be treated as a filesystem path to a theme root (relative to the project root).
+    - `$themeset` - Any `$` prefixed name will refer to a set of themes. By default only the `$default` and `$public` sets are configured (see [special themesets](#special-themesets) below).
 
-2. Using the `:` syntax you can also specify themes relative to the given module:
+1. Using the `:` syntax you can also specify themes relative to the given module:
 
-  - `myvendor/mymodule:sometheme` - This will specify a standard theme within the given module.
-  This will lookup the theme in the `themes` subfolder within this module. E.g.
-  `/vendor/myvendor/mymodule/themes/sometheme`.
-  Note: This syntax also works without the vendor prefix (`mymodule:sometheme`)
-  - `myvendor/mymodule:/some/path` - Rather than looking in the themes subdir, look in the
-  exact path within the root of the given module.
+    - `myvendor/mymodule:sometheme` - This will specify a standard theme within the given module.
+    This will lookup the theme in the `themes` subfolder within this module. For example
+    `/vendor/myvendor/mymodule/themes/sometheme`.
+    Note: This syntax also works without the vendor prefix (`mymodule:sometheme`)
+    - `myvendor/mymodule:/some/path` - Rather than looking in the themes subdir, look in the
+    exact path within the root of the given module.
 
-3. You can also specify a module root folder directly. 
+1. You can also specify a module root folder directly.
 
-  - `myvendor/mymodule` - Points to the base folder of the given module.
-  - `mymodule:` - Also points to the base folder of the given module, but without a vendor.
-  The `:` is necessary to distinguish this from a non-module theme.
+    - `myvendor/mymodule` - Points to the base folder of the given module.
+    - `mymodule:` - Also points to the base folder of the given module, but without a vendor.
+    The `:` is necessary to distinguish this from a non-module theme.
 
 #### Special themesets
 
@@ -91,7 +90,7 @@ so that your themes take precedence over any templates provided by modules.
 
 ## Developing your own theme
 
-A `theme` within Silverstripe CMS is simply a collection of templates and other front end resources such as javascript and CSS located within the `themes/` directory.
+A `theme` within Silverstripe CMS is simply a collection of templates and other front end resources such as JavaScript and CSS located within the `themes/` directory.
 
 ![themes:basicfiles.gif](../../_images/basicfiles.gif)
 
@@ -101,20 +100,21 @@ To define extra themes simply add extra entries to the `SilverStripe\View\SSView
 
 If you want to submit your theme to Packagist for others to use, then check:
 
-* You should ensure your templates are well structured, modular and commented so it's easy for other people to customise 
-* Templates should not contain text inside images and all images provided must be open source and not break any 
+- You should ensure your templates are well structured, modular and commented so it's easy for other people to customise
+- Templates should not contain text inside images and all images provided must be open source and not break any
 copyright or license laws. This includes any icons your template uses.
-* A theme does not include any PHP files. Only CSS, HTML, images and javascript.
-* That your theme contains a `composer.json` file specifying the theme name, author and license, and that it has `"type": "silverstripe-theme"`.
+- A theme does not include any PHP files. Only CSS, HTML, images and JavaScript.
+- That your theme contains a `composer.json` file specifying the theme name, author and license, and that it has `"type": "silverstripe-theme"`.
 
-Once you've created your module and set up your Composer configuration, create a new repository and push your theme to a Git host such as [GitHub.com](https://github.com). 
+Once you've created your module and set up your Composer configuration, create a new repository and push your theme to a Git host such as [GitHub](https://github.com).
 
 The final step is to [submit your theme to Packagist](https://packagist.org/about#how-to-submit-packages) (the central Composer package repository).
 
 ## Links
 
- * [Silverstripe CMS themes on Packagist](https://packagist.org/search/?type=silverstripe-theme)
+- [Silverstripe CMS themes on Packagist](https://packagist.org/search/?type=silverstripe-theme)
 
-## Related Lessons
-* [Creating your first project](https://www.silverstripe.org/learn/lessons/v4/creating-your-first-project)
-* [Migrating static templates into your theme](https://www.silverstripe.org/learn/lessons/v4/migrating-static-templates-into-your-theme-1)
+## Related lessons
+
+- [Creating your first project](https://www.silverstripe.org/learn/lessons/v4/creating-your-first-project)
+- [Migrating static templates into your theme](https://www.silverstripe.org/learn/lessons/v4/migrating-static-templates-into-your-theme-1)

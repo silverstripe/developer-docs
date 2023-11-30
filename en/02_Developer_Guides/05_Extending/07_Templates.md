@@ -4,10 +4,10 @@ summary: Override templates from core and modules in your application
 icon: code
 ---
 
-# Custom Templates
+# Custom templates
 
 See [Template Inheritance](../templates).
 
-## Form Templates
+## Form templates
 
 See [Form Templates](../forms/form_templates).

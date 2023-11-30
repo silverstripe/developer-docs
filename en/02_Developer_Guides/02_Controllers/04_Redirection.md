@@ -6,23 +6,35 @@ icon: reply
 
 # Redirection
 
-Controllers can facilitate redirecting users from one place to another using `HTTP` redirection using the `Location` 
+Controllers can facilitate redirecting users from one place to another using `HTTP` redirection using the `Location`
 HTTP header.
 
-**app/src/Page.php**
-
 ```php
-// redirect to Page::goherenow(), i.e.on the contact-us page this will redirect to /contact-us/goherenow/
-$this->redirect($this->Link('goherenow'));
+namespace App\Control;
 
-// redirect to the URL on www.example.com/goherenow/ assuming your website is hosted at www.example.com (note the leading slash)
-$this->redirect('/goherenow');
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPResponse;
 
-// redirect to https://www.example.com (assuming that is an external website URL)
-$this->redirect('https://www.example.com');
+class MyController extends Controller
+{
+    // ...
 
-// go back to the previous page.
-$this->redirectBack();
+    public function someMethod(): HTTPResponse
+    {
+        // redirect to Page::goherenow(), i.e.on the contact-us page this will redirect to /contact-us/goherenow/
+        return $this->redirect($this->Link('goherenow'));
+
+        // redirect to the URL on www.example.com/goherenow/ assuming your website is hosted at www.example.com
+        // (note the leading slash)
+        return $this->redirect('/goherenow');
+
+        // redirect to https://example.com (assuming that is an external website URL)
+        return $this->redirect('https://example.com');
+
+        // go back to the previous page
+        return $this->redirectBack();
+    }
+}
 ```
 
 ## Back URL
@@ -45,9 +57,9 @@ If there's already a `BackURL` parameter in the current request's URL, you can a
 $linkWithBackURL = $this->addBackURLParam($this->Link('someAction'));
 ```
 
-## Status Codes
+## Status codes
 
-The `redirect()` method takes an optional HTTP status code, either `301` for permanent redirects, or `302` for 
+The `redirect()` method takes an optional HTTP status code, either `301` for permanent redirects, or `302` for
 temporary redirects (default).
 
 ```php
@@ -87,6 +99,6 @@ SilverStripe\Control\Director:
 
 For more information about routing rules see the [Routing](routing) documentation.
 
-## API Documentation
+## API documentation
 
-* [Controller](api:SilverStripe\Control\Controller)
+- [Controller](api:SilverStripe\Control\Controller)

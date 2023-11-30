@@ -19,42 +19,40 @@ also be used in other areas of your application.
 Let's assume we want to manage a simple product listing as a sample data model: A product can have a name, price, and
 a category.
 
-**app/src/Product.php**
-
-
 ```php
+// app/src/Model/Product.php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
-class Product extends DataObject 
+class Product extends DataObject
 {
-
     private static $db = [
         'Name' => 'Varchar',
         'ProductCode' => 'Varchar',
-        'Price' => 'Currency'
+        'Price' => 'Currency',
     ];
 
     private static $has_one = [
-        'Category' => Category::class
+        'Category' => Category::class,
     ];
 }
 ```
 
-**app/src/Category.php**
-
-
 ```php
+// app/src/Model/Category.php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
-class Category extends DataObject 
+class Category extends DataObject
 {
-
     private static $db = [
-        'Title' => 'Text'
+        'Title' => 'Text',
     ];
 
     private static $has_many = [
-        'Products' => Product::class
+        'Products' => Product::class,
     ];
 }
 ```
@@ -64,18 +62,19 @@ DataObject's you want to scaffold an interface for. The class can manage multipl
 
 We'll name it `MyAdmin`, but the class name can be anything you want.
 
-**app/src/MyAdmin.php**
-
-
 ```php
+// app/src/Admin/MyAdmin.php
+namespace App\Admin;
+
+use App\Model\Category;
+use App\Model\Product;
 use SilverStripe\Admin\ModelAdmin;
 
-class MyAdmin extends ModelAdmin 
+class MyAdmin extends ModelAdmin
 {
-
     private static $managed_models = [
         Product::class,
-        Category::class
+        Category::class,
     ];
 
     private static $url_segment = 'products';
@@ -91,46 +90,49 @@ users will be able to upload and manage `Product` and `Category` instances throu
 After defining these classes, make sure you have rebuilt your Silverstripe CMS database and flushed your cache.
 [/alert]
 
-## Defining the ModelAdmin models
+## Defining the `ModelAdmin` models
 
 The `$managed_models` configuration supports additional formats allowing you to customise
 the URL and tab label used to access a specific model. This can also be used to display
 the same model more than once with different filtering or display options.
 
 ```php
+namespace App\Admin;
+
+use App\Model\Category;
+use App\Model\Product;
 use SilverStripe\Admin\ModelAdmin;
 
-class MyAdmin extends ModelAdmin 
+class MyAdmin extends ModelAdmin
 {
-
     private static $managed_models = [
         // This is the most basic format. URL for this Model will use the fully
         // qualified namespace of `Product`. The label for this tab will be determined
         // by the `i18n_plural_name` on the `Product` class.
         Product::class,
-        
+
         // This format can be used to customise the tab title.
         Category::class => [
-            'title' => 'All categories'
+            'title' => 'All categories',
         ],
-        
+
         // This format can be used to customise the URL segment for this Model. This can
         // be useful if you do not want the fully qualified class name of the Model to
         // appear in the URL. It can also be used to have the same Model appear more than
         // once, allowing you to create custom views.
         'product-category' => [
             'dataClass' => Category::class,
-            'title' => 'Product categories'
-        ]
+            'title' => 'Product categories',
+        ],
     ];
 
     private static $url_segment = 'products';
 
     private static $menu_title = 'My Product Admin';
-    
+
     public function getList()
     {
-        $list =  parent::getList();
+        $list = parent::getList();
         // Only show Categories specific to Products When viewing the product-category tab
         if ($this->modelTab === 'product-category') {
             $list = $list->filter('IsProductCategory', true);
@@ -138,7 +140,6 @@ class MyAdmin extends ModelAdmin
         return $list;
     }
 }
-
 ```
 
 ### Edit links for records
@@ -186,51 +187,58 @@ The [DataObject](api:SilverStripe\ORM\DataObject) API has more granular permissi
 Available checks are `canEdit()`, `canCreate()`, `canView()` and `canDelete()`. Models check for administrator
 permissions by default. For most cases, less restrictive checks make sense, e.g. checking for general CMS access rights.
 
-**app/src/Category.php**
-
-
 ```php
-use SilverStripe\Security\Permission;
+// app/src/Model/Category.php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Permission;
 
-class Category extends DataObject 
+class Category extends DataObject
 {
-    public function canView($member = null) 
+    // ...
+
+    public function canView($member = null)
     {
         return Permission::check('CMS_ACCESS_Company\Website\MyAdmin', 'any', $member);
     }
 
-    public function canEdit($member = null) 
+    public function canEdit($member = null)
     {
         return Permission::check('CMS_ACCESS_Company\Website\MyAdmin', 'any', $member);
     }
 
-    public function canDelete($member = null) 
+    public function canDelete($member = null)
     {
         return Permission::check('CMS_ACCESS_Company\Website\MyAdmin', 'any', $member);
     }
 
-    public function canCreate($member = null) 
+    public function canCreate($member = null)
     {
         return Permission::check('CMS_ACCESS_Company\Website\MyAdmin', 'any', $member);
     }
 }
 ```
 
-## Custom ModelAdmin CSS menu icons using built in icon font
+## Custom `ModelAdmin` CSS menu icons using built in icon font
 
 An extended ModelAdmin class supports adding a custom menu icon to the CMS.
 
-```
+```php
+namespace App\Admin;
+
+use SilverStripe\Admin\ModelAdmin;
+
 class NewsAdmin extends ModelAdmin
 {
-    ...
     private static $menu_icon_class = 'font-icon-news';
+    // ...
 }
 ```
+
 A complete list of supported font icons is available to view in the [Silverstripe CMS Design System Manager](https://projects.invisionapp.com/dsm/silver-stripe/silver-stripe/section/icons/5a8b972d656c91001150f8b6)
 
-## Searching Records
+## Searching records
 
 [ModelAdmin](api:SilverStripe\Admin\ModelAdmin) uses the [SearchContext](../search/searchcontext) class to provide a search form, as well as get the
 searched results. Every [DataObject](api:SilverStripe\ORM\DataObject) can have its own context, based on the fields which should be searchable. The
@@ -240,19 +248,20 @@ class makes a guess at how those fields should be searched, e.g. showing a check
 To remove, add or modify searchable fields, define a new [DataObject::$searchable_fields](api:SilverStripe\ORM\DataObject::$searchable_fields) static on your model
 class (see [Searchable Fields](/developer_guides/model/scaffolding#searchable-fields) and [SearchContext](../search/searchcontext) docs for details).
 
-**app/src/Product.php**
-
-
 ```php
+// app/src/Model/Product.php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
-class Product extends DataObject 
+class Product extends DataObject
 {
+    // ...
 
-   private static $searchable_fields = [
+    private static $searchable_fields = [
       'Name',
-      'ProductCode'
-   ];
+      'ProductCode',
+    ];
 }
 ```
 
@@ -260,29 +269,32 @@ class Product extends DataObject
 [SearchContext](../search/searchcontext) documentation has more information on providing the search functionality.
 [/hint]
 
-## Displaying Results
+## Displaying results
 
 The results are shown in a tabular listing, powered by the [GridField](../forms/field_types/gridfield), more specifically
 the [GridFieldDataColumns](api:SilverStripe\Forms\GridField\GridFieldDataColumns) component. This component looks for a [DataObject::$summary_fields](api:SilverStripe\ORM\DataObject::$summary_fields) static on your
 model class, where you can add or remove columns. To change the title, use [DataObject::$field_labels](api:SilverStripe\ORM\DataObject::$field_labels).
 See [Summary Fields](/developer_guides/model/scaffolding#summary-fields) and [Field labels](/developer_guides/model/scaffolding#field-labels) for details.
 
-**app/src/Product.php**
-
-
 ```php
+// app/src/Model/Product.php
+namespace App\Model;
+
 use SilverStripe\ORM\DataObject;
 
-class Product extends DataObject 
+class Product extends DataObject
 {
-   private static $field_labels = [
-      'Price' => 'Cost' // renames the column to "Cost"
-   ];
+    // ...
 
-   private static $summary_fields = [
+    private static $field_labels = [
+      // renames the column to "Cost"
+      'Price' => 'Cost',
+    ];
+
+    private static $summary_fields = [
       'Name',
-      'Price'
-   ];
+      'Price',
+    ];
 }
 ```
 
@@ -292,21 +304,24 @@ can be customized by additional SQL filters, joins.
 
 For example, we might want to exclude all products without prices in our sample `MyAdmin` implementation.
 
-**app/src/MyAdmin.php**
-
-
 ```php
-<?php
-use SilverStripe\Admin\ModelAdmin;
+// app/src/Admin/MyAdmin.php
+namespace App\Admin;
 
-class MyAdmin extends ModelAdmin 
+use App\Model\Product;
+use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\ORM\DataObject;
+
+class MyAdmin extends ModelAdmin
 {
-    public function getList() 
+    // ...
+
+    public function getList()
     {
         $list = parent::getList();
 
         // Always limit by model class, in case you're managing multiple
-        if($this->modelClass == 'Product') {
+        if ($this->modelClass == Product::class) {
             $list = $list->exclude('Price', '0');
         }
 
@@ -327,33 +342,37 @@ class MyAdmin extends ModelAdmin
 You can also customize the search behavior directly on your `ModelAdmin` instance. For example, we might want to have a
 checkbox which limits search results to expensive products (over $100).
 
-**app/src/MyAdmin.php**
-
 ```php
-<?php
-use SilverStripe\Forms\CheckboxField;
-use SilverStripe\Admin\ModelAdmin;
+// app/src/Admin/MyAdmin.php
+namespace App\Admin;
 
-class MyAdmin extends ModelAdmin 
+use App\Model\Product;
+use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\Forms\CheckboxField;
+
+class MyAdmin extends ModelAdmin
 {
-    public function getSearchContext() 
+    // ...
+
+    public function getSearchContext()
     {
         $context = parent::getSearchContext();
 
-        if($this->modelClass == 'Product') {
+        if ($this->modelClass == Product::class) {
             $context->getFields()->push(CheckboxField::create('q[ExpensiveOnly]', 'Only expensive stuff'));
         }
 
         return $context;
     }
 
-    public function getList() 
+    public function getList()
     {
         $list = parent::getList();
 
-        $params = $this->getRequest()->requestVar('q'); // use this to access search parameters
+        // use this to access search parameters
+        $params = $this->getRequest()->requestVar('q');
 
-        if($this->modelClass == 'Product' && isset($params['ExpensiveOnly']) && $params['ExpensiveOnly']) {
+        if ($this->modelClass == Product::class && isset($params['ExpensiveOnly']) && $params['ExpensiveOnly']) {
             $list = $list->exclude('Price:LessThan', '100');
         }
 
@@ -362,37 +381,38 @@ class MyAdmin extends ModelAdmin
 }
 ```
 
-## Altering the ModelAdmin GridField or Form
+## Altering the `ModelAdmin`, `GridField`, or `Form`
 
 If you wish to provided a tailored esperience for CMS users, you can directly interact with the ModelAdmin form or gridfield. Override the following method:
-* `getEditForm()` to alter the Form object
-* `getGridField()` to alter the GridField field
-* `getGridFieldConfig()` to alter the GridField configuration.
+
+- `getEditForm()` to alter the Form object
+- `getGridField()` to alter the GridField field
+- `getGridFieldConfig()` to alter the GridField configuration.
 
 Extensions applied to a ModelAdmin can also use the `updateGridField` and `updateGridFieldConfig` hooks.
 
-To alter how the results are displayed (via [GridField](api:SilverStripe\Forms\GridField\GridField)), you can also override the `getEditForm()` method. For
+To alter how the results are displayed (via [`GridField`](api:SilverStripe\Forms\GridField\GridField)), you can also override the `getEditForm()` method. For
 example, to add a new component.
 
-### Overriding the methods on ModelAdmin
-
-**app/src/MyAdmin.php**
-
+### Overriding the methods on `ModelAdmin`
 
 ```php
-<?php
-use SilverStripe\Forms\GridField\GridFieldFilterHeader;
-use SilverStripe\Forms\GridField\GridFieldConfig;
+// app/src/Admin/MyAdmin.php
+namespace App\Admin;
+
+use App\Model\Category;
+use App\Model\Product;
 use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\Forms\GridField\GridFieldConfig;
+use SilverStripe\Forms\GridField\GridFieldFilterHeader;
 
-class MyAdmin extends ModelAdmin 
+class MyAdmin extends ModelAdmin
 {
-
     private static $managed_models = [
         Product::class,
-        Category::class
+        Category::class,
     ];
-    
+
     private static $url_segment = 'my-admin';
 
     protected function getGridFieldConfig(): GridFieldConfig
@@ -409,26 +429,26 @@ class MyAdmin extends ModelAdmin
 The above example will add the component to all `GridField`s (of all managed models). Alternatively we can also add it
 to only one specific `GridField`:
 
-**app/src/MyAdmin.php**
-
-
 ```php
-<?php
-use SilverStripe\Forms\GridField\GridFieldFilterHeader;
-use SilverStripe\Forms\GridField\GridFieldConfig;
+// app/src/Admin/MyAdmin.php
+namespace App\Admin;
+
+use App\Model\Category;
+use App\Model\Product;
 use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\Forms\GridField\GridFieldConfig;
+use SilverStripe\Forms\GridField\GridFieldFilterHeader;
 
-class MyAdmin extends ModelAdmin 
+class MyAdmin extends ModelAdmin
 {
-
     private static $managed_models = [
         Product::class,
-        Category::class
+        Category::class,
     ];
-    
+
     private static $url_segment = 'my-admin';
 
-    protected function getGridFieldConfig(): GridFieldConfig 
+    protected function getGridFieldConfig(): GridFieldConfig
     {
         $config = parent::getGridFieldConfig();
 
@@ -442,15 +462,14 @@ class MyAdmin extends ModelAdmin
 }
 ```
 
-### Using an extension to customise a ModelAdmin
+### Using an extension to customise a `ModelAdmin`
 
 You can use an Extension to achieve the same results. Extensions have the advantage of being reusable in many contexts.
 
-**app/src/ModelAdminExtension.php**
-
-
 ```php
-<?php
+// app/src/Extension/ModelAdminExtension.php
+namespace App\Extension;
+
 use SilverStripe\Core\Extension;
 use SilverStripe\Forms\GridField\GridFieldConfig;
 use SilverStripe\Forms\GridField\GridFieldFilterHeader;
@@ -467,37 +486,36 @@ class ModelAdminExtension extends Extension
 }
 ```
 
-**app/_config/mysite.yml**
-
-```yaml
-MyAdmin:
+```yml
+# app/_config/extensions.yml
+App\Admin\MyAdmin:
   extensions:
-    - ModelAdminExtension
+    - App\Extension\ModelAdminExtension
 ```
 
-### Altering a ModelAdmin using only `getEditForm()`
+### Altering a `ModelAdmin` using only `getEditForm()`
 
 This requires a bit more work to access the GridField and GridFieldConfig instances, but it can be useful for advanced modifications for the edit form.
 
-**app/src/MyAdmin.php**
-
 ```php
-<?php
+// app/src/Admin/MyAdmin.php
+namespace App\Admin;
 
-use SilverStripe\Forms\GridField\GridFieldFilterHeader;
+use App\Model\Category;
+use App\Model\Product;
 use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\Forms\GridField\GridFieldFilterHeader;
 
-class MyAdmin extends ModelAdmin 
+class MyAdmin extends ModelAdmin
 {
-
     private static $managed_models = [
         Product::class,
-        Category::class
+        Category::class,
     ];
-    
+
     private static $url_segment = 'my-admin';
 
-    public function getEditForm($id = null, $fields = null) 
+    public function getEditForm($id = null, $fields = null)
     {
         $form = parent::getEditForm($id, $fields);
 
@@ -514,7 +532,7 @@ class MyAdmin extends ModelAdmin
 }
 ```
 
-## Data Import
+## Data import
 
 The `ModelAdmin` class provides import of CSV files through the [CsvBulkLoader](api:SilverStripe\Dev\CsvBulkLoader) API. which has support for column
 mapping, updating existing records, and identifying relationships - so its a powerful tool to get your data into a
@@ -523,45 +541,47 @@ Silverstripe CMS database.
 By default, each model management interface allows uploading a CSV file with all columns auto detected. To override
 with a more specific importer implementation, use the [ModelAdmin::$model_importers](api:SilverStripe\Admin\ModelAdmin::$model_importers) static.
 
-## Data Export
+## Data export
 
 Export is available as a CSV format through a button at the end of a results list. You can also export search results.
 This is handled through the [GridFieldExportButton](api:SilverStripe\Forms\GridField\GridFieldExportButton) component.
 
 To customize the exported columns, create a new method called `getExportFields` in your `ModelAdmin`:
 
-
 ```php
+namespace App\Admin;
+
 use SilverStripe\Admin\ModelAdmin;
 
-class MyAdmin extends ModelAdmin 
+class MyAdmin extends ModelAdmin
 {
     // ...
 
-    public function getExportFields() 
+    public function getExportFields()
     {
         return [
             'Name' => 'Name',
             'ProductCode' => 'Product Code',
-            'Category.Title' => 'Category'
+            'Category.Title' => 'Category',
         ];
     }
 }
 ```
 
-## Related Lessons
-* [Intoduction to ModelAdmin](https://www.silverstripe.org/learn/lessons/v4/introduction-to-modeladmin-1)
+## Related lessons
 
-## Related Documentation
+- [Intoduction to ModelAdmin](https://www.silverstripe.org/learn/lessons/v4/introduction-to-modeladmin-1)
 
-* [GridField](../forms/field_types/gridfield)
-* [Permissions](../security/permissions)
-* [SearchContext](../search/searchcontext)
+## Related documentation
 
-## API Documentation
+- [GridField](../forms/field_types/gridfield)
+- [Permissions](../security/permissions)
+- [SearchContext](../search/searchcontext)
 
-* [ModelAdmin](api:SilverStripe\Admin\ModelAdmin)
-* [LeftAndMain](api:SilverStripe\Admin\LeftAndMain)
-* [GridField](api:SilverStripe\Forms\GridField\GridField)
-* [DataList](api:SilverStripe\ORM\DataList)
-* [CsvBulkLoader](api:SilverStripe\Dev\CsvBulkLoader)
+## API documentation
+
+- [ModelAdmin](api:SilverStripe\Admin\ModelAdmin)
+- [LeftAndMain](api:SilverStripe\Admin\LeftAndMain)
+- [GridField](api:SilverStripe\Forms\GridField\GridField)
+- [DataList](api:SilverStripe\ORM\DataList)
+- [CsvBulkLoader](api:SilverStripe\Dev\CsvBulkLoader)

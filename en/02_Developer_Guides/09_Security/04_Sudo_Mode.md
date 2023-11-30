@@ -4,7 +4,7 @@ summary: Require users to verify their identity when performing sensitive action
 icon: key
 ---
 
-# Sudo Mode
+# Sudo mode
 
 Sudo mode represents a heightened level of permission in that you are more certain that the current user is actually the person whose account is logged in. This is performed by re-validating that the account's password is correct, and will then last for a certain amount of time (configurable) until it will be checked again.
 
@@ -14,7 +14,7 @@ Sudo mode will automatically be enabled for the configured lifetime when a user 
 
 The default [`SudoModeServiceInterface`](api:SilverStripe\Security\SudoMode\SudoModeServiceInterface) implementation is [`SudoModeService`](api:SilverStripe\Security\SudoMode\SudoModeService), and its lifetime can be configured with YAML. You should read the lifetime value using `SudoModeServiceInterface::getLifetime()`.
 
-```yaml
+```yml
 SilverStripe\Security\SudoMode\SudoModeService:
   lifetime_minutes: 25
 ```
@@ -24,6 +24,8 @@ SilverStripe\Security\SudoMode\SudoModeService:
 You can add the `SudoModeServiceInterface` singleton as a dependency to a controller that requires sudo mode for one of its actions:
 
 ```php
+namespace App\Control;
+
 class MyController extends Controller
 {
     private ?SudoModeServiceInterface $sudoModeService = null;
@@ -41,16 +43,23 @@ class MyController extends Controller
 Performing a sudo mode verification check in a controller action is simply using the service to validate the request:
 
 ```php
-public function myAction(HTTPRequest $request): HTTPResponse
+namespace App\Control;
+
+class MyController extends Controller
 {
-    if (!$this->sudoModeService->check($request->getSession())) {
-        return $this->httpError(403, 'Sudo mode is required for this action');
+    // ...
+
+    public function myAction(HTTPRequest $request): HTTPResponse
+    {
+        if (!$this->sudoModeService->check($request->getSession())) {
+            return $this->httpError(403, 'Sudo mode is required for this action');
+        }
+        // ... continue with sensitive operations
     }
-    // ... continue with sensitive operations
 }
 ```
 
-## Using sudo mode in a React component
+## Using sudo mode in a react component
 
 The `silverstripe/admin` module defines a [React Higher-Order-Component](https://reactjs.org/docs/higher-order-components.html) (aka HOC) which can
 be applied to React components in your module or code to intercept component rendering and show a "sudo mode required"
@@ -63,7 +72,7 @@ The `WithSudoMode` HOC is exposed via [Webpack's expose-loader plugin](https://w
 
 You can get the injector to apply the HOC to your component automatically using [injector transformations](/developer_guides/customising_the_admin_interface/reactjs_redux_and_graphql/#transforming-services-using-middleware):
 
-```jsx
+```js
 import WithSudoMode from 'containers/SudoMode/SudoMode';
 
 Injector.transform('MyComponentWithSudoMode', (updater) => {

@@ -9,8 +9,9 @@ icon: lock
 Not every kind of file should be stored in a CMS's asset management system. For example, allowing users to upload JavaScript files could lead to a risk of Cross-Site Scripting (XSS) attacks.
 
 Out of the box, your Silverstripe CMS project will limit what type of files can be uploaded into the assets management section. There's two type of restriction in place based on:
-* the extensions of the files
-* the MIME type of the files.
+
+- the extensions of the files
+- the MIME type of the files.
 
 ## File extensions validation
 
@@ -18,7 +19,8 @@ The `silverstripe/assets` module ships with a whitelist of allowed file extensio
 
 The whitelist is controlled by the `SilverStripe\Assets\File::$allowed_extensions` variable.
 
-You can whitelist additional file extensions by adding them in your YML configuration.
+You can whitelist additional file extensions by adding them in your YAML configuration.
+
 ```yml
 SilverStripe\Assets\File:
   allowed_extensions:
@@ -56,7 +58,7 @@ Look at the `app/_config/mimevalidator.yml` file to view the default configurati
 
 You can explicitly require the module by running this command
 
-```sh
+```bash
 composer require silverstripe/mimevalidator
 ```
 
@@ -93,9 +95,9 @@ SilverStripe\MimeValidator\MimeUploadValidator:
 
 ## Adding new image types {#add-image-format}
 
-Silverstripe CMS support JPEG, GIF, PNG and WebP image formats out of the box. Silverstripe CMS can be configured to support other less common image formats (e.g.: AVIF). For this to work, your version of PHP and of the [`intervention/image` library](https://intervention.io/) must support these alternative image formats.
+Silverstripe CMS support JPEG, GIF, PNG and WebP image formats out of the box. Silverstripe CMS can be configured to support other less common image formats (e.g: AVIF). For this to work, your version of PHP and of the [`intervention/image` library](https://intervention.io/) must support these alternative image formats.
 
-For example, this snippet can be added to the configuration of older Silverstripe CMS projects to allow them to work with WebP images. 
+For example, this snippet can be added to the configuration of older Silverstripe CMS projects to allow them to work with WebP images.
 
 ```yml
 ---

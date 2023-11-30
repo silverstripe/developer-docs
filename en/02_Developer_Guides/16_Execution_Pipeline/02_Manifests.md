@@ -25,7 +25,7 @@ This can be customised via `SS_MANIFESTCACHE` environment variable to point to e
 [CacheFactory](api:SilverStripe\Core\Cache\CacheFactory) or a class that implements the `CacheInterface`
 interface provided by [php-fig/cache](https://github.com/php-fig/cache).
 
-## Traversing the Filesystem
+## Traversing the filesystem
 
 Since manifests usually extract their information from files in the project root,
 they require a powerful traversal tool: [FileFinder](api:SilverStripe\Assets\FileFinder).
@@ -34,24 +34,24 @@ callbacks for recursive traversal. Each manifest has its own implementation,
 for example [ManifestFileFinder](api:SilverStripe\Core\Manifest\ManifestFileFinder), adding more domain specific filtering
 like including themes, or excluding tests.
 
-## PHP Class Manifest
+## PHP class manifest
 
 The [ClassManifest](api:SilverStripe\Core\Manifest\ClassManifest) builds a manifest of all classes, interfaces and some
 additional items present in a directory, and caches it.
 
 It finds the following information:
 
- * Class and interface names and paths
- * All direct and indirect descendants of a class
- * All implementors of an interface
- * All module configuration files
+- Class and interface names and paths
+- All direct and indirect descendants of a class
+- All implementors of an interface
+- All module configuration files
 
 The gathered information can be accessed through [ClassLoader::inst()](api:SilverStripe\Core\Manifest\ClassLoader::inst()),
 as well as [ClassInfo](api:SilverStripe\Core\ClassInfo). Some useful commands of the `ClassInfo` API:
 
- * `ClassInfo::subclassesFor($class)`: Returns a list of classes that inherit from the given class
- * `ClassInfo::ancestry($class)`: Returns the passed class name along with all its parent class names
- * `ClassInfo::implementorsOf($interfaceName)`: Returns all classes implementing the passed in interface
+- `ClassInfo::subclassesFor($class)`: Returns a list of classes that inherit from the given class
+- `ClassInfo::ancestry($class)`: Returns the passed class name along with all its parent class names
+- `ClassInfo::implementorsOf($interfaceName)`: Returns all classes implementing the passed in interface
 
 In the absence of a generic module API, it is also the primary way to identify
 which modules are installed, through [ClassManifest::getModules()](api:SilverStripe\Core\Manifest\ClassManifest::getModules()).
@@ -60,22 +60,22 @@ excluded from manifests by creating a blank `_manifest_exclude` file in the modu
 
 Modules can either be:
 
-* a toplevel folder in the project root, or
-* a third-party package installed via composer (i.e. in the `vendor/` directory).
+- a toplevel folder in the project root, or
+- a third-party package installed via composer (i.e. in the `vendor/` directory).
 
 By default, the finder implementation will exclude any classes stored in files within
 a `tests/` folder, unless tests are executed.
 
-## Theme Manifests
+## Theme manifests
 
 The [ThemeManifest](api:SilverStripe\View\ThemeManifest) class builds a manifest of all templates present in a directory,
-in both modules and themes. 
+in both modules and themes.
 
 Templates in `tests/` folders are automatically excluded.
 The chapter on [template inheritance](../templates/template_inheritance) provides more details
 on its operation.
 
-## Config Manifest
+## Config manifest
 
 The [ConfigManifest](api:ConfigManifest) loads builds a manifest of configuration items,
 for both PHP and YAML. It also takes care of ordering and merging configuration fragments.

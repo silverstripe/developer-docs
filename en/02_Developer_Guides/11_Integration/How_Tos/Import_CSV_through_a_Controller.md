@@ -4,71 +4,73 @@ summary: Data importing through the frontend
 icon: upload
 ---
 
-# Import CSV Data through a Controller
+# Import CSV data through a controller
 
-You can have more customised logic and interface feedback through a custom controller. Let's create a simple upload 
-form (which is used for `MyDataObject` instances). You can access it through 
+You can have more customised logic and interface feedback through a custom controller. Let's create a simple upload
+form (which is used for `MyDataObject` instances). You can access it through
 `https://www.example.com/MyController/?flush=all`.
 
-
 ```php
-use SilverStripe\Forms\Form;
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\FileField;
-use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\FieldsValidator;
-use SilverStripe\Dev\CsvBulkLoader;
-use SilverStripe\Control\Controller;
+namespace App\Control;
 
-class MyController extends Controller 
+use App\Model\MyDataObject;
+use SilverStripe\Control\Controller;
+use SilverStripe\Dev\CsvBulkLoader;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FieldsValidator;
+use SilverStripe\Forms\FileField;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FormAction;
+
+class MyController extends Controller
 {
+    private static $url_segment = 'my_controller';
 
     private static $allowed_actions = [
-        'Form'
+        'getForm',
     ];
 
-    protected $template = "BlankPage";
+    private static $url_handlers = [
+        'Form' => 'getForm',
+    ];
 
-    public function Link($action = null) 
-    {
-        return Controller::join_links('MyController', $action);
-    }
+    protected $template = 'BlankPage';
 
-    public function Form() 
+    public function getForm()
     {
-        $form = new Form(
+        $form = Form::create(
             $this,
             'Form',
-            new FieldList(
-                new FileField('CsvFile', false)
+            FieldList::create(
+                FileField::create('CsvFile', false)
             ),
-            new FieldList(
-                new FormAction('doUpload', 'Upload')
+            FieldList::create(
+                FormAction::create('doUpload', 'Upload')
             ),
-            new FieldsValidator()
+            FieldsValidator::create()
         );
         return $form;
     }
 
-    public function doUpload($data, $form) 
+    public function doUpload($data, $form)
     {
-        $loader = new CsvBulkLoader('MyDataObject');
+        $loader = CsvBulkLoader::create(MyDataObject::class);
         $results = $loader->load($_FILES['CsvFile']['tmp_name']);
         $messages = [];
 
-        if($results->CreatedCount()) {
+        if ($results->CreatedCount()) {
             $messages[] = sprintf('Imported %d items', $results->CreatedCount());
         }
 
-        if($results->UpdatedCount()) {
+        if ($results->UpdatedCount()) {
             $messages[] = sprintf('Updated %d items', $results->UpdatedCount());
         }
 
-        if($results->DeletedCount()) {
+        if ($results->DeletedCount()) {
             $messages[] = sprintf('Deleted %d items', $results->DeletedCount());
         }
 
-        if(!$messages) {
+        if (!$messages) {
             $messages[] = 'No changes';
         }
 
@@ -80,6 +82,6 @@ class MyController extends Controller
 ```
 
 [alert]
-This interface is not secured, consider using [Permission::check()](api:SilverStripe\Security\Permission::check()) to limit the controller to users with certain 
+This interface is not secured, consider using [Permission::check()](api:SilverStripe\Security\Permission::check()) to limit the controller to users with certain
 access rights.
 [/alert]

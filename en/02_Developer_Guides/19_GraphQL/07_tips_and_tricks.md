@@ -3,8 +3,7 @@ title: Tips & Tricks
 summary: Miscellaneous useful tips for working with your GraphQL schema
 ---
 
-# Tips & Tricks
-
+# Tips & tricks
 
 ## Debugging the generated code
 
@@ -29,9 +28,9 @@ This obfuscation is handled by the [`NameObfuscator`](api:SilverStripe\GraphQL\S
 
 There are various implementations:
 
-* [`NaiveNameObfuscator`](api:SilverStripe\GraphQL\Schema\Storage\NaiveNameObfuscator): Filename/Classname === Type name (debug only)
-* [`HybridNameObfuscator`](api:SilverStripe\GraphQL\Schema\Storage\HybridNameObfuscator): Filename/Classname is a mix of the typename and a md5 hash (default).
-* [`HashNameObfuscator`](api:SilverStripe\GraphQL\Schema\Storage\HashNameObfuscator): Filename/Classname is a md5 hash of the type name (non-dev only).
+- [`NaiveNameObfuscator`](api:SilverStripe\GraphQL\Schema\Storage\NaiveNameObfuscator): Filename/Classname === Type name (debug only)
+- [`HybridNameObfuscator`](api:SilverStripe\GraphQL\Schema\Storage\HybridNameObfuscator): Filename/Classname is a mix of the typename and a md5 hash (default).
+- [`HashNameObfuscator`](api:SilverStripe\GraphQL\Schema\Storage\HashNameObfuscator): Filename/Classname is a md5 hash of the type name (non-dev only).
 
 ## Getting the type name for a model class
 
@@ -43,6 +42,8 @@ If you need the type name during normal execution of your app, e.g. to display i
 on the cached typenames, which are persisted alongside your generated schema code.
 
 ```php
+use SilverStripe\GraphQL\Schema\SchemaBuilder;
+
 SchemaBuilder::singleton()->read('default')->getTypeNameForClass($className);
 ```
 
@@ -57,9 +58,9 @@ To implement persisted queries, you need an implementation of the
 [`PersistedQueryMappingProvider`](api:SilverStripe\GraphQL\PersistedQuery\PersistedQueryMappingProvider) interface.
 By default three are provided, which cover most use cases:
 
-* [`FileProvider`](api:SilverStripe\GraphQL\PersistedQuery\FileProvider): Store your queries in a flat JSON file on the local filesystem.
-* [`HTTPProvider`](api:SilverStripe\GraphQL\PersistedQuery\HTTPProvider): Store your queries on a remote server and reference a JSON file by URL.
-* [`JSONStringProvider`](api:SilverStripe\GraphQL\PersistedQuery\JSONStringProvider): Store your queries as hardcoded JSON
+- [`FileProvider`](api:SilverStripe\GraphQL\PersistedQuery\FileProvider): Store your queries in a flat JSON file on the local filesystem.
+- [`HTTPProvider`](api:SilverStripe\GraphQL\PersistedQuery\HTTPProvider): Store your queries on a remote server and reference a JSON file by URL.
+- [`JSONStringProvider`](api:SilverStripe\GraphQL\PersistedQuery\JSONStringProvider): Store your queries as hardcoded JSON
 
 ### Configuring query mapping providers
 
@@ -71,7 +72,7 @@ Note that each schema gets its own set of persisted queries. In these examples, 
 
 #### FileProvider
 
-```yaml
+```yml
 SilverStripe\Core\Injector\Injector:
   SilverStripe\GraphQL\PersistedQuery\PersistedQueryMappingProvider:
     class: SilverStripe\GraphQL\PersistedQuery\FileProvider
@@ -92,7 +93,7 @@ The file path must be absolute.
 
 #### HTTPProvider
 
-```yaml
+```yml
 SilverStripe\Core\Injector\Injector:
   SilverStripe\GraphQL\PersistedQuery\PersistedQueryMappingProvider:
     class: SilverStripe\GraphQL\PersistedQuery\HTTPProvider
@@ -109,7 +110,7 @@ A flat file at the URL `https://www.example.com/myqueries.json` should contain s
 
 #### JSONStringProvider
 
-```yaml
+```yml
 SilverStripe\Core\Injector\Injector:
   SilverStripe\GraphQL\PersistedQuery\PersistedQueryMappingProvider:
     class: SilverStripe\GraphQL\PersistedQuery\HTTPProvider
@@ -130,7 +131,7 @@ To access a persisted query, simply pass an `id` parameter in the request in lie
 Note that if you pass `query` along with `id`, an exception will be thrown.
 [/notice]
 
-## Query caching (Caution: EXPERIMENTAL)
+## Query caching (caution: EXPERIMENTAL)
 
 The [`QueryCachingMiddleware`](api:SilverStripe\GraphQL\Middleware\QueryCachingMiddleware) class is
 an experimental cache layer that persists the results of a GraphQL
@@ -139,7 +140,7 @@ query to limit unnecessary calls to the database. The query cache is automatical
 
 To implement query caching, add the middleware to your `QueryHandler`
 
-```yaml
+```yml
 SilverStripe\Core\Injector\Injector:
   SilverStripe\GraphQL\QueryHandler\QueryHandlerInterface.default:
     class: SilverStripe\GraphQL\QueryHandler\QueryHandler
@@ -150,7 +151,7 @@ SilverStripe\Core\Injector\Injector:
 
 And you will also need to apply the [QueryRecorderExtension](api:SilverStripe\GraphQL\Extensions\QueryRecorderExtension) extension to all DataObjects:
 
-```yaml
+```yml
 SilverStripe\ORM\DataObject:
   extensions:
     - SilverStripe\GraphQL\Extensions\QueryRecorderExtension
