@@ -14,7 +14,7 @@ throughout the site. Out of the box, this includes setting the site name and sit
 `SiteConfig` options can be accessed from any template by using the `$SiteConfig` variable.
 
 ```ss
-$SiteConfig.Title 
+$SiteConfig.Title
 $SiteConfig.Tagline
 
 <% with $SiteConfig %>
@@ -27,32 +27,31 @@ To access variables in the PHP:
 ```php
 use Silverstripe\SiteConfig\SiteConfig;
 
-$config = SiteConfig::current_site_config(); 
+$config = SiteConfig::current_site_config();
 
 // prints "Website Name"
 echo $config->Title;
 ```
 
-## Extending SiteConfig
+## Extending `SiteConfig`
 
 To extend the options available in the panel, define your own fields via an [`Extension`](api:SilverStripe\Core\Extension).
 
-**app/src/extensions/CustomSiteConfig.php**
-
 ```php
+// app/src/Extension/CustomSiteConfig.php
 namespace App\Extension;
 
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
-use SilverStripe\Core\Extension;
 
-class CustomSiteConfig extends Extension 
+class CustomSiteConfig extends Extension
 {
     private static $db = [
         'FooterContent' => 'HTMLText',
     ];
 
-    public function updateCMSFields(FieldList $fields) 
+    public function updateCMSFields(FieldList $fields)
     {
         $fields->addFieldToTab('Root.Main', HTMLEditorField::create('FooterContent', 'Footer Content'));
     }
@@ -61,9 +60,8 @@ class CustomSiteConfig extends Extension
 
 Then apply the extension.
 
-**app/_config/app.yml**
-
 ```yml
+# app/_config/extensions.yml
 Silverstripe\SiteConfig\SiteConfig:
   extensions:
     - App\Extension\CustomSiteConfig
@@ -77,10 +75,10 @@ You may also need to reload the screen with a `?flush=1` i.e.`https://www.exampl
 You can define as many extensions for `SiteConfig` as you need. For example, if you're developing a module and want to
 provide the users a place to configure site-wide settings then the `SiteConfig` panel is the place to go it.
 
-## API Documentation
+## API documentation
 
-* [SiteConfig](api:SilverStripe\SiteConfig\SiteConfig)
+- [SiteConfig](api:SilverStripe\SiteConfig\SiteConfig)
 
+## Related lessons
 
-## Related Lessons
-* [DataExtensions and SiteConfig](https://www.silverstripe.org/learn/lessons/v4/data-extensions-and-siteconfig-1)
+- [DataExtensions and SiteConfig](https://www.silverstripe.org/learn/lessons/v4/data-extensions-and-siteconfig-1)

@@ -13,16 +13,16 @@ Dependencies not in this list may be changed or removed altogether within the li
 
 Dependency | Fixed major release line
 -- | --
-[composer-plugin-api](https://getcomposer.org/doc/articles/composer-platform-dependencies.md#plugin-package-composer-plugin-api) | 2
-[composer/installers](https://packagist.org/packages/composer/installers) | 2
-[guzzlehttp/guzzle](https://packagist.org/packages/guzzlehttp/guzzle) | 7
-[guzzlehttp/psr7](https://packagist.org/packages/guzzlehttp/psr7) | 2
-[intervention/image](https://packagist.org/packages/intervention/image) | 2
-[league/flysystem](https://packagist.org/packages/league/flysystem) | 3
-[monolog/monolog](https://packagist.org/packages/monolog/monolog) | 3
-[phpunit/phpunit](https://packagist.org/packages/phpunit/phpunit) | 9
-[symfony/*](https://packagist.org/packages/symfony/) | 6
-[webonyx/graphql-php](https://packagist.org/packages/webonyx/graphql-php) | 15
+[`composer-plugin-api`](https://getcomposer.org/doc/articles/composer-platform-dependencies.md#plugin-package-composer-plugin-api) | 2
+[`composer/installers`](https://packagist.org/packages/composer/installers) | 2
+[`guzzlehttp/guzzle`](https://packagist.org/packages/guzzlehttp/guzzle) | 7
+[`guzzlehttp/psr7`](https://packagist.org/packages/guzzlehttp/psr7) | 2
+[`intervention/image`](https://packagist.org/packages/intervention/image) | 2
+[`league/flysystem`](https://packagist.org/packages/league/flysystem) | 3
+[`monolog/monolog`](https://packagist.org/packages/monolog/monolog) | 3
+[`phpunit/phpunit`](https://packagist.org/packages/phpunit/phpunit) | 9
+[`symfony/*`](https://packagist.org/packages/symfony/) | 6
+[`webonyx/graphql-php`](https://packagist.org/packages/webonyx/graphql-php) | 15
 
 ## Symfony dependencies
 

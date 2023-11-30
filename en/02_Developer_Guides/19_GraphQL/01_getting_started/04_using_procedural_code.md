@@ -31,19 +31,21 @@ the schema build.
 
 We can use the `execute` section of the config to add an implementation of [`SchemaUpdater`](api:SilverStripe\GraphQL\Schema\Interfaces\SchemaUpdater).
 
-```yaml
+```yml
 SilverStripe\GraphQL\Schema\Schema:
   schemas:
     default:
       config:
         execute:
-          - 'MyProject\MySchema'
+          - 'App\GraphQL\MySchema'
 ```
 
 Now just implement the [`SchemaUpdater`](api:SilverStripe\GraphQL\Schema\Interfaces\SchemaUpdater) interface.
 
-**app/src/MySchema.php**
 ```php
+// app/src/GraphQL/MySchema.php
+namespace App\GraphQL;
+
 use SilverStripe\GraphQL\Schema\Interfaces\SchemaUpdater;
 use SilverStripe\GraphQL\Schema\Schema;
 
@@ -61,15 +63,25 @@ class MySchema implements SchemaUpdater
 Most of the API should be self-documenting, and a good IDE should autocomplete everything you
 need, but the key methods map directly to their configuration counterparts:
 
-* types (`$schema->addType(Type $type)`)
-* models (`$schema->addModel(ModelType $type)`)
-* queries (`$schema->addQuery(Query $query)`)
-* mutations (`$schema->addMutation(Mutation $mutation)`)
-* enums (`$schema->addEnum(Enum $type)`)
-* interfaces (`$schema->addInterface(InterfaceType $type)`)
-* unions (`$schema->addUnion(UnionType $type)`)
+- types (`$schema->addType(Type $type)`)
+- models (`$schema->addModel(ModelType $type)`)
+- queries (`$schema->addQuery(Query $query)`)
+- mutations (`$schema->addMutation(Mutation $mutation)`)
+- enums (`$schema->addEnum(Enum $type)`)
+- interfaces (`$schema->addInterface(InterfaceType $type)`)
+- unions (`$schema->addUnion(UnionType $type)`)
 
 ```php
+namespace App\GraphQL;
+
+use App\Model\MyDataObject;
+use SilverStripe\GraphQL\Schema\Field\Query;
+use SilverStripe\GraphQL\Schema\Interfaces\SchemaUpdater;
+use SilverStripe\GraphQL\Schema\Schema;
+use SilverStripe\GraphQL\Schema\Type\Type;
+
+class MySchema implements SchemaUpdater
+{
     public static function updateSchema(Schema $schema): void
     {
         $countryType = Type::create('Country')
@@ -86,6 +98,7 @@ need, but the key methods map directly to their configuration counterparts:
             ->addAllOperations();
         $schema->addModel($myModel);
     }
+}
 ```
 
 #### Chainable setters
@@ -106,7 +119,7 @@ $schema->addType($countryType);
 $countriesQuery = Query::create('readCountries', '[Country]!')
     ->addArg('limit', 'Int', function (Argument $arg) {
         $arg->setDefaultValue(20);
-     });
+    });
 $schema->addQuery($countriesQuery);
 ```
 

@@ -12,15 +12,14 @@ If you're extending [`ContentController`](api:SilverStripe\CMS\Controllers\Conte
 Routing is the process of mapping URL's to [Controller](api:SilverStripe\Control\Controller) and actions.
 
 [hint]
-Getting routing rules right can be tricky. Add `?debug_request` to the end of your URL in your browser (while in dev mode) to see debug information about how your controller is matching actions against your url pattern.
+Getting routing rules right can be tricky. Add `?debug_request` to the end of your URL in your browser (while in dev mode) to see debug information about how your controller is matching actions against your URL pattern.
 See [URL Variable Tools](/developer_guides/debugging/url_variable_tools) for more useful URL variables for debugging.
 [/hint]
 
 Routes are defined by setting the `rules` configuration array on [`Director`](api:SilverStripe\Control\Director). Typically you will add this configuration in a `routes.yml` file in your application or module's `_config` folder alongside your other configuration files.
 
-**app/_config/routes.yml**
-
 ```yml
+# app/_config/routes.yml
 ---
 Name: approutes
 After:
@@ -29,8 +28,9 @@ After:
 ---
 SilverStripe\Control\Director:
   rules:
-    'teams//$Action/$ID/$Name': 'App\Controller\TeamController'
-    'player/': 'App\Controller\PlayerController'
+    'teams//$Action/$ID/$Name': 'App\Control\TeamController'
+    'player/': 'App\Control\PlayerController'
+    '': 'App\Control\HomeController'
 ```
 
 [hint]
@@ -57,13 +57,13 @@ Read the [Configuration](../configuration) documentation for more information ab
 
 The above example, and other examples in this section, show the controller class or service name as a single value in the array, with the routing rule that applies to it being the key.
 
-If you want to be more explicit in your configuration declaration, you can instead set the value of the array to be _another_ array, where the key is the word "Controller", and the value is again your controller class or service name.
+If you want to be more explicit in your configuration declaration, you can instead set the value of the array to be *another* array, where the key is the word "Controller", and the value is again your controller class or service name.
 
 ```yml
 SilverStripe\Control\Director:
   rules:
     'teams//$Action/$ID/$Name':
-      Controller: 'App\Controller\TeamController'
+      Controller: 'App\Control\TeamController'
     'player/':
       Controller: '%$SpecialInjectedController'
 ```
@@ -73,7 +73,7 @@ SilverStripe\Control\Director:
 ```yml
 SilverStripe\Control\Director:
   rules:
-    'teams//$Action/$ID/$Name': 'App\Controller\TeamController'
+    'teams//$Action/$ID/$Name': 'App\Control\TeamController'
 ```
 
 This route has defined that any URL beginning with `teams/` should instantiate and be handled by a `TeamController`.
@@ -88,22 +88,22 @@ The base `Controller` class already defines `$Action//$ID/$OtherID` in the `url_
 ```yml
 SilverStripe\Control\Director:
   rules:
-    'teams': 'App\Controller\TeamController' 
+    'teams': 'App\Control\TeamController'
 ```
 
 [/hint]
 
 [alert]
-Be aware that if your action doesn't follow the default url handler pattern `$Action//$ID/$OtherID`, you _must_ declare the appropriate url_handler pattern for your action.
-This is because the `Director.rules` configuration is _only_ used to indentify which _controller_ should handle the request, and how to handle parameters. It does _not_
-provide enough information on its own for the controller to know which _action_ should be used.
+Be aware that if your action doesn't follow the default URL handler pattern `$Action//$ID/$OtherID`, you *must* declare the appropriate url_handler pattern for your action.
+This is because the `Director.rules` configuration is *only* used to indentify which *controller* should handle the request, and how to handle parameters. It does *not*
+provide enough information on its own for the controller to know which *action* should be used.
 
-For example, the following two routing rules _must_ have an appropriate `url_handlers` declaration:
+For example, the following two routing rules *must* have an appropriate `url_handlers` declaration:
 
 - `teams//$Action/$ID/$AnotherID/$Name` - the `$Action/$ID/$AnotherID/$Name` portion needs to be declared in `url_handlers`
 - `teams//$@` - the `$@` portion needs to be declared in `url_handlers`
 
-In both cases, having any more than 3 path segments after `teams/` in the URL will result in the error "I can't handle sub-URLs on class App\Control\TeamController". This happens because there are more path segments than the default url handler pattern knows how to deal with.
+In both cases, having any more than 3 path segments after `teams/` in the URL will result in the error "I can't handle sub-URLs on class `App\Control\TeamController`". This happens because there are more path segments than the default URL handler pattern knows how to deal with.
 
 Note also that in both cases the first path segment after `teams/` will try to match against an action on the controller. You can also use `url_handlers` to declare a specific action that should handle these patterns regardless of what the parameter values resolve to.
 
@@ -159,7 +159,7 @@ All Controllers have access to `$this->getRequest()` for the request object and 
 Controller actions also accept the current `HTTPRequest` as their first argument.
 [/info]
 
-## URL Patterns
+## URL patterns
 
 The [`RequestHandler`](api:SilverStripe\Control\RequestHandler) (of which `Controller` is a subclass) will parse all rules you specify against the following patterns. The most specific rule
 will be the one followed for the response.
@@ -168,15 +168,15 @@ will be the one followed for the response.
 A rule must always start with alphabetical (`[A-Za-z]`) characters or a $Variable declaration
 [/alert]
 
- | Pattern     | Description | 
- | ----------- | --------------- | 
- | `$`         | **Param Variable** - Starts the name of a parameter variable, it is optional to match this unless ! is used | 
- | `!`         | **Require Variable** - Placing this after a parameter variable requires data to be present for the rule to match | 
- | `//`        | **Shift Point** - Declares that variables denoted with a $ are only parsed into the $params AFTER this point in the regex | 
+ | Pattern     | Description |
+ | ----------- | --------------- |
+ | `$`         | **Param Variable** - Starts the name of a parameter variable, it is optional to match this unless ! is used |
+ | `!`         | **Require Variable** - Placing this after a parameter variable requires data to be present for the rule to match |
+ | `//`        | **Shift Point** - Declares that variables denoted with a $ are only parsed into the $params AFTER this point in the regex |
 
 [notice]
-The shift point is an important part of the routing pattern and should immediately follow the hard-coded portion of the url-segment.
-This ensures that the request handler knows to only pass through items _after_ that point as variable parameters for the controller to check against its `url_handler`
+The shift point is an important part of the routing pattern and should immediately follow the hard-coded portion of the URL segment.
+This ensures that the request handler knows to only pass through items *after* that point as variable parameters for the controller to check against its `url_handler`
 patterns.
 [/notice]
 
@@ -187,7 +187,7 @@ decision making.
 ```yml
 SilverStripe\Control\Director:
   rules:
-    'teams//$Action/$ID/$OtherID': 'App\Controller\TeamController' 
+    'teams//$Action/$ID/$OtherID': 'App\Control\TeamController'
 
 # /teams/
 # /teams/players/
@@ -202,19 +202,19 @@ rather than being handed off to the `TeamController`.
 ```yml
 SilverStripe\Control\Director:
   rules:
-    'teams//$Action!/$ID!': 'App\Controller\TeamController'
+    'teams//$Action!/$ID!': 'App\Control\TeamController'
 ```
 
-Next we have a route that will any url starting with `/admin/help/`, but don't include `/help/` as part of the action (the shift point is set to
+Next we have a route that will any URL starting with `/admin/help/`, but don't include `/help/` as part of the action (the shift point is set to
 start parsing variables and the appropriate controller action AFTER the `//`).
 
 ```yml
 SilverStripe\Control\Director:
   rules:
-    'admin/help//$Action/$ID: 'App\Controller\AdminHelpController'
+    'admin/help//$Action/$ID: 'App\Control\AdminHelpController'
 ```
 
-### Wildcard URL Patterns
+### Wildcard URL patterns
 
 There are two wildcard patterns that can be used. `$@` and `$*`. These parameters can only be used
 at the end of a URL pattern - anything in the pattern after one of these is ignored.
@@ -246,9 +246,12 @@ class StaffController extends Controller
     public function index(HTTPRequest $request)
     {
         // GET /staff/managers/bob
-        $request->latestParam('$1'); // "managers"
-        $request->latestParam('$2'); // "bob"
-        $request->latestParams(); // ["managers", "bob"]
+        // "managers"
+        $request->latestParam('$1');
+        // "bob"
+        $request->latestParam('$2');
+        // ["managers", "bob"]
+        $request->latestParams();
     }
 }
 ```
@@ -271,7 +274,8 @@ class StaffController extends Controller
     public function index(HTTPRequest $request)
     {
         // GET /staff/managers/bob/hobbies
-        $request->remaining(); // "managers/bob/hobbies"
+        // "managers/bob/hobbies"
+        $request->remaining();
 
         // returns "managers", and removes that from the list of remaining params
         $nextParam = $request->shift();
@@ -282,7 +286,7 @@ class StaffController extends Controller
 }
 ```
 
-## URL Handlers
+## URL handlers
 
 In previous examples the URLs were configured using the [`Director`](api:SilverStripe\Control\Director) rules in the **routes.yml** file.
 Alternatively you can use this to provide just enough information for the `Director` to select your controller to handle the request, and
@@ -308,9 +312,8 @@ This array is processed at runtime once the `Controller` has been matched.
 This is useful when you want to provide one action to handle multiple route mappings. Say for instance we want to respond
 `teams/coaches`, and `teams/staff` to the one controller action `payroll`.
 
-**app/src/controllers/TeamController.php**
-
 ```php
+// app/src/Control/TeamController.php
 namespace App\Control;
 
 use SilverStripe\Control\Controller;
@@ -327,6 +330,8 @@ class TeamController extends Controller
         'staff/$ID/$Name' => 'payroll',
         'coach/$ID/$Name' => 'payroll',
     ];
+
+    // ...
 }
 ```
 
@@ -373,7 +378,7 @@ class FeedController extends ContentController
 }
 ```
 
-## Root URL Handlers
+## Root URL handlers
 
 ```yml
 SilverStripe\Control\Director:
@@ -402,13 +407,14 @@ class BreadAPIController extends Controller
 }
 ```
 
-## Related Lessons
-* [Creating filtered views](https://www.silverstripe.org/learn/lessons/v4/creating-filtered-views-1)
-* [Controller actions / DataObjects as pages](https://www.silverstripe.org/learn/lessons/v4/controller-actions-dataobjects-as-pages-1)
+## Related lessons
+
+- [Creating filtered views](https://www.silverstripe.org/learn/lessons/v4/creating-filtered-views-1)
+- [Controller actions / DataObjects as pages](https://www.silverstripe.org/learn/lessons/v4/controller-actions-dataobjects-as-pages-1)
 
 ## Links
 
-* [Controller](api:SilverStripe\Control\Controller) API documentation
-* [Director](api:SilverStripe\Control\Director) API documentation
-* [Example routes: framework](https://github.com/silverstripe/silverstripe-framework/blob/5/_config/routes.yml)
-* [Example routes: cms](https://github.com/silverstripe/silverstripe-cms/blob/5/_config/routes.yml)
+- [Controller](api:SilverStripe\Control\Controller) API documentation
+- [Director](api:SilverStripe\Control\Director) API documentation
+- [Example routes: framework](https://github.com/silverstripe/silverstripe-framework/blob/5/_config/routes.yml)
+- [Example routes: CMS](https://github.com/silverstripe/silverstripe-cms/blob/5/_config/routes.yml)

@@ -16,7 +16,11 @@ Because it applies to fields, we'll want to implement the [`FieldPlugin`](api:Si
 interface for this.
 
 ```php
-namespace MyProject\Plugins;
+namespace App\GraphQL\Plugin;
+
+use SilverStripe\GraphQL\Schema\Field\Field;
+use SilverStripe\GraphQL\Schema\Interfaces\FieldPlugin;
+use SilverStripe\GraphQL\Schema\Schema;
 
 class Truncator implements FieldPlugin
 {
@@ -35,46 +39,55 @@ class Truncator implements FieldPlugin
 Now we've added an argument to any field that uses the `truncate` plugin. This is good, but it really
 doesn't save us a whole lot of time. The real value here is that the field will automatically apply the truncation.
 
-For that, we'll need to augment our plugin with some _afterware_.
+For that, we'll need to augment our plugin with some *afterware*.
 
 ```php
-public function apply(Field $field, Schema $schema, array $config = [])
-{
-    // Sanity check
-    Schema::invariant(
-        $field->getType() === 'String',
-        'Field %s is not a string. Cannot truncate.',
-        $field->getName()
-    );
+namespace App\GraphQL\Plugin;
 
-    $field->addArg('truncate', 'Int');
-    $field->addResolverAfterware([static::class, 'truncate']);
-}
+use SilverStripe\GraphQL\Schema\Field\Field;
+use SilverStripe\GraphQL\Schema\Interfaces\FieldPlugin;
+use SilverStripe\GraphQL\Schema\Schema;
 
-public static function truncate(string $result, array $args): string
+class Truncator implements FieldPlugin
 {
-    $limit = $args['truncate'] ?? null;
-    if ($limit) {
-        return substr($result, 0, $limit);
+    public function apply(Field $field, Schema $schema, array $config = [])
+    {
+        // Sanity check
+        Schema::invariant(
+            $field->getType() === 'String',
+            'Field %s is not a string. Cannot truncate.',
+            $field->getName()
+        );
+
+        $field->addArg('truncate', 'Int');
+        $field->addResolverAfterware([static::class, 'truncate']);
     }
 
-    return $result;
+    public static function truncate(string $result, array $args): string
+    {
+        $limit = $args['truncate'] ?? null;
+        if ($limit) {
+            return substr($result, 0, $limit);
+        }
+
+        return $result;
+    }
 }
 ```
 
 Let's register the plugin:
 
-```yaml
+```yml
 SilverStripe\Core\Injector\Injector:
   SilverStripe\GraphQL\Schema\Registry\PluginRegistry:
     constructor:
-      - 'MyProject\Plugins\Truncator'
+      - 'App\GraphQL\Plugin\Truncator'
 ```
 
 And now we can apply it to any string field we want:
 
-**app/_graphql/types.yml**
-```yaml
+```yml
+# app/_graphql/types.yml
 Country:
   name:
     type: String

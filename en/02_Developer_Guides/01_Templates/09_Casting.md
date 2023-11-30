@@ -6,7 +6,7 @@ icon: code
 
 # Formatting, casting, and escaping variable content
 
-All objects that are being rendered in a template should be a [ViewableData](api:SilverStripe\View\ViewableData) instance such as `DataObject`, 
+All objects that are being rendered in a template should be a [ViewableData](api:SilverStripe\View\ViewableData) instance such as `DataObject`,
 `DBField` or `Controller`. From these objects, the template can include any method from the object in [scope](syntax#scope).
 
 ## Casting
@@ -23,15 +23,17 @@ to a template, Silverstripe CMS will ensure that the object is wrapped in the co
 that class, and ensures and values are safely escaped.
 
 ```php
+namespace App\Data;
+
 use SilverStripe\View\ViewableData;
 
-class MyTemplatedObject extends ViewableData 
+class MyTemplatedObject extends ViewableData
 {
     private static $casting = [
-        'MyCustomMethod' => 'HTMLText' 
+        'Header' => 'HTMLText',
     ];
 
-    public function MyCustomMethod() 
+    public function getHeader()
     {
         return '<h1>This is my header</h1>';
     }
@@ -54,17 +56,17 @@ that configuration is set to `Text`, so HTML characters are escaped.
 
 Values can be cast as any `DBField` instance, but these tend to be the most common:
 
- * `Text` Which is a plain text string, and will be safely encoded via [`htmlspecialchars()`](https://www.php.net/manual/en/function.htmlspecialchars.php) when placed into
+- `Text` Which is a plain text string, and will be safely encoded via [`htmlspecialchars()`](https://www.php.net/manual/en/function.htmlspecialchars.php) when placed into
  a template.
- * `Varchar` which is the same as `Text` but for single-line text that should not have line breaks.
- * `HTMLFragment` is a block of raw HTML, which should not be escaped. Take care to sanitise any HTML
+- `Varchar` which is the same as `Text` but for single-line text that should not have line breaks.
+- `HTMLFragment` is a block of raw HTML, which should not be escaped. Take care to sanitise any HTML
  value saved into the database.
- * `HTMLText` is a `HTMLFragment`, but has shortcodes enabled. This should only be used for content
+- `HTMLText` is a `HTMLFragment`, but has shortcodes enabled. This should only be used for content
  that is modified via a TinyMCE editor, which will insert shortcodes.
- * `Int` for integers.
- * `Decimal` for floating point values.
- * `Boolean` For boolean values.
- * `Datetime` for date and time.
+- `Int` for integers.
+- `Decimal` for floating point values.
+- `Boolean` For boolean values.
+- `Datetime` for date and time.
 
 ## Formatting
 
@@ -74,9 +76,9 @@ by returning it from a method, or by declaring it in the `$db` configuration for
 we can use `$MyField.FirstParagraph` in the template. This will
 output the result of the [`DBHtmlText::FirstParagraph()`](api:SilverStripe\ORM\FieldType\DBHtmlText::FirstParagraph()) method to the template.
 
-**app/src/Page.ss**
-
 ```ss
+<%-- app/src/Page.ss --%>
+
 <%-- prints the result of DBHtmlText::FirstParagragh() --%>
 $Content.FirstParagraph
 
@@ -102,12 +104,12 @@ $MyList.First.Content.FirstParagraph
 
 All `DBField` instances share the following useful methods for formatting their values:
 
-- [`RAW()`](api:SilverStripe\ORM\FieldType\DBField::RAW()) - outputs the _raw_ value into the template with no escaping.
+- [`RAW()`](api:SilverStripe\ORM\FieldType\DBField::RAW()) - outputs the *raw* value into the template with no escaping.
 - [`XML()`](api:SilverStripe\ORM\FieldType\DBField::XML()) (and its alias [`HTML()`](api:SilverStripe\ORM\FieldType\DBField::HTML())) - encodes the value (using [`htmlspecialchars()`](https://www.php.net/manual/en/function.htmlspecialchars.php)) before outputting it.
 - [`CDATA`](api:SilverStripe\ORM\FieldType\DBField::CDATA()) - formats the value safely for insertion as a literal string in an XML file.
   - e.g. `<element>$Field.CDATA</element>` will ensure that the `<element>` body is safely escaped as a string.
-- [`JS()`](api:SilverStripe\ORM\FieldType\DBField::JS()) - ensures that text is properly escaped for use in Javascript.
-  - e.g. `var fieldVal = '$Field.JS';` can be used in javascript defined in templates to encode values safely.
+- [`JS()`](api:SilverStripe\ORM\FieldType\DBField::JS()) - ensures that text is properly escaped for use in JavaScript.
+  - e.g. `var fieldVal = '$Field.JS';` can be used in JavaScript defined in templates to encode values safely.
 - [`ATT()`](api:SilverStripe\ORM\FieldType\DBField::ATT()) (and its alias [`HTMLATT()`](api:SilverStripe\ORM\FieldType\DBField::HTMLATT())) - formats the value appropriate for an HTML attribute string
   - e.g. `<div data-my-field="$MyField.HTMLATT"></div>`
 - [`RAWURLATT()`](api:SilverStripe\ORM\FieldType\DBField::RAWURLATT()) - encodes strings for use in URLs via [`rawurlencode()`](https://www.php.net/manual/en/function.rawurlencode.php)
@@ -137,7 +139,7 @@ casting types affect escaping.
 [info]
 In addition to escaping via casting, `DBField` instances have an `escape_type` configuration property which is
 either set to `"xml"` or `"raw"`. This configuration tells you whether XML content will be escaped or not, but does
-_not_ actually directly affect the casting of the value in templates. That is determined by what is returned from
+*not* actually directly affect the casting of the value in templates. That is determined by what is returned from
 the `forTemplate()` method (or any method explicitly called from within the template).
 [/info]
 
@@ -167,11 +169,11 @@ For instance, The following class methods can be used in templates for the below
 
 Text / HTMLText methods:
 
-* [`Plain()`](api:SilverStripe\ORM\FieldType\DBString::Plain()) Will convert any HTML to plain text version. For example, could be used for plain-text
+- [`Plain()`](api:SilverStripe\ORM\FieldType\DBString::Plain()) Will convert any HTML to plain text version. For example, could be used for plain-text
   version of emails.
-* [`LimitSentences(<num>)`](api:SilverStripe\ORM\FieldType\DBText::LimitSentences()) - limits output to the first `<num>` sentences in the content. This method internally calls `Plain()`,
+- [`LimitSentences(<num>)`](api:SilverStripe\ORM\FieldType\DBText::LimitSentences()) - limits output to the first `<num>` sentences in the content. This method internally calls `Plain()`,
   converting HTML content into plain text.
 
-## Related Lessons
-* [Dealing with arbitrary template data](https://www.silverstripe.org/learn/lessons/v4/dealing-with-arbitrary-template-data-1)
-  
+## Related lessons
+
+- [Dealing with arbitrary template data](https://www.silverstripe.org/learn/lessons/v4/dealing-with-arbitrary-template-data-1)

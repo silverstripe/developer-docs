@@ -25,7 +25,7 @@ into an `<img>` tag on your website automatically.
 
 See [HTMLEditorField](/forms/field-types/htmleditorfield).
 
-### Manipulating images in Templates
+### Manipulating images in templates
 
 You can manipulate images directly from templates to create images that are
 resized and cropped to suit your needs.  This doesn't affect the original
@@ -33,10 +33,9 @@ image or clutter the CMS with any additional files, and any images you create
 in this way are cached for later use. In most cases the pixel aspect ratios of
 images are preserved (meaning images are not stretched).
 
-![](../../_images/image-methods.jpg)
+![a series of images with different manipulations applied](../../_images/image-methods.jpg)
 
 Here are some examples, assuming the `$Image` object has dimensions of 200x100px:
-
 
 ```ss
 // Scaling functions
@@ -77,7 +76,7 @@ Image methods are chainable. Example:
 <body style="background-image:url($Image.ScaleWidth(800).CropHeight(800).Link)">
 ```
 
-### Padded Image Resize
+### Padded image resize
 
 The Pad method allows you to resize an image with existing ratio and will
 pad any surplus space. You can specify the color of the padding using a hex code such as FFFFFF or 000000.
@@ -85,11 +84,13 @@ pad any surplus space. You can specify the color of the padding using a hex code
 You can also specify a level of transparency to apply to the padding color in a fourth param. This will only effect
 png images.
 
-
 ```php
-$Image.Pad(80, 80, FFFFFF, 50) // white padding with 50% transparency
-$Image.Pad(80, 80, FFFFFF, 100) // white padding with 100% transparency
-$Image.Pad(80, 80, FFFFFF) // white padding with no transparency
+// white padding with 50% transparency
+$Image . Pad(80, 80, FFFFFF, 50)
+// white padding with 100% transparency
+$Image . Pad(80, 80, FFFFFF, 100)
+// white padding with no transparency
+$Image . Pad(80, 80, FFFFFF)
 ```
 
 ### Manipulating images in PHP
@@ -104,15 +105,18 @@ Please refer to the [`ImageManipulation`](api:SilverStripe\Assets\ImageManipulat
 
 You can also create your own functions by decorating the `Image` class.
 
-
 ```php
+namespace App\Extension;
+
+use SilverStripe\Assets\Image_Backend;
 use SilverStripe\Core\Extension;
+
 class ImageExtension extends Extension
 {
-    public function Square($width)
+    public function getSquare($width)
     {
         $variant = $this->owner->variantName(__FUNCTION__, $width);
-        return $this->owner->manipulateImage($variant, function (\SilverStripe\Assets\Image_Backend $backend) use($width) {
+        return $this->owner->manipulateImage($variant, function (Image_Backend $backend) use ($width) {
             $clone = clone $backend;
             $resource = clone $backend->getImageResource();
             $resource->fit($width);
@@ -121,10 +125,10 @@ class ImageExtension extends Extension
         });
     }
 
-    public function Blur($amount = null)
+    public function getBlur($amount = null)
     {
         $variant = $this->owner->variantName(__FUNCTION__, $amount);
-        return $this->owner->manipulateImage($variant, function (\SilverStripe\Assets\Image_Backend $backend) use ($amount) {
+        return $this->owner->manipulateImage($variant, function (Image_Backend $backend) use ($amount) {
             $clone = clone $backend;
             $resource = clone $backend->getImageResource();
             $resource->blur($amount);
@@ -132,24 +136,25 @@ class ImageExtension extends Extension
             return $clone;
         });
     }
-
 }
 ```
 
 ```yml
 SilverStripe\Assets\Image:
   extensions:
-    - ImageExtension
+    - App\Extension\ImageExtension
 SilverStripe\Assets\Storage\DBFile:
   extensions:
-    - ImageExtension
+    - App\Extension\ImageExtension
 ```
 
-### Form Upload
+These can then be used directly in your templates, e.g. `$MyImage.Square` and `$MyImage.Blur`.
+
+### Form upload
 
 For usage on a website form, see [`FileField`](api:SilverStripe\Assets\FileField).
 
-### Image Quality
+### Image quality
 
 #### Source images
 
@@ -157,12 +162,12 @@ Whenever Silverstripe CMS performs a manipulation on an image, it saves the outp
 as a new image file, and applies compression during the process. If the source
 image already had lossy compression applied, this leads to the image being
 compressed twice over which can produce a poor result. To ensure the best
-quality output images, it's recommended to upload high quality source images 
+quality output images, it's recommended to upload high quality source images
 (minimal or no compression) in to your asset store, and let Silverstripe CMS take
 care of applying compression.
 
-Very high resolution images may cause GD to crash (especially on shared hosting 
-environments where resources are limited) so a good size for website images is 
+Very high resolution images may cause GD to crash (especially on shared hosting
+environments where resources are limited) so a good size for website images is
 around 2000px on the longest edge.
 
 #### Forced resampling
@@ -192,7 +197,6 @@ SilverStripe\Assets\Storage\DBFile:
 To adjust the quality of the generated images when they are resampled, add the
 following to your `app/_config/config.yml` file:
 
-
 ```yml
 SilverStripe\Core\Injector\Injector:
   SilverStripe\Assets\Image_Backend:
@@ -200,10 +204,10 @@ SilverStripe\Core\Injector\Injector:
       Quality: 90
 ```
 
-### Lazy Loading {#lazy-loading}
+### Lazy loading {#lazy-loading}
 
-Most modern browsers support the ability to "lazy load" images by adding a `loading="lazy"` attribute 
-to the `<img />` tag. This defers the loading of images not in the viewport to improve the initial 
+Most modern browsers support the ability to "lazy load" images by adding a `loading="lazy"` attribute
+to the `<img />` tag. This defers the loading of images not in the viewport to improve the initial
 page load performance.
 
 Silverstripe CMS automatically adds the `loading="lazy"` to images added in an HTML editor field
@@ -213,17 +217,17 @@ Content authors have the ability to selectively disable lazy loading when insert
 HTML editor field.
 
 Read [Browser-level image lazy-loading for the web](https://web.dev/browser-level-image-lazy-loading/)
-on _web.dev_ for more information.
+on *web.dev* for more information.
 
 #### Selectively disabling lazy loading in SS templates
 
-Images that are expected to be initially visible on page load, should be _eager_ loaded. This 
-provides a small performance gain since the browser doesn't have to render the entire page layout 
-before determining if the images need to be loaded. When in doubt, it's usually preferable to lazy 
+Images that are expected to be initially visible on page load, should be *eager* loaded. This
+provides a small performance gain since the browser doesn't have to render the entire page layout
+before determining if the images need to be loaded. When in doubt, it's usually preferable to lazy
 load the image.
 
-Developers can selectively disable lazy loading for individual image in a SS template by calling 
-`LazyLoad(false)` on the image variable (e.g.: `$MyImage.LazyLoad(false)`).
+Developers can selectively disable lazy loading for individual image in a SS template by calling
+`LazyLoad(false)` on the image variable (e.g: `$MyImage.LazyLoad(false)`).
 
 ```ss
 <%-- Image will be lazy loaded --%>
@@ -236,30 +240,30 @@ $Logo.LazyLoad(false)
 $Logo.LazyLoad($LogoLoading)
 ```
 
-Developers can allow content authors to control the loading attribute of a specific image by 
+Developers can allow content authors to control the loading attribute of a specific image by
 adding a lazy load field next to the [`UploadField`](api:SilverStripe\Assets\UploadField).
 
 ```php
-<?php
+namespace App\PageType;
+
+use Page;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\Image;
-use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Forms\DropdownField;
 
-class Page extends SiteTree
+class HomePage extends Page
 {
     private static $db = [
-        'LogoLoading' => 'Boolean'
+        'LogoLoading' => 'Boolean',
     ];
 
     private static $has_one = [
-        'Logo' => Image::class
+        'Logo' => Image::class,
     ];
 
     private static $defaults = [
-        'LogoLoading' => true
+        'LogoLoading' => true,
     ];
-
 
     public function getCMSFields()
     {
@@ -267,14 +271,14 @@ class Page extends SiteTree
 
         $loadingSource = [
             true => 'Lazy (Default)',
-            false => 'Eager'
+            false => 'Eager',
         ];
-        
+
         $fields->addFieldsToTab(
             'Root.Main',
             [
                 UploadField::create('Logo'),
-                DropdownField::create('LogoLoading', 'Loading', $loadingSource)
+                DropdownField::create('LogoLoading', 'Loading', $loadingSource),
             ]
         );
 
@@ -304,15 +308,15 @@ page after the initial page load.
 
 #### Disabling lazy loading globally
 
-To opt out of lazy loading globally, notably if you already have a custom lazy loading 
-implementation, use the following yml config:
+To opt out of lazy loading globally, notably if you already have a custom lazy loading
+implementation, use the following YAML config:
 
 ```yml
 SilverStripe\Assets\Image:
   lazy_loading_enabled: false
 ```
 
-## Changing the manipulation driver to Imagick
+## Changing the manipulation driver to imagick
 
 If you want to change the image manipulation driver to use Imagick instead of GD, you'll need to change your config so
 that the `Intervention\Image\ImageManager` is instantiated with the `imagick` driver instead of GD:
@@ -328,13 +332,13 @@ SilverStripe\Core\Injector\Injector:
 
 Manipulated images are stored as "file variants" in the same folder structure as the original image. The storage mechanism is described in the ["File Storage" guide](file_storage).
 
-## API Documentation
+## API documentation
 
- * [File](api:SilverStripe\Assets\File)
- * [Image](api:SilverStripe\Assets\Image)
- * [DBFile](api:SilverStripe\Assets\Storage\DBFile)
- * [ImageManipulation](api:SilverStripe\Assets\ImageManipulation)
+- [File](api:SilverStripe\Assets\File)
+- [Image](api:SilverStripe\Assets\Image)
+- [DBFile](api:SilverStripe\Assets\Storage\DBFile)
+- [ImageManipulation](api:SilverStripe\Assets\ImageManipulation)
 
-## Related Lessons
-* [Working with files and images](https://www.silverstripe.org/learn/lessons/v4/working-with-files-and-images-1)
- 
+## Related lessons
+
+- [Working with files and images](https://www.silverstripe.org/learn/lessons/v4/working-with-files-and-images-1)

@@ -10,7 +10,7 @@ icon: hammer
 
 ## Building the schema
 
-The primary API surface of the `silverstripe/graphql` module is the yaml configuration, along
+The primary API surface of the `silverstripe/graphql` module is the YAML configuration, along
 with some [procedural configuration](using_procedural_code). It is important to understand
 that **none of this configuration gets interpreted at runtime**. Loading the schema configuration
 (which we refer to as the "schema definition") at runtime and converting it to executable code
@@ -22,9 +22,9 @@ whenever the schema definition changes, or a new schema definition is added.
 
 ### What triggers a GraphQL code build?
 
-* Any time you run the `dev/graphql/build` command to explicitly build your GraphQL schemas.
-* Any time you run the `dev/build` command on your project.
-* `silverstripe/graphql` will attempt to generate your schema "on-demand" on the first GraphQL request _only_ if it wasn’t already generated.
+- Any time you run the `dev/graphql/build` command to explicitly build your GraphQL schemas.
+- Any time you run the `dev/build` command on your project.
+- `silverstripe/graphql` will attempt to generate your schema "on-demand" on the first GraphQL request *only* if it wasn’t already generated.
 
 [warning]
 Relying on the "on-demand" schema generation on the first GraphQL request requires some additional consideration.
@@ -61,7 +61,7 @@ requires a flush.
 
 By default, all schemas will be built during `dev/build`. To disable this, change the config:
 
-```yaml
+```yml
 SilverStripe\GraphQL\Extensions\DevBuildExtension:
   enabled: false
 ```
@@ -91,10 +91,10 @@ Keep in mind that it's not always explicit schema definition changes that requir
 Anything influencing the output of the schema will require a build. This could include
 tangential changes such as:
 
-* Updating the `$db` array (or relationships) of a `DataObject` class that has `fields: '*'` (i.e. include all fields on that class in the schema).
-* Adding a new resolver for a type that uses [resolver discovery](../working_with_generic_types/resolver_discovery)
-* Adding an extension to a `DataObject` class
-* Adding a new subclass of a `DataObject` class that is already exposed
+- Updating the `$db` array (or relationships) of a `DataObject` class that has `fields: '*'` (i.e. include all fields on that class in the schema).
+- Adding a new resolver for a type that uses [resolver discovery](../working_with_generic_types/resolver_discovery)
+- Adding an extension to a `DataObject` class
+- Adding a new subclass of a `DataObject` class that is already exposed
 
 ### Viewing the generated code
 
@@ -103,7 +103,7 @@ It is not meant to be accessible through your webserver, Which is ensured by kee
 `public/` webroot and the inclusion of a `.htaccess` file in each schema folder.
 
 Additional files are generated for CMS operation in `public/_graphql/`, and
-those _are_ meant to be accessible through your webserver.
+those *are* meant to be accessible through your webserver.
 See [Tips and Tricks: Schema Introspection](tips_and_tricks#schema-introspection)
 to find out how to generate these files for your own schema.
 

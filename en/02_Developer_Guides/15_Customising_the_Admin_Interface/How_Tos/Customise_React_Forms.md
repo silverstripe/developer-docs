@@ -3,7 +3,7 @@ title: Customising React forms
 summary: Use Injector to add customisations to React-rendered forms
 ---
 
-# Customising React Forms
+# Customising react forms
 
 Forms that are rendered with React use the [ReduxForm](https://redux-form.com) library and are based on schema definitions that come from the server. To customise these forms, you can apply middleware that updates the schema or applies validation.
 
@@ -13,11 +13,11 @@ Let's have a field hide or show based on the state of another field. We want the
 
 First, we need to add a customisation to all form fields that allows them to be toggleable.
 
-_my-module/js/src/HideableComponent.js
 ```js
+// my-module/js/src/HideableComponent.js
 import React from 'react';
 
-const HideableComponent = ({Component, ...props}) => (
+const HideableComponent = ({ Component, ...props }) => (
   props.shouldHide ? null : <Component {...props} />
 );
 
@@ -36,8 +36,8 @@ export default (Component) => (props) => (
 
 Now, let's apply this through Injector.
 
-_my-module/js/main.js_
 ```js
+// my-module/js/main.js
 Injector.transform(
   'toggle-field',
   (updater) => {
@@ -60,10 +60,9 @@ Injector.transform(
             shouldHide: form.getValue('Country') !== 'US'
           })
           .getState()
-    )
+    );
   }
 );
-
 ```
 
 ## Conditionally adding a CSS class to a form field
@@ -91,18 +90,18 @@ In this example, we'll replace a plain text field for `PhoneNumber` with one tha
 
 First, we need to create the `PrettyPhoneNumberField` component.
 
-_my-module/js/src/PrettyPhoneNumberField.js_
 ```js
+// my-module/js/src/PrettyPhoneNumberField.js
 import React from 'react';
 
 export default (props) => {
   const [area, exchange, ext] = props.value.split('-');
-  function handleChange (i, e) {
+  function handleChange(i, e) {
     const parts = props.value.split('-');
     parts[i] = e.target.value;
     const formatted = parts.join('-');
     props.onChange(formatted, e);
-  };
+  }
   return (
     <div>
       (<input type="text" value={area} onChange={handleChange.bind(null, 0)}/>)
@@ -143,14 +142,14 @@ Injector.transform(
       (values, errors) => {
         const requiredLength = values.Country === 'US' ? 5 : 4;
         if (!values.Country || !values.PostalCode) {
-          return;
+          return null;
         }
         return {
           ...errors,
           PostalCode: values.PostalCode.length !== requiredLength ? 'Invalid postal code' : null,
         };
       }
-    )
+    );
   }
 );
 ```
@@ -161,13 +160,12 @@ In this example, we'll have a form action expose two new buttons for "confirm" a
 
 First, we need to create the `ConfirmingFormAction` component.
 
-_my-module/js/src/ConfirmingFormAction.js_
 ```js
+// my-module/js/src/ConfirmingFormAction.js
 import React from 'react';
 
 export default (FormAction) => {
- class ConfirmingFormAction extends React.Component 
- {
+  class ConfirmingFormAction extends React.Component {
     constructor(props) {
       super(props);
       this.state = { confirming: false };
@@ -175,19 +173,19 @@ export default (FormAction) => {
       this.cancel = this.cancel.bind(this);
       this.preClick = this.preClick.bind(this);
     }
-    
+
     confirm(e) {
       this.props.handleClick(e, this.props.name || this.props.id);
       this.setState({ confirming: false });
     }
-    
+
     cancel() {
       this.setState({ confirming: false });
     }
-    
+
     preClick(event) {
       event.preventDefault();
-      this.setState( {confirming: true });
+      this.setState({ confirming: true });
     }
 
     render() {
@@ -209,7 +207,7 @@ export default (FormAction) => {
 
       return (
         <div>
-          <FormAction { ...buttonProps } handleClick={this.preClick} />
+          <FormAction {...buttonProps} handleClick={this.preClick} />
           <button style={hideStyle} key="confirm" type="submit" name={this.props.name} onClick={this.confirm}>
             {confirmText}
           </button>
@@ -220,7 +218,7 @@ export default (FormAction) => {
   }
 
   return ConfirmingFormAction;
-}
+};
 ```
 
 Now, let's apply this new component to a very specific form action.
@@ -232,13 +230,13 @@ Injector.transform(
     updater.form.alterSchema(
       'AssetAdmin.*',
       (form) =>
-          form
-            .updateField('action_delete', {
-              confirmText: 'Are you sure you want to delete?',
-              cancelText: 'No!! Cancel!!!!'
-            })
-            .getState()
-    )
+        form
+          .updateField('action_delete', {
+            confirmText: 'Are you sure you want to delete?',
+            cancelText: 'No!! Cancel!!!!'
+          })
+          .getState()
+    );
   }
 );
 ```

@@ -17,14 +17,14 @@ Let's start by registering a resolver class where we can define a bunch of these
 You can register as many classes as makes sense - and each resolver class can have multiple
 resolver methods.
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
 resolvers:
-  - MyProject\Resolvers\MyResolvers
+  - App\GraphQL\Resolver\MyResolver
 ```
 
 What we're registering here is a generic class that should contain one or more static functions that resolve one
-or many fields. How those functions will be discovered relies on the _resolver strategy_.
+or many fields. How those functions will be discovered relies on the *resolver strategy*.
 
 ### Resolver strategy
 
@@ -32,6 +32,10 @@ Each schema config accepts a `resolverStrategy` property. This should map to a c
 a method name given a class name, type name, and [`Field`](api:SilverStripe\GraphQL\Schema\Field\Field) instance.
 
 ```php
+namespace App\GraphQL\Resolver;
+
+use SilverStripe\GraphQL\Schema\Field\Field;
+
 class Strategy
 {
     public static function getResolverMethod(string $className, ?string $typeName = null, ?Field $field = null): ?string
@@ -46,18 +50,18 @@ class Strategy
 By default, all schemas use [`DefaultResolverStrategy::getResolverMethod()`](api:SilverStripe\GraphQL\Schema\Resolver\DefaultResolverStrategy::getResolverMethod())
 to discover resolver functions. The logic works like this:
 
-* Does `resolve<TypeName><FieldName>` exist?
-  * Yes? Return that method name
-  * No? Continue
-* Does `resolve<TypeName>` exist?
-  * Yes? Return that method name
-  * No? Continue
-* Does `resolve<FieldName>` exist?
-  * Yes? Return that method name
-  * No? Continue
-* Does `resolve` exist?
-  * Yes? Return that method name
-  * No? Return null. This resolver cannot be discovered
+- Does `resolve<TypeName><FieldName>` exist?
+  - Yes? Return that method name
+  - No? Continue
+- Does `resolve<TypeName>` exist?
+  - Yes? Return that method name
+  - No? Continue
+- Does `resolve<FieldName>` exist?
+  - Yes? Return that method name
+  - No? Continue
+- Does `resolve` exist?
+  - Yes? Return that method name
+  - No? Return null. This resolver cannot be discovered
 
 Let's look at our query again:
 
@@ -71,39 +75,42 @@ query {
 
 Imagine we have two classes registered under `resolvers` - `ClassA` and `ClassB`
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
 resolvers:
-  - ClassA
-  - ClassB
+  - App\GraphQL\Resolver\ClassA
+  - App\GraphQL\Resolver\ClassB
 ```
 
 The `DefaultResolverStrategy` will check for methods in this order:
 
-* `ClassA::resolveCountryName()`
-* `ClassA::resolveCountry()`
-* `ClassA::resolveName()`
-* `ClassA::resolve()`
-* `ClassB::resolveCountryName()`
-* `ClassB::resolveCountry()`
-* `ClassB::resolveName()`
-* `ClassB::resolve()`
-* Return `null`.
+- `ClassA::resolveCountryName()`
+- `ClassA::resolveCountry()`
+- `ClassA::resolveName()`
+- `ClassA::resolve()`
+- `ClassB::resolveCountryName()`
+- `ClassB::resolveCountry()`
+- `ClassB::resolveName()`
+- `ClassB::resolve()`
+- Return `null`.
 
 You can implement whatever strategy you like in your schema. Just register it to `resolverStrategy` in the config.
 
-**app/_graphql/config.yml**
-```yaml
-resolverStrategy: [ 'MyApp\Resolvers\Strategy', 'getResolverMethod' ]
+```yml
+# app/_graphql/config.yml
+resolverStrategy: [ 'App\GraphQL\Resolver\Strategy', 'getResolverMethod' ]
 ```
 
 Let's add a resolver method to our resolver provider:
 
-**app/src/Resolvers/MyResolvers.php**
 ```php
-namespace MyApp\Resolvers;
+// app/src/GraphQL/Resolver/MyResolver.php
+namespace App\GraphQL\Resolver;
 
-class MyResolvers
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\i18n\Data\Locales;
+
+class MyResolver
 {
     public static function resolveReadCountries()
     {
@@ -112,7 +119,7 @@ class MyResolvers
         foreach ($countries as $code => $name) {
             $results[] = [
                 'code' => $code,
-                'name' => $name
+                'name' => $name,
             ];
         }
 
@@ -124,14 +131,14 @@ class MyResolvers
 Now that we're using logic to discover our resolver, we can remove our resolver method declarations from the individual
 queries and instead just register the resolver class.
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
 resolvers:
-  - MyApp\Resolvers\MyResolvers
+  - App\GraphQL\Resolver\MyResolver
 ```
 
-**app/_graphql/schema.yml**
 ```yml
+# app/_graphql/schema.yml
   queries:
     readCountries: '[Country]'
 ```
@@ -146,27 +153,36 @@ A less magical approach to resolver discovery is defining a `fieldResolver` prop
 types. This is a generic handler for all fields on a given type and can be a nice middle
 ground between the rigor of hard coding everything at a query level, and the opacity of discovery logic.
 
-**app/_graphql/schema.yml**
 ```yml
-  types:
-    Country:
-      fields:
-        name: String
-        code: String
-      fieldResolver: [ 'MyProject\MyResolver', 'resolveCountryFields' ]
+# app/_graphql/schema.yml
+types:
+  Country:
+    fields:
+      name: String
+      code: String
+    fieldResolver: [ 'App\GraphQL\Resolver\MyResolver', 'resolveCountryFields' ]
 ```
 
 In this case the registered resolver method will be used to resolve any number of fields.
 You'll need to do explicit checks for the field name in your resolver to make this work.
 
 ```php
-public static function resolveCountryFields($obj, $args, $context, ResolveInfo $info)
+namespace App\GraphQL\Resolver;
+
+use GraphQL\Type\Definition\ResolveInfo;
+
+class MyResolver
 {
-    $fieldName = $info->fieldName;
-    if ($fieldName === 'image') {
-        return $obj->getImage()->getURL();
+    // ...
+
+    public static function resolveCountryFields($obj, $args, $context, ResolveInfo $info)
+    {
+        $fieldName = $info->fieldName;
+        if ($fieldName === 'image') {
+            return $obj->getImage()->getURL();
+        }
+        // ...
     }
-    // .. etc
 }
 ```
 

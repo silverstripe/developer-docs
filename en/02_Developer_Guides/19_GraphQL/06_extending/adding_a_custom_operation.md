@@ -1,6 +1,6 @@
 ---
 title: Adding a custom operation
-summary: Add a new operation for model types 
+summary: Add a new operation for model types
 ---
 # Extending the schema
 
@@ -15,15 +15,22 @@ an implementation of [`OperationProvider`](api:SilverStripe\GraphQL\Schema\Inter
 Let's build a new operation that **duplicates** DataObjects.
 
 ```php
+namespace App\GraphQL;
+
+use SilverStripe\GraphQL\Schema\Field\ModelMutation;
+use SilverStripe\GraphQL\Schema\Interfaces\ModelOperation;
+use SilverStripe\GraphQL\Schema\Interfaces\OperationCreator;
+use SilverStripe\GraphQL\Schema\Interfaces\SchemaModelInterface;
+use SilverStripe\GraphQL\Schema\SchemaConfig;
+
 class DuplicateCreator implements OperationCreator
 {
     public function createOperation(
         SchemaModelInterface $model,
         string $typeName,
         array $config = []
-    ): ?ModelOperation
-    {
-        $mutationName = 'duplicate' . ucfirst(Schema::pluralise($typeName));
+    ): ?ModelOperation {
+        $mutationName = 'duplicate' . ucfirst(SchemaConfig::pluralise($typeName));
 
         return ModelMutation::create($model, $mutationName)
             ->setType($typeName)
@@ -43,43 +50,64 @@ static function.
 The signature for resolvers with context is:
 
 ```php
-public static function (array $context): Closure
+namespace App\GraphQL\Resolvers;
+
+use Closure;
+
+class MyResolver
+{
+    public static function resolve(array $context): Closure
+    {
+        // ...
+    }
+}
 ```
 
 We use the context to pass to a function that we'll create dynamically.
 Let's add that now.
 
 ```php
-public static function resolve(array $resolverContext = []): Closure
+namespace App\GraphQL;
+
+use Closure;
+// ...
+use SilverStripe\ORM\DataObject;
+
+class DuplicateCreator implements OperationCreator
 {
-    $dataClass = $resolverContext['dataClass'] ?? null;
-    return function ($obj, array $args) use ($dataClass) {
-        if (!$dataClass) {
-            return null;
-        }
-        return DataObject::get_by_id($dataClass, $args['id'])
-            ->duplicate();
-    };
+    // ...
+
+    public static function resolve(array $context = []): Closure
+    {
+        $dataClass = $context['dataClass'] ?? null;
+        return function ($obj, array $args) use ($dataClass) {
+            if (!$dataClass) {
+                return null;
+            }
+            return DataObject::get_by_id($dataClass, $args['id'])
+                ->duplicate();
+        };
+    }
 }
 ```
 
 Now, just add the operation to the `DataObjectModel` configuration
 to make it available to all `DataObject` types.
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
 modelConfig:
   DataObject:
     operations:
       duplicate:
-        class: 'MyProject\Operations\DuplicateCreator'
+        class: 'App\GraphQL\DuplicateCreator'
 ```
 
 And use it:
 
-**app/_graphql/models.yml**
-```yaml
-MyProject\Models\MyDataObject:
+```yml
+# app/_graphql/models.yml
+App\Model\MyDataObject:
   fields: '*'
   operations:
     read: true

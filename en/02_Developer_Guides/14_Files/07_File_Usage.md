@@ -4,35 +4,34 @@ summary: See file usage and customising the file "Used on" table
 icon: compress-arrows-alt
 ---
 
-# File Usage
+# File usage
 
 CMS users can view where a file is used by accessing the Used On tab in the Files section. This feature allows them to identify what DataObjects depend on the file.
 
 In the Files section of the CMS, click on a file to see file details.  Within the file details panel there is a
 Used on tab that shows a table of Pages and other DataObjects where the file is used throughout the website.
 
-## Customising the File "Used on" table in the Files section (asset-admin)
+## Customising the file "Used on" table in the files section (asset-admin)
 
 Your project specific DataObject will automatically be displayed on the Used on tab. This may not always be desirable, especially when working with background DataObjects the user can not interact with directly. Extensions can be applied
 to the `UsedOnTable` class to update specific entries.
 
 Extension hooks can be used to do the following:
+
 - Exclude DataObjects of a particular type of class from being fetched from the database
 - Exclude individual DataObjects that were fetched for showing on the used on table
 - Link ancestors of a DataObject so they show on the same row of the used on table
 
-### Example PHP file:
+### Example PHP file
 
 ```php
-<?php
-namespace My\App\Extensions;
+namespace My\App\Extension;
 
 use SilverStripe\Core\Extension;
 use SilverStripe\ORM\DataObject;
 
 class UsedOnTableExtension extends Extension
 {
-
     // This extension hook will prevent type(s) of DataObjects from showing on the Used on tab in the Files section
     // This will prevent a MyDataObjectToExclude::get() call from being executed
     public function updateUsageExcludedClasses(array &$excludedClasses)
@@ -76,10 +75,10 @@ class UsedOnTableExtension extends Extension
 }
 ```
 
-### Example YML file:
+### Example YAML file
 
 ```yml
 SilverStripe\Admin\Forms\UsedOnTable:
   extensions:
-    - My\App\Extensions\UsedOnTableExtension
+    - My\App\Extension\UsedOnTableExtension
 ```

@@ -4,12 +4,12 @@ summary: Outputting unique keys in templates.
 icon: code
 ---
 
-# Unique Keys
+# Unique keys
 
 There are several cases where you may want to generate a unique key. For example:
 
-* populate `ID` attribute in your HTML output
-* key for partial cache
+- populate `ID` attribute in your HTML output
+- key for partial cache
 
 If this is for a public-facing purpose, it is typically considered bad practice to expose the database ID,
 as this provides unnecessary information to would-be attackers. Instead, for [`DataObject`](api:SilverStripe\ORM\DataObject) subclasses, you
@@ -26,7 +26,7 @@ $UniqueKey
 The unique key generation can be altered in two ways:
 
 1. you can provide extra data to be used when generating a key via an extension
-2. you can inject over the key generation service and write your own custom code.
+1. you can inject over the key generation service and write your own custom code.
 
 ### Extension point
 
@@ -36,8 +36,8 @@ The method must return a string, which will be used when generating a unique key
 
 Some cases where this is used in supported modules already are:
 
-* versions - an object in different version stages needs to have different unique keys for each stage
-* locales - an object in different locales needs to have different unique keys for each locale
+- versions - an object in different version stages needs to have different unique keys for each stage
+- locales - an object in different locales needs to have different unique keys for each locale
 
 See [Extensions and DataExtensions](/developer_guides/extending/extensions) for more information about implementing and applying extensions.
 
@@ -45,7 +45,7 @@ See [Extensions and DataExtensions](/developer_guides/extending/extensions) for 
 
 [`UniqueKeyService`](api:SilverStripe\ORM\UniqueKey\UniqueKeyService) is used by default but you can use injector to override it with your custom service. For example:
 
-```yaml
+```yml
 SilverStripe\Core\Injector\Injector:
   SilverStripe\ORM\UniqueKey\UniqueKeyService:
     class: App\Service\MyCustomService

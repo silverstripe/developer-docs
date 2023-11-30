@@ -18,13 +18,13 @@ often used in arguments to queries, such as `{sort: DESC}`.
 
 It's very easy to add enum types to your schema. Just use the `enums` section of the config.
 
-**app/_graphql/schema.yml**
-```yaml
-  enums:
-    SortDirection:
-      values:    
-        DESC: Descending order
-        ASC: Ascending order
+```yml
+# app/_graphql/schema.yml
+enums:
+  SortDirection:
+    values:
+      DESC: Descending order
+      ASC: Ascending order
 ```
 
 ### Interfaces
@@ -37,15 +37,15 @@ chefs must also have the `firstName`, `surname`, and `age` fields for such a que
 
 To define an interface, use the `interfaces` section of the config.
 
-**app/_graphql/schema.yml**
-```yaml
+```yml
+# app/_graphql/schema.yml
 interfaces:
   Person:
     fields:
       firstName: String!
       surname: String!
       age: Int!
-    resolveType: [ 'MyProject\MyResolver', 'resolvePersonType' ]
+    resolveType: [ 'App\GraphQL\Resolver\MyResolver', 'resolvePersonType' ]
 ```
 
 Interfaces must define a `resolve[Typename]Type` resolver method to inform the interface
@@ -53,6 +53,13 @@ which type it is applied to given a specific result. This method is non-discover
 must be applied explicitly.
 
 ```php
+namespace App\GraphQL\Resolver;
+
+use App\Model\Actor;
+use App\Model\Chef;
+
+class MyResolver
+{
     public static function resolvePersonType($object): string
     {
         if ($object instanceof Actor) {
@@ -62,6 +69,7 @@ must be applied explicitly.
             return 'Chef';
         }
     }
+}
 ```
 
 ### Union types
@@ -71,18 +79,24 @@ for "Articles" could return a list containing both "Blog" and "NewsStory" types.
 
 To add a union type, use the `unions` section of the configuration.
 
-**app/_graphql/schema.yml**
-```yaml
-  unions:
-    Article:
-      types: [ 'Blog', 'NewsStory' ]
-      typeResolver: [ 'MyProject\MyResolver', 'resolveArticleUnion' ]
+```yml
+# app/_graphql/schema.yml
+unions:
+  Article:
+    types: [ 'Blog', 'NewsStory' ]
+    typeResolver: [ 'App\GraphQL\Resolver\MyResolver', 'resolveArticleUnion' ]
 ```
 
 Like interfaces, unions need to know how to resolve their types. These methods are also
 non-discoverable and must be applied explicitly.
 
 ```php
+namespace App\GraphQL\Resolver;
+
+use App\Model\Article;
+
+class MyResolver
+{
     public static function resolveArticleUnion(Article $object): string
     {
         if ($object->category === 'blogs') {
@@ -92,6 +106,7 @@ non-discoverable and must be applied explicitly.
             return 'NewsStory';
         }
     }
+}
 ```
 
 ### Further reading

@@ -28,7 +28,7 @@ The following sections explain every one of them in more detail.
 
 `$CacheableContent` is just any regular template content, including raw markup, templating syntax, etc.
 
-### $CacheKey
+### `$CacheKey`
 
 Defines a unique key for the cache storage.
 
@@ -70,7 +70,7 @@ Here is how it works in detail:
      global_key: '$CurrentReadingMode, $CurrentUser.ID, $CurrentLocale'
    ```
 
-2. Block hash
+1. Block hash
 
    Everything between the `<% cached %> ... <% end_cached %>` is taken as text (with no rendering) and hashed.
 
@@ -79,38 +79,47 @@ Here is how it works in detail:
 
    The main purpose of the block hash is to invalidate cache when the template itself changes.
 
-3. `$CacheKey` hash
+1. `$CacheKey` hash
 
-   All keys of `$CacheKey` are processed, concatenated and the final value is hashed.  
+   All keys of `$CacheKey` are processed, concatenated and the final value is hashed.
    If there are no values defined, this step is skipped.
 
-4. Make the final key value
+1. Make the final key value
 
    A string produced by concatenation of all the values mentioned above is used as the final value.
 
    Even if `$CacheKey` is omitted, `SilverStripe\View\SSViewer::$global_key` and `Block hash` values are still
-   getting used to generate cache key for the caching backend storage.  
+   getting used to generate cache key for the caching backend storage.
 
 #### Cache key calculated in controller
 
-If your caching logic is complex or re-usable, you can define a method on your controller to generate a cache key 
+If your caching logic is complex or re-usable, you can define a method on your controller to generate a cache key
 fragment.
 
-For example, a block that shows a collection of rotating slides needs to update whenever the relationship 
+For example, a block that shows a collection of rotating slides needs to update whenever the relationship
 `Page::$many_many = ['Slides' => 'Slide']` changes. In `PageController`:
 
 ```php
-public function SliderCacheKey() 
+namespace App\PageType;
+
+use PageController;
+
+class MyPageController extends PageController
 {
-    $fragments = [
-        'Page-Slides',
-        $this->ID,
-        // identify which objects are in the list and their sort order
-        implode('-', $this->Slides()->Column('ID')),
-        // identify if any objects are updated - works for both has_many and many_many relationships
-        $this->Slides()->max('LastEdited')
-    ];
-    return implode('-_-', $fragments);
+    // ...
+
+    public function SliderCacheKey()
+    {
+        $fragments = [
+            'Page-Slides',
+            $this->ID,
+            // identify which objects are in the list and their sort order
+            implode('-', $this->Slides()->Column('ID')),
+            // identify if any objects are updated - works for both has_many and many_many relationships
+            $this->Slides()->max('LastEdited'),
+        ];
+        return implode('-_-', $fragments);
+    }
 }
 ```
 
@@ -120,7 +129,7 @@ Then reference that function in the cache key:
 <% cached $SliderCacheKey %>
 ```
 
-### $CacheCondition
+### `$CacheCondition`
 
 Defines if caching is required for the block.
 
@@ -150,21 +159,21 @@ If you need a complex condition, it may be sensible to calculate the condition i
 
 ## Cache storage
 
-The cache storage may be re-configured via `Psr\SimpleCache\CacheInterface.cacheblock` key for [Injector](../extending/injector).  
+The cache storage may be re-configured via `Psr\SimpleCache\CacheInterface.cacheblock` key for [Injector](../extending/injector).
 By default, it is initialised by `SilverStripe\Core\Cache\DefaultCacheFactory` with the following parameters:
 
 - `namespace: "cacheblock"`
 - `defaultLifetime: 600`
 
 [note]
-The defaultLifetime is in seconds, so a value of `600` means every cache record expires in 10 minutes.  
+The defaultLifetime is in seconds, so a value of `600` means every cache record expires in 10 minutes.
 If you have good `$CacheKey` and `$CacheCondition` implementations, you may want to tune these settings to
 improve performance.
 [/note]
 
 Example below shows how to set partial cache expiry to one hour.
 
-```yaml
+```yml
 # app/_config/cache.yml
 ---
 Name: app-cache
@@ -227,7 +236,7 @@ In this example, the body content is not cached, but the header and footer secti
 <% end_cached %>
 ```
 
-Because of the nested block flattening (see above), it works seamlessly on any level of depth.  
+Because of the nested block flattening (see above), it works seamlessly on any level of depth.
 
 [warning]
 The `uncached` block only works on the lexical level.
@@ -235,16 +244,15 @@ If you have a template that caches content rendering another template with inclu
 those will not have any effect on the parent template caching blocks.
 [/warning]
 
-
 ## Nesting in LOOP and IF blocks
 
-Currently, a cache block cannot be included in `if` and `loop` blocks.  
+Currently, a cache block cannot be included in `if` and `loop` blocks.
 The template engine will throw an error letting you know if you've done this.
 
 [note]
 You may often get around this using aggregates or by un-nesting the block.
 
-E.g.
+For example:
 
 ```ss
 <% cached $LastEdited %>
@@ -288,7 +296,7 @@ The two following forms produce the same result
 <% end_cached %>
 ```
 
-## Complete Syntax definition
+## Complete syntax definition
 
 ```ss
 <% [un]cached [$CacheKey[, ...]] [(if|unless) $CacheCondition] %>

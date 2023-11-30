@@ -4,14 +4,14 @@ summary: An overview of what each directory contains in a Silverstripe CMS insta
 icon: sitemap
 ---
 
-# Directory Structure
+# Directory structure
 
 ## Introduction
 
 The directory-structure in Silverstripe is built on "convention over configuration", so the placement of some files and
 directories is meaningful to its logic.
 
-## Core Structure
+## Core structure
 
 Directory            | Description
 ---------            | -----------
@@ -22,7 +22,7 @@ Directory            | Description
 `vendor/`            | Silverstripe modules and other supporting libraries (e.g. the framework is in `vendor/silverstripe/framework`)
 `themes/`            | Standard theme installation location
 
-## Custom Code Structure
+## Custom code structure
 
 We use `app/` as the default folder.
 
@@ -33,18 +33,17 @@ We use `app/` as the default folder.
 | `app/src`        | PHP code specific to your application (subdirectories are optional)     |
 | `app/tests`      | PHP unit/functional/end-to-end tests                                                      |
 | `app/templates`  | HTML [templates](/developer_guides/templates) with `*.ss-extension` for the `$default` theme   |
-| `app/client/src` | Conventional directory for source resources (images/css/javascript) for your CMS customisations |
-| `app/client/dist` | Conventional directory for transpiled resources (images/css/javascript) for your CMS customisations |
-| `app/client/lang` | Conventional directory for [javascript translation tables](/developer_guides/i18n/#translation-tables-in-javascript) |
-| `app/lang` | Contains [yaml translation tables](/developer_guides/i18n/#language-definitions) |
+| `app/client/src` | Conventional directory for source resources (images/CSS/JavaScript) for your CMS customisations |
+| `app/client/dist` | Conventional directory for transpiled resources (images/CSS/JavaScript) for your CMS customisations |
+| `app/client/lang` | Conventional directory for [JavaScript translation tables](/developer_guides/i18n/#translation-tables-in-javascript) |
+| `app/lang` | Contains [YAML translation tables](/developer_guides/i18n/#language-definitions) |
 | `app/themes/<yourtheme>` | Custom nested themes (note: theme structure is described below)     |
 
 Arbitrary directory-names are allowed, as long as they don't collide with existing modules or the directories lists in
 "Core Structure". Here's how you would reconfigure your default folder to `myspecialapp`.
 
-**`myspecialapp/_config/config.yml`**
-
 ```yml
+# myspecialapp/_config/config.yml
 ---
 Name: myspecialapp
 ---
@@ -55,7 +54,7 @@ SilverStripe\Core\Manifest\ModuleManifest:
 Check our [JavaScript Coding Conventions](/contributing/javascript_coding_conventions/) for more details on folder and file naming in
 Silverstripe core modules.
 
-## Themes Structure
+## Themes structure
 
 | Directory                       | Description                                                     |
 | ------------------              | ---------------------------                                     |
@@ -66,7 +65,7 @@ Silverstripe core modules.
 
 See [themes](/developer_guides/templates/themes).
 
-## Module Structure
+## Module structure
 
 Modules are commonly stored as composer packages in the `vendor/` folder. They need to have a `_config.php` file or
 a `_config/` directory present, and should follow the same conventions as posed in "Custom Site Structure".
@@ -112,7 +111,7 @@ include paths or `require()` calls in your own code - after adding a new class, 
 a `flush=1` query parameter. See the ["Manifests" documentation](/developer_guides/execution_pipeline/manifests) for
 details.
 
-## Best Practices
+## Best practices
 
 ### Making /assets readonly
 

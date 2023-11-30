@@ -29,7 +29,7 @@ not refer to a web server.
 By default, `silverstripe/graphql` does not route any GraphQL servers. To activate the default,
 public-facing GraphQL server that ships with the module, just add a rule to [`Director`](api:SilverStripe\Control\Director).
 
-```yaml
+```yml
 SilverStripe\Control\Director:
   rules:
     'graphql': '%$SilverStripe\GraphQL\Controller.default'
@@ -43,7 +43,7 @@ you may want to set up another GraphQL server running on the same installation o
 
 Let's set up a new controller to handle the requests.
 
-```yaml
+```yml
 SilverStripe\Core\Injector\Injector:
   # ...
   SilverStripe\GraphQL\Controller.myNewSchema:
@@ -54,7 +54,7 @@ SilverStripe\Core\Injector\Injector:
 
 We'll now need to route the controller.
 
-```yaml
+```yml
 SilverStripe\Control\Director:
   rules:
     'my-graphql': '%$SilverStripe\GraphQL\Controller.myNewSchema'

@@ -11,19 +11,19 @@ The framework uses caches to store infrequently changing values.
 By default, the storage mechanism chooses the most performant adapter available
 (PHP opcache, APC, or filesystem). Other cache backends can be configured.
 
-The most common caches are manifests of various resources: 
+The most common caches are manifests of various resources:
 
- * PHP class locations ([ClassManifest](api:SilverStripe\Core\Manifest\ClassManifest))
- * Configuration settings from YAML files ([CachedConfigCollection](api:SilverStripe\Config\Collections\CachedConfigCollection))
- * Language files ([i18n](api:SilverStripe\i18n\i18n))
+- PHP class locations ([ClassManifest](api:SilverStripe\Core\Manifest\ClassManifest))
+- Configuration settings from YAML files ([CachedConfigCollection](api:SilverStripe\Config\Collections\CachedConfigCollection))
+- Language files ([i18n](api:SilverStripe\i18n\i18n))
 
 Flushing the various manifests is performed through a GET
 parameter (`flush=1`). Since this action requires more server resources than normal requests,
 executing the action is limited to the following cases when performed via a web request:
 
- * The [environment](/getting_started/environment_management) is in "dev mode"
- * A user is logged in with ADMIN permissions
- * An error occurs during startup
+- The [environment](/getting_started/environment_management) is in "dev mode"
+- A user is logged in with ADMIN permissions
+- An error occurs during startup
 
 Caution: Not all caches are cleared through `flush=1`.
 While cache objects can expire, when using filesystem caching the files are not actively pruned.
@@ -39,8 +39,7 @@ Note that this library describes usage of [PSR-6](https://www.php-fig.org/psr/ps
 though Silverstripe wraps these in a PSR-16 interface using the [Psr16Cache](https://github.com/symfony/cache/blob/6.1/Psr16Cache.php) class.
 
 Cache objects are configured via YAML
-and Silverstripe CMS's [dependency injection](/developer_guides/extending/injector) system. 
-
+and Silverstripe CMS's [dependency injection](/developer_guides/extending/injector) system.
 
 ```yml
 SilverStripe\Core\Injector\Injector:
@@ -53,14 +52,13 @@ SilverStripe\Core\Injector\Injector:
 [alert]
 Please note that if you have the `silverstripe/versioned` module installed (automatically installed by the
 `silverstripe/cms` module), caches will automatically be segmented by current “stage”. This ensures that
-any content written to the cache in the _draft_ reading mode isn’t accidentally exposed in the _live_ reading mode.
+any content written to the cache in the *draft* reading mode isn’t accidentally exposed in the *live* reading mode.
 Please read the [versioned cache segmentation](#versioned-cache-segmentation) section for more information.
 [/alert]
 
 Cache objects are instantiated through a [CacheFactory](api:SilverStripe\Core\Cache\CacheFactory),
 which determines which cache adapter is used (see "Adapters" below for details).
-This factory allows us you to globally define an adapter for all cache instances.  
-
+This factory allows us you to globally define an adapter for all cache instances.
 
 ```php
 use Psr\SimpleCache\CacheInterface;
@@ -72,16 +70,14 @@ $cache = Injector::inst()->get(CacheInterface::class . '.myCache');
 Caches are namespaced, which might allow granular clearing of a particular cache without affecting others.
 In our example, the namespace is "myCache", expressed in the service name as
 `Psr\SimpleCache\CacheInterface.myCache`. We recommend the `::class` short-hand to compose the full service name.
- 
+
 Clearing caches by namespace is dependent on the used adapter: While the `FilesystemAdapter` clears only the namespaced cache,
 a `MemcachedAdapter` adapter will clear all caches regardless of namespace, since the underlying memcached
 service doesn't support this. See "Invalidation" for alternative strategies.
 
-
 ## Usage
 
 Cache objects follow the [PSR-16](https://www.php-fig.org/psr/psr-16/) class interface.
-
 
 ```php
 use Psr\SimpleCache\CacheInterface;
@@ -108,7 +104,6 @@ Caches can be invalidated in different ways. The easiest is to actively clear th
 entire cache. If the adapter supports namespaced cache clearing,
 this will only affect a subset of cache keys ("myCache" in this example):
 
-
 ```php
 use Psr\SimpleCache\CacheInterface;
 use SilverStripe\Core\Injector\Injector;
@@ -120,7 +115,6 @@ $cache->clear();
 ```
 
 You can also delete a single item based on it's cache key:
-
 
 ```php
 use Psr\SimpleCache\CacheInterface;
@@ -134,7 +128,6 @@ $cache->delete('myCacheKey');
 
 Individual cache items can define a lifetime, after which the cached value is marked as expired:
 
-
 ```php
 use Psr\SimpleCache\CacheInterface;
 use SilverStripe\Core\Injector\Injector;
@@ -142,7 +135,8 @@ use SilverStripe\Core\Injector\Injector;
 $cache = Injector::inst()->get(CacheInterface::class . '.myCache');
 
 // set a cache item with an expiry
-$cache->set('myCacheKey', 'myValue', 300); // cache for 300 seconds
+// cache for 300 seconds
+$cache->set('myCacheKey', 'myValue', 300);
 ```
 
 If a lifetime isn't defined on the `set()` call, it'll use the adapter default.
@@ -151,7 +145,6 @@ it often pays to increase the lifetime of caches.
 You can also set your lifetime to `0`, which means they won't expire.
 Since many adapters don't have a way to actively remove expired caches,
 you need to be careful with resources here (e.g. filesystem space).
-
 
 ```yml
 ---
@@ -170,7 +163,6 @@ will automatically create a new cache key when the object has been changed.
 The following example caches a member's group names, and automatically
 creates a new cache key when any group is edited. Depending on the used adapter,
 old cache keys will be garbage collected as the cache fills up.
-
 
 ```php
 use Psr\SimpleCache\CacheInterface;
@@ -192,17 +184,17 @@ interface. Use this interface to trigger `clear()` on your caches.
 Silverstripe CMS tries to identify the most performant cache available on your system
 through the [DefaultCacheFactory](api:SilverStripe\Core\Cache\DefaultCacheFactory) implementation:
 
- * `PhpFilesAdapter` (PHP with [opcache](https://php.net/manual/en/book.opcache.php) enabled).
-     This cache has relatively low [memory defaults](https://php.net/manual/en/opcache.configuration.php#ini.opcache.memory-consumption).
-     We recommend increasing it for large applications, or enabling the
-     [file_cache fallback](https://php.net/manual/en/opcache.configuration.php#ini.opcache.file-cache)
- * `ApcuAdapter` (requires APC) with a `FilesystemAdapter` fallback (for larger cache volumes)
- * `FilesystemAdapter` if none of the above is available
- 
+- `PhpFilesAdapter` (PHP with [opcache](https://php.net/manual/en/book.opcache.php) enabled).
+    This cache has relatively low [memory defaults](https://php.net/manual/en/opcache.configuration.php#ini.opcache.memory-consumption).
+    We recommend increasing it for large applications, or enabling the
+    [file_cache fallback](https://php.net/manual/en/opcache.configuration.php#ini.opcache.file-cache)
+- `ApcuAdapter` (requires APC) with a `FilesystemAdapter` fallback (for larger cache volumes)
+- `FilesystemAdapter` if none of the above is available
+
 The library supports various [cache adapters](https://github.com/symfony/cache/tree/6.1/Adapter)
 which can provide better performance, particularly in multi-server environments with shared caches like Memcached.
 
-Since we're using dependency injection to create caches, 
+Since we're using dependency injection to create caches,
 you need to define a factory for a particular adapter,
 following the `SilverStripe\Core\Cache\CacheFactory` interface.
 Different adapters will require different constructor arguments.
@@ -212,7 +204,6 @@ We've written factories for the most common cache scenarios:
 Example: Configure core caches to use [memcached](https://www.danga.com/memcached/),
 which requires the [memcached PHP extension](https://php.net/memcached),
 and takes a `MemcachedClient` instance as a constructor argument.
-
 
 ```yml
 ---
@@ -245,31 +236,35 @@ $cache = Injector::inst()->get(CacheInterface::class . '.myapp');
 Versioned::set_stage(Versioned::DRAFT);
 $cache->set('my_key', 'Some draft content. Not for public viewing yet.');
 Versioned::set_stage(Versioned::LIVE);
-$cache->get('my_key'); // 'Some draft content. Not for public viewing yet'
+// 'Some draft content. Not for public viewing yet'
+$cache->get('my_key');
 
 // After:
 $cache = Injector::inst()->get(CacheInterface::class . '.myapp');
 Versioned::set_stage(Versioned::DRAFT);
 $cache->set('my_key', 'Some draft content. Not for public viewing yet.');
 Versioned::set_stage(Versioned::LIVE);
-$cache->get('my_key'); // null
+// null
+$cache->get('my_key');
 ```
+
 Data that is not content sensitive can be cached across stages by simply opting out of the segmented cache
 with the `disable-container` argument.
 
-```yaml
+```yml
 SilverStripe\Core\Injector\Injector:
   Psr\SimpleCache\CacheInterface.myapp:
     factory: SilverStripe\Core\Cache\CacheFactory
     constructor:
       namespace: "MyInsensitiveData"
-      disable-container: true 
+      disable-container: true
 ```
 
-## Additional Caches
+## Additional caches
 
 Unfortunately not all caches are configurable via cache adapters.
 
- * [SSViewer](api:SilverStripe\View\SSViewer) writes compiled templates as PHP files to the filesystem
+- [SSViewer](api:SilverStripe\View\SSViewer) writes compiled templates as PHP files to the filesystem
    (in order to achieve opcode caching on `include()` calls)
- * [i18n](api:SilverStripe\i18n\i18n) uses `Symfony\Component\Config\ConfigCacheFactoryInterface` (filesystem-based)
+
+- [i18n](api:SilverStripe\i18n\i18n) uses `Symfony\Component\Config\ConfigCacheFactoryInterface` (filesystem-based)

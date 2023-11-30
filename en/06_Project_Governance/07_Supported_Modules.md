@@ -14,7 +14,7 @@ These modules will be supported for the lifetime of Silverstripe CMS 5 in the pr
 
 ## Core Silverstripe CMS modules
 
-The "core" of Silverstripe refers to the module packages owned by the "silverstripe" Packagist vendor that fall under one of the following recipes:
+The "core" of Silverstripe refers to the module packages owned by the "Silverstripe" Packagist vendor that fall under one of the following recipes:
 
 - [silverstripe/recipe-core](https://packagist.org/packages/silverstripe/recipe-core)
 - [silverstripe/recipe-cms](https://packagist.org/packages/silverstripe/recipe-cms)
@@ -52,7 +52,7 @@ These modules extend the core Silverstripe CMS functionality. Silverstripe CMS p
 
 Supported PHP Module | Supported versions
 -- | --
-[bringyourownideas/silverstripe-composer-update-checker](https://packagist.org/packages/bringyourownideas/silverstripe-composer-update-checker)	 | 4
+[bringyourownideas/silverstripe-composer-update-checker](https://packagist.org/packages/bringyourownideas/silverstripe-composer-update-checker)   | 4
 [bringyourownideas/silverstripe-maintenance](https://packagist.org/packages/bringyourownideas/silverstripe-maintenance) | 3
 [colymba/gridfield-bulk-editing-tools](https://packagist.org/packages/colymba/gridfield-bulk-editing-tools) | 4
 [cwp/agency-extensions](https://packagist.org/packages/cwp/agency-extensions) | 3
@@ -114,8 +114,8 @@ The following two NPM packages are also supported because they are required to b
 - [@silverstripe/webpack-config](https://www.npmjs.com/package/@silverstripe/webpack-config)
 - [@silverstripe/eslint-config](https://www.npmjs.com/package/@silverstripe/eslint-config)
 
-## Other modules in the "silverstripe" namespace
+## Other modules in the `silverstripe` namespace
 
-There are other modules hosted under the _silverstripe_ Packagist namespace. These modules are maintained on a best effort basis. They are not guaranteed to go through regular regression testing. Their public API may be more fluid than supported modules. They maybe more experimental or may not receive the same level of care as supported modules.
+There are other modules hosted under the `silverstripe` Packagist namespace. These modules are maintained on a best effort basis. They are not guaranteed to go through regular regression testing. Their public API may be more fluid than supported modules. They maybe more experimental or may not receive the same level of care as supported modules.
 
 These modules can still be used in Silverstripe CMS projects, but should be considered as community modules.

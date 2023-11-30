@@ -3,7 +3,7 @@ title: DataObject operation permissions
 summary: A look at how permissions work for DataObject queries and mutations
 ---
 
-# Working with DataObjects
+# Working with `DataObject` models
 
 [CHILDREN asList]
 
@@ -50,16 +50,16 @@ for `limit` and `offset` parameters.
 
 Though not recommended, you can disable query permissions by setting their plugins to `false`.
 
-**app/_graphql/models.yml**
-```yaml
-  Page:
-    operations:
-      read:
-        plugins:
-          canView: false
-      readOne:
-        plugins:
-          canView: false
+```yml
+# app/_graphql/models.yml
+Page:
+  operations:
+    read:
+      plugins:
+        canView: false
+    readOne:
+      plugins:
+        canView: false
 ```
 
 ### Further reading

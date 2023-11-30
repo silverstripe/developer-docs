@@ -12,7 +12,7 @@ server.
 For each of these environments we may require slightly different configurations for our servers. This could be our debug
 level, caching backends, or - of course - sensitive information such as database credentials.
 
-To manage environment variables, as well as other server globals, the [api:SilverStripe\Core\Environment] class provides
+To manage environment variables, as well as other server globals, the [`Environment`](api:SilverStripe\Core\Environment) class provides
 a set of APIs and helpers.
 
 ## Security considerations
@@ -24,7 +24,7 @@ environment variables.
 If you do use a `.env` file on your servers, you must ensure that external access to `.env` files is blocked by the
 webserver.
 
-## Managing environment variables with .env files
+## Managing environment variables with `.env` files
 
 By default a file named `.env` must be placed in your project root (ie: the same folder as your `composer.json`) or the
 parent directory. If this file exists, it will be automatically loaded by the framework and the environment variables
@@ -74,9 +74,9 @@ Environment::setEnv('API_KEY', 'AABBCCDDEEFF012345');
 ### Using environment variables in config
 
 To use environment variables in `.yaml` configs you can reference them using backticks. This only works in `Injector` configuration.
-See the [Injector documentation](/developer_guides/extending/injector/#using-constants-and-environment-variables) for details.
+See the [`Injector` documentation](/developer_guides/extending/injector/#using-constants-and-environment-variables) for details.
 
-## Including an extra .env file
+## Including an extra `.env` file
 
 Sometimes it may be useful to include an extra `.env` file - on a shared local development environment where all
 database credentials could be the same. To do this, you can add this snippet to your `app/_config.php` file:
@@ -92,7 +92,7 @@ $loader->loadFile($env);
 ```
 
 [warning]
-Note that because `_config.php` is processed after yaml configuration, variables set in these extra `.env` files cannot be used inside yaml config.
+Note that because `_config.php` is processed after YAML configuration, variables set in these extra `.env` files cannot be used inside YAML config.
 [/warning]
 
 ## Core environment variables
@@ -121,7 +121,7 @@ Silverstripe core environment variables are listed here, though you're free to d
 | `SS_ENVIRONMENT_TYPE`| The environment type. Should be one of `dev`, `test`, or `live`. See [Environment Types](/developer_guides/debugging/environment_types/) for more information. |
 | `SS_DEFAULT_ADMIN_USERNAME`| The username of the default admin. This is a user with administrative privileges. |
 | `SS_DEFAULT_ADMIN_PASSWORD`| The password of the default admin. This will not be stored in the database. |
-| `SS_USE_BASIC_AUTH`| Baseline protection for requests handled by Silverstripe. Usually requires additional security measures for comprehensive protection. Set this to the name of a permission which users must have to be able to access the site (e.g. "ADMIN"). See [Environment Types](/developer_guides/debugging/environment_types) for caveats. |
+| `SS_USE_BASIC_AUTH`| Baseline protection for requests handled by Silverstripe CMS. Usually requires additional security measures for comprehensive protection. Set this to the name of a permission which users must have to be able to access the site (e.g. "ADMIN"). See [Environment Types](/developer_guides/debugging/environment_types) for caveats. |
 | `SS_SEND_ALL_EMAILS_TO`| If you define this constant all emails will be redirected to this address, overriding the original address(es). |
 | `SS_SEND_ALL_EMAILS_FROM`| If you define this constant all emails will be sent from this address, overriding the original address. |
 | `SS_ERROR_LOG` | Path to a file for logging errors, relative to the project root. See [Logging and Error Handling](/developer_guides/debugging/error_handling/) for more information about error logging. |
@@ -131,6 +131,6 @@ Silverstripe core environment variables are listed here, though you're free to d
 | `SS_ALLOWED_HOSTS` | A comma deliminated list of hostnames the site is allowed to respond to. See [Request hostname forgery](/developer_guides/security/secure_coding/#request-hostname-forgery) for more information. |
 | `SS_MANIFESTCACHE` | The manifest cache to use (defaults to file based caching). Must be a `Psr\Cache\CacheItemPoolInterface`, `Psr\SimpleCache\CacheInterface`, or `SilverStripe\Core\Cache\CacheFactory` class implementation. |
 | `SS_IGNORE_DOT_ENV` | If set, the `.env` file will be ignored. This is good for live to mitigate any performance implications of loading the `.env` file. |
-| `SS_BASE_URL` | The url to use when it isn't determinable by other means (eg: for CLI commands). Should either start with a protocol (e.g. `https://www.example.com`) or with a double forward slash (e.g. `//www.example.com`). |
+| `SS_BASE_URL` | The URL to use when it isn't determinable by other means (for example for CLI commands). Should either start with a protocol (e.g. `https://www.example.com`) or with a double forward slash (e.g. `//www.example.com`). |
 | `SS_FLUSH_ON_DEPLOY` | Try to detect deployments through file system modifications and flush on the first request after every deploy. Does not run "dev/build" - only "flush". Possible values are `true` (check for a framework PHP file modification time), `false` (no checks, skip deploy detection) or a path to a specific file or folder to be checked. See [DeployFlushDiscoverer](api:SilverStripe\Core\Startup\DeployFlushDiscoverer) for more details.<br /><br />False by default. |
 | `SS_TEMP_PATH` | File storage used for the default cache adapters in [Manifests](/developer_guides/execution_pipeline/manifests), [Object Caching](/developer_guides/performance/caching) and [Partial Template Caching](/developer_guides/templates/partial_template_caching). Can be an absolute path (with a leading `/`), or a path relative to the project root. Defaults to creating a sub-directory of PHP's built-in `sys_get_temp_dir()` or using the `silverstripe-cache` directory relative to the project root if one is present. |

@@ -16,7 +16,7 @@ a high level wrapper for running advanced search services such as Solr, Lucene o
 `MySQL` search.
 [/notice]
 
-## Adding Fulltext Support to MySQLDatabase
+## Adding fulltext support to `MySQLDatabase`
 
 The [MySQLDatabase](api:SilverStripe\ORM\Connect\MySQLDatabase) class defaults to creating tables using the InnoDB storage engine. As Fulltext search in MySQL
 requires the MyISAM storage engine, any DataObject you wish to use with Fulltext search must be changed to use MyISAM
@@ -24,15 +24,16 @@ storage engine.
 
 You can do so by adding this static variable to your class definition:
 
-
 ```php
-use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\Connect\MySQLSchemaManager;
+namespace App\Model;
 
-class MyDataObject extends DataObject 
+use SilverStripe\ORM\Connect\MySQLSchemaManager;
+use SilverStripe\ORM\DataObject;
+
+class MyDataObject extends DataObject
 {
     private static $create_table_options = [
-        MySQLSchemaManager::ID => 'ENGINE=MyISAM'
+        MySQLSchemaManager::ID => 'ENGINE=MyISAM',
     ];
 }
 ```
@@ -45,51 +46,50 @@ records and cannot easily be adapted to include custom `DataObject` instances. T
 default site search, have a look at those extensions and modify as required.
 [/alert]
 
-### Fulltext Filter
+### Fulltext filter
 
 Silverstripe CMS provides a [FulltextFilter](api:SilverStripe\ORM\Filters\FulltextFilter) which you can use to perform custom fulltext searches on
 [DataList](api:SilverStripe\ORM\DataList)s.
 
 Example DataObject:
 
-
 ```php
-use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\Connect\MySQLSchemaManager;
+namespace App\Model;
 
-class SearchableDataObject extends DataObject 
+use SilverStripe\ORM\Connect\MySQLSchemaManager;
+use SilverStripe\ORM\DataObject;
+
+class SearchableDataObject extends DataObject
 {
-    
     private static $db = [
-        "Title" => "Varchar(255)",
-        "Content" => "HTMLText",
+        'Title' => 'Varchar(255)',
+        'Content' => 'HTMLText',
     ];
 
     private static $indexes = [
         'SearchFields' => [
             'type' => 'fulltext',
             'columns' => ['Title', 'Content'],
-        ]
+        ],
     ];
 
     private static $create_table_options = [
-        MySQLSchemaManager::ID => 'ENGINE=MyISAM'
+        MySQLSchemaManager::ID => 'ENGINE=MyISAM',
     ];
-
 }
-
 ```
 
 Performing the search:
 
-
 ```php
+use App\Model\SearchableDataOBject;
+
 SearchableDataObject::get()->filter('SearchFields:Fulltext', 'search term');
 ```
 
 If your search index is a single field size, then you may also specify the search filter by the name of the
 field instead of the index.
 
-## API Documentation
+## API documentation
 
-* [FulltextSearchable](api:SilverStripe\ORM\Search\FulltextSearchable)
+- [FulltextSearchable](api:SilverStripe\ORM\Search\FulltextSearchable)

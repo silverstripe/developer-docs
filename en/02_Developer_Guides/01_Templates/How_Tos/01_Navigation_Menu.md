@@ -3,16 +3,15 @@ title: How to Create a Navigation Menu
 summary: Build a multi-tiered navigation UI.
 ---
 
-# How to Create a Navigation Menu
+# How to create a navigation menu
 
 In this how-to, we'll create a simple menu which you can use as the primary navigation for your website. This outputs a
 top level menu with a nested second level using the `Menu` loop and a `Children` loop.
 
 This template relies on the [`Menu()`](api:SilverStripe\Controllers\ContentController::Menu()) method available via the [`ContentController`](api:SilverStripe\Controllers\ContentController) on all [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) records. The number passed in is the level to start the menu from, where `1` is the root level pages.
 
-**app/templates/Page.ss**
-
 ```ss
+<%-- app/templates/Page.ss --%>
 <ul>
     <% loop $Menu(1) %>
         <li>
@@ -36,5 +35,5 @@ This template relies on the [`Menu()`](api:SilverStripe\Controllers\ContentContr
 
 ## Related
 
-* [Template Syntax](../syntax)
-* [Common Variables](../common_variables)
+- [Template Syntax](../syntax)
+- [Common Variables](../common_variables)

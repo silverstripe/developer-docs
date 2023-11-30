@@ -5,6 +5,8 @@ introduction: The Admin interface can be extended to provide additional function
 iconBrand: react
 ---
 
+# Customising the admin interface
+
 The Admin interface is bundled within the Silverstripe CMS but is most commonly used in conjunction with the `cms`
 module. The main class for displaying the interface is a specialized [Controller](api:SilverStripe\Control\Controller) called [LeftAndMain](api:SilverStripe\Admin\LeftAndMain), named
 as it is designed around a left hand navigation and a main edit form.

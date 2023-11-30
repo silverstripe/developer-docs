@@ -3,7 +3,8 @@ title: CMS Architecture
 summary: An overview of the code architecture of the CMS
 icon: sitemap
 ---
-# CMS Architecture
+
+# CMS architecture
 
 ## Introduction
 
@@ -30,11 +31,11 @@ The pattern library can be used to preview React components without including th
 
 The easiest way to access the pattern library is to view it online. The pattern library for the latest Silverstripe CMS development branch is automatically built and deployed. Note that this may include new components that are not yet available in a stable release.
 
-[Browse the Silverstripe CMS pattern library online](https://silverstripe.github.io/silverstripe-pattern-lib/).
+[Browse the Silverstripe CMS pattern library online](https://silverstripe.g.ithub.io/silverstripe-pattern-lib/).
 
 ### Running the pattern library
 
-If you're developing a new React component, running the pattern library locally is a good way to interact with it. 
+If you're developing a new React component, running the pattern library locally is a good way to interact with it.
 
 The pattern library is built from the `silverstripe/admin` module, but it also requires `silverstripe/asset-admin`, `silversrtipe/cms` and `silverstripe/campaign-admin`.
 
@@ -52,15 +53,13 @@ The pattern library will be available at `http://localhost:6006`. The JS source 
 
 If you want to build a static version of the pattern library, you can replace `yarn pattern-lib` with `yarn build-storybook`. This will output the pattern library files to a `storybook-static` folder.
 
-The Silverstripe CMS pattern library is built using the [StoryBook JS library](https://storybook.js.org/). You can read the StoryBook documentation to learn about more advanced features and customisation options. 
+The Silverstripe CMS pattern library is built using the [StoryBook JS library](https://storybook.js.org/). You can read the StoryBook documentation to learn about more advanced features and customisation options.
 
-## The Admin URL
+## The admin URL
 
 The CMS interface can be accessed by default through the `admin/` URL. You can change this by setting the `$url_base` config for the [AdminRootController](api:SilverStripe\Admin\AdminRootController), creating your own [Director](api:SilverStripe\Control\Director) routing rule and clearing the old rule as per the example below:
 
-
 ```yml
-
 ---
 Name: myadmin
 After:
@@ -70,32 +69,34 @@ SilverStripe\Control\Director:
   rules:
     'admin': ''
     'newAdmin': 'SilverStripe\Admin\AdminRootController'
-    
+
 SilverStripe\Admin\AdminRootController:
-  url_base: 'newAdmin'    
+  url_base: 'newAdmin'
 ---
 ```
 
 When extending the CMS or creating modules, you can take advantage of various functions that will return the configured admin URL (by default 'admin' is returned):
 
 [warning]
-Depending on your configuration, the returned value _may or may not_ include a trailing slash. The default is to not include one, but you should take care to not
+Depending on your configuration, the returned value *may or may not* include a trailing slash. The default is to not include one, but you should take care to not
 explicitly expect one scenario or the other.
 
 In PHP you can use [Controller::join_links()](api:SilverStripe\Control\Controller::join_links()) or pass an argument to
 [AdminRootController::admin_url()](api:SilverStripe\Admin\AdminRootController::admin_url()) to ensure only one `/` character separates the admin URL from the rest of
 your path.
 
-In javascript, if you are using [@silverstripe/webpack-config](https://www.npmjs.com/package/@silverstripe/webpack-config), you can use the `joinUrlPaths()` utility
+In JavaScript, if you are using [@silverstripe/webpack-config](https://www.npmjs.com/package/@silverstripe/webpack-config), you can use the `joinUrlPaths()` utility
 function.
 [/warning]
 
 In PHP you should use:
 
 ```php
-SilverStripe\Admin\AdminRootController::admin_url()
+use SilverStripe\Admin\AdminRootController;
+
+AdminRootController::admin_url()
 // This method can take an argument:
-SilverStripe\Admin\AdminRootController::admin_url('more/path/here')
+AdminRootController::admin_url('more/path/here')
 ```
 
 When writing templates use:
@@ -106,21 +107,20 @@ $AdminURL
 $AdminURL('more/path/here')
 ```
 
-And in JavaScript, this is available through the `ss` namespace
+And in JavaScript, this is available through the `ss` namespace as `ss.config.adminUrl`
 
 ```js
-ss.config.adminUrl
-
 // You can use this if you use @silverstripe/webpack-config
 import { joinUrlPaths } from 'lib/urls';
-joinUrlPaths(ss.config.adminUrl, 'more/path/here')
+
+joinUrlPaths(ss.config.adminUrl, 'more/path/here');
 ```
 
-### Multiple Admin URL and overrides
+### Multiple admin URL and overrides
 
 You can also create your own classes that extend the [AdminRootController](api:SilverStripe\Admin\AdminRootController) to create multiple or custom admin areas, with a `Director.rules` for each one.
 
-## Templates and Controllers
+## Templates and controllers
 
 The CMS backend is handled through the [LeftAndMain](api:SilverStripe\Admin\LeftAndMain) controller class,
 which contains base functionality like displaying and saving a record.
@@ -154,7 +154,7 @@ These placeholders are populated by auto-detected templates,
 with the naming convention of `<controller classname>_Tools.ss` and `<controller classname>_EditFormTools.ss`.
 So to add or "subclass" a tools panel, simply create this file and it's automatically picked up.
 
-## Layout and Panels
+## Layout and panels
 
 The various panels and UI components within them are loosely coupled to the layout engine through the `data-layout-type`
 attribute. The layout is triggered on the top element and cascades into children, with a `redraw` method defined on
@@ -166,13 +166,13 @@ Refer to [Layout reference](/developer_guides/customising_the_admin_interface/cm
 
 Silverstripe CMS constructs forms and its fields within PHP,
 mainly through the [getCMSFields()](api:SilverStripe\ORM\DataObject::getCMSFields()) method.
-This in turn means that the CMS loads these forms as HTML via Ajax calls,
-e.g. after saving a record (which requires a form refresh), or switching the section in the CMS.
+This in turn means that the CMS loads these forms as HTML via Ajax calls, e.g.
+after saving a record (which requires a form refresh), or switching the section in the CMS.
 
 Depending on where in the DOM hierarchy you want to use a form,
 custom templates and additional CSS classes might be required for correct operation.
 For example, the "EditForm" has specific view and logic JavaScript behaviour
-which can be enabled via adding the "cms-edit-form" class.
+which can be enabled via adding the "CMS-edit-form" class.
 In order to set the correct layout classes, we also need a custom template.
 To obey the inheritance chain, we use `$this->getTemplatesWithSuffix('_EditForm')` for
 selecting the most specific template (so `MyAdmin_EditForm.ss`, if it exists).
@@ -182,31 +182,34 @@ of a `PjaxResponseNegotiator` to handle its display.
 
 Basic example form in a CMS controller subclass:
 
-
 ```php
-use SilverStripe\Forms\TabSet;
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\Tab;
-use SilverStripe\Forms\TextField;
-use SilverStripe\Forms\FormAction;
+namespace App\Admin;
+
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Admin\LeftAndMainFormRequestHandler;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\Tab;
+use SilverStripe\Forms\TabSet;
+use SilverStripe\Forms\TextField;
 
-class MyAdmin extends LeftAndMain 
+class MyAdmin extends LeftAndMain
 {
-    public function getEditForm() {
+    public function getEditForm()
+    {
         return Form::create(
             $this,
             'EditForm',
-            new FieldList(
+            FieldList::create(
                 TabSet::create(
                     'Root',
-                    Tab::create('Main',
+                    Tab::create(
+                        'Main',
                         TextField::create('MyText')
                     )
                 )->setTemplate('CMSTabset')
             ),
-            new FieldList(
+            FieldList::create(
                 FormAction::create('doSubmit')
             )
         )
@@ -229,7 +232,7 @@ Note: Usually you don't need to worry about these settings,
 and will simply call `parent::getEditForm()` to modify an existing,
 correctly configured form.
 
-## JavaScript through jQuery.entwine
+## JavaScript through jQuery.Entwine
 
 [notice]
 The following documentation regarding Entwine does not apply to React components or sections powered by React.
@@ -250,7 +253,7 @@ in jQuery.entwine, we're trying to reuse library code wherever possible.
 The most prominent example of this is the usage of [jQuery UI](https://jqueryui.com) for
 dialogs and buttons.
 
-## JavaScript and CSS dependencies via Requirements and Ajax
+## JavaScript and CSS dependencies via requirements and ajax
 
 The JavaScript logic powering the CMS is divided into many files,
 which typically are included via the [Requirements](api:SilverStripe\View\Requirements) class, by adding
@@ -281,13 +284,14 @@ so as a developer just declare your dependencies through the [Requirements](api:
 
 Silverstripe CMS uses the HTML5 browser history to modify the URL without a complete
 window refresh. We us the below systems in combination to achieve this:
-  * [Page.js](https://github.com/visionmedia/page.js) routing library is used for most
-    cms sections, which provides additional Silverstripe CMS specific functionality via the
+
+- [Page.js](https://github.com/visionmedia/page.js) routing library is used for most
+    CMS sections, which provides additional Silverstripe CMS specific functionality via the
     `vendor/silverstripe/admin/client/src/lib/Router.js` wrapper.
-	The router is available on `window.ss.router` and provides the same API as
-	described in the
-	[Page.js docs](https://github.com/visionmedia/page.js#api).
-  * [React router](https://github.com/reactjs/react-router) is used for react-powered
+  The router is available on `window.ss.router` and provides the same API as
+  described in the
+  [Page.js docs](https://github.com/visionmedia/page.js#api).
+- [React router](https://github.com/reactjs/react-router) is used for react-powered
     CMS sections. This provides a native react-controlled bootstrapping and route handling
     system that works most effectively with react components. Unlike page.js routes, these
     may be lazy-loaded or registered during the lifetime of the application on the
@@ -295,14 +299,14 @@ window refresh. We us the below systems in combination to achieve this:
 
 ### Registering routes
 
-#### page.js (non-react) CMS sections
+#### `Page.js` (non-react) CMS sections
 
 CMS sections that rely on entwine, page.js, and normal ajax powered content loading mechanisms
 (such as modeladmin) will typically have a single wildcard route that initiates the [pjax loading
 mechanism](#pjax).
 
 The main place that routes are registered are via the `LeftAndMain::getClientConfig()` overridden method,
-which by default registers a single 'url' route. This will generate a wildcard route handler for each CMS
+which by default registers a single 'URL' route. This will generate a wildcard route handler for each CMS
 section in the form `/admin/<section>(/*)?`, which will capture any requests for this section.
 
 Additional routes can be registered like so `window.ss.router('admin/pages', callback)`, however
@@ -331,11 +335,20 @@ controlled by the react section, and thus should suppress registration of a page
 for this section.
 
 ```php
-public function getClientConfig() 
+namespace App\Admin;
+
+use SilverStripe\Admin\LeftAndMain;
+
+class MyAdmin extends LeftAndMain
 {
-    return array_merge(parent::getClientConfig(), [
-        'reactRouter' => true,
-    ]);
+    // ...
+
+    public function getClientConfig()
+    {
+        return array_merge(parent::getClientConfig(), [
+            'reactRouter' => true,
+        ]);
+    }
 }
 ```
 
@@ -349,15 +362,15 @@ import reactRouteRegister from 'lib/ReactRouteRegister';
 import MyAdmin from './MyAdmin';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const sectionConfig = ConfigHelpers.getSection('MyAdmin');
+  const sectionConfig = ConfigHelpers.getSection('MyAdmin');
 
-    reactRouteRegister.add({
-        path: sectionConfig.reactRoutePath,
-        component: MyAdminComponent,
-        childRoutes: [
-            { path: 'form/:id/:view', component: MyAdminComponent },
-        ],
-    });
+  reactRouteRegister.add({
+    path: sectionConfig.reactRoutePath,
+    component: MyAdminComponent,
+    childRoutes: [
+      { path: 'form/:id/:view', component: MyAdminComponent },
+    ],
+  });
 });
 ```
 
@@ -367,12 +380,12 @@ Child routes can be registered post-boot by using `ReactRouteRegister` in the sa
 // Register a nested url under `sectionConfig.reactRoutePath`
 const sectionConfig = ConfigHelpers.getSection('MyAdmin');
 reactRouteRegister.add({
-    path: 'nested',
-    component: NestedComponent,
-}, [ sectionConfig.reactRoutePath ]);
+  path: 'nested',
+  component: NestedComponent,
+}, [sectionConfig.reactRoutePath]);
 ```
 
-## PJAX: Partial template replacement through Ajax {#pjax}
+## PJAX: partial template replacement through ajax {#pjax}
 
 Many user interactions can change more than one area in the CMS.
 For example, editing a page title in the CMS form changes it in the page tree
@@ -395,33 +408,37 @@ Example: Create a bare-bones CMS subclass which shows breadcrumbs (a built-in me
 as well as info on the current record. A single link updates both sections independently
 in a single Ajax request.
 
-
 ```php
+// app/src/Admin/MyAdmin.php
+namespace App\Admin;
+
 use SilverStripe\Admin\LeftAndMain;
 
-// app/src/MyAdmin.php
-class MyAdmin extends LeftAndMain 
+class MyAdmin extends LeftAndMain
 {
     private static $url_segment = 'myadmin';
-    public function getResponseNegotiator() 
+
+    public function getResponseNegotiator()
     {
         $negotiator = parent::getResponseNegotiator();
         $controller = $this;
         // Register a new callback
-        $negotiator->setCallback('MyRecordInfo', function() use(&$controller) {
-            return $controller->MyRecordInfo();
+        $negotiator->setCallback('MyRecordInfo', function () use (&$controller) {
+            return $controller->getMyRecordInfo();
         });
+
         return $negotiator;
     }
-    public function MyRecordInfo() 
+
+    public function getMyRecordInfo()
     {
         return $this->renderWith('MyRecordInfo');
     }
 }
 ```
 
-**MyAdmin.ss**
 ```ss
+<%-- MyAdmin.ss --%>
 <% include SilverStripe\\Admin\\CMSBreadcrumbs %>
 <div>Static content (not affected by update)</div>
 <% include MyRecordInfo %>
@@ -430,8 +447,8 @@ class MyAdmin extends LeftAndMain
 </a>
 ```
 
-**MyRecordInfo.ss**
 ```ss
+<%-- MyRecordInfo.ss --%>
 <div data-pjax-fragment="MyRecordInfo">
     Current Record: $currentPage.Title
 </div>
@@ -439,7 +456,7 @@ class MyAdmin extends LeftAndMain
 
 A click on the link will cause the following (abbreviated) ajax HTTP request:
 
-```HTTP
+```text
 GET /admin/myadmin HTTP/1.1
 X-Pjax:MyRecordInfo,Breadcrumbs
 X-Requested-With:XMLHttpRequest
@@ -447,7 +464,7 @@ X-Requested-With:XMLHttpRequest
 
 ... and result in the following response:
 
-```JSON
+```json
 {"MyRecordInfo": "<div...", "CMSBreadcrumbs": "<div..."}
 ```
 
@@ -463,7 +480,7 @@ tracked in the browser history, use the `pjax` attribute on the state data.
 // You can use this if you use @silverstripe/webpack-config
 import { joinUrlPaths } from 'lib/urls';
 
-$('.cms-container').loadPanel(joinUrlPaths(ss.config.adminUrl, 'pages'), null, {pjax: 'Content'});
+$('.cms-container').loadPanel(joinUrlPaths(ss.config.adminUrl, 'pages'), null, { pjax: 'Content' });
 ```
 
 ### Loading lightweight PJAX fragments
@@ -511,12 +528,13 @@ will be triggered. In case of a request error a `loadfragmenterror` will be rais
 You can hook up a response handler that obtains all the details of the XHR request via Entwine handler:
 
 ```js
-'from .cms-container': {
-    onafterloadfragment: function(e, data) {
-        // Say 'success'!
-        alert(data.status);
+$(someSelector).entwine({
+  'from .cms-container': {
+    onafterloadfragment(event, data) {
+      // The value of the status variable here is 'success'
     }
-}
+  }
+});
 ```
 
 Alternatively you can use the jQuery deferred API:
@@ -526,14 +544,15 @@ Alternatively you can use the jQuery deferred API:
 import { joinUrlPaths } from 'lib/urls';
 
 $('.cms-container')
-    .loadFragment(joinUrlPaths(ss.config.adminUrl, 'foobar/'), 'Fragment1')
-    .success(function(data, status, xhr) {
-        // Say 'success'!
-        alert(status);
-    });
+  .loadFragment(joinUrlPaths(ss.config.adminUrl, 'foobar/'), 'Fragment1')
+  .success((data, status, xhr) => {
+    // Say 'success'!
+    // eslint-disable-next-line no-alert
+    alert(status);
+  });
 ```
 
-## Ajax Redirects
+## Ajax redirects
 
 Sometimes, a server response represents a new URL state, e.g. when submitting an "add record" form,
 the resulting view will be the edit form of the new record. On non-ajax submissions, that's easily
@@ -552,16 +571,19 @@ For example, the currently used controller class might've changed due to a "redi
 which affects the currently active menu entry. We're using HTTP response headers to contain this data
 without affecting the response body.
 
-
 ```php
+namespace App\Control;
+
 use SilverStripe\Admin\LeftAndMain;
 
-class MyController extends LeftAndMain 
+class MyController extends LeftAndMain
 {
-    class myaction() 
+    // ...
+
+    public function myaction()
     {
         // ...
-        $this->getResponse()->addHeader('X-Controller', 'MyOtherController');
+        $this->getResponse()->addHeader('X-Controller', MyOtherController::class);
         return $html;
     }
 }
@@ -569,20 +591,20 @@ class MyController extends LeftAndMain
 
 Built-in headers are:
 
- * `X-Title`: Set window title (requires URL encoding)
- * `X-Controller`: PHP class name matching a menu entry, which is marked active
- * `X-ControllerURL`: Alternative URL to record in the HTML5 browser history
- * `X-Status`: Extended status information, used for an information popover (aka "toast" message).
- * `X-Reload`: Force a full page reload based on `X-ControllerURL`
+- `X-Title`: Set window title (requires URL encoding)
+- `X-Controller`: PHP class name matching a menu entry, which is marked active
+- `X-ControllerURL`: Alternative URL to record in the HTML5 browser history
+- `X-Status`: Extended status information, used for an information popover (aka "toast" message).
+- `X-Reload`: Force a full page reload based on `X-ControllerURL`
 
-## Special Links
+## Special links
 
 Some links should do more than load a new page in the browser window.
 To avoid repetition, we've written some helpers for various use cases:
 
- * Load into a PJAX panel: `<a href="..." class="cms-panel-link" data-pjax-target="Content">`
- * Load URL as an iframe into a popup/dialog: `<a href="..." class="ss-ui-dialog-link">`
- * GridField click to redirect to external link: `<a href="..." class="cms-panel-link action external-link">`
+- Load into a PJAX panel: `<a href="..." class="cms-panel-link" data-pjax-target="Content">`
+- Load URL as an iframe into a popup/dialog: `<a href="..." class="ss-ui-dialog-link">`
+- GridField click to redirect to external link: `<a href="..." class="cms-panel-link action external-link">`
 
 ## Buttons
 
@@ -616,13 +638,21 @@ from "Page" to "Files & Images". To communicate this state change, a controller
 response has the option to pass along a special HTTP response header,
 which is picked up by the menu:
 
-
 ```php
-public function mycontrollermethod() 
+namespace App\Control;
+
+use SilverStripe\Control\Controller;
+
+class MyController extends Controller
 {
-    // .. logic here
-    $this->getResponse()->addHeader('X-Controller', 'AssetAdmin');
-    return 'my response';
+    // ...
+
+    public function mycontrollermethod()
+    {
+        // ... logic here
+        $this->getResponse()->addHeader('X-Controller', 'AssetAdmin');
+        return 'my response';
+    }
 }
 ```
 
@@ -669,7 +699,6 @@ since all others should render with their tab navigation inline.
 
 Form template with custom tab navigation (trimmed down):
 
-
 ```ss
 <form $FormAttributes data-layout-type="border">
 
@@ -698,7 +727,6 @@ Form template with custom tab navigation (trimmed down):
 
 Tabset template without tab navigation (e.g. `CMSTabset.ss`)
 
-
 ```ss
 <div $AttributesHTML>
     <% loop Tabs %>
@@ -723,7 +751,6 @@ This is achieved by template conditionals (see "MyActiveCondition").
 The `.cms-panel-link` class will automatically trigger the ajax loading,
 and load the HTML content into the main view. Example:
 
-
 ```ss
 <div id="my-tab-id" class="cms-tabset" data-ignore-tab-state="true">
     <ul>
@@ -745,11 +772,10 @@ The URL endpoints `$AdminURL('mytabs/tab1')` and `$AdminURL('mytabs/tab2')`
 should return HTML fragments suitable for inserting into the content area,
 through the `PjaxResponseNegotiator` class (see above).
 
-
 ## Related
 
- * [Howto: Extend the CMS Interface](/developer_guides/customising_the_admin_interface/how_tos/extend_cms_interface)
- * [Howto: Customise the CMS tree](/developer_guides/customising_the_admin_interface/how_tos/customise_cms_tree)
- * [ModelAdmin API](api:SilverStripe\Admin\ModelAdmin)
- * [Reference: Layout](/developer_guides/customising_the_admin_interface/cms_layout)
- * [Rich Text Editing](/developer_guides/forms/field_types/htmleditorfield)
+- [Howto: Extend the CMS Interface](/developer_guides/customising_the_admin_interface/how_tos/extend_cms_interface)
+- [Howto: Customise the CMS tree](/developer_guides/customising_the_admin_interface/how_tos/customise_cms_tree)
+- [ModelAdmin API](api:SilverStripe\Admin\ModelAdmin)
+- [Reference: Layout](/developer_guides/customising_the_admin_interface/cms_layout)
+- [Rich Text Editing](/developer_guides/forms/field_types/htmleditorfield)

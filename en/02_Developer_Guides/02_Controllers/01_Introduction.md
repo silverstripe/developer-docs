@@ -3,7 +3,7 @@ title: Introduction to a Controller
 summary: A brief look at the definition of a Controller, creating actions and how to respond to requests.
 ---
 
-# Introduction to Controllers
+# Introduction to controllers
 
 The following example is for a simple [`Controller`](api:SilverStripe\Control\Controller) class. When building off the Silverstripe CMS you will
 subclass the base `Controller` class.
@@ -13,22 +13,21 @@ If you're using the `cms` module and dealing with [`SiteTree`](api:SilverStripe\
 would extend [`ContentController`](api:SilverStripe\CMS\Controllers\ContentController) or `PageController`.
 [/info]
 
-**app/src/controllers/TeamController.php**
-
 ```php
-namespace App\Controller;
+// app/src/Control/TeamController.php
+namespace App\Control;
 
 use App\Model\Team;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 
-class TeamController extends Controller 
+class TeamController extends Controller
 {
     private static $allowed_actions = [
         'players',
     ];
 
-    public function players(HTTPRequest $request) 
+    public function players(HTTPRequest $request)
     {
         $this->renderWith(Team::class . '_PlayerList');
     }
@@ -43,7 +42,7 @@ For example if the controller above was for a `Team` model which had a `Players`
 
 ## Routing
 
-We need to define the URL that this controller can be accessed on. In our case, the `TeamsController` should be visible 
+We need to define the URL that this controller can be accessed on. In our case, the `TeamsController` should be visible
 at `https://www.example.com/teams/` and the `players` custom action is at `https://www.example.com/team/players/`.
 
 [info]
@@ -51,16 +50,15 @@ If you're extending `ContentController` or `PageController` for your `SiteTree` 
 routing for those.
 [/info]
 
-**app/_config/routes.yml**
-
 ```yml
+# app/_config/routes.yml
 ---
 Name: approutes
 After: '#coreroutes'
 ---
 SilverStripe\Control\Director:
   rules:
-    'teams//$Action/$ID/$Name': 'App\Controller\TeamController'
+    'teams//$Action/$ID/$Name': 'App\Control\TeamController'
 ```
 
 [alert]
@@ -82,9 +80,9 @@ can implement the `index()` method and return custom data to be used in the appr
 Action methods can return one of four things:
 
 1. an array. The appropriate template will be rendered, using the values in the array you provided. The rendered result will be set as the body for the current [`HTTPResponse`](api:SilverStripe\Control\HTTPResponse) object.
-2. a string (e.g. JSON or HTML markup). The string will be set as the body for the current `HTTPResponse` object.
-3. an `HTTPResponse`. This can either be a new response or `$this->getResponse()`.
-4. `$this` or `$this->customise()`. This will render the controller using the appropriate template and set the rendered result as the body for the current `HTTPResponse`.
+1. a string (e.g. JSON or HTML markup). The string will be set as the body for the current `HTTPResponse` object.
+1. an `HTTPResponse`. This can either be a new response or `$this->getResponse()`.
+1. `$this` or `$this->customise()`. This will render the controller using the appropriate template and set the rendered result as the body for the current `HTTPResponse`.
 
 [hint]
 
@@ -99,62 +97,69 @@ A controller action can also throw an [`HTTPResponse_Exception`](api:SilverStrip
 This is a special exception that indicates that a specific error HTTP code should be used in the response.
 By throwing this exception, the execution pipeline can adapt and use any error handlers (e.g. via the [silverstripe/errorpage](https://github.com/silverstripe/silverstripe-errorpage/) module).
 
-**app/src/controllers/TeamController.php**
-
 ```php
-/**
- * Return some additional data to the current response that is waiting to go out, this makes $Title set to 
- * 'My Team Name' and continues on with generating the response.
- */
-public function index(HTTPRequest $request) 
+// app/src/Control/TeamController.php
+namespace App\Control;
+
+use SilverStripe\Control\Controller;
+// ...
+
+class TeamController extends Controller
 {
-    return [
-        'Title' => 'My Team Name'
-    ];
-}
+    // ...
 
-/**
- * We can manually create a response and return that to ignore any previous data or modifications to the request.
- */
-public function someaction(HTTPRequest $request) 
-{
-    $this->setResponse(new HTTPResponse());
-    $this->getResponse()->setStatusCode(400);
-    $this->getResponse()->setBody('invalid');
+    /**
+     * Return some additional data to the current response that is waiting to go out, this makes $Title set to
+     * 'My Team Name' and continues on with generating the response.
+     */
+    public function index(HTTPRequest $request)
+    {
+        // ...
+    }
 
-    return $this->getResponse();
-}
+    /**
+     * We can manually create a response and return that to ignore any previous data or modifications to the request.
+     */
+    public function someaction(HTTPRequest $request)
+    {
+        $this->setResponse(new HTTPResponse());
+        $this->getResponse()->setStatusCode(400);
+        $this->getResponse()->setBody('invalid');
 
-/**
- * Or, we can modify the response that is waiting to go out.
- */
-public function anotheraction(HTTPRequest $request) 
-{
-    $this->getResponse()->setStatusCode(400);
+        return $this->getResponse();
+    }
 
-    return $this->getResponse();
-}
+    /**
+     * Or, we can modify the response that is waiting to go out.
+     */
+    public function anotheraction(HTTPRequest $request)
+    {
+        $this->getResponse()->setStatusCode(400);
 
-/**
- * We can render HTML and leave Silverstripe CMS to set the response code and body.
- */
-public function htmlaction() 
-{
-    return $this->customise(new ArrayData([
-        'Title' => 'HTML Action'
-    ]))->renderWith('MyCustomTemplate');
-}
+        return $this->getResponse();
+    }
 
-/**
- * We can send stuff to the browser which isn't HTML
- */
-public function ajaxaction() 
-{
-    $this->getResponse()->addHeader('Content-type', 'application/json');
+    /**
+     * We can render HTML and leave Silverstripe CMS to set the response code and body.
+     */
+    public function htmlaction()
+    {
+        return $this->customise(ArrayData::create([
+            'Title' => 'HTML Action',
+        ]))->renderWith('MyCustomTemplate');
+    }
 
-    return json_encode([
-        'json' => true,
-    ]);
+    /**
+     * We can send stuff to the browser which isn't HTML
+     */
+    public function ajaxaction()
+    {
+        $this->getResponse()->addHeader('Content-type', 'application/json');
+
+        return json_encode([
+            'json' => true,
+        ]);
+    }
 }
 ```
 
@@ -169,12 +174,12 @@ See the [Access Control](access_control) documentation.
 The template to use for a given action is determined in the following order:
 
 1. If a template has been explicitly declared for the action in the `templates` property, it will be used.
-2. If a template has been explicitly declared for the "index" action in the `templates` property, it will be used (regardless of what action is being rendered).
-3. If the `template` property has been set at all, its value will be used.
-4. If a template exists with the name of this class or any of its ancestors, suffixed with the name of the action name, it will be used.
+1. If a template has been explicitly declared for the "index" action in the `templates` property, it will be used (regardless of what action is being rendered).
+1. If the `template` property has been set at all, its value will be used.
+1. If a template exists with the name of this class or any of its ancestors, suffixed with the name of the action name, it will be used.
     - e.g. for the `App\Control\TeamController` example, the "showPlayers" action would look for `templates/App/Control/TeamController_showPlayers.ss` and `templates/SilverStripe/Control/Controller_showPlayers.ss`.
     - Note that the "index" action skips this step.
-5. If a template exists with the name of this class or any of its ancestors (with no suffix), it will be used.
+1. If a template exists with the name of this class or any of its ancestors (with no suffix), it will be used.
     - e.g. for the `App\Control\TeamController` example, it would look for `templates/App/Control/TeamController.ss` and `templates/SilverStripe/Control/Controller.ss`.
 
 [note]
@@ -185,7 +190,11 @@ You can declare templates to be used for an action by setting the `templates` ar
 and the value should be a template name, or array of template names in cascading precedence.
 
 ```php
-class TeamController extends Controller 
+namespace App\Control;
+
+use SilverStripe\Control\Controller;
+
+class TeamController extends Controller
 {
     protected $templates = [
         'showPlayers' => 'TemplateForPlayers',
@@ -198,13 +207,17 @@ class TeamController extends Controller
 ```
 
 [warning]
-The `templates` property is _not_ a configuration property, so if you declare it directly as in the above example you will
+The `templates` property is *not* a configuration property, so if you declare it directly as in the above example you will
 override any templates declared in parent classes. If you want to keep template declarations from parent classes, you could
 apply new templates in a constructor like so:
 
 ```php
-class TeamController extends SomeParentController 
+namespace App\Control;
+
+class TeamController extends SomeParentController
 {
+    // ...
+
     public function __construct()
     {
         parent::__construct();
@@ -217,7 +230,7 @@ class TeamController extends SomeParentController
 
 As mentioned in [Actions](#actions) above, controller actions can return a string or `HTTPResponse` to bypass this template selection process.
 
-For more information about templates, inheritance and how to render into views, See the 
+For more information about templates, inheritance and how to render into views, See the
 [Templates and Views](../templates) documentation.
 
 ## Getting the URL for a controller action {#link}
@@ -225,9 +238,14 @@ For more information about templates, inheritance and how to render into views, 
 Each controller should declare the `url_segment` configuration property, using the non-variable portion of that controller's routing rule.
 
 ```php
-class TeamController extends Controller 
+namespace App\Control;
+
+use SilverStripe\Control\Controller;
+
+class TeamController extends Controller
 {
     private static $url_segment = 'teams';
+    // ...
 }
 ```
 
@@ -245,11 +263,11 @@ If you have more complex logic for determining the link for your controller, you
 be sure to invoke the `updateLink` extension method so that extensions can make changes as necessary: `$this->extend('updateLink', $link, $action);`
 [/notice]
 
-## Connecting Pages to ContentControllers
+## Connecting pages to controllers
 
 By default, a `SiteTree` subclass will be automatically associated with a controller which is in the same
-namespace, and is named the same but suffixed with `Controller`. For example, `App\Page\HomePage`
-will be associated with a `App\Page\HomePageController` if such a class exists.
+namespace, and is named the same but suffixed with `Controller`. For example, `App\PageType\HomePage`
+will be associated with a `App\PageType\HomePageController` if such a class exists.
 
 If there is no controller for a specific page class, that page's ancestors will be checked until a suitable
 controller is found.
@@ -260,25 +278,26 @@ controller in the `controller_name` configuration property.
 Example controller:
 
 ```php
-namespace App\Controller;
+namespace App\Control;
 
 use SilverStripe\Control\Controller;
 
-class TeamPageController extends Controller 
+class TeamPageController extends Controller
 {
-    public function getExample()
-    {
-        return 'example';
-    }
+    private static $url_segment = 'teams';
+
+    // ...
 }
 ```
+
+Calling `$this->Link()` in the above controller will now give a valid relative URL for accessing the controller on your site. If this is a subcontroller or otherwise has some part of its route that is dynamic, you will need to override the `Link()` method to resolve the correct URL dynamically.
 
 Example page:
 
 ```php
-namespace App\Page;
+namespace App\PageType;
 
-use App\Controller\TeamPageController;
+use App\Control\TeamPageController;
 use Page;
 
 class TeamPage extends Page
@@ -294,17 +313,17 @@ You'd now be able to access methods of the controller in the page's template
 <p>{$getExample}</p>
 ```
 
-## Related Lessons
-* [Controller actions/DataObjects as pages](https://www.silverstripe.org/learn/lessons/v4/controller-actions-dataobjects-as-pages-1)
-* [Creating filtered views](https://www.silverstripe.org/learn/lessons/v4/creating-filtered-views-1)
+## Related lessons
 
-## Related Documentation
+- [Controller actions/DataObjects as pages](https://www.silverstripe.org/learn/lessons/v4/controller-actions-dataobjects-as-pages-1)
+- [Creating filtered views](https://www.silverstripe.org/learn/lessons/v4/creating-filtered-views-1)
 
-* [Execution Pipeline](../execution_pipeline)
-* [Templates and Views](../templates)
+## Related documentation
 
-## API Documentation
+- [Execution Pipeline](../execution_pipeline)
+- [Templates and Views](../templates)
 
-* [Controller](api:SilverStripe\Control\Controller)
-* [Director](api:SilverStripe\Control\Director)
+## API documentation
 
+- [Controller](api:SilverStripe\Control\Controller)
+- [Director](api:SilverStripe\Control\Director)

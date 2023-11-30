@@ -4,7 +4,7 @@ summary: Override and extend module and core markup templates from your applicat
 icon: sitemap
 ---
 
-# Template Inheritance
+# Template inheritance
 
 ## Theme types
 
@@ -30,10 +30,10 @@ to append to your template file location (e.g. `templates/Layout/Page.ss` and `t
 
 Note however that when using the `<% include %>` template tag, you don't reference the `Includes/` folder. So for a template located at `templates/SilverStripe/Blog/Includes/BlogSideBar.ss` you would include it as `<% include SilverStripe\Blog\BlogSideBar %>`
 
-When choosing templates to use, unless a file has been explicitly declared, SilverStripe CMS will look through all of the relevant templates until it finds a match.
-In the CMS, the priority order is determined by the `LeftAndMain.admin_themes` configuration array, which includes all of the default templates but typically _excludes_ theme templates. On the front-end, it is determined by the `SSViewer.themes` configuration array. See [Cascading themes](#cascading-themes) for more information.
+When choosing templates to use, unless a file has been explicitly declared, Silverstripe CMS will look through all of the relevant templates until it finds a match.
+In the CMS, the priority order is determined by the `LeftAndMain.admin_themes` configuration array, which includes all of the default templates but typically *excludes* theme templates. On the front-end, it is determined by the `SSViewer.themes` configuration array. See [Cascading themes](#cascading-themes) for more information.
 
-### Nested Layouts through `$Layout` type
+### Nested layouts through `$Layout` type
 
 Silverstripe CMS has basic support for nested layouts through a fixed template variable named `$Layout`. It's used for
 keeping individual page layouts separate from top level template information (where you'll put your `<head>` and top-level nagivation, etc).
@@ -43,15 +43,14 @@ template from the `templates/<namespace>/Layout/<class>.ss` path, where `<namesp
 the class being rendered. It will check for templates matching the current classname first, and if none are found it will search up the class hierarchy until
 it finds a template.
 
-This is better illustrated with an example. Take for instance our website that has two page types `Page` and `App\PageTypes\HomePage`.
+This is better illustrated with an example. Take for instance our website that has two page types `Page` and `App\PageType\HomePage`.
 
-Our site looks mostly the same across both templates with just the main content in the middle changing. The header, 
-footer and navigation will remain the same and we don't want to replicate this work across more than one spot. The 
+Our site looks mostly the same across both templates with just the main content in the middle changing. The header,
+footer and navigation will remain the same and we don't want to replicate this work across more than one spot. The
 `$Layout` template variable allows us to define the child template area which wil be replaced with the relevant Layout template.
 
-**app/templates/Page.ss**
-
 ```ss
+<%-- app/templates/Page.ss --%>
 <html>
 <head>
     ..
@@ -67,17 +66,16 @@ footer and navigation will remain the same and we don't want to replicate this w
 </body>
 ```
 
-**app/templates/Layout/Page.ss**
-
 ```ss
+<%-- app/templates/Layout/Page.ss --%>
+
 <p>You are on a $ClassName.ShortName page</p>
 
 $Content
 ```
 
-**app/templates/App/PageTypes/Layout/HomePage.ss**
-
 ```ss
+<%-- app/templates/App/PageType/Layout/HomePage.ss --%>
 <h1>This is the homepage!</h1>
 
 <strong>Hi!</strong>
@@ -97,7 +95,7 @@ to determine resolution priority. This search is based on the following three co
    This includes the default set via `$default` as a theme set. This config is normally set by the web
    developer.
   - Note: In the admin panel (aka the CMS aka the backend), `SilverStripe\Admin\LeftAndMain.admin_themes` is used instead.
-    It explicitly _does not_ include front-end themes.
+    It explicitly *does not* include front-end themes.
 - `SilverStripe\Core\Manifest\ModuleManifest.project` - The name of the `$project` module, which
    defaults to `app`.
 - `SilverStripe\Core\Manifest\ModuleManifest.module_priority` - The list of modules within which `$default`
@@ -107,18 +105,18 @@ to determine resolution priority. This search is based on the following three co
 
 ### ThemeResourceLoader
 
-The resolution of themes is performed by a [ThemeResourceLoader](api:SilverStripe\View\ThemeResourceLoader) 
+The resolution of themes is performed by a [ThemeResourceLoader](api:SilverStripe\View\ThemeResourceLoader)
 instance, which resolves a template (or list of templates) and a set of themes to a system template path.
 
 For each path the loader will search in this order:
 
- - Loop through each theme which is configured.
- - If a theme is a set (declared with the `$` prefix, e.g. `$default`) it will perform a nested search within 
+- Loop through each theme which is configured.
+- If a theme is a set (declared with the `$` prefix, e.g. `$default`) it will perform a nested search within
    that set.
- - When searching the `$default` set, all modules will be searched in the order declared via the `module_priority`
+- When searching the `$default` set, all modules will be searched in the order declared via the `module_priority`
    config, interpolating keys `$project` and `$other_modules` as necessary. By default, your project's templates should
    be checked before any vendor modules.
- - When the first template is found, it will be immediately returned, and will not continue to search. 
+- When the first template is found, it will be immediately returned, and will not continue to search.
 
 ### Declaring themes
 
@@ -127,7 +125,8 @@ on what syntax styles you can use for this value please see the [Configuring the
 
 Basic example:
 
-```yaml
+```yml
+# app/_config/themes.yml
 ---
 Name: mytheme
 ---
@@ -147,9 +146,8 @@ configuration YAML file.
 Note: In order for modules to sort relative to other modules, it's normally necessary
 to provide `before:` / `after:` declarations.
 
-*mymodule/_config.yml*
-
 ```yml
+# mymodule/_config/config.yml
 Name: modules-mymodule
 After:
   - '#modules-framework'
@@ -160,7 +158,7 @@ SilverStripe\Core\Manifest\ModuleManifest:
     - myvendor/mymodule
 ```
 
-In this example, your module has applied its priority _lower_ than the framework and "other" modules, meaning template lookup
+In this example, your module has applied its priority *lower* than the framework and "other" modules, meaning template lookup
 will only defer to your modules templates folder if not found elsewhere.
 
 You can use `Before` to declare that your module should take precedence over other modules' templates.
@@ -180,9 +178,11 @@ See [Directory Structure](/getting_started/directory_structure) to find out how 
 ### About module "names"
 
 Module names are derived from their local `composer.json` files using the following precedence:
-* The value of the `name` attribute in `composer.json`
-* The value of `extras.installer-name` in `composer.json`
-* The basename of the directory that contains the module
 
-## Related Lessons
-* [Working with multiple templates](https://www.silverstripe.org/learn/lessons/v4/working-with-multiple-templates-1)
+- The value of the `name` attribute in `composer.json`
+- The value of `extras.installer-name` in `composer.json`
+- The basename of the directory that contains the module
+
+## Related lessons
+
+- [Working with multiple templates](https://www.silverstripe.org/learn/lessons/v4/working-with-multiple-templates-1)

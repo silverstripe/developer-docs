@@ -3,7 +3,7 @@ title: DataObject query plugins
 summary: Learn about some of the useful goodies that come pre-packaged with DataObject queries
 ---
 
-# Working with DataObjects
+# Working with `DataObject` models
 
 [CHILDREN asList]
 
@@ -13,13 +13,13 @@ This module has a [plugin system](../plugins) that affords extensibility to quer
 types, fields, and just about every other thread of the schema. Model types can define default
 plugins to include, and for `DataObject` queries, these include:
 
-* `filter`
-* `sort`
-* `dbFieldArgs`
-* `paginateList`
-* `inheritance`
-* `canView` (read, readOne)
-* `firstResult` (readOne)
+- `filter`
+- `sort`
+- `dbFieldArgs`
+- `paginateList`
+- `inheritance`
+- `canView` (read, readOne)
+- `firstResult` (readOne)
 
 When the `silverstripe/cms` module is installed, a plugin known as `getByLink` is also added.
 Other modules, such as `silverstripe/versioned` may augment that list with even more.
@@ -28,11 +28,11 @@ Other modules, such as `silverstripe/versioned` may augment that list with even 
 
 The pagination plugin augments your queries in two main ways:
 
-* Adding `limit` and `offset` arguments
-* Wrapping the return type in a "connection" type with the following fields:
-  * `nodes: '[YourType]'`
-  * `edges: '[{ node: YourType }]'`
-  * `pageInfo: '{ hasNextPage: Boolean, hasPreviousPage: Boolean: totalCount: Int }'`
+- Adding `limit` and `offset` arguments
+- Wrapping the return type in a "connection" type with the following fields:
+  - `nodes: '[YourType]'`
+  - `edges: '[{ node: YourType }]'`
+  - `pageInfo: '{ hasNextPage: Boolean, hasPreviousPage: Boolean: totalCount: Int }'`
 
 Let's test it out:
 
@@ -68,8 +68,8 @@ you want to.
 
 To change the limit for items per page for a given type, you can set the `maximumLimit` property on the `paginateList` plugin in the schema:
 
-**app/_graphql/models.yml**
-```yaml
+```yml
+# app/_graphql/models.yml
 MyProject\Models\ProductCategory:
   operations:
     read:
@@ -80,22 +80,22 @@ MyProject\Models\ProductCategory:
 
 To change the default limit globally, set the max_limit configuration on the `PaginationPlugin` itself:
 
-```yaml
+```yml
 SilverStripe\GraphQL\Schema\Plugin\PaginationPlugin:
   max_limit: 10
 ```
 
 [notice]
-If you want to _increase_ the limit beyond the default value, you will also need to set a new `default_limit` configuration value on the `PaginationPlugin`.
+If you want to *increase* the limit beyond the default value, you will also need to set a new `default_limit` configuration value on the `PaginationPlugin`.
 [/notice]
 
 #### Disabling pagination
 
 Just set it to `false` in the configuration.
 
-**app/_graphql/models.yml**
-```yaml
-MyProject\Models\ProductCategory:
+```yml
+# app/_graphql/models.yml
+App\Model\ProductCategory:
   operations:
     read:
       plugins:
@@ -104,8 +104,8 @@ MyProject\Models\ProductCategory:
 
 To disable pagination globally, use `modelConfig`:
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
 modelConfig:
   DataObject:
     operations:
@@ -135,18 +135,19 @@ query {
 In the above example, the `eq` is known as a "comparator". There are several of these
 included with the the module, including:
 
-* `eq` (exact match)
-* `ne` (not equal)
-* `contains` (fuzzy match)
-* `gt` (greater than)
-* `lt` (less than)
-* `gte` (greater than or equal)
-* `lte` (less than or equal)
-* `in` (in a given list)
-* `startswith` (starts with)
-* `endswith` (ends with)
+- `eq` (exact match)
+- `ne` (not equal)
+- `contains` (fuzzy match)
+- `gt` (greater than)
+- `lt` (less than)
+- `gte` (greater than or equal)
+- `lte` (less than or equal)
+- `in` (in a given list)
+- `startswith` (starts with)
+- `endswith` (ends with)
 
 Example:
+
 ```graphql
 query {
   readPages (
@@ -198,9 +199,9 @@ fields with custom resolvers.
 By default, all fields on the DataObject, including relationships, are included. To customise
 this, just add a `fields` config to the plugin definition:
 
-**app/_graphql/models.yml**
-```yaml
-MyProject\Models\ProductCategory:
+```yml
+# app/_graphql/models.yml
+App\Model\ProductCategory:
   fields:
     title: true
     featured: true
@@ -222,9 +223,9 @@ Sometimes you may want to add a filter field that stems from a custom getter, or
 isn't easily addressed by simple field comparisons. For cases like this, you can add the custom field as long
 as you provide instructions on how to resolve it.
 
-*app/_graphql/models.yml*
-```yaml
-MyProject\Models\Product:
+```yml
+# app/_graphql/models.yml
+App\Model\Product:
   fields:
       title: true
       price: true
@@ -238,7 +239,7 @@ MyProject\Models\Product:
           resolve:
             hasReviews:
               type: Boolean
-              resolver: ['MyApp\Resolvers\Resolver', 'resolveHasReviewsFilter']
+              resolver: ['App\GraphQL\Resolver\ProductResolver', 'resolveHasReviewsFilter']
 ```
 
 We've added the custom field `hasReviews` as a custom field in the `fields` section of the plugin config. A custom field
@@ -247,21 +248,23 @@ a `resolve` directive for it.
 
 In the `resolve` section, we need to provide two vital pieces of information:
 
-* What data type will the filter value be? (boolean in this case)
-* Where is the code that will apply this filter? (A static function in our `Resolver` class)
+- What data type will the filter value be? (boolean in this case)
+- Where is the code that will apply this filter? (A static function in our `ProductResolver` class)
 
 The code to resolve the filter will get two relevant pieces of information in its `$context` parameter:
 
-* `filterComparator`: e.g. "eq", "ne", "gt", etc.
-* `filterValue`: What value we're comparing (true or false, in this case, since it's a boolean)
+- `filterComparator`: e.g. "eq", "ne", "gt", etc.
+- `filterValue`: What value we're comparing (true or false, in this case, since it's a boolean)
 
 Here's how we can resolve this custom filter:
 
-*app/src/Resolvers/Resolver.php*
 ```php
-namespace MyApp\Resolvers;
+// app/src/GraphQL/Resolver/Resolver.php
+namespace App\GraphQL\Resolver;
 
-class Resolver
+use Exception;
+
+class ProductResolver
 {
     public static function resolveHasReviewsFilter(Filterable $list, array $args, array $context)
     {
@@ -269,7 +272,7 @@ class Resolver
         $comparator = $context['filterComparator'];
 
         if (!in_array($comparator, ['eq', 'ne'])) {
-            throw new \Exception('Invalid comparator for hasReviews: ' . $comparator);
+            throw new Exception('Invalid comparator for hasReviews: ' . $comparator);
         }
         if ($comparator === 'ne') {
             $onlyWithReviews = !$onlyWithReviews;
@@ -291,9 +294,9 @@ particularly complex computations that cannot be done at the database level.
 
 Just set it to `false` in the configuration.
 
-**app/_graphql/models.yml**
-```yaml
-MyProject\Models\ProductCategory:
+```yml
+# app/_graphql/models.yml
+App\Model\ProductCategory:
   operations:
     read:
       plugins:
@@ -302,8 +305,8 @@ MyProject\Models\ProductCategory:
 
 To disable filtering globally, use `modelConfig`:
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
 modelConfig:
   DataObject:
     operations:
@@ -330,7 +333,7 @@ query {
 }
 ```
 
-Nested fields are supported by default, but only for linear relationships (e.g `has_one`):
+Nested fields are supported by default, but only for linear relationships (e.g. `has_one`):
 
 ```graphql
 query {
@@ -348,7 +351,7 @@ query {
 }
 ```
 
-In addition, you can use the field sorting plugin ([`SortPlugin`](api:SilverStripe\GraphQL\Schema\Plugin\SortPlugin)) to sort fields that represent `has_many` and `many_many` relationships. To do this, simply add the desired fields to the query, as well as the `sort` argument to these fields. It is also necessary to update the scheme by adding a `sorter` plugin to those fields that need to be sorted. 
+In addition, you can use the field sorting plugin ([`SortPlugin`](api:SilverStripe\GraphQL\Schema\Plugin\SortPlugin)) to sort fields that represent `has_many` and `many_many` relationships. To do this, simply add the desired fields to the query, as well as the `sort` argument to these fields. It is also necessary to update the scheme by adding a `sorter` plugin to those fields that need to be sorted.
 
 Example how to use SortPlugin.
 
@@ -367,9 +370,10 @@ query {
   }
 }
 ```
-**app/_graphql/models.yml**
-```yaml
-MyProject\Models\Page:
+
+```yml
+# app/_graphql/models.yml
+Page:
   operations:
     read:
       plugins:
@@ -395,9 +399,9 @@ MyProject\Models\Page:
 By default, all fields on the DataObject, including `has_one` relationships, are included.
 To customise this, just add a `fields` config to the plugin definition:
 
-**app/_graphql/models.yml**
-```yaml
-MyProject\Models\ProductCategory:
+```yml
+# app/_graphql/models.yml
+App\Model\ProductCategory:
   fields:
     title: true
     featured: true
@@ -413,9 +417,9 @@ MyProject\Models\ProductCategory:
 
 Just set it to `false` in the configuration.
 
-**app/_graphql/models.yml**
-```yaml
-MyProject\Models\ProductCategory:
+```yml
+# app/_graphql/models.yml
+App\Model\ProductCategory:
   operations:
     read:
       plugins:
@@ -424,8 +428,8 @@ MyProject\Models\ProductCategory:
 
 To disable sort globally, use `modelConfig`:
 
-*app/_graphql/config.yml*
-```yaml
+```yml
+# app/_graphql/config.yml
 modelConfig:
   DataObject:
     operations:
@@ -448,7 +452,7 @@ query {
     nodes {
       content(format: LIMIT_SENTENCES, limit: 4)
       created(format: NICE)
-      
+
       ... on BlogPage {
         introText(format: FIRST_PARAGRAPH)
         publishDate(format: CUSTOM, customFormat: "dd/MM/yyyy")
@@ -460,52 +464,52 @@ query {
 
 The primary field types that are affected by this include:
 
-* `DBText` (including `DBHTMLText`)
-* `DBDate` (including `DBDatetime`)
-* `DBTime`
-* `DBDecimal`
-* `DBFloat`
+- `DBText` (including `DBHTMLText`)
+- `DBDate` (including `DBDatetime`)
+- `DBTime`
+- `DBDecimal`
+- `DBFloat`
 
 #### All available arguments
 
 ##### `DBText`
 
-* `format: CONTEXT_SUMMARY` (optional "limit" arg)
-* `format: FIRST_PARAGRAPH`
-* `format: LIMIT_SENTENCES` (optional "limit" arg)
-* `format: SUMMARY` (optional "limit" arg)
-* `parseShortcodes: Boolean` (DBHTMLText only)
+- `format: CONTEXT_SUMMARY` (optional "limit" arg)
+- `format: FIRST_PARAGRAPH`
+- `format: LIMIT_SENTENCES` (optional "limit" arg)
+- `format: SUMMARY` (optional "limit" arg)
+- `parseShortcodes: Boolean` (DBHTMLText only)
 
 ##### `DBDate`
 
-* `format: TIMESTAMP`
-* `format: NICE`
-* `format: DAY_OF_WEEK`
-* `format: MONTH`
-* `format: YEAR`
-* `format: SHORT_MONTH`
-* `format: DAY_OF_MONTH`
-* `format: SHORT`
-* `format: LONG`
-* `format: FULL`
-* `format: CUSTOM` (requires `customFormat: String` arg)
+- `format: TIMESTAMP`
+- `format: NICE`
+- `format: DAY_OF_WEEK`
+- `format: MONTH`
+- `format: YEAR`
+- `format: SHORT_MONTH`
+- `format: DAY_OF_MONTH`
+- `format: SHORT`
+- `format: LONG`
+- `format: FULL`
+- `format: CUSTOM` (requires `customFormat: String` arg)
 
 ##### `DBTime`
 
-* `format: TIMESTAMP`
-* `format: NICE`
-* `format: SHORT`
-* `format: CUSTOM` (requires `customFormat: String` arg)
+- `format: TIMESTAMP`
+- `format: NICE`
+- `format: SHORT`
+- `format: CUSTOM` (requires `customFormat: String` arg)
 
 ##### `DBDecimal`
 
-* `format: INT`
+- `format: INT`
 
 ##### `DBFloat`
 
-* `format: NICE`
-* `format: ROUND`
-* `format: NICE_ROUND`
+- `format: NICE`
+- `format: ROUND`
+- `format: NICE_ROUND`
 
 #### Enum naming strategy and deduplication
 
@@ -521,8 +525,8 @@ it will be reused rather than proceeding to the deduplication strategy.
 
 You can specify custom enum names in the plugin config:
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
 modelConfig:
   DataObject:
     plugins:
@@ -530,14 +534,13 @@ modelConfig:
         enumTypeMapping:
           MyType:
             myEnumField: SomeCustomTypeName
-             
 ```
 
 You can also specify enums to be ignored. (`ClassName` does this on all DataObjects to prevent inheritance
 issues)
 
-**app/_graphql/config.yml**
-```yaml
+```yml
+# app/_graphql/config.yml
 modelConfig:
   DataObject:
     plugins:
@@ -545,7 +548,6 @@ modelConfig:
         ignore:
           MyType:
             myEnumField: true
-             
 ```
 
 ### The getByLink plugin

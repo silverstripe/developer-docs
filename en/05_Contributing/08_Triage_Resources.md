@@ -22,12 +22,12 @@ Triaging issues involves review, applying labels, and closing invalid issues/PRs
 
 How to do it
 
-* Read the docs about [how we use labels](./issues_and_bugs/#labels), and apply the relevant labels to any untriaged issues
-* Request follow-up information if you can't reproduce the issue based on the information that has been provided
-* Close any issues that seem like spam, are duplicates, are requesting support rather than reporting a bug, are feature requests that the reporter doesn't intend to implement, etc
-  * Make sure to explain why you are closing the issue. There are some [canned responses](#canned-responses) that you can use
-* For any issues you add the "impact/critical" label to, bring this to the attention of the Core Committers and the CMS Squad
-* If unsure about anything, it’s usually good to ask other maintainers for their opinions (on Slack or via mentioning them directly on GitHub)
+- Read the docs about [how we use labels](./issues_and_bugs/#labels), and apply the relevant labels to any untriaged issues
+- Request follow-up information if you can't reproduce the issue based on the information that has been provided
+- Close any issues that seem like spam, are duplicates, are requesting support rather than reporting a bug, are feature requests that the reporter doesn't intend to implement, etc
+  - Make sure to explain why you are closing the issue. There are some [canned responses](#canned-responses) that you can use
+- For any issues you add the "impact/critical" label to, bring this to the attention of the Core Committers and the CMS Squad
+- If unsure about anything, it’s usually good to ask other maintainers for their opinions (on Slack or via mentioning them directly on GitHub)
 
 ## How to review pull requests
 
@@ -37,30 +37,30 @@ Bad PRs may contain technical debt, provide problems in the future and require e
 
 How to do it
 
-* Follow the [merge checklist](#merge-checklist). You may even post it straight on GitHub so the contributor sees the PR progress
-* If the author doesn't respond for several weeks you may choose take the PR over and push it forward yourself by adding your own commits to their branch - in that case, you become the developer and someone else will need to review the pull request when you are done. Otherwise, it’s fine to close the PR if there has been no response and you don't want to take it over yourself.
+- Follow the [merge checklist](#merge-checklist). You may even post it straight on GitHub so the contributor sees the PR progress
+- If the author doesn't respond for several weeks you may choose take the PR over and push it forward yourself by adding your own commits to their branch - in that case, you become the developer and someone else will need to review the pull request when you are done. Otherwise, it’s fine to close the PR if there has been no response and you don't want to take it over yourself.
 
-### Merge Checklist
+### Merge checklist
 
 This list helps to ensure that PRs are in a good state before merging. Ideally it should be applied to the PR upon
 initial triage, so that the contributor can check items off prior to the reviewer digging in. Some items may not be
 relevant to every PR, and can be crossed out on a case-by-case basis.
 
-* [ ] The target branch is correct
-  * For code, see [picking the right version](./code/#picking-the-right-version)
-  * For documentation, see [branches and commit messages](./documentation#branches-and-commit-messages).
-* [ ] All commits are relevant to the purpose of the PR (e.g. no debug statements, unrelated refactoring, or arbitrary linting)
-  * Small amounts of additional linting are usually okay, but if it makes it hard to concentrate on the relevant
+- [ ] The target branch is correct
+  - For code, see [picking the right version](./code/#picking-the-right-version)
+  - For documentation, see [branches and commit messages](./documentation#branches-and-commit-messages).
+- [ ] All commits are relevant to the purpose of the PR (e.g. no debug statements, unrelated refactoring, or arbitrary linting)
+  - Small amounts of additional linting are usually okay, but if it makes it hard to concentrate on the relevant
     changes, ask for the unrelated changes to be reverted, and submitted as a separate PR.
-* [ ] The commit messages follow our [commit message guidelines](./code/#commit-messages)
-* [ ] The PR follows our [contribution guidelines](./code/)
-* [ ] New features are covered with tests (back-end with unit/functional tests, front-end with Behat)
-* [ ] Any relevant User Help/Developer documentation is updated; for impactful changes, information is added to the
+- [ ] The commit messages follow our [commit message guidelines](./code/#commit-messages)
+- [ ] The PR follows our [contribution guidelines](./code/)
+- [ ] New features are covered with tests (back-end with unit/functional tests, front-end with Behat)
+- [ ] Any relevant User Help/Developer documentation is updated; for impactful changes, information is added to the
   changelog for the intended release
-* [ ] CI is green
-* [ ] At least one peer reviewer approved; no outstanding changes requested
+- [ ] CI is green
+- [ ] At least one peer reviewer approved; no outstanding changes requested
 
-## Canned Responses
+## Canned responses
 
 These are optional templates that can be [saved for re-use in GitHub](https://docs.github.com/en/github/writing-on-github/working-with-saved-replies),
 serving as a starting point for working through common scenarios on issues and pull requests. Context is provided
@@ -83,14 +83,14 @@ progress the work or respond to any outstanding feedback.
 > It seems like there's going to be no further activity on this pull request, so we’ve closed it for now. Please open a
 > new pull-request if you want to re-approach this work, or for anything else you think could be fixed or improved.
 
-### Support Issue raised
+### Support issue raised
 
 **Context:** We don't provide support through GitHub issues. If an issue is created that is requested support rather than reporting a bug, we'll close the issue and link to the community channels.
 
 > We don't provide support through GitHub issues. The problems you're experiencing don't seem to be a result of bugs in Silverstripe CMS core or supported modules, so
 > I'm going to close this issue. Please ask for support in our [community channels](https://www.silverstripe.org/community).
 
-### Enhancement Issue raised
+### Enhancement issue raised
 
 **Context:** See the notes about feature requests in the [bug report](./issues_and_bugs/#feature-requests) and [contributing code](./code/#make-or-find-a-github-issue) pages for details.
 
@@ -100,7 +100,7 @@ progress the work or respond to any outstanding feedback.
 >
 > Are you intending to implement this feature?
 
-### Enhancement Issue raised without intention to implement
+### Enhancement issue raised without intention to implement
 
 **Context:** See the notes about feature requests in the [bug report](./issues_and_bugs/#feature-requests) and [contributing code](./code/#make-or-find-a-github-issue) pages for details.
 

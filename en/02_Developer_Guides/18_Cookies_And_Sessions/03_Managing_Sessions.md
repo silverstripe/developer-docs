@@ -4,7 +4,7 @@ summary: Managing user sessions using session manager.
 icon: address-book
 ---
 
-# Managing Sessions
+# Managing sessions
 
 A default install of Silverstripe CMS will include the [Session Manager](https://github.com/silverstripe/silverstripe-session-manager/) module which provides a UI for managing a user's own sessions. This allows users to see which devices are currently authenticated and invalidate sessions on those devices.
 
@@ -26,7 +26,7 @@ The module should work independently of the storage mechanism used for PHP sessi
 
 It is also compatible with the [Silverstripe MFA module suite](https://github.com/silverstripe/silverstripe-mfa).
 
-## Developer Details
+## Developer details
 
 The module introduces a new database record type: [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession).
 On first login, it creates a new record of this type, recording the IP and User-Agent,
@@ -56,16 +56,16 @@ It does not use changes to this metadata to invalidate sessions.
 Logged in users have the ability to see their own active sessions across all devices
 and browsers where they have logged in, and can choose to log out any of those sessions.
 
-Administrators can revoke _all_ active sessions for _all_ users by triggering the `dev/tasks/InvalidateAllSessions`
+Administrators can revoke *all* active sessions for *all* users by triggering the `dev/tasks/InvalidateAllSessions`
 task either in the browser or via the CLI. Note that this will also revoke the session
 of the user activating the task, so if this is triggered via the browser, that user
 will need to log back in to perform further actions.
 
 ## Caveats
 
- * Every request with a logged-in member causes a database write (updating [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession)), potentially affecting performance
- * Restoring a database from an older snapshot will invalidate current sessions.
- * PHP sessions can become out of sync with [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession) objects. Both can exist beyond their expiry date.
+- Every request with a logged-in member causes a database write (updating [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession)), potentially affecting performance
+- Restoring a database from an older snapshot will invalidate current sessions.
+- PHP sessions can become out of sync with [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession) objects. Both can exist beyond their expiry date.
    This is not an issue in practice since the association between the two is checked on each session-based request
    (through [`LoginSessionMiddleware`](api:SilverStripe\SessionManager\Middleware\LoginSessionMiddleware)).
 
@@ -82,12 +82,9 @@ The first step is to create a [`DataExtension`](api:SilverStripe\ORM\DataExtensi
 Alternatively, you could call [`Permission::check()`](api:SilverStripe\Security\Permission::check()) to validate if the member has a predefined CMS permission. If you need even more granular permissions, you can implement a [`PermissionProvider`](/developer_guides/security/permissions/#permissionprovider) to define your own custom permissions.
 
 ```php
-<?php
-
 namespace My\App;
 
 use SilverStripe\ORM\DataExtension;
-use SilverStripe\Security\Member;
 
 class LoginSessionExtension extends DataExtension
 {
@@ -165,7 +162,7 @@ Expired sessions need to be cleaned up periodically to avoid bloating the databa
 
 Regardless of how you manage garbage collection, the `GarbageCollectionService` is ultimately in charge of performing the garbage collection. It tries to remove all of the garbage data in a single run, but if you have particularly large tables it can timeout or run into memory limits and fail part-way through. Running it multiple times will eventually get through all of the data, but it can be annoying to have all of those extra error messages cluttering your logs.
 
-You can optionally limit the number of items it will remove in a single run by setting the following yaml configuration:
+You can optionally limit the number of items it will remove in a single run by setting the following YAML configuration:
 
 ```yml
 SilverStripe\SessionManager\Services\GarbageCollectionService:
@@ -173,12 +170,14 @@ SilverStripe\SessionManager\Services\GarbageCollectionService:
 ```
 
 #### Via `symbiote/silverstripe-queuedjobs` (recommended)
+
 If you have the `symbiote/silverstripe-queuedjobs` module installed and configured, garbage collection will run automatically every 1 day via `GarbageCollectionJob`, and no further action is required.  This job will be automatically created if it does not exist on dev/build.
 
 #### Via `LoginSessionGarbageCollectionTask`
+
 Alternatively, you can create a system cron entry to run the `LoginSessionGarbageCollectionTask` directly on a regular cadence:
 
-```
+```text
 `*/5 * * * * /path/to/webroot/vendor/bin/sake dev/tasks/LoginSessionGarbageCollectionTask
 ```
 

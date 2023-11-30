@@ -12,11 +12,11 @@ the server to update templates, website logic, and perform upgrades or maintenan
 
 ## PHP
 
-* PHP >=8.1, <=8.2
-* PHP extensions: `ctype`, `dom`, `fileinfo`, `hash`, `intl`, `mbstring`, `session`, `simplexml`, `tokenizer`, `xml`
-* PHP configuration: `memory_limit` with at least `48M`
-* PHP extension for image manipulation: Either `gd` or `imagick`
-* PHP extension for a database connector (e.g. `mysql`)
+- PHP >=8.1, <=8.2
+- PHP extensions: `ctype`, `dom`, `fileinfo`, `hash`, `intl`, `mbstring`, `session`, `simplexml`, `tokenizer`, `xml`
+- PHP configuration: `memory_limit` with at least `48M`
+- PHP extension for image manipulation: Either `gd` or `imagick`
+- PHP extension for a database connector (e.g. `mysql`)
 
 Use [phpinfo()](https://php.net/manual/en/function.phpinfo.php) to inspect your configuration.
 
@@ -26,13 +26,13 @@ You also need to install [Composer 2](https://getcomposer.org/).
 
 ## Database
 
-* MySQL >=5.6 (built-in, [commercially supported](/project_governance/supported_modules/))
-* PostgreSQL ([third party module](https://github.com/silverstripe/silverstripe-postgresql), community
+- MySQL >=5.6 (built-in, [commercially supported](/project_governance/supported_modules/))
+- PostgreSQL ([third party module](https://github.com/silverstripe/silverstripe-postgresql), community
   supported)
-* SQL Server ([third party module](https://github.com/silverstripe/silverstripe-mssql), community supported)
-* SQLite ([third party module](https://github.com/silverstripe/silverstripe-sqlite3), community supported)
+- SQL Server ([third party module](https://github.com/silverstripe/silverstripe-mssql), community supported)
+- SQLite ([third party module](https://github.com/silverstripe/silverstripe-sqlite3), community supported)
 
-### Default MySQL Collation
+### Default MySQL collation
 
 New projects default to the `utf8mb4_unicode_ci` collation when running
 against MySQL, which offers better support for multi-byte characters such as emoji. However, this may cause issues
@@ -53,7 +53,7 @@ setting. It is generally recommended to leave this setting as-is because it resu
 some advanced cases, the sql_mode can be configured on the database connection via the configuration API (
 see `MySQLDatabase::$sql_mode` for more details.)
 
-### MySQL/MariaDB Int width in schema
+### MySQL/MariaDB int width in schema
 
 MySQL 8.0.17 stopped reporting the width attribute for integers while MariaDB did not change its behaviour.
 This results in constant rebuilding of the schema when MySQLSchemaManager expects a field to look like e.g.
@@ -65,7 +65,7 @@ SilverStripe\ORM\Connect\MySQLSchemaManager:
     schema_use_int_width: true # or false when INT widths should be ignored
 ```
 
-## Webserver Configuration
+## Webserver configuration
 
 ### Overview
 
@@ -83,16 +83,16 @@ be considered publicly accessible unless there are explicit webserver rules to p
 During runtime, Silverstripe CMS needs read access for the webserver user to your webroot. It
 also needs write access for the webserver user to the following locations:
 
-* `public/assets/`: Used by the CMS and other logic to [store uploads](/developer_guides/files/file_storage)
-* `TEMP_PATH`: Temporary file storage used for the default filesystem-based cache adapters in
+- `public/assets/`: Used by the CMS and other logic to [store uploads](/developer_guides/files/file_storage)
+- `TEMP_PATH`: Temporary file storage used for the default filesystem-based cache adapters in
   [Manifests](/developer_guides/execution_pipeline/manifests), [Object Caching](/developer_guides/performance/caching)
   and [Partial Template Caching](/developer_guides/templates/partial_template_caching).
   See [Environment Management](/getting_started/environment_management).
-* `.graphql-generated`: silverstripe/graphql uses this directory. This is where your schema is
+- `.graphql-generated`: silverstripe/graphql uses this directory. This is where your schema is
   stored once it [has been built](/developer_guides/graphql/getting_started/building_the_schema). Best practice
-  is to create it ahead of time, but if the directory doesn't exist and your project root is writable, the graphql
+  is to create it ahead of time, but if the directory doesn't exist and your project root is writable, the GraphQL
   module will create it for you.
-* `public/_graphql`: silverstripe/graphql uses this directory. It's used for
+- `public/_graphql`: silverstripe/graphql uses this directory. It's used for
   [schema introspection](/developer_guides/graphql/tips_and_tricks#schema-introspection). You should treat this folder
   the same way you treat the `.graphql-generated` folder.
 
@@ -117,7 +117,7 @@ the `File.allowed_extensions` setting
 configured through file upload through Silverstripe CMS, so is considered a second line of defence. If you do not
 use apache to serve your website you should find out what equivalent configuration you need to set for your webserver.
 
-### Secure Assets {#secure-assets}
+### Secure assets {#secure-assets}
 
 Files can be kept in draft stage, and access restricted to certain user groups. These files are stored in a
 special `.protected/` folder (defaulting to `public/assets/.protected/`).
@@ -142,7 +142,7 @@ SS_PROTECTED_ASSETS_PATH="../.protected/"
 
 The resulting folder structure will look as follows:
 
-```
+```text
 .protected/
   <hash>/my-protected-file.txt
 public/
@@ -155,7 +155,7 @@ app/
 
 Don't forget to include this additional folder in any syncing and backup processes!
 
-### Building, Packaging and Deployment {#building-packaging-deployment}
+### Building, packaging and deployment {#building-packaging-deployment}
 
 It is common to build a Silverstripe CMS application into a package on one environment (e.g. a CI server), and then deploy
 the package to a (separate) webserver environment(s). This approach relies on all auto-generated files required by
@@ -164,19 +164,19 @@ Silverstripe CMS to be included in the package, or generated on the fly on each 
 The easiest way to ensure this is to commit auto generated files to source control. If those changes are considered too
 noisy, here's some pointers for auto-generated files to trigger and include in a deployment package:
 
-* `public/_resources/`: Frontend resources copied from the (inaccessible) `vendor/` folder
+- `public/_resources/`: Frontend resources copied from the (inaccessible) `vendor/` folder
   via [silverstripe/vendor-plugin](https://github.com/silverstripe/vendor-plugin).
   See [Templates: Requirements](/developer_guides/templates/requirements#exposing-resources-webroot).
-* `.graphql-generated/` and `public/_graphql/`: Schema and type definitions required by CMS and any GraphQL API endpoint.
+- `.graphql-generated/` and `public/_graphql/`: Schema and type definitions required by CMS and any GraphQL API endpoint.
   Generated by
   [silverstripe/graphql](https://github.com/silverstripe/silverstripe-graphql). See
   [building the schema](/developer_guides/graphql/getting_started/building_the_schema) and
   [deploying the schema](/developer_guides/graphql/getting_started/deploying_the_schema).
-* Various recipes create default files in `app/` and `public/` on `composer install`
+- Various recipes create default files in `app/` and `public/` on `composer install`
   and `composer update` via
   [silverstripe/recipe-plugin](https://github.com/silverstripe/recipe-plugin).
 
-### Web Worker Concurrency
+### Web worker concurrency
 
 It's generally a good idea to run multiple workers to serve multiple HTTP requests to Silverstripe CMS concurrently. The
 exact number depends on your website needs. The CMS attempts to request multiple views concurrently. It also
@@ -191,13 +191,13 @@ allows serving of files larger than your PHP memory limit. Please be aware that 
 PHP's [max_execution_time](https://www.php.net/manual/en/function.set-time-limit.php), which can risk exhaustion of web
 worker pools for long-running downloads.
 
-### URL Rewriting
+### URL rewriting
 
 Silverstripe CMS expects URL paths to be rewritten to `public/index.php`. For Apache, this is preconfigured
 through `.htaccess` files, and requires using the `mod_rewrite` module. By default, the relevant configuration files are located
 in `public/.htaccess` and `public/assets/.htaccess`.
 
-### HTTP Headers
+### HTTP headers
 
 Silverstripe CMS can add HTTP headers to responses it handles directly. These headers are often sensitive, for example
 preventing HTTP caching for responses displaying data based on user sessions, or when serving protected assets. You need
@@ -210,7 +210,7 @@ Silverstripe CMS relies on the `Host` header to construct URLs such as "reset pa
 the systems hosting it only allow valid values for this header.
 See [Developer Guide: Security - Request hostname forgery](/developer_guides/security/secure_coding#request-hostname-forgery).
 
-### CDNs and other Reverse Proxies
+### CDNs and other reverse proxies
 
 If your Silverstripe CMS site is hosted behind multiple HTTP layers, you're in charge of controlling which forwarded headers
 are considered valid, and which IPs can set them.
@@ -259,23 +259,25 @@ Silverstripe CMS is known to work with Microsoft IIS, and generates `web.config`
 
 Additionally, there are community supported guides for installing Silverstripe CMS on various environments:
 
-* [Hosting via Bitnami](https://bitnami.com/stack/silverstripe/virtual-machine): In the cloud or as a locally hosted
+- [Hosting via Bitnami](https://bitnami.com/stack/silverstripe/virtual-machine): In the cloud or as a locally hosted
   virtual machine
-* [Vagrant/Virtualbox with CentOS](https://forum.silverstripe.org/t/installing-via-vagrant-virtualbox-with-centos/2248)
-* [macOS with Homebrew](https://forum.silverstripe.org/t/installing-on-osx-with-homebrew/2247)
-* [macOS with MAMP](https://forum.silverstripe.org/t/installing-on-osx-with-mamp/2249)
-* [Windows with WAMP](https://forum.silverstripe.org/t/installing-on-windows-via-wamp/2250)
-* [Vagrant with silverstripe-australia/vagrant-environment](https://github.com/silverstripe-australia/vagrant-environment)
-* [Vagrant with BetterBrief/vagrant-skeleton](https://github.com/BetterBrief/vagrant-skeleton)
+- [Vagrant/Virtualbox with CentOS](https://forum.silverstripe.org/t/installing-via-vagrant-virtualbox-with-centos/2248)
+- [macOS with Homebrew](https://forum.silverstripe.org/t/installing-on-osx-with-homebrew/2247)
+- [macOS with MAMP](https://forum.silverstripe.org/t/installing-on-osx-with-mamp/2249)
+- [Windows with WAMP](https://forum.silverstripe.org/t/installing-on-windows-via-wamp/2250)
+- [Vagrant with silverstripe-australia/vagrant-environment](https://github.com/silverstripe-australia/vagrant-environment)
+- [Vagrant with BetterBrief/vagrant-skeleton](https://github.com/BetterBrief/vagrant-skeleton)
 
 ### Email
 
 Silverstripe CMS uses [symfony/mailer](https://github.com/symfony/mailer) to send email messages. [silverstripe/framework](https://github.com/silverstripe/silverstripe-framework) is configured to use a `sendmail` binary (usually found in `/usr/sbin/sendmail`). Alternatively [email can be configured](/developer_guides/email/) to use SMTP or other mail transports instead of sendmail.
 
-You _must_ ensure emails are being sent from your _production_ environment. You can do this by testing that the ***Lost password*** form available at `/Security/lostpassword` sends an email to your inbox, or with the following code snippet that can be run via a `SilverStripe\Dev\BuildTask`:
+You *must* ensure emails are being sent from your *production* environment. You can do this by testing that the ***Lost password*** form available at `/Security/lostpassword` sends an email to your inbox, or with the following code snippet that can be run via a `SilverStripe\Dev\BuildTask`:
 
 ```php
-$email = SilverStripe\Control\Email\Email::create('no-reply@mydomain.com', 'myuser@gmail.com', 'My test subject', 'My email body text');
+use SilverStripe\Control\Email\Email;
+
+$email = Email::create('no-reply@mydomain.com', 'myuser@gmail.com', 'My test subject', 'My email body text');
 $email->send();
 ```
 
@@ -283,7 +285,7 @@ Using the code snippet above also tests that the ability to set the "from" addre
 
 See the [email section](/developer_guides/email) for further details, including how to set the administrator "from" email address, change the `sendmail` binary location, and how to use SMTP or other mail transports instead of sendmail.
 
-## PHP Requirements for older Silverstripe CMS releases {#php-support}
+## PHP requirements for older Silverstripe CMS releases {#php-support}
 
 Silverstripe CMS's PHP support has changed over time and if you are looking to upgrade PHP on your Silverstripe CMS site, this
 table may be of use:

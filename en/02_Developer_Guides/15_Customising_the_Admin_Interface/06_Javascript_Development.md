@@ -4,22 +4,22 @@ summary: Advanced documentation about writing and customizing javascript within 
 iconBrand: js
 ---
 
-# Javascript Development
+# JavaScript development
 
-The following document is an advanced guide on building rich javascript interactions within the Silverstripe CMS and
-a list of our best practices for contributing and modifying the core javascript framework.
+The following document is an advanced guide on building rich JavaScript interactions within the Silverstripe CMS and
+a list of our best practices for contributing and modifying the core JavaScript framework.
 
 ## Build tools
 
-Silverstripe's javascript is transpiled, meaning it goes through a transformative process that takes our original source code
-and outputs javascript that is more efficient, smaller in overall file size, and works on a wider range of browsers.
+Silverstripe's JavaScript is transpiled, meaning it goes through a transformative process that takes our original source code
+and outputs JavaScript that is more efficient, smaller in overall file size, and works on a wider range of browsers.
 
 There are many ways to solve the problem of transpiling. The toolchain we use in core Silverstripe CMS modules includes:
 
-* [Babel](https://babeljs.io) (transpiler)
-* [Webpack](https://webpack.js.org) (Module bundler)
+- [Babel](https://babeljs.io) (transpiler)
+- [Webpack](https://webpack.js.org) (Module bundler)
 
-## jQuery, jQuery UI and jQuery.entwine: Our libraries of choice
+## jQuery, jQuery UI and jQuery.Entwine: our libraries of choice
 
 [notice]
 The following documentation regarding jQuery, jQueryUI and Entwine does not apply to React components or sections powered by React.
@@ -36,7 +36,7 @@ Silverstripe CMS uses [jQuery UI](https://ui.jquery.com) on top of jQuery.
 For any custom code developed with jQuery, you have four choices to structure it: Custom jQuery Code, a jQuery Plugin, a
 jQuery UI Widget, or a `jQuery.entwine` behaviour. We'll detail below where each solution is appropriate.
 
-### Custom jQuery Code
+### Custom jQuery code
 
 jQuery allows you to write complex behavior in a couple of lines of JavaScript. Smaller features which aren't likely to
 be reused can be custom code without further encapsulation. For example, a button rollover effect doesn't require a full
@@ -44,32 +44,31 @@ plugin. See "[How jQuery Works](https://docs.jquery.com/How_jQuery_Works)" for a
 
 You should write all your custom jQuery code in a closure.
 
-
 ```js
-(function($) {
-    $(document).ready(function(){
-        // your code here.
-    })
-})(jQuery);
+(function ($) {
+  $(document).ready(() => {
+    // your code here.
+  });
+}(jQuery));
 ```
 
-#### jQuery Plugins
+#### jQuery plugins
 
 A jQuery Plugin is essentially a method call which can act on a collection of DOM elements. It is contained within the
 `jQuery.fn` namespace, and attaches itself automatically to all jQuery collections. You can read more about these, including
 how to create your own plugins, in the official [jQuery Plugins](https://learn.jquery.com/plugins/) documentation.
 
-#### jQuery UI Widgets
+#### jQuery UI widgets
 
 UI Widgets are jQuery Plugins with a bit more structure, targeted towards interactive elements. They require jQuery and
 the core libraries in jQuery UI, so are generally more heavyweight if jQuery UI isn't already used elsewhere.
 
 Main advantages over simpler jQuery plugins are:
 
-*  Exposing public methods on DOM elements (incl. pseudo-private methods)
-*  Exposing configuration and getters/setters on DOM elements
-*  Constructor/Destructor hooks
-*  Focus management and mouse interaction
+- Exposing public methods on DOM elements (incl. pseudo-private methods)
+- Exposing configuration and getters/setters on DOM elements
+- Constructor/Destructor hooks
+- Focus management and mouse interaction
 
 See the [official API documentation](https://api.jqueryui.com/) and read up about the
 [jQuery UI Widget Factory](https://learn.jquery.com/jquery-ui/widget-factory/) to get started.
@@ -82,25 +81,23 @@ Use jQuery.entwine when your code is likely to be customised by others, or when 
 
 Example: Highlighter
 
-
 ```js
-(function($) {
+(function ($) {
   $(':button').entwine({
     Foreground: 'red',
     Background: 'yellow',
-    highlight: function() {
+    highlight() {
       this.css('background', this.getBackground());
       this.css('color', this.getForeground());
     }
   });
-})(jQuery);
+}(jQuery));
 ```
 
 Usage:
 
-
 ```js
-(function($) {
+(function ($) {
   // call with default options
   $(':button').entwine().highlight();
 
@@ -109,14 +106,14 @@ Usage:
 
   // get property
   $(':button').entwine().getBackground();
-})(jQuery);
+}(jQuery));
 ```
 
 This is a deliberately simple example, the strength of jQuery.entwine over simple jQuery plugins lies in its public
 properties, namespacing, as well as its inheritance based on CSS selectors. Go to our [jQuery Entwine
 documentation](jquery_entwine) for more complete examples.
 
-## Architecture and Best Practices
+## Architecture and best practices
 
 ### Keep things simple
 
@@ -127,19 +124,18 @@ jQuery with a few lines of code. Your jQuery code will normally end up as a seri
 
 Global properties are evil. They are accessible by other scripts and might be overwritten or misused. A popular case is the `$` shortcut in different libraries: in PrototypeJS it stands for `document.getElementByID()`, in jQuery for `jQuery()`.
 
-
 ```js
 // you can't rely on '$' being defined outside of the closure
-(function($) {
-  var myPrivateVar; // only available inside the closure
+(function ($) {
+  let myPrivateVar; // only available inside the closure
   // inside here you can use the 'jQuery' object as '$'
-})(jQuery);
+}(jQuery));
 ```
 
-You can run `[jQuery.noConflict()](https://docs.jquery.com/Core/jQuery.noConflict)` to avoid namespace clashes.
-NoConflict mode is enabled by default in the Silverstripe CMS javascript.
+You can run [`jQuery.noConflict()`](https://docs.jquery.com/Core/jQuery.noConflict) to avoid namespace clashes.
+NoConflict mode is enabled by default in the Silverstripe CMS JavaScript.
 
-### Initialize at document.ready
+### Initialize at document.Ready
 
 You have to ensure that DOM elements you want to act on are loaded before using them. jQuery provides a wrapper around
 the `window.onload` and `document.ready` events.
@@ -149,12 +145,12 @@ This doesn't apply to jQuery entwine declarations, which will apply to elements 
 [/info]
 
 ```js
-(function($) {
+(function ($) {
   // DOM elements might not be available here
-  $(document).ready(function() {
+  $(document).ready(() => {
     // The DOM is fully loaded here
   });
-})(jQuery);
+}(jQuery));
 ```
 
 See [the jQuerydocs on `$( document ).ready()`](https://learn.jquery.com/using-jquery-core/document-ready/).
@@ -170,12 +166,12 @@ Example: Add a 'loading' classname to all pressed buttons
 
 ```js
 // manual binding, only applies to existing elements
-$('input[[type=submit]]').on('click', function() {
+$('input[[type=submit]]').on('click', function () {
   $(this).addClass('loading');
 });
 
 // binding, applies to any inserted elements as well
-$('.cms-container').on('click', 'input[[type=submit]]', function() {
+$('.cms-container').on('click', 'input[[type=submit]]', function () {
   $(this).addClass('loading');
 });
 ```
@@ -184,14 +180,13 @@ $('.cms-container').on('click', 'input[[type=submit]]', function() {
 You can do this using entwine as well, which has the added benefit of not requiring your original selector to match a DOM element initially (e.g. for the above example if there are no `.cms-container` elements, or those elements are removed and re-added to the DOM, your native binding won't work but an entwine one will).
 [/hint]
 
-### Assume Element Collections
+### Assume element collections
 
 jQuery is based around collections of DOM elements, the library functions typically handle multiple elements (where it
 makes sense). Encapsulate your code by nesting your jQuery commands inside a `jQuery().each()` call.
 
-
 ```js
-$('div.MyGridField').each(function() {
+$('div.MyGridField').each(function () {
   // This is the over code for the tr elements inside a GridField.
   $(this).find('tr').hover(
     // ...
@@ -199,38 +194,42 @@ $('div.MyGridField').each(function() {
 });
 ```
 
-### Use plain HTML and jQuery.data() to store data
+### Use plain HTML and `jQuery.data()` to store data
 
-The DOM can make javascript configuration and state-keeping a lot easier, without having to resort to javascript
+The DOM can make JavaScript configuration and state-keeping a lot easier, without having to resort to JavaScript
 properties and complex object graphs.
 
 Example: Simple form change tracking to prevent submission of unchanged data
 
 Through CSS properties
 
-
 ```js
-$('form :input').bind('change', function(e) {
+$('form :input').bind('change', function (event) {
   $(this.form).addClass('isChanged');
 });
-$('form').bind('submit', function(e) {
-  if($(this).hasClass('isChanged')) return false;
+
+$('form').bind('submit', function (event) {
+  if ($(this).hasClass('isChanged')) {
+    event.preventDefault();
+  }
 });
 ```
 
-Through jQuery.data()
+Through `jQuery.data()`
 
 ```js
-$('form :input').bind('change', function(e) {
+$('form :input').bind('change', function (event) {
   $(this.form).data('isChanged', true);
 });
-$('form').bind('submit', function(e) {
-  alert($(this).data('isChanged'));
-  if($(this).data('isChanged')) return false;
+
+$('form').bind('submit', function (event) {
+  if ($(this).data('isChanged')) {
+    event.preventDefault();
+  }
 });
 ```
 
-### Return HTML/JSON and HTTPResponse class for AJAX responses
+### Return HTML/JSON and `HTTPResponse` class for AJAX responses
 
 Ajax responses will sometimes need to update existing DOM elements, for example refresh a set of search results.
 Returning plain HTML is generally a good default behaviour, as it allows you to keep template rendering in one place (in
@@ -248,7 +247,6 @@ Example: Autocomplete input field loading page matches through AJAX
 
 Template:
 
-
 ```ss
 <ul>
 <% loop $Results %>
@@ -259,38 +257,44 @@ Template:
 
 PHP:
 
-
 ```php
+namespace App\Control;
+
+use Page;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\View\ViewableData;
 
-class MyController 
+class MyController
 {
-  public function autocomplete($request) 
-  {
-    $results = Page::get()->filter("Title", $request->getVar('title'));
-    if(!$results) return new HTTPResponse("Not found", 404);
+    private static $url_segment = 'my_controller';
+    // ...
 
-    // Use HTTPResponse to pass custom status messages
-    $this->getResponse()
-      ->setStatusCode(200)
-      ->addHeader('X-Status', "Found " . $results->Count() . " elements");
+    public function autocomplete($request)
+    {
+        $results = Page::get()->filter('Title', $request->getVar('title'));
+        if (!$results) {
+            return HTTPResponse::create('Not found', 404);
+        }
 
-    // render all results with a custom template
-    $vd = new ViewableData();
-    return $vd->customise([
-      "Results" => $results
-    ])->renderWith('AutoComplete');
-  }
+        // Use HTTPResponse to pass custom status messages
+        $this->getResponse()
+        ->setStatusCode(200)
+        ->addHeader('X-Status', 'Found ' . $results->Count() . ' elements');
+
+        // render all results with a custom template
+        $vd = ViewableData::create();
+        return $vd->customise([
+            'Results' => $results,
+        ])->renderWith('AutoComplete');
+    }
 }
 ```
 
 HTML
 
-
 ```ss
 <form action"#">
-  <div class="autocomplete {url:'MyController/autocomplete'}">
+  <div class="autocomplete {url:'my_controller/autocomplete'}">
     <input type="text" name="title" />
     <div class="results" style="display: none;">
   </div>
@@ -300,22 +304,21 @@ HTML
 
 JavaScript:
 
-
 ```js
-$('.autocomplete input').on('change', function() {
-  var resultsEl = $(this).siblings('.results');
+$('.autocomplete input').on('change', function () {
+  const resultsEl = $(this).siblings('.results');
   resultsEl.load(
     // get form action, using the jQuery.metadata plugin
     $(this).parent().metadata().url,
     // submit all form values
     $(this.form).serialize(),
     // callback after data is loaded
-    function(data, status) {
+    (data, status) => {
       resultsEl.show();
       // get all record IDs from the new HTML
-      var ids = jQuery('.results').find('li').map(function() {
-        return $(this).attr('id').replace(/Record\-/,'');
-      });
+      const ids = jQuery('.results').find('li').map(
+        () => $(this).attr('id').replace(/Record\-/, '')
+      );
     }
   );
 });
@@ -329,7 +332,7 @@ properly set.
 
 ### Use events and observation to link components together
 
-The philosophy behind this javascript guide is **component driven development**: your javascript should be structured as
+The philosophy behind this JavaScript guide is **component driven development**: your JavaScript should be structured as
 a set of components that communicate. Event handlers are a great way of getting components to community, as long as
 two-way communication isn't required.  Set up a number of custom event names that your component will trigger.  List
 them in the component documentation comment.
@@ -340,29 +343,31 @@ events](https://docs.jquery.com/Namespaced_Events).
 
 Example: Trigger custom 'validationfailed' event on form submission for each empty element
 
-
 ```js
-$('form').on('submit', function(e) {
+$('form').on('submit', function (e) {
   // $(this) refers to form
-  $(this).find(':input').each(function() {
+  $(this).find(':input').each(function () {
     // $(this) in here refers to input field
-    if(!$(this).val()) $(this).trigger('validationfailed');
+    if (!$(this).val()) {
+      $(this).trigger('validationfailed');
+    }
   });
+
   return false;
 });
 
 // listen to custom event on each <input> field
-$('form :input').on('validationfailed', function(e) {
+$('form :input').on('validationfailed', function (e) {
   // $(this) refers to input field
-  alert($(this).attr('name'));
+  const fieldName = $(this).attr('name');
 });
 ```
 
 Don't use event handlers in the following situations:
 
-*  If two-way communication is required, for example, calling an method in another component, which returns data that
+- If two-way communication is required, for example, calling an method in another component, which returns data that
 you then use.  Event handlers can't have return values.
-*  If specific execution order is required.  Event handlers are executed in parallel, which makes it difficult to know
+- If specific execution order is required.  Event handlers are executed in parallel, which makes it difficult to know
 the exact order in which code in different threads will execute.  If the execution order is likely to cause problems, it
 is better to use a code structure that is executed sequentially. An example might be two events modifying the same piece
 of the DOM.
@@ -374,14 +379,14 @@ advantage is that they lack the two problems listed in bullets just above. The d
 need to define an custom API for configuring the callbacks; whereas, event observation is a jQuery provided API that
 leaves components very loosely coupled.
 
-### Use jQuery.entwine to define APIs as necessary
+### Use jQuery.Entwine to define APIs as necessary
 
 By default, most of your JavaScript methods will be hidden in closures like a jQuery plugin, and are not accessible from
 the outside. As a best practice, each jQuery plugin should only expose one method to initialize and configure it. If you
 need more public methods, consider using either a jQuery UI Widget, or define your behaviour as jQuery.entwine rules
 (see above).
 
-### Write Documentation
+### Write documentation
 
 Documentation in JavaScript usually resembles the JavaDoc standard, although there is no agreed standard. Due to the
 flexibility of the language it can be hard to generate automated documentation, particularly with the predominant usage
@@ -410,37 +415,35 @@ Example: jQuery.entwine
  * @name ss.LeftAndMain
  */
 $('.LeftAndMain').entwine({
-    /**
-     * Reference to some property
-     * @type Number
-     */
-    MyProperty: 123,
+  /**
+   * Reference to some property
+   * @type Number
+   */
+  MyProperty: 123,
 
-    /**
-     * Renders the provided data into an unordered list.
-     *
-     * @param {Object} data
-     * @param {String} status
-     * @return {String} HTML unordered list
-     */
-    publicMethod: function(data, status) {
-      return '<ul>'
-        + //...
-        + '</ul>';
-    },
+  /**
+   * Renders the provided data into an unordered list.
+   *
+   * @param {Object} data
+   * @param {String} status
+   * @return {String} HTML unordered list
+   */
+  publicMethod(data, status) {
+    return '<ul> ... </ul>';
+  },
 
-    /**
-     * Won't show in documentation, but still worth documenting.
-     *
-     * @return {String} Something else.
-     */
-    _privateMethod: function() {
-      // ...
-    }
+  /**
+   * Won't show in documentation, but still worth documenting.
+   *
+   * @return {String} Something else.
+   */
+  _privateMethod() {
+    // ...
+  }
 });
 ```
 
 ## Related
 
-* [Unobtrusive Javascript](https://www.onlinetools.org/articles/unobtrusivejavascript/chapter1.html)
-* [Quirksmode: In-depth Javascript Resources](https://www.quirksmode.org/resources.html)
+- [Unobtrusive JavaScript](https://www.onlinetools.org/articles/unobtrusivejavascript/chapter1.html)
+- [Quirksmode: In-depth JavaScript Resources](https://www.quirksmode.org/resources.html)

@@ -3,12 +3,14 @@ title: Testing Glossary
 summary: All the jargon you need to be a bonafide testing guru
 ---
 
+# Testing glossary
+
 <dl>
 <dt>Assertion</dt>
 <dd>A predicate statement that must be true when a test runs.</dd>
 
 <dt>Behat</dt>
-<dd>A behaviour-driven testing library used with Silverstripe CMS as a higher-level alternative to the <code class="language-text">FunctionalTest</code> API, see <a href="https://behat.org">https://behat.org</a>.</dd>
+<dd>A behaviour-driven testing library used with Silverstripe CMS as a higher-level alternative to the `FunctionalTest` API, see <https://behat.org>.</dd>
 
 <dt>Test Case</dt>
 <dd>The atomic class type in most unit test frameworks. New unit tests are created by inheriting from the base test case.</dd>
@@ -17,7 +19,7 @@ summary: All the jargon you need to be a bonafide testing guru
 <dd>Also known as a 'test group', a composite of test cases, used to collect individual unit tests into packages, allowing all tests to be run at once.</dd>
 
 <dt>Fixture</dt>
-<dd>Usually refers to the runtime context of a unit test - the environment and data prerequisites that must be in place in order to run the test and expect a particular outcome. Most unit test frameworks provide methods that can be used to create fixtures for the duration of a test - <code class="language-text">setUp</code> - and clean them up after the test is done - <code class="language-text">tearDown</code>.</dd>
+<dd>Usually refers to the runtime context of a unit test - the environment and data prerequisites that must be in place in order to run the test and expect a particular outcome. Most unit test frameworks provide methods that can be used to create fixtures for the duration of a test - `setUp` - and clean them up after the test is done - `tearDown`.</dd>
 
 <dt>Refactoring</dt>
 <dd>A behavior preserving transformation of code. If you change the code, while keeping the actual functionality the same, it is refactoring. If you change the behavior or add new functionality it's not.</dd>
@@ -41,5 +43,5 @@ summary: All the jargon you need to be a bonafide testing guru
 <dd>A style of programming where tests for a new feature are constructed before any code is written. Code to implement the feature is then written with the aim of making the tests pass. Testing is used to understand the problem space and discover suitable APIs for performing specific actions.</dd>
 
 <dt>Behavior Driven Development (BDD)</dt>
-<dd>An extension of the test-driven programming style, where tests are used primarily for describing the specification of how code should perform. In practice, there's little or no technical difference - it all comes down to language. In BDD, the usual terminology is changed to reflect this change of focus, so <em>Specification</em> is used in place of <em>Test Case</em>, and <em>should</em> is used in place of <em>expect</em> and <em>assert</em>.</dd>
+<dd>An extension of the test-driven programming style, where tests are used primarily for describing the specification of how code should perform. In practice, there's little or no technical difference - it all comes down to language. In BDD, the usual terminology is changed to reflect this change of focus, so *Specification* is used in place of *Test Case*, and *should* is used in place of *expect* and *assert*.</dd>
 </dl>

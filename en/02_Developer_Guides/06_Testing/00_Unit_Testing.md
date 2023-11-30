@@ -3,90 +3,89 @@ title: Unit and Integration Testing
 summary: Test models, database logic and your object methods.
 ---
 
-# Unit and Integration Testing
+# Unit and integration testing
 
-A Unit Test is an automated piece of code that invokes a unit of work in the application and then checks the behavior 
+A Unit Test is an automated piece of code that invokes a unit of work in the application and then checks the behavior
 to ensure that it works as it should. A simple example would be to test the result of a PHP method.
 
-**app/src/Page.php**
-
-
 ```php
-use SilverStripe\CMS\Model\SiteTree;
+// app/src/Page.php
+namespace {
+    use SilverStripe\CMS\Model\SiteTree;
 
-class Page extends SiteTree
-{
-    public static function MyMethod()
+    class Page extends SiteTree
     {
-        return (1 + 1);
+        public static function myMethod()
+        {
+            return (1 + 1);
+        }
     }
 }
 ```
 
-**app/tests/PageTest.php**
-
-
 ```php
+// app/tests/PageTest.php
+namespace App\Test;
+
+use Page;
 use SilverStripe\Dev\SapphireTest;
 
 class PageTest extends SapphireTest
 {
     public function testMyMethod()
     {
-        $this->assertEquals(2, Page::MyMethod());
+        $this->assertEquals(2, Page::myMethod());
     }
 }
 ```
 
 [info]
-Tests for your application should be stored in the `app/tests` directory. Test cases for add-ons should be stored in 
-the `(modulename)/tests` directory. 
+Tests for your application should be stored in the `app/tests` directory. Test cases for add-ons should be stored in
+the `(modulename)/tests` directory.
 
-Test case classes should end with `Test` (e.g `PageTest`) and test methods must start with `test` (e.g `testMyMethod`).
+Test case classes should end with `Test` (e.g. `PageTest`) and test methods must start with `test` (e.g. `testMyMethod`).
 
 Ensure you [import](https://php.net/manual/en/language.namespaces.importing.php#example-252) any classes you need for the test, including `SilverStripe\Dev\SapphireTest` or `SilverStripe\Dev\FunctionalTest`.
 [/info]
 
-A Silverstripe CMS unit test is created by extending one of two classes, [SapphireTest](api:SilverStripe\Dev\SapphireTest) or [FunctionalTest](api:SilverStripe\Dev\FunctionalTest). 
+A Silverstripe CMS unit test is created by extending one of two classes, [SapphireTest](api:SilverStripe\Dev\SapphireTest) or [FunctionalTest](api:SilverStripe\Dev\FunctionalTest).
 
-[SapphireTest](api:SilverStripe\Dev\SapphireTest) is used to test your model logic (such as a `DataObject`), and [FunctionalTest](api:SilverStripe\Dev\FunctionalTest) is used when 
+[SapphireTest](api:SilverStripe\Dev\SapphireTest) is used to test your model logic (such as a `DataObject`), and [FunctionalTest](api:SilverStripe\Dev\FunctionalTest) is used when
 you want to test a `Controller`, `Form` or anything that requires a web page.
 
 [info]
 `FunctionalTest` is a subclass of `SapphireTest` so will inherit all of the behaviors. By subclassing `FunctionalTest`
-you gain the ability to load and test web pages on the site. 
+you gain the ability to load and test web pages on the site.
 
-`SapphireTest` in turn, extends `PHPUnit\Framework\TestCase`. For more information on `PHPUnit\Framework\TestCase` see 
-the [PHPUnit](https://www.phpunit.de) documentation. It provides a lot of fundamental concepts that we build on in this 
+`SapphireTest` in turn, extends `PHPUnit\Framework\TestCase`. For more information on `PHPUnit\Framework\TestCase` see
+the [PHPUnit](https://www.phpunit.de) documentation. It provides a lot of fundamental concepts that we build on in this
 documentation.
 [/info]
 
-## Test Databases and Fixtures
+## Test databases and fixtures
 
-Silverstripe CMS tests create their own database when the test starts and fixture files are specified. New `ss_tmp` databases are created using the same 
-connection details you provide for the main website. The new `ss_tmp` database does not copy what is currently in your 
+Silverstripe CMS tests create their own database when the test starts and fixture files are specified. New `ss_tmp` databases are created using the same
+connection details you provide for the main website. The new `ss_tmp` database does not copy what is currently in your
 application database. To provide seed data use a [Fixture](fixtures) file.
 
 [alert]
-As the test runner will create new databases for the tests to run, the database user should have the appropriate 
+As the test runner will create new databases for the tests to run, the database user should have the appropriate
 permissions to create new databases on your server.
 [/alert]
 
 [notice]
-The test database is rebuilt every time one of the test methods is run and is removed afterwards. If the test is interrupted, the database will not be removed. Over time, you may have several hundred test 
+The test database is rebuilt every time one of the test methods is run and is removed afterwards. If the test is interrupted, the database will not be removed. Over time, you may have several hundred test
 databases on your machine. To get rid of them, run `sake dev/tasks/CleanupTestDatabasesTask`.
 [/notice]
 
-## Custom PHPUnit Configuration
+## Custom PHPUnit configuration
 
-The `phpunit` executable can be configured by command line arguments or through an XML file. Silverstripe CMS comes with a 
-default `phpunit.xml.dist` that you can use as a starting point. Copy the file into `phpunit.xml` and customize to your 
+The `phpunit` executable can be configured by command line arguments or through an XML file. Silverstripe CMS comes with a
+default `phpunit.xml.dist` that you can use as a starting point. Copy the file into `phpunit.xml` and customize to your
 needs.
 
-**phpunit.xml**
-
-
 ```xml
+<!-- phpunit.xml -->
 <phpunit bootstrap="vendor/silverstripe/framework/tests/bootstrap.php" colors="true">
     <testsuites>
         <testsuite name="Default">
@@ -101,13 +100,15 @@ needs.
 </phpunit>
 ```
 
-### setUp() and tearDown()
+### SetUp() and tearDown()
 
 In addition to loading data through a [Fixture File](fixtures), a test case may require some additional setup work to be
-run before each test method. For this, use the PHPUnit `setUp` and `tearDown` methods. These are run at the start and 
+run before each test method. For this, use the PHPUnit `setUp` and `tearDown` methods. These are run at the start and
 end of each test.
 
 ```php
+namespace App\Test;
+
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Versioned\Versioned;
@@ -133,22 +134,23 @@ class PageTest extends SapphireTest
 
     public function testMyMethod()
     {
-        // ..
+        // ...
     }
 
     public function testMySecondMethod()
     {
-        // ..
+        // ...
     }
 }
 ```
 
-`tearDownAfterClass` and `setUpBeforeClass` can be used to run code just once for the file rather than before and after 
+`tearDownAfterClass` and `setUpBeforeClass` can be used to run code just once for the file rather than before and after
 each individual test case. Remember to class the parent method in each method to ensure the core boot-strapping of tests
 takes place.
 
-
 ```php
+namespace App\Test;
+
 use SilverStripe\Dev\SapphireTest;
 
 class PageTest extends SapphireTest
@@ -157,19 +159,21 @@ class PageTest extends SapphireTest
     {
         parent::setUpBeforeClass();
 
-        // ..
+        // ...
     }
 
     public static function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
 
-        // ..
+        // ...
     }
+
+    // ...
 }
 ```
 
-### Config and Injector Nesting
+### Config and injector nesting
 
 A powerful feature of both [`Config`](/developer_guides/configuration/configuration/) and [`Injector`](/developer_guides/extending/injector/) is the ability to "nest" them so that you can make changes that can easily be discarded without having to manage previous values.
 
@@ -179,34 +183,42 @@ If you need to make changes to `Config` (or `Injector`) for each test (or the wh
 
 It's important to remember that the `parent::setUp();` functions will need to be called first to ensure the nesting feature works as expected.
 
-
 ```php
-public static function setUpBeforeClass(): void
-{
-    parent::setUpBeforeClass();
-    //this will remain for the whole suite and be removed for any other tests
-    Config::inst()->update('ClassName', 'var_name', 'var_value');
-}
+namespace App\Test;
 
-public function testFeatureDoesAsExpected()
-{
-    //this will be reset to 'var_value' at the end of this test function
-    Config::inst()->update('ClassName', 'var_name', 'new_var_value');
-}
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Dev\SapphireTest;
 
-public function testAnotherFeatureDoesAsExpected()
+class MyTest extends SapphireTest
 {
-    Config::inst()->get('ClassName', 'var_name'); // this will be 'var_value'
+    public static function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+        //this will remain for the whole suite and be removed for any other tests
+        Config::inst()->update('ClassName', 'var_name', 'var_value');
+    }
+
+    public function testFeatureDoesAsExpected()
+    {
+        //this will be reset to 'var_value' at the end of this test function
+        Config::inst()->update('ClassName', 'var_name', 'new_var_value');
+    }
+
+    public function testAnotherFeatureDoesAsExpected()
+    {
+        // this will be 'var_value'
+        Config::inst()->get('ClassName', 'var_name');
+    }
 }
 ```
 
-## Related Documentation
+## Related documentation
 
-* [How to Write a SapphireTest](how_tos/write_a_sapphiretest)
-* [How to Write a FunctionalTest](how_tos/write_a_functionaltest)
-* [Fixtures](fixtures)
+- [How to Write a SapphireTest](how_tos/write_a_sapphiretest)
+- [How to Write a FunctionalTest](how_tos/write_a_functionaltest)
+- [Fixtures](fixtures)
 
-## API Documentation
+## API documentation
 
-* [SapphireTest](api:SilverStripe\Dev\SapphireTest)
-* [FunctionalTest](api:SilverStripe\Dev\FunctionalTest)
+- [SapphireTest](api:SilverStripe\Dev\SapphireTest)
+- [FunctionalTest](api:SilverStripe\Dev\FunctionalTest)
