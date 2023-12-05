@@ -163,6 +163,70 @@ be necessary. For example additional parent classes for each respective relation
 duplication of code.
 [/warning]
 
+### Multi-relational `has_one` {#multi-relational-has-one}
+
+A single `has_one` relation can be allowed to manage multiple `has_many` relations - this is especially useful
+in situations like adding multiple lists of links to a [`SiteConfig`](api:SilverStripe\SiteConfig\SiteConfig) to build a menu.
+
+An additional column is created called `<relationship-name>Relation`, along with the `<relationship-name>Class`
+and `<relationship-name>ID` columns of a normal polymorphic `has_one` relation.
+
+[warning]
+If you save records into the `has_one` relation programatically, you must set the relation in the
+`<relationship-name>Relation` field, or it won't be included when you fetch the `has_many` relation list.
+
+Generally it is better to instead add the record with the `has_one` relation into its corresponding `has_many` relation
+directly - see [adding relations](#adding-relations).
+[/warning]
+
+To specify that a `has_one` relation is multi-relational define the relation like so:
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DataObjectSchema;
+
+class Fan extends DataObject
+{
+    // ...
+
+    private static array $has_one = [
+        'FanOf' => [
+            // The class here is the class for the has_one - it must be polymorphic.
+            'class' => DataObject::class,
+            // Setting this to true is what defines this has_one relation as multi-relational
+            DataObjectSchema::HAS_ONE_MULTI_RELATIONAL => true,
+        ],
+    ];
+}
+```
+
+[hint]
+Multi-relational `has_one` relations *must* be [polymorphic](#polymorphic-has-one).
+[/hint]
+
+It is best practice for your `has_many` relations to indicate which relation they're pointing at using dot notation. For example:
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+
+class Team extends DataObject
+{
+    // ...
+
+    private static array $has_many = [
+        // Notice that these are both pointing at the same has_one relation!
+        'CheapFans' => Fan::class . '.FanOf',
+        'VipFans' => Fan::class . '.FanOf',
+    ];
+}
+```
+
+See [`has_many`](#has_many) below for more details about `has_many` relations.
+
 ### `belongs_to`
 
 Defines a one-to-one relationship with another object, which declares the other end of the relationship with a
@@ -214,6 +278,8 @@ SilverStripe\Assets\Image:
   has_one:
     Team: App\Model\Team
 ```
+
+You can point multiple `has_many` relations at a single `has_one` relation if you use a [multi-relational `has_one`](#multi-relational-has-one).
 
 Note that in some cases you may be better off using a `many_many` relation instead. Carefully consider whether you are defining a "one-to-many" or a "many-to-many" relationship.
 [/alert]
