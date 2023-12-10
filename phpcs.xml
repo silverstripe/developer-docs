@@ -35,7 +35,7 @@
     <rule ref="SlevomatCodingStandard.Namespaces.NamespaceSpacing">
         <properties>
             <property name="linesCountBeforeNamespace" value="0"/>
-            <property name="linesCountBAfterNamespace" value="1"/>
+            <property name="linesCountAfterNamespace" value="1"/>
         </properties>
     </rule>
 
