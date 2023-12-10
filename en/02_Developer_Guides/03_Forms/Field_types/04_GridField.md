@@ -9,7 +9,9 @@ icon: table
 [GridField](api:SilverStripe\Forms\GridField\GridField) is Silverstripe CMS's implementation of data grids. The main purpose of this field type is to display
 tabular data in a format that is easy to view and modify. It can be thought of as a HTML table with some tricks.
 
-Usually `GridField` is used with `DataObject` records - but it can be used with data that isn't represented by `DataObject` records as well. See [using `GridField` with arbitrary data](/developer_guides/forms/using_gridfield_with_arbitrary_data/) for more information.
+Usually `GridField` is used with `DataObject` records - but it can be used with data that isn't represented by `DataObject` records as well.
+
+See [using `GridField` with arbitrary data](/developer_guides/forms/using_gridfield_with_arbitrary_data/) for more information.
 
 [info]
 `GridField` powers the automated data UI of [ModelAdmin](api:SilverStripe\Admin\ModelAdmin). For more information about `ModelAdmin` see the
@@ -250,7 +252,7 @@ Otherwise, you'll need to pass in a [`FieldList`](api:SilverStripe\Forms\FieldLi
 [/info]
 
 [warning]
-The class representing your data _must_ implement [`DataObjectInterface`](api:SilverStripe\ORM\DataObjectInterface) so that your records can be edited.
+The class representing your data *must* implement [`DataObjectInterface`](api:SilverStripe\ORM\DataObjectInterface) so that your records can be edited.
 
 See [using `GridField` with arbitrary data](/developer_guides/forms/using_gridfield_with_arbitrary_data/) for more information.
 [/warning]
