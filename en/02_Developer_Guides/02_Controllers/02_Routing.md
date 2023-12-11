@@ -303,6 +303,100 @@ class BreadAPIController extends Controller
 In Silverstripe CMS versions prior to 4.6, an empty key (`''`) must be used in place of the `'/'` key. When specifying an HTTP method, the empty string must be separated from the method (e.g. `'GET '`). The empty key and slash key are also equivalent in Director rules.
 [/alert]
 
+## Nested request handlers
+
+Nested [`RequestHandler`](api:SilverStripe\Control\RequestHandler) routing is used extensively in the CMS and is used to create URL endpoints without YAML configuration. Nesting is done by returning a `RequestHandler` from an action method on another `RequestHandler`, usually a `Controller`.
+
+`RequestHandler` is the base class for other classes that can handle HTTP requests such as `Controller`, [`FormRequestHandler`](api:SilverStripe\Forms\FormRequestHandler) (used by [`Form`](api:SilverStripe\Forms\Form)) and [`FormField`](api:SilverStripe\Forms\FormField).
+
+### How it works
+
+[`Director::handleRequest()`](api:SilverStripe\Control\Director::handleRequest()) begins the URL parsing process by parsing the start of the URL and workng out which request handler to use by looking in routes set in YAML config under `Director.rules`.
+
+When a request handler matching the first portion of the URL is found, the `handleRequest()` method on the matched request handler is called. This passes control to the matched request handler and the next portion of the URL is processed.
+
+From there regular request handling occurs and the URL will be checked to see if it matches `$allowed_actions` on the `RequestHandler`, possibly routed via `$url_handlers`. If an `$allowed_action` (i.e. method on the `RequestHandler`) is matched and that method returns a request handler, then control will be passed to this nested request handler and the next portion of the URL is processed.
+
+### Example of a nested request handler being returned in an action method
+
+Using the code below, navigating to the URL `/one/two/hello` will return a response with a body of "hello"
+
+```yml
+// app/_config/routes.yml
+SilverStripe\Control\Director:
+  rules:
+    'one': 'App\Control\RequestHandlerOne'
+```
+
+```php
+// app/src/Control/RequestHandlerOne.php
+namespace App\Control;
+
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPRequest;
+
+class RequestHandlerOne extends Controller
+{
+    // ...
+    private static $allowed_actions = [
+        'two',
+    ];
+
+    public function two(HTTPRequest $request)
+    {
+        return RequestHandlerTwo::create();
+    }
+}
+```
+
+```php
+// app/src/Control/RequestHandlerTwo.php
+namespace App\Control;
+
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control\HTTPResponse;
+
+class RequestHandlerTwo extends Controller
+{
+    // ...
+    private static $allowed_actions = [
+        'hello',
+    ];
+
+    public function hello(HTTPRequest $request)
+    {
+        return HTTPResponse::create()->setBody('hello');
+    }
+}
+```
+
+### How `RequestHandler` and `Form` work together
+
+`Form` does not extend `RequestHandler`, instead it implements the [`HasRequestHandler`](api:SilverStripe\Control\HasRequestHandler) interface which defines a method `getRequestHandler()`. [`Form::getRequestHandler()`](api:SilverStripe\Forms\Form::getRequestHandler()) returns a `FormRequestHandler` which is a subclass of `RequestHandler`.
+
+Request handlers and implementors of `HasRequestHandler` are treated the same because they will both end up calling `handleRequest()` on the appropriate request handler.
+
+The `FormRequestHandler.url_handlers` configuration property includes an entry `'field/$FieldName!' => 'handleField'` which allows it to handle requests to form fields on the form. [`FormRequestHandler::handleField()`](api:SilverStripe\Forms\FormRequestHandler::handleField()) will find the form field matching `$FieldName` and return it. Control is then passed to the returned form field.
+
+`FormField` extends `RequestHandler`, which means that form fields are able to handle HTTP requests and they have their own `$allowed_actions` configuration property. This allows form fields to define their own AJAX endpoints without having to rely on separately routed `RequestHandler` implementations.
+
+### Example of an AJAX form field that uses nested request handlers
+
+The AJAX request performed by the "Viewer groups" dropdown in asset admin has an endpoint of `/admin/assets/fileEditForm/{FileID}/field/ViewerGroups/tree?format=json`
+
+That URL ends up passing the request through a series of nested request handlers, which is detailed in the steps below. Unless otherwise stated, the `handleRequest()` method is called on the class that has control. Control starts with [`Director`](api:SilverStripe\Control\Director).
+
+1. `admin` matches a rule in the `Director.rules` YAML configuration property and control is passed to `AdminRootController`
+1. `assets` matches the `AssetAdmin.url_segment` property that has a value of `assets` and control is passed to `AssetAdmin`
+1. `fileEditForm/{FileID}` matches `'fileEditForm/$ID' => 'fileEditForm'` in `AssetAdmin.url_handlers` so the `AssetAdmin::fileEditForm()` method is called
+1. `AssetAdmin::fileEditForm()` returns a `Form` scaffolded for the `File` matching the `ID` and control is passed to the returned `Form`
+1. `Form::getRequestHandler()` will be called on the `Form` and control is passed to the `FormRequestHandler` that is returned
+1. `field/ViewerGroups` matches `'field/$FieldName!' => 'handleField'` in `FormRequestHandler.url_handlers`, so `FormRequestHandler::handleField()` is called
+1. `FormRequestHandler::handleField()` finds the `ViewerGroups` field in the `Form` which is a `TreeMultiselectField` that extends `TreeDropdownField` and control is passed to the field
+1. `tree` matches `tree` in `TreeDropdownField.allowed_actions`, so `TreeDropdownField::tree()` is called
+1. `TreeDropdownField::tree()` returns an `HTTPResponse` with its body containing JSON
+
 ## Related lessons
 
 - [Creating filtered views](https://www.silverstripe.org/learn/lessons/v4/creating-filtered-views-1)
