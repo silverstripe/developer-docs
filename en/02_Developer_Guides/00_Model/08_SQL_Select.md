@@ -107,6 +107,9 @@ $idField = $schema->sqlColumnForField(Team::class, 'ID');
 $joinOnClause = "$teamIdField = $idField";
 $sqlQuery->addLeftJoin($teamTableName, $joinOnClause);
 
+// Combine another query using a union
+$sqlQuery->addUnion($anotherSqlSelect, SQLSelect::UNION_ALL);
+
 // There are methods for most SQL clauses, such as WHERE, ORDER BY, GROUP BY, etc
 $sqlQuery->addWhere(['YEAR("Birthday") = ?' => 1982]);
 // $sqlQuery->setOrderBy(...);
@@ -416,6 +419,83 @@ foreach (ClassInfo::subclassesFor(Product::class, includeBaseClass: false) as $c
 ```
 
 [/hint]
+
+### Common table expressions (CTE aka the `WITH` clause) {#cte}
+
+Common Table Expressions are a powerful tool both for optimising complex queries, and for creating recursive queries. You can use these by calling the [`SQLSelect::addWith()`](api:SilverStripe\ORM\Queries\SQLSelect::addWith()) method.
+
+Older database servers don't support this functionality, and the core implementation is only valid for MySQL (though community modules may add support for other database connectors). If you are using this functionality in an open source module or a project that you can't guarantee the type and version of database being used, you should wrap the query in a condition checking if CTEs are supported. You can do that by calling [`DB::get_conn()->supportsCteQueries()`](api:SilverStripe\ORM\Connect\Database::supportsCteQueries()).
+
+```php
+if (DB::get_conn()->supportsCteQueries()) {
+    // Supports non-recursive CTE clause
+} elseif (DB::get_conn()->supportsCteQueries(true)) {
+    // Supports recursive CTE clause
+} else {
+    // No CTE support
+}
+```
+
+For an example of how to use this abstraction and how powerful it is, here is an example query that recursively fetches the ancestors of a given record.
+
+```php
+use App\Model\ObjectWithParent;
+use SilverStripe\Core\Convert;
+use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\Queries\SQLSelect;
+
+$schema = DataObject::getSchema();
+$tableName = Convert::symbol2sql($schema->baseDataTable(ObjectWithParent::class));
+$parentIdField = $schema->sqlColumnForField(ObjectWithParent::class, 'ParentID');
+$idField = $schema->sqlColumnForField(ObjectWithParent::class, 'ID');
+$cteIdField = Convert::symbol2sql('hierarchy_cte.parent_id');
+
+// Only use the CTE functionality if it is supported by the current database
+if (DB::get_conn()->supportsCteQueries(true)) {
+    $baseQuery = SQLSelect::create()->setFrom($tableName);
+    $cteQuery = SQLSelect::create(
+        $parentIdField,
+        $tableName,
+        [
+            "$parentIdField > 0",
+            $idField => $someRecord->ID,
+        ]
+    );
+    $recursiveQuery = SQLSelect::create(
+        $parentIdField,
+        ['"hierarchy_cte"', $tableName],
+        [
+            "$parentIdField > 0",
+            "$idField = $cteIdField",
+        ]
+    );
+    $cteQuery->addUnion($recursiveQuery);
+    $baseQuery->addWith('hierarchy_cte', $cteQuery, ['parent_id'], true)
+        ->addInnerJoin('hierarchy_cte', "$idField = $cteIdField");
+    // This query result will include only the ancestors of whatever record is stored in the $someRecord variable.
+    $ancestors = $baseQuery->execute();
+} else {
+    // provide an alternative implementation, e.g. a recursive PHP method which runs a query at each iteration
+}
+```
+
+The SQL for that query, in MySQL, would look something like this:
+
+```sql
+WITH RECURSIVE "hierarchy_cte" ("parent_id") AS (
+    (
+        SELECT "ObjectWithParent"."ParentID" FROM "ObjectWithParent"
+        WHERE ("ObjectWithParent"."ParentID" > 0) AND ("ObjectWithParent"."ID" = ?)
+    ) UNION (
+        SELECT "ObjectWithParent"."ParentID" FROM "hierarchy_cte", "ObjectWithParent"
+        WHERE ("ObjectWithParent"."ParentID" > 0) AND ("ObjectWithParent"."ID" = "hierarchy_cte"."parent_id")
+    )
+)
+SELECT * FROM "ObjectWithParent" INNER JOIN "hierarchy_cte" ON "ObjectWithParent"."ID" = "hierarchy_cte"."parent_id"
+```
+
+The PHPDoc for the [`SQLSelect::addWith()`](api:SilverStripe\ORM\Queries\SQLSelect::addWith()) method has more details about what each of the arguments are and how they're used, though note that you should ensure you understand the underlying SQL concept of CTE queries before using this API.
 
 ### Mapping
 
