@@ -30,6 +30,7 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\TextareaField;
 
 class ContactPageController extends PageController
 {
@@ -40,7 +41,7 @@ class ContactPageController extends PageController
         $fields = FieldList::create(
             TextField::create('Name'),
             EmailField::create('Email'),
-            extareaField::create('Message')
+            TextareaField::create('Message')
         );
 
         $actions = FieldList::create(
