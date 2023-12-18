@@ -262,6 +262,11 @@ $email->replyTo('reply@example.com');
 
 If you wish to handle email send failures then you can wrap `$email->send()` with a try/catch block that catches the Symfony Mailer `TransportExceptionInterface`.
 
+[hint]
+You might get a Symfony Mailer `RfcComplianceException` when instantiating the `Email` object if the email address you're trying to send to or from is invalid.
+In some cases you'll want to catch and handle that exception as well.
+[/hint]
+
 ```php
 use SilverStripe\Control\Email\Email;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
