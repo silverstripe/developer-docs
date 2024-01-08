@@ -53,6 +53,47 @@ UploadField options include:
 - setFolderName() - Name of folder to upload into
 - getValidator() - Get instance of validator to specify custom validation rules
 
+## File upload limits {#upload-limits}
+
+You can set the default file upload limits by configuring [`Upload_Validator.default_max_file_size`](api:SilverStripe\Assets\Upload_Validator->default_max_file_size).
+
+File sizes can be represented as either integers (which is the file size in bytes) or an INI formatted string (e.g. 1b for 1 byte, 1k for 1 kilobyte, 1m for 1 megabyte, etc).
+
+The configuration property accepts any of the following:
+
+- A single value representing the maximum file size for *all* files
+- An array, where the values are the maximum file size and the keys are one of:
+  - a category name from [`File.app_categories`](api:SilverStripe\Assets\File->app_categories), with square brackets around it (e.g. `'[images]'`)
+  - a file extension (e.g. `'jpg'`)
+  - an asterisk, which means "all file types which don't have a more specific configuration"
+
+For example:
+
+```yml
+SilverStripe\Assets\Upload_Validator:
+  default_max_file_size:
+    '[image]': '500k' # Allow images up to 500KB
+    'doc': '2m' # Allow .doc files up to 2MB
+    '*' : '1m' # Allow everything else up to 1MB
+```
+
+You can also set upload limits per field by calling [`setAllowedMaxFileSize()`](api:SilverStripe\Assets\Upload_Validator::setAllowedMaxFileSize()) on the field's validator.
+
+This method takes the same arguments as the `Upload_Validator.default_max_file_size` configuration.
+
+```php
+$field = UploadField::create('Banner');
+$validator = $field->getValidator();
+$validator->setAllowedMaxFileSize('2m');
+```
+
+If you want different file upload limits in the asset admin than you have in your upload fields, you can use the [`AssetAdmin.max_upload_size`](api:SilverStripe\AssetAdmin\Controller\AssetAdmin->max_upload_size) configuration property. This accepts values in the same format as `Upload_Validator.default_max_file_size`.
+
+```yml
+SilverStripe\AssetAdmin\Controller\AssetAdmin:
+  max_upload_size: '2m'
+```
+
 ## File permissions {#permissions}
 
 See [File Security](file_security).
