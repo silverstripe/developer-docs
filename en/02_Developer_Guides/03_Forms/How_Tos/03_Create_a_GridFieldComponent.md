@@ -37,7 +37,7 @@ Action providers run actions. Action providers often also implement `GridField_A
 
 Examples:
 
-- A delete action provider that deletes a DataObject.
+- A delete action provider that deletes a record.
 - An export action provider that will export the current list to a CSV file.
 
 See [Basic GridField custom action boilerplate](./create_a_gridfield_actionprovider#custom-action-boilerplate) for an example of implementing this component.
