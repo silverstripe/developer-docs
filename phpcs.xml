@@ -70,7 +70,11 @@
     <rule ref="SlevomatCodingStandard.Exceptions.DeadCatch" />
     <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly" />
     <rule ref="SlevomatCodingStandard.Namespaces.UseFromSameNamespace" />
-    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses" />
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
+        <properties>
+            <property name="searchAnnotations" type="bool" value="true" />
+        </properties>
+    </rule>
 
     <!-- Method bodies must at least have a comment - if no-op, use "// ..."  -->
     <rule ref="SlevomatCodingStandard.Functions.DisallowEmptyFunction" />
