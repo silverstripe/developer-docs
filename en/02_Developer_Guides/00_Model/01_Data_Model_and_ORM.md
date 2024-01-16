@@ -162,7 +162,7 @@ $lastPlayer = $players->last();
 
 // returns a single `Player` record that has the ID of 2.
 $player = Player::get()->byID(2);
-$player = Playet::get_by_id(2);
+$player = Player::get_by_id(2);
 ```
 
 [hint]
