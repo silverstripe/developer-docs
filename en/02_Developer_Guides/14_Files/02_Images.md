@@ -101,6 +101,8 @@ Some of the MetaData functions need to be prefixed with 'get', example `getHeigh
 
 Please refer to the [`ImageManipulation`](api:SilverStripe\Assets\ImageManipulation) API documentation for specific functions.
 
+See [file manipulation](./file_manipulation/) for more general ways that all files can be manipulated.
+
 ### Creating custom image functions
 
 You can also create your own functions by decorating the `Image` class.
