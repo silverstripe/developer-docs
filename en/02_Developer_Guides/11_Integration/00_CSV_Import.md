@@ -52,9 +52,13 @@ $result = $loader->load('<my-file-path>');
 By the way, you can import [Member](api:SilverStripe\Security\Member) and [Group](api:SilverStripe\Security\Group) data through `https://www.example.com/admin/security`
 interface out of the box.
 
+### Permission checks
+
+`CsvBulkLoader` does *not* respect permissions by default. If you want the permissions of the current user to be respected (i.e. if the bulk loader is being used as part of user interaction), you will need to pass `true` to the [`CsvBulkLoader::setCheckPermissions()`](api:SilverStripe\Dev\CsvBulkLoader::setCheckPermissions()) method.
+
 ## Import through `ModelAdmin`
 
-The simplest way to use [CsvBulkLoader](api:SilverStripe\Dev\CsvBulkLoader) is through a [ModelAdmin](api:SilverStripe\Admin\ModelAdmin) interface - you get an upload form out of the box.
+The simplest way to use [CsvBulkLoader](api:SilverStripe\Dev\CsvBulkLoader) is through a [ModelAdmin](api:SilverStripe\Admin\ModelAdmin) interface - you get a secured upload form out of the box.
 
 ```php
 namespace App\Admin;
@@ -86,6 +90,10 @@ You can have more customised logic and interface feedback through a custom contr
 Let's create a simple upload form (which is used for `MyDataObject` instances).
 You'll need to add a route to your controller to make it accessible via URL
 (see [Routing](../../controllers/routing/)).
+
+[warning]
+Don't forget to perform [permission checks](#permission-checks) if the data is provided by users.
+[/warning]
 
 ```php
 namespace App\Control;
@@ -150,9 +158,6 @@ class MyController extends Controller
     }
 }
 ```
-
-Note: This interface is not secured, consider using [Permission::check()](api:SilverStripe\Security\Permission::check()) to limit the controller to users
-with certain access rights.
 
 ## Column mapping and relation import
 
