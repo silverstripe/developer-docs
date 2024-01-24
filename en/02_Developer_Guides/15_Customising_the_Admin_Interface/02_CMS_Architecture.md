@@ -774,6 +774,38 @@ The URL endpoints `{$AdminURL}mytabs/tab1` and `{$AdminURL}mytabs/tab2`
 should return HTML fragments suitable for inserting into the content area,
 through the `PjaxResponseNegotiator` class (see above).
 
+### Lazy loading fields on tab activation
+
+When a tab is not lazy loaded via ajax, it might still be necessary to
+delay some work (for example when doing HTTP requests) until the tab is activated. This is how, for example, the
+[`GridFieldLazyLoader`](api:SilverStripe\Forms\GridField\GridFieldLazyLoader) works.
+
+In order to open up the same kind of features to other fields, a custom event is fired on all nodes with the `lazy-loadable` class inside the activated tab panel.
+They will receive a `lazyload` event that can be listened to in the following way (you will have to implement your own logic for "loading" the content):
+
+```js
+jQuery('input.myfield.lazy-loadable').entwine({
+  // Use onmatch so we apply the event handler as soon as the element enters the DOM
+  onmatch(e) {
+    // Use the one() function so the lazyload only happens once for this field
+    this.one('lazyload', () => {
+      // Some init code here
+    });
+  },
+});
+```
+
+[info]
+The `myfield` CSS class isn't strictly necessary here (nor is the input for that matter) - it's just being used so we have a more specific selector. That way we know our JavaScript code will only trigger for the relevant element, and not for every lazy-loadable element in the DOM.
+[/info]
+
+If you apply the `myfield` and `lazy-loadable` CSS classes to some form field on a tab other than main, then when you swap to the tab containing that field it will trigger the lazyload event for that element.
+
+```php
+use SilverStripe\Forms\TextField;
+$fields->addFieldToTab('Root.AnyTab', TextField::create('MyField')->addExtraClass('myfield lazy-loadable'));
+```
+
 ## Related
 
 - [Howto: Extend the CMS Interface](/developer_guides/customising_the_admin_interface/how_tos/extend_cms_interface)
