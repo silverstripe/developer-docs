@@ -157,6 +157,16 @@ Order code in classes in the following order:
 - If you do write raw SQL, use double quotes around table/column names and use parameterised queries, for example `->where(['"Score" > ?' => 50])`.
 - Use [ANSI SQL](https://en.wikipedia.org/wiki/SQL#Standardization) format.
 
+## PHPDoc
+
+PHPDocs are not only useful when looking at the source code, but are also used in the API documentation at <https://api.silverstripe.org>.
+
+- All [public API](/project_governance/public_api) should have a PHPDoc to describe its purpose, unless the API name and signature describe everything about its usage and purposes without any additional context.
+- All `DataObject` and `Extension` subclasses must have `@method` annotations in their PHPDoc for relations (`has_one`, `has_many`, etc).
+  - Do not add the annotation if a real method is declared with the same name.
+  - Include the relevant `use` statements for all classes mentioned in the annotation
+  - Return types should include generics, e.g. `@method HasManyList<Member> Members()`
+
 ## Other conventions
 
 - Prefer the identical `===` operator over the equality `==` operator for comparisons.
