@@ -6,11 +6,10 @@ summary: Define dependent types inline with a parent type
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 ## Nested type definitions
 
@@ -50,9 +49,8 @@ App\Model\BlogCategory:
   fields: '*'
 ```
 
-[info]
-You cannot define operations on nested types. They only accept fields.
-[/info]
+> [!NOTE]
+> You cannot define operations on nested types. They only accept fields.
 
 ### Further reading
 

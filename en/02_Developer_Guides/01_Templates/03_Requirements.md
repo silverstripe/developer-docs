@@ -90,9 +90,8 @@ When rendered in HTML code, these URLs will be rewritten to their matching path 
 <% require javascript("<my-module-dir>/javascript/some_file.js") %>
 ```
 
-[alert]
-Requiring assets from the template is restricted compared to the PHP API.
-[/alert]
+> [!CAUTION]
+> Requiring assets from the template is restricted compared to the PHP API.
 
 ## PHP requirements API
 
@@ -226,10 +225,9 @@ Requirements::combine_files(
 );
 ```
 
-[alert]
-To make debugging easier in your local environment, combined files is disabled when running your application in `dev`
-mode. You can re-enable dev combination by setting `Requirements_Backend.combine_in_dev` to true.
-[/alert]
+> [!CAUTION]
+> To make debugging easier in your local environment, combined files is disabled when running your application in `dev`
+> mode. You can re-enable dev combination by setting `Requirements_Backend.combine_in_dev` to true.
 
 ### Configuring combined file storage
 
@@ -332,10 +330,9 @@ Requirements::combine_files('print.css', $printStylesheets, 'print');
 By default, all requirements files are flushed (deleted) when ?flush querystring parameter is set.
 This can be disabled by setting the `Requirements.disable_flush_combined` config to `true`.
 
-[alert]
-When combining CSS files, take care of relative urls, as these will not be re-written to match
-the destination location of the resulting combined CSS.
-[/alert]
+> [!CAUTION]
+> When combining CSS files, take care of relative urls, as these will not be re-written to match
+> the destination location of the resulting combined CSS.
 
 ### Combined JS files
 
@@ -397,10 +394,9 @@ SilverStripe\Core\Injector\Injector:
       Minifier: '%$App\MyMinifier'
 ```
 
-[alert]
-While the framework does afford you the option of minification at runtime, we recommend using one of many frontend build
-tools to do this for you, e.g. [Webpack](https://webpack.github.io/), [Gulp](http://gulpjs.com/), or [Grunt](https://gruntjs.com/).
-[/alert]
+> [!CAUTION]
+> While the framework does afford you the option of minification at runtime, we recommend using one of many frontend build
+> tools to do this for you, e.g. [Webpack](https://webpack.github.io/), [Gulp](http://gulpjs.com/), or [Grunt](https://gruntjs.com/).
 
 ## Clearing assets
 
@@ -418,9 +414,8 @@ use SilverStripe\View\Requirements;
 Requirements::clear('modulename/javascript/some-lib.js');
 ```
 
-[alert]
-Depending on where you call this command, a Requirement might be *re-included* afterwards.
-[/alert]
+> [!CAUTION]
+> Depending on where you call this command, a Requirement might be *re-included* afterwards.
 
 ## Blocking
 
@@ -437,20 +432,18 @@ use SilverStripe\View\Requirements;
 Requirements::block('silverstripe/admin:thirdparty/jquery/jquery.js');
 ```
 
-[alert]
-The CMS also uses the `Requirements` system, and its operation can be affected by `block()` calls. Avoid this by
-limiting the scope of your blocking operations, e.g. in `init()` of your controller.
-[/alert]
+> [!CAUTION]
+> The CMS also uses the `Requirements` system, and its operation can be affected by `block()` calls. Avoid this by
+> limiting the scope of your blocking operations, e.g. in `init()` of your controller.
 
 ## Inclusion order
 
 Requirements acts like a stack, where everything is rendered sequentially in the order it was included. There is no way
 to change inclusion-order, other than using *Requirements::clear* and rebuilding the whole set of requirements.
 
-[alert]
-Inclusion order is both relevant for CSS and JavaScript files in terms of dependencies, inheritance and overlays - be
-careful when messing with the order of requirements.
-[/alert]
+> [!CAUTION]
+> Inclusion order is both relevant for CSS and JavaScript files in terms of dependencies, inheritance and overlays - be
+> careful when messing with the order of requirements.
 
 ## JavaScript placement
 

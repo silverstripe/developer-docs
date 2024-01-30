@@ -148,29 +148,26 @@ class Fan extends DataObject
 }
 ```
 
-[warning]
-Note: The use of polymorphic relationships can affect query performance, especially
-on joins, and also increases the complexity of the database and necessary user code.
-They should be used sparingly, and only where additional complexity would otherwise
-be necessary. For example additional parent classes for each respective relationship, or
-duplication of code.
-[/warning]
+> [!WARNING]
+> Note: The use of polymorphic relationships can affect query performance, especially
+> on joins, and also increases the complexity of the database and necessary user code.
+> They should be used sparingly, and only where additional complexity would otherwise
+> be necessary. For example additional parent classes for each respective relationship, or
+> duplication of code.
 
 ## `has_many`
 
 Defines 1-to-many joins. As you can see from the previous example, `$has_many` goes hand in hand with `$has_one`.
 
-[alert]
-Please specify a $has_one-relationship on the related child-class as well, in order to have the necessary accessors
-available on both ends. To add a $has_one-relationship on core classes, yml config settings can be used:
-
-```yml
-SilverStripe\Assets\Image:
-  has_one:
-    App\Model\MyDataObject: MyDataObject
-```
-
-[/alert]
+> [!CAUTION]
+> Please specify a $has_one-relationship on the related child-class as well, in order to have the necessary accessors
+> available on both ends. To add a $has_one-relationship on core classes, yml config settings can be used:
+>
+> ```yml
+> SilverStripe\Assets\Image:
+>   has_one:
+>     App\Model\MyDataObject: MyDataObject
+> ```
 
 ```php
 namespace App\Model;
@@ -324,18 +321,16 @@ Defines many-to-many joins, which uses a third table created between the two to 
 There are two ways in which this can be declared, which are described below, depending on
 how the developer wishes to manage this join table.
 
-[warning]
-Please specify a $belongs_many_many-relationship on the related class as well, in order
-to have the necessary accessors available on both ends. You can use `RelationValidationService` for validation of relationships. This tool will point out the relationships which may need a review.
-
-Example configuration:
-
-```yml
-SilverStripe\Dev\Validation\RelationValidationService:
-  output_enabled: true
-```
-
-[/warning]
+> [!WARNING]
+> Please specify a $belongs_many_many-relationship on the related class as well, in order
+> to have the necessary accessors available on both ends. You can use `RelationValidationService` for validation of relationships. This tool will point out the relationships which may need a review.
+>
+> Example configuration:
+>
+> ```yml
+> SilverStripe\Dev\Validation\RelationValidationService:
+>   output_enabled: true
+> ```
 
 Much like the `has_one` relationship, `many_many` can be navigated through the `ORM` as well.
 The only difference being you will get an instance of [ManyManyList](api:SilverStripe\ORM\ManyManyList) or
@@ -690,10 +685,9 @@ If your object is versioned, cascade_deletes will also act as "cascade unpublish
 on a parent object will trigger unpublish on the child, similarly to how `owns` causes triggered publishing.
 See the [versioning docs](/developer_guides/model/versioning) for more information on ownership.
 
-[alert]
-Declaring cascade_deletes implies delete permissions on the listed objects.
-Built-in controllers using delete operations check canDelete() on the owner, but not on the owned object.
-[/alert]
+> [!CAUTION]
+> Declaring cascade_deletes implies delete permissions on the listed objects.
+> Built-in controllers using delete operations check canDelete() on the owner, but not on the owned object.
 
 ## Cascading duplications
 
@@ -793,10 +787,9 @@ class Team extends DataObject
 }
 ```
 
-[notice]
-Adding new records to a filtered `RelationList` like in the example above doesn't automatically set the filtered
-criteria on the added record.
-[/notice]
+> [!WARNING]
+> Adding new records to a filtered `RelationList` like in the example above doesn't automatically set the filtered
+> criteria on the added record.
 
 ## Relations on unsaved objects
 

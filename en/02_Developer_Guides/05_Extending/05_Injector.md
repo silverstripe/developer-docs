@@ -89,9 +89,8 @@ $client = Injector::inst()->get(MyClient::class);
 // $client is now an instance of WriteClient
 ```
 
-[info]
-Note that 'MyClient' [does not have to be an existing class](#service-inheritance) - you could use an abitrary string to identify it. That said using existing classes can be easier to reason about and can be refactored by automatic tools/IDEs.
-[/info]
+> [!NOTE]
+> Note that 'MyClient' [does not have to be an existing class](#service-inheritance) - you could use an abitrary string to identify it. That said using existing classes can be easier to reason about and can be refactored by automatic tools/IDEs.
 
 Using Injector imperatively like this is most common [in testing](#testing-with-injector).
 
@@ -119,9 +118,8 @@ $object = Injector::inst()->get(MyClass::class);
 
 This allows you to concisely override classes in Silverstripe core or other third-party Silverstripe code.
 
-[info]
-When overriding other configuration beware the [order that configuration is applied](../configuration/#configuration-values). You may have to use the [Before/After](../configuration/#before-after-priorities) syntax to apply your override.
-[/info]
+> [!NOTE]
+> When overriding other configuration beware the [order that configuration is applied](../configuration/#configuration-values). You may have to use the [Before/After](../configuration/#before-after-priorities) syntax to apply your override.
 
 ### Special YAML syntax
 
@@ -172,7 +170,8 @@ SilverStripe\Core\Injector\Injector:
       secret: '`SS_API_CLIENT_SECRET`'
 ```
 
-[info]Note: undefined variables will be replaced with null.[/info]
+> [!NOTE]
+> Note: undefined variables will be replaced with null.
 
 ## Dependencies
 
@@ -204,9 +203,8 @@ class MyController extends Controller
 }
 ```
 
-[info]
-Note that using public properties instead of setter methods is also supported, though setter methods are generally preferred for code quality reasons.
-[/info]
+> [!NOTE]
+> Note that using public properties instead of setter methods is also supported, though setter methods are generally preferred for code quality reasons.
 
 When creating a new instance of `App\Control\MyController` via Injector the permissions property will contain an instance of the `ThirdParty\PermissionService` that was resolved by Injector.
 

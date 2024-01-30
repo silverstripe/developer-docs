@@ -58,9 +58,8 @@ Locale fallback logic and options have changed significantly.
 
 In Fluent v5, the `DataObject.cms_publish_required` configuration property was renamed to `DataObject.cms_localisation_required`.
 
-[info]
-If you have set `cms_publish_required` configuration in your YAML configuration files, `Extension` class, or `DataObject` models, change these to `cms_localisation_required` instead.
-[/info]
+> [!NOTE]
+> If you have set `cms_publish_required` configuration in your YAML configuration files, `Extension` class, or `DataObject` models, change these to `cms_localisation_required` instead.
 
 #### Fallback changes in fluent v6 {#locale-fallback-v6}
 
@@ -68,9 +67,8 @@ The values for the `DataObject.frontend_publish_required` and `DataObject.cms_lo
 
 If you had set either property to `true` in previous versions, this is the equivalent of the new "exact" value, where `false` is the equivalent of "any".
 
-[hint]
-If you're setting these values in an extension or model with the private static properties, you can use the constants from `FluentExtension` (e.g. `FluentExtension::INHERITANCE_MODE_EXACT`).
-[/hint]
+> [!TIP]
+> If you're setting these values in an extension or model with the private static properties, you can use the constants from `FluentExtension` (e.g. `FluentExtension::INHERITANCE_MODE_EXACT`).
 
 |             | `frontend_publish_required`    | `cms_localisation_required`   |
 |-------------|--------------------------------|-------------------------------|
@@ -83,9 +81,8 @@ Here's what the new values actually mean:
 |-----|-----|-----|
 | Content for this record must exist in any locale *or the base (unlocalised) record*. | Content for this record must exist in the current locale *or* a specific fallback locale, as defined through the Locales admin section. | Content for this record *must* exist in the current locale to be used. |
 
-[notice]
-Review localisation settings on all of your models and migrate to the correct value. *Do not* just swap to the new equivalent of your old value unless you explicitly want to keep that behaviour. Instead, consider whether the new functionality warrants a change to a different option.
-[/notice]
+> [!WARNING]
+> Review localisation settings on all of your models and migrate to the correct value. *Do not* just swap to the new equivalent of your old value unless you explicitly want to keep that behaviour. Instead, consider whether the new functionality warrants a change to a different option.
 
 ### User permissions
 
@@ -95,9 +92,8 @@ Fluent v5 introduced more granular permission management.
 |---------------------------|--------------|--------------|--------------|
 | Locale permission support | No           | Yes          | Yes          |
 
-[hint]
-If you're upgrading from Fluent v4, review your requirements for user permissions in the context of locales and update the permissions as needed. For example you may have content authors who should only be allowed to edit content for specific locales.
-[/hint]
+> [!TIP]
+> If you're upgrading from Fluent v4, review your requirements for user permissions in the context of locales and update the permissions as needed. For example you may have content authors who should only be allowed to edit content for specific locales.
 
 ### Enhanced CMS UI
 
@@ -112,9 +108,8 @@ As mentioned in the table above, the `batch_actions_enabled` configuration value
 
 ![The "Localisation" action group, expanded to show all the actions available in it](../_images/fluent/batch_actions_enabled.png)
 
-[hint]
-Review available CMS UI components and enable those that you need.
-[/hint]
+> [!TIP]
+> Review available CMS UI components and enable those that you need.
 
 ## Localised version history
 
@@ -173,12 +168,11 @@ $model->isPublished();
 $model->isPublishedInLocale();
 ```
 
-[/warning]
-It's common for Fluent 4 projects to have a lot of custom code to
-achieve the same result as this feature. Any such custom code needs to be
-identified and removed as a part of the upgrade as it's likely going to
-clash with this feature.
-[/warning]
+> [!WARNING]
+> It's common for Fluent 4 projects to have a lot of custom code to
+> achieve the same result as this feature. Any such custom code needs to be
+> identified and removed as a part of the upgrade as it's likely going to
+> clash with this feature.
 
 ## Localised relations
 
@@ -215,9 +209,8 @@ class HomePage extends Page
 }
 ```
 
-[note]
-You cannot simply localise the `BannerID` field and expect the relation to be localised, as that won't copy the `Banner` object to the new locale.
-[/note]
+> [!NOTE]
+> You cannot simply localise the `BannerID` field and expect the relation to be localised, as that won't copy the `Banner` object to the new locale.
 
 This strategy is called "localise by relation" AKA "indirect localisation". We recommend this approach in most cases.
 

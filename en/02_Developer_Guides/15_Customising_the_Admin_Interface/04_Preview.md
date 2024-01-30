@@ -61,37 +61,35 @@ The format for that situation is always the same, with increasing complexity if 
 nesting `GridField`s. For the below examples it is assumed you aren't using nested
 `GridField`s.
 
-[hint]
-As of Silverstripe CMS 4.12.0, you can
-[use CMSEditLinkExtension](/developer_guides/model/managing_records#getting-an-edit-link).
-
-```php
-namespace App\Model;
-
-use App\Admin\MyModelAdmin;
-use SilverStripe\Admin\CMSEditLinkExtension;
-use SilverStripe\ORM\CMSPreviewable;
-use SilverStripe\ORM\DataObject;
-
-class MyParentModel extends DataObject implements CMSPreviewable
-{
-    private static string $cms_edit_owner = MyModelAdmin::class;
-
-    private static $extensions = [
-        CMSEditLinkExtension::class,
-    ];
-
-    public function CMSEditLink()
-    {
-        // Get the value returned by the extension
-        return $this->extend('CMSEditLink')[0];
-    }
-
-    // ...
-}
-```
-
-[/hint]
+> [!TIP]
+> As of Silverstripe CMS 4.12.0, you can
+> [use CMSEditLinkExtension](/developer_guides/model/managing_records#getting-an-edit-link).
+>
+> ```php
+> namespace App\Model;
+>
+> use App\Admin\MyModelAdmin;
+> use SilverStripe\Admin\CMSEditLinkExtension;
+> use SilverStripe\ORM\CMSPreviewable;
+> use SilverStripe\ORM\DataObject;
+>
+> class MyParentModel extends DataObject implements CMSPreviewable
+> {
+>     private static string $cms_edit_owner = MyModelAdmin::class;
+>
+>     private static $extensions = [
+>         CMSEditLinkExtension::class,
+>     ];
+>
+>     public function CMSEditLink()
+>     {
+>         // Get the value returned by the extension
+>         return $this->extend('CMSEditLink')[0];
+>     }
+>
+>     // ...
+> }
+> ```
 
 #### GetMimeType
 
@@ -212,9 +210,8 @@ Note that if you had set up this model to [act like a page](https://www.silverst
 you could simply `return $this->Link($action)`. In that case the new action would not need
 to be added to your `ModelAdmin`.
 
-[warning]
-Note: The `if (!$this->isInDB())` check below is important! Without this, the preview panel will redirect you to a 404 page when creating a new object.
-[/warning]
+> [!WARNING]
+> Note: The `if (!$this->isInDB())` check below is important! Without this, the preview panel will redirect you to a 404 page when creating a new object.
 
 From Silverstripe CMS 4.12.0 onwards `ModelAdmin` provides methods for generating a link
 for the correct model:
@@ -279,10 +276,9 @@ class Product extends DataObject implements CMSPreviewable
 }
 ```
 
-[notice]
-If the `ModelAdmin` uses a tab name other than the class name and you're using a version
-prior to 4.12.0, you'll have to pass that into `Link()` instead.
-[/notice]
+> [!WARNING]
+> If the `ModelAdmin` uses a tab name other than the class name and you're using a version
+> prior to 4.12.0, you'll have to pass that into `Link()` instead.
 
 The `CMSEditLink()` method is also very easy to implement, because the edit link used by
 `ModelAdmin` is predictable.
@@ -426,58 +422,56 @@ class MyAdmin extends ModelAdmin
 }
 ```
 
-[hint]
-If the CSS or JS you have added via [the Requirements API](/developer_guides/templates/requirements/#php-requirements-api)
-aren't coming through, you may need to add `<head>` and `<body>` tags to the markup. It may not be appropriate to do this in
-your main template (you don't want two `<body>` tags on a page that includes the template), so you might need a preview wrapper
-template, like so:
-
-```ss
-<%-- themes/mytheme/templates/PreviewBase.ss --%>
-<!DOCTYPE html>
-<html>
-<%-- head tag is needed for css to be injected --%>
-<head></head>
-<%-- body tag is needed for javascript to be injected --%>
-<body>
-    <%-- these two divs are just here to comply with styling from the simple theme, replace them with your own theme markup --%>
-    <div class="main"><div class="inner typography line">
-        $Preview
-    </div></div>
-</body>
-</html>
-```
-
-```php
-// app/src/Admin/MyAdmin.php
-namespace App\Admin;
-
-use SilverStripe\Admin\ModelAdmin;
-use SilverStripe\View\ArrayData;
-use SilverStripe\View\Requirements;
-use SilverStripe\View\SSViewer;
-
-class MyAdmin extends ModelAdmin
-{
-    // ...
-
-    public function cmsPreview()
-    {
-        // ... ommitted for brevity
-
-        // Add in global css/js that would normally be added in the page base template (as needed)
-        Requirements::themedCSS('client/dist/css/style.css');
-        // Render the preview content
-        $preview = $obj->forTemplate();
-        // Wrap preview in proper html, body, etc so Requirements are used
-        $preview = SSViewer::create('PreviewBase')->process(ArrayData::create(['Preview' => $preview]));
-
-        // ... ommitted for brevity
-    }
-}
-```
-
-[/hint]
+> [!TIP]
+> If the CSS or JS you have added via [the Requirements API](/developer_guides/templates/requirements/#php-requirements-api)
+> aren't coming through, you may need to add `<head>` and `<body>` tags to the markup. It may not be appropriate to do this in
+> your main template (you don't want two `<body>` tags on a page that includes the template), so you might need a preview wrapper
+> template, like so:
+>
+> ```ss
+> <%-- themes/mytheme/templates/PreviewBase.ss --%>
+> <!DOCTYPE html>
+> <html>
+> <%-- head tag is needed for css to be injected --%>
+> <head></head>
+> <%-- body tag is needed for javascript to be injected --%>
+> <body>
+>     <%-- these two divs are just here to comply with styling from the simple theme, replace them with your own theme markup --%>
+>     <div class="main"><div class="inner typography line">
+>         $Preview
+>     </div></div>
+> </body>
+> </html>
+> ```
+>
+> ```php
+> // app/src/Admin/MyAdmin.php
+> namespace App\Admin;
+>
+> use SilverStripe\Admin\ModelAdmin;
+> use SilverStripe\View\ArrayData;
+> use SilverStripe\View\Requirements;
+> use SilverStripe\View\SSViewer;
+>
+> class MyAdmin extends ModelAdmin
+> {
+>     // ...
+>
+>     public function cmsPreview()
+>     {
+>         // ... ommitted for brevity
+>
+>         // Add in global css/js that would normally be added in the page base template (as needed)
+>         Requirements::themedCSS('client/dist/css/style.css');
+>         // Render the preview content
+>         $preview = $obj->forTemplate();
+>         // Wrap preview in proper html, body, etc so Requirements are used
+>         $preview = SSViewer::create('PreviewBase')->process(ArrayData::create(['Preview' => $preview]));
+>
+>         // ... ommitted for brevity
+>     }
+> }
+> ```
 
 ### Enabling preview for `DataObject` models which belong to a page
 
@@ -809,13 +803,12 @@ internal states of the layout. You can reach it by calling:
 $('.cms-container').entwine('.ss').getLayoutOptions().mode;
 ```
 
-[notice]
-Caveat: the `.preview-mode-selector` appears twice, once in the preview and
-second time in the CMS actions area as `#preview-mode-dropdown-in-cms`. This is
-done because the user should still have access to the mode selector even if
-preview is not visible. Currently CMS Actions are a separate area to the preview
-option selectors, even if they try to appear as one horizontal bar.
-[/notice]
+> [!WARNING]
+> Caveat: the `.preview-mode-selector` appears twice, once in the preview and
+> second time in the CMS actions area as `#preview-mode-dropdown-in-cms`. This is
+> done because the user should still have access to the mode selector even if
+> preview is not visible. Currently CMS Actions are a separate area to the preview
+> option selectors, even if they try to appear as one horizontal bar.
 
 ### Preview API
 

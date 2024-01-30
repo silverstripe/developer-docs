@@ -12,9 +12,8 @@ This policy applies to all [Silverstripe CMS commercially supported modules](htt
 
 Community modules are not covered by this policy. Modules in the `silverstripe` GitHub organisation that are not commercially supported are updated on a best effort basis.
 
-[info]
-Refer to our [definition of public API](/project_governance/public_api/).
-[/info]
+> [!NOTE]
+> Refer to our [definition of public API](/project_governance/public_api/).
 
 ## General approach to major releases
 

@@ -50,9 +50,8 @@ Composer is using [version constraints](https://getcomposer.org/doc/articles/ver
 To lock down to a specific version, branch or commit, read up on
 ["lock" files](http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file).
 
-[notice]
-After you add or remove modules, make sure you rebuild the database, class and configuration manifests by going to <http://yoursite.com/dev/build?flush=1>
-[/notice]
+> [!WARNING]
+> After you add or remove modules, make sure you rebuild the database, class and configuration manifests by going to <http://yoursite.com/dev/build?flush=1>
 
 ## Creating a module {#create}
 

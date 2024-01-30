@@ -11,11 +11,10 @@ Allows a class to define it's own flush functionality, which is triggered when `
 [FlushMiddleware](api:SilverStripe\Control\Middleware\FlushMiddleware) is run before a request is made, calling `flush()` statically on all
 implementors of [Flushable](api:SilverStripe\Core\Flushable).
 
-[notice]
-Flushable implementers might also be triggered automatically on deploy if you have `SS_FLUSH_ON_DEPLOY` [environment
-variable](../configuration/environment_variables) defined. In that case even if you don't manually pass `flush=1` parameter, the first request after deploy
-will still be calling `Flushable::flush` on those entities.
-[/notice]
+> [!WARNING]
+> Flushable implementers might also be triggered automatically on deploy if you have `SS_FLUSH_ON_DEPLOY` [environment
+> variable](../configuration/environment_variables) defined. In that case even if you don't manually pass `flush=1` parameter, the first request after deploy
+> will still be calling `Flushable::flush` on those entities.
 
 ## Usage
 

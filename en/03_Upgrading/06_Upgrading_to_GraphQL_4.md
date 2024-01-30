@@ -5,11 +5,10 @@ summary: Upgrade your Silverstripe CMS project to use graphQL version 4
 
 # Upgrading to GraphQL 4
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 The 4.0 release of `silverstripe/graphql` underwent a massive set of changes representing an
 entire rewrite of the module. This was done as part of a year-long plan to improve performance. While
@@ -244,11 +243,10 @@ class MyProvider implements SchemaUpdater
 }
 ```
 
-[alert]
-The API for procedural code has been **completely rewritten**. You'll need to rewrite all of the code
-in these classes. For more information on working with procedural code, read the
-[using procedural code](/developer_guides/graphql/getting_started/using_procedural_code) documentation.
-[/alert]
+> [!CAUTION]
+> The API for procedural code has been **completely rewritten**. You'll need to rewrite all of the code
+> in these classes. For more information on working with procedural code, read the
+> [using procedural code](/developer_guides/graphql/getting_started/using_procedural_code) documentation.
 
 ## Goodbye scaffolding, hello models
 
@@ -377,13 +375,12 @@ Change any references to DataObject type names in your queries
 
 `query SiteTrees {}`
 
-[info]
-If this new pattern is not compatible with your set up (e.g. if you use feature-based namespacing), you have full
-control over how types are named. You can use the `type_formatter` and `type_prefix` on
-[`DataObjectModel`](api:SilverStripe\GraphQL\Schema\DataObject\DataObjectModel) to influence the naming computation.
-Read more about this in the [DataObject model type](/developer_guides/graphql/getting_started/working_with_dataobjects/dataobject_model_type#customising-the-type-name)
-docs.
-[/info]
+> [!NOTE]
+> If this new pattern is not compatible with your set up (e.g. if you use feature-based namespacing), you have full
+> control over how types are named. You can use the `type_formatter` and `type_prefix` on
+> [`DataObjectModel`](api:SilverStripe\GraphQL\Schema\DataObject\DataObjectModel) to influence the naming computation.
+> Read more about this in the [DataObject model type](/developer_guides/graphql/getting_started/working_with_dataobjects/dataobject_model_type#customising-the-type-name)
+> docs.
 
 ## The `Connection` class has been replaced with plugins
 

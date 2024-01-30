@@ -14,20 +14,18 @@ explained in more detail on the [syntax](syntax#scope) page. Many of the methods
 scope, and you can specify additional static methods to be available globally in templates by implementing the
 [TemplateGlobalProvider](api:SilverStripe\View\TemplateGlobalProvider) interface.
 
-[notice]
-Want a quick way of knowing what scope you're in? Try putting `$ClassName` in your template. You should see a string
-such as `Page` of the object that's in scope. The methods you can call on that object then are any functions, database
-properties or relations on the `Page` class, `PageController` class as well as anything from their subclasses **or**
-extensions.
-[/notice]
+> [!WARNING]
+> Want a quick way of knowing what scope you're in? Try putting `$ClassName` in your template. You should see a string
+> such as `Page` of the object that's in scope. The methods you can call on that object then are any functions, database
+> properties or relations on the `Page` class, `PageController` class as well as anything from their subclasses **or**
+> extensions.
 
 Outputting these variables is only the start, if you want to format or manipulate them before adding them to the template
 have a read of the [Formatting, Modifying and Casting Variables](casting) documentation.
 
-[alert]
-Some of the following only apply when you have the `CMS` module installed. If you're using the `Framework` alone, this
-functionality may not be included.
-[/alert]
+> [!CAUTION]
+> Some of the following only apply when you have the `CMS` module installed. If you're using the `Framework` alone, this
+> functionality may not be included.
 
 ## Base tag
 
@@ -45,9 +43,8 @@ to locate your site’s images and CSS files.
 
 It renders in the template as `<base href="http://www.yoursite.com" /><!--[if lte IE 6]></base><![endif]-->`
 
-[alert]
-A `<% base_tag %>;` is nearly always required or assumed by Silverstripe CMS to exist.
-[/alert]
+> [!CAUTION]
+> A `<% base_tag %>;` is nearly always required or assumed by Silverstripe CMS to exist.
 
 ## `CurrentMember`
 
@@ -72,9 +69,8 @@ Most objects within Silverstripe CMS will respond to `$Title` (i.e. they should 
 The CMS module in particular provides two fields to label a page: `Title` and `MenuTitle`. `Title` is the title
 displayed on the web page, while `MenuTitle` can be a shorter version suitable for size-constrained menus.
 
-[notice]
-If `MenuTitle` is left blank by the CMS author, it'll just default to the value in `Title`.
-[/notice]
+> [!WARNING]
+> If `MenuTitle` is left blank by the CMS author, it'll just default to the value in `Title`.
 
 ## Page content
 
@@ -85,21 +81,19 @@ $Content
 It returns the database content of the `Content` property. With the CMS Module, this is the value of the WYSIWYG editor
 but it is also the standard for any object that has a body of content to output.
 
-[info]
-Please note that this database content can be "versioned", meaning that draft content edited in the CMS can be different
-from published content shown to your website visitors. In templates, you don't need to worry about this distinction.
-
-The `$Content` variable contains the published content by default,and only preview draft content if explicitly
-requested (e.g. by the "preview" feature in the CMS) (see the [versioning documentation](/../model/versioning) for
-more details).
-[/info]
+> [!NOTE]
+> Please note that this database content can be "versioned", meaning that draft content edited in the CMS can be different
+> from published content shown to your website visitors. In templates, you don't need to worry about this distinction.
+>
+> The `$Content` variable contains the published content by default,and only preview draft content if explicitly
+> requested (e.g. by the "preview" feature in the CMS) (see the [versioning documentation](/../model/versioning) for
+> more details).
 
 ### `SiteConfig`: global settings
 
-[notice]
-`SiteConfig` is a module that is bundled with the CMS. If you wish to include `SiteConfig` in your framework only
-web pages, you'll need to install it via composer.
-[/notice]
+> [!WARNING]
+> `SiteConfig` is a module that is bundled with the CMS. If you wish to include `SiteConfig` in your framework only
+> web pages, you'll need to install it via composer.
 
 ```ss
 $SiteConfig.Title
@@ -117,9 +111,8 @@ The `$MetaTags` placeholder in a template returns a segment of HTML appropriate 
 will set up title, keywords and description meta-tags, based on the CMS content and is editable in the 'Meta-data' tab
 on a per-page basis.
 
-[notice]
-If you don’t want to include the title tag use `$MetaTags(false)`.
-[/notice]
+> [!WARNING]
+> If you don’t want to include the title tag use `$MetaTags(false)`.
 
 By default `$MetaTags` renders (assuming 4.11.0 is the current version of silverstripe/framework):
 
@@ -285,10 +278,9 @@ behavior based on the page type used:
 Will loop over all Children records of the current object context. Children are pages that sit under the current page in
 the `CMS` or a custom list of data. This originates in the `Versioned` extension's `getChildren` method.
 
-[alert]
-For doing your website navigation most likely you'll want to use `$Menu` since its independent of the page
-context.
-[/alert]
+> [!CAUTION]
+> For doing your website navigation most likely you'll want to use `$Menu` since its independent of the page
+> context.
 
 ### `ChildrenOf`
 
@@ -324,9 +316,8 @@ preference, `AllChildren` does not filter by `ShowInMenus`.
 
 `$Menu(1)` returns the top-level menu of the website. You can also create a sub-menu using `$Menu(2)`, and so forth.
 
-[notice]
-Pages with the `ShowInMenus` property set to `false` will be filtered out.
-[/notice]
+> [!WARNING]
+> Pages with the `ShowInMenus` property set to `false` will be filtered out.
 
 ## Access to a specific page
 
@@ -396,11 +387,10 @@ of the `silverstripe/cms` module.
 <% end_if %>
 ```
 
-[info]
-To customise the markup that `$Breadcrumbs` generates, copy `templates/BreadcrumbsTemplate.ss`
- from the `silverstripe/cms` module to your theme (e.g: `themes/you-theme/templates/BreadcrumbsTemplate.ss`).
- Modify the newly copied template and flush your Silverstripe CMS cache.
-[/info]
+> [!NOTE]
+> To customise the markup that `$Breadcrumbs` generates, copy `templates/BreadcrumbsTemplate.ss`
+> from the `silverstripe/cms` module to your theme (e.g: `themes/you-theme/templates/BreadcrumbsTemplate.ss`).
+> Modify the newly copied template and flush your Silverstripe CMS cache.
 
 ## Forms
 

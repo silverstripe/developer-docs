@@ -49,10 +49,9 @@ various assumptions the ORM and code based on it have:
 We'll explain some ways to use `SELECT` with the full power of SQL,
 but still maintain a connection to the ORM where possible.
 
-[warning]
-Please read our [security topic](/developer_guides/security) to find out
-how to properly prepare user input and variables for use in queries
-[/warning]
+> [!WARNING]
+> Please read our [security topic](/developer_guides/security) to find out
+> how to properly prepare user input and variables for use in queries
 
 ## Usage
 

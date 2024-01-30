@@ -42,10 +42,9 @@ An example of a Silverstripe CMS template is below:
 </html>
 ```
 
-[note]
-Templates can be used for more than HTML output. You can use them to output your data as JSON, XML, CSV or any other
-text-based format.
-[/note]
+> [!NOTE]
+> Templates can be used for more than HTML output. You can use them to output your data as JSON, XML, CSV or any other
+> text-based format.
 
 ## Template file location
 
@@ -89,18 +88,16 @@ These variables will call a method / field on the object and insert the returned
 - `$Foo(param)` will call `$obj->Foo("param")`
 - `$Foo.Bar` will call `$obj->Foo()->Bar()`
 
+> [!WARNING]
+> If you wish to pass parameters to getter functions, you must use the full method name, e.g. $getThing('param'). Also, parameters must be literals, and cannot be other template variables (`$getThing($variable)` will not work)
+
 If a variable returns a string, that string will be inserted into the template. If the variable returns an object, then
 the system will attempt to render the object through its `forTemplate()` method. If the `forTemplate()` method has not
 been defined, the system will return an error.
 
-[notice]
-If you wish to pass parameters to getter functions, you must use the full method name, e.g. $getThing('param'). Also, parameters must be literals, and cannot be other template variables (`$getThing($variable)` will not work)
-[/notice]
-
-[note]
-For more detail around how variables are inserted and formatted into a template see
-[Formatting, Modifying and Casting Variables](/developer_guides/templates/casting/)
-[/note]
+> [!NOTE]
+> For more detail around how variables are inserted and formatted into a template see
+> [Formatting, Modifying and Casting Variables](/developer_guides/templates/casting/)
 
 Variables can come from your database fields, or custom methods you define on your objects.
 
@@ -126,9 +123,8 @@ class MyObject extends DataObject
 <p>You are coming from $UsersIpAddress.</p>
 ```
 
-[note]
-Method names that begin with `get` will automatically be resolved when their prefix is excluded. For example, the above method call `$UsersIpAddress` would also invoke a method named `getUsersIpAddress()`.
-[/note]
+> [!NOTE]
+> Method names that begin with `get` will automatically be resolved when their prefix is excluded. For example, the above method call `$UsersIpAddress` would also invoke a method named `getUsersIpAddress()`.
 
 The variables that can be used in a template vary based on the object currently in [scope](#scope). Scope defines what
 object the methods get called on. For the standard `Page.ss` template the scope is the current [PageController](api:SilverStripe\CMS\Controllers\ContentController\PageController)
@@ -162,9 +158,8 @@ A conditional can also check for a value other than falsy.
 <% end_if %>
 ```
 
-[notice]
-When inside template tags variables should have a '$' prefix, and literals should have quotes.
-[/notice]
+> [!WARNING]
+> When inside template tags variables should have a '$' prefix, and literals should have quotes.
 
 Conditionals can also provide the `else` case.
 
@@ -291,13 +286,12 @@ collection.
 This snippet loops over the children of a page, and generates an unordered list showing the `Title` property from each
 page.
 
-[notice]
-The `$Title` inside the loop refers to the Title property on each object that is looped over, not the current page like
-the reference of `$Title` outside the loop.
-
-This demonstrates the concept of [Scope](#scope). When inside a <% loop %> the scope of the template has changed to the
-object that is being looped over.
-[/notice]
+> [!WARNING]
+> The `$Title` inside the loop refers to the Title property on each object that is looped over, not the current page like
+> the reference of `$Title` outside the loop.
+>
+> This demonstrates the concept of [Scope](#scope). When inside a <% loop %> the scope of the template has changed to the
+> object that is being looped over.
 
 ### Altering the list
 
@@ -383,10 +377,9 @@ iteration.
 </ul>
 ```
 
-[info]
-A common task is to paginate your lists. See the [Pagination](how_tos/pagination) how to for a tutorial on adding
-pagination.
-[/info]
+> [!NOTE]
+> A common task is to paginate your lists. See the [Pagination](how_tos/pagination) how to for a tutorial on adding
+> pagination.
 
 ### `Modulus` and `MultipleOf`
 
@@ -408,10 +401,9 @@ $MultipleOf(factor, offset)
 // returns <div class="column-3">, <div class="column-2">,
 ```
 
-[hint]
-`$Modulus` is useful for floated grid CSS layouts. If you want 3 rows across, put $Modulus(3) as a class and add a
-`clear: both` to `.column-1`.
-[/hint]
+> [!TIP]
+> `$Modulus` is useful for floated grid CSS layouts. If you want 3 rows across, put $Modulus(3) as a class and add a
+> `clear: both` to `.column-1`.
 
 `$MultipleOf(value, offset)` can also be utilized to build column and grid layouts. In this case we want to add a `<br>`
 after every 3rd item.
@@ -447,9 +439,8 @@ $Foo // returns "3"
 \$Foo // returns "$Foo"
 ```
 
-[hint]
-For more information on formatting and casting variables see [Formatting, Modifying and Casting Variables](casting)
-[/hint]
+> [!TIP]
+> For more information on formatting and casting variables see [Formatting, Modifying and Casting Variables](casting)
 
 ## Scope
 
@@ -505,9 +496,8 @@ Given the following structure, it will output the text.
  Page 'Child 2' is a child of 'MyPage'
 ```
 
-[notice]
-Additional selectors implicitly change the scope so you need to put additional `$Up` to get what you expect.
-[/notice]
+> [!WARNING]
+> Additional selectors implicitly change the scope so you need to put additional `$Up` to get what you expect.
 
 ```ss
 <h1>Children of '$Title'</h1>

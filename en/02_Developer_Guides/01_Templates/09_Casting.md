@@ -36,10 +36,9 @@ $Content.FirstParagraph.NoHTML
 <!-- <div class="about-us"> -->
 ```
 
-[notice]
-See the API documentation for [DBHtmlText](api:SilverStripe\ORM\FieldType\DBHtmlText), [FieldType](api:SilverStripe\ORM\FieldType), [DBText](api:SilverStripe\ORM\FieldType\DBText) for all the methods you can use to format
-your text instances. For other objects such as [DBDatetime](api:SilverStripe\ORM\FieldType\DBDatetime) objects see their respective API documentation pages.
-[/notice]
+> [!WARNING]
+> See the API documentation for [DBHtmlText](api:SilverStripe\ORM\FieldType\DBHtmlText), [FieldType](api:SilverStripe\ORM\FieldType), [DBText](api:SilverStripe\ORM\FieldType\DBText) for all the methods you can use to format
+> your text instances. For other objects such as [DBDatetime](api:SilverStripe\ORM\FieldType\DBDatetime) objects see their respective API documentation pages.
 
 ## ForTemplate
 
@@ -94,10 +93,9 @@ class MyDataObject extends DataObject
 When calling `$Header` Silverstripe CMS now has the context that this method will contain HTML and escape the data
 accordingly.
 
-[note]
-By default, all content without a type explicitly defined in a `$casting` array will be assumed to be `Text` content
-and HTML characters encoded.
-[/note]
+> [!NOTE]
+> By default, all content without a type explicitly defined in a `$casting` array will be assumed to be `Text` content
+> and HTML characters encoded.
 
 ## Escaping
 
@@ -105,9 +103,8 @@ Properties are usually auto-escaped in templates to ensure consistent representa
 displaying un-escaped ampersands in HTML. By default, values are escaped as `XML`, which is equivalent to `HTML` for
 this purpose.
 
-[note]
-There's some exceptions to this rule, see the ["security" guide](../security).
-[/note]
+> [!NOTE]
+> There's some exceptions to this rule, see the ["security" guide](../security).
 
 For every field used in templates, a casting helper will be applied. This will first check for any
 `casting` helper on your model specific to that field, and will fall back to the `default_cast` config
@@ -150,11 +147,10 @@ See [DBField](api:SilverStripe\ORM\FieldType\DBField) for the specific implement
   e.g. `<element>$Field.CDATA</element>` will ensure that the `<element>` body is safely escaped
   as a string.
 
-[warning]
-Note: Take care when using `.XML` on `HTMLText` fields, as this will result in double-encoded
-html. To ensure that the correct encoding is used for that field in a template, simply use
-`$Field` by itself to allow the casting helper to determine the best encoding itself.
-[/warning]
+> [!WARNING]
+> Note: Take care when using `.XML` on `HTMLText` fields, as this will result in double-encoded
+> html. To ensure that the correct encoding is used for that field in a template, simply use
+> `$Field` by itself to allow the casting helper to determine the best encoding itself.
 
 ## Cast summary methods
 

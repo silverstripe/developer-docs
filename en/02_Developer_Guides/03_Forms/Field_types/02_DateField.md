@@ -55,9 +55,8 @@ DateField::create('MyDate')
     ->setDateFormat('dd/MM/yyyy');
 ```
 
-[info]
-The formats are based on [ICU format](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#simpledateformat).
-[/info]
+> [!NOTE]
+> The formats are based on [ICU format](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#simpledateformat).
 
 ## Min and max dates
 
@@ -94,9 +93,8 @@ $dateField->setDescription(_t(
 $dateField->setAttribute('placeholder', $dateField->getDateFormat());
 ```
 
-[notice]
-Fields scaffolded through [DataObject::scaffoldCMSFields()](api:SilverStripe\ORM\DataObject::scaffoldCMSFields()) automatically have a description attached to them.
-[/notice]
+> [!WARNING]
+> Fields scaffolded through [DataObject::scaffoldCMSFields()](api:SilverStripe\ORM\DataObject::scaffoldCMSFields()) automatically have a description attached to them.
 
 ## API documentation
 

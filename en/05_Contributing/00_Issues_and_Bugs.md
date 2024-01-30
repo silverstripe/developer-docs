@@ -8,9 +8,8 @@ icon: bug
 
 ## Reporting bugs
 
-[alert]
-If you think you've found a security issue, please use [the specific process](#reporting-security-issues) for those. Do *not* raise a security issue in GitHub.
-[/alert]
+> [!CAUTION]
+> If you think you've found a security issue, please use [the specific process](#reporting-security-issues) for those. Do *not* raise a security issue in GitHub.
 
 If you have discovered a bug in Silverstripe CMS, we'd be glad to hear about it -
 well written bug reports can be half of the solution already!
@@ -19,9 +18,8 @@ Silverstripe CMS uses [GitHub](https://github.com/) to manage bug reports. If yo
 want to report a bug, you will need to [create a GitHub account](https://docs.github.com/en/get-started/onboarding/getting-started-with-your-github-account)
 and log in.
 
-[warning]
-We don't provide support through GitHub issues. If you're having trouble using or developing with Silverstripe CMS but you don't think your problem is a bug, please ask for assistance in our [community channels](https://www.silverstripe.org/community).
-[/warning]
+> [!WARNING]
+> We don't provide support through GitHub issues. If you're having trouble using or developing with Silverstripe CMS but you don't think your problem is a bug, please ask for assistance in our [community channels](https://www.silverstripe.org/community).
 
 ### Before submitting a bug
 
@@ -54,22 +52,20 @@ is the best way to ensure it gets fixed.
 
 ## Feature requests
 
-[warning]
-Please don't file feature requests as GitHub issues. If there's a new feature
-you'd like to see in Silverstripe CMS, you either need to write it yourself (and
-[submit a pull request](/contributing/code/#step-by-step-from-forking-to-sending-the-pull-request)) or convince somebody else to
-write it for you. Any "wishlist" type issues without code attached can be
-expected to be closed as soon as they're reviewed.
-[/warning]
+> [!WARNING]
+> Please don't file feature requests as GitHub issues. If there's a new feature
+> you'd like to see in Silverstripe CMS, you either need to write it yourself (and
+> [submit a pull request](/contributing/code/#step-by-step-from-forking-to-sending-the-pull-request)) or convince somebody else to
+> write it for you. Any "wishlist" type issues without code attached can be
+> expected to be closed as soon as they're reviewed.
 
 In order to gain interest and feedback in your feature, we encourage you to
 present it to the community through the [community channels](https://www.silverstripe.org/community).
 
 ## Reporting security issues
 
-[warning]
-If you think a bug may have security implications, do not create a GitHub issue for it. This may lead to a zero-day vulnerability.
-[/warning]
+> [!WARNING]
+> If you think a bug may have security implications, do not create a GitHub issue for it. This may lead to a zero-day vulnerability.
 
 Report potential security issues to [security@silverstripe.org](mailto:security@silverstripe.org). Emails sent to that address are
 forwarded to a private mailing list and kick off a specific security process.

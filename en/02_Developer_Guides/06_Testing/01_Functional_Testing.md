@@ -27,10 +27,9 @@ $page = $this->post($url);
 Performs a POST request on `$url` and retrieves the [HTTPResponse](api:SilverStripe\Control\HTTPResponse). This also changes the current page to the value
 of the response.
 
-[notice]
-Previous versions of Silverstripe CMS would send a GET request if `post()` was called with no POST variables supplied in the second argument.
-Silverstripe CMS 4.6 and later always sends a POST request for consistency.
-[/notice]
+> [!WARNING]
+> Previous versions of Silverstripe CMS would send a GET request if `post()` was called with no POST variables supplied in the second argument.
+> Silverstripe CMS 4.6 and later always sends a POST request for consistency.
 
 ## Other requests
 
@@ -106,9 +105,8 @@ Assert that the most recently queried page contains a number of content tags spe
 selector will be applied to the HTML of the most recent page. The content of every matching tag will be examined. The
 assertion fails if one of the expectedMatches fails to appear.
 
-[notice]
-`&nbsp;` characters are stripped from the content; make sure that your assertions take this into account.
-[/notice]
+> [!WARNING]
+> `&nbsp;` characters are stripped from the content; make sure that your assertions take this into account.
 
 ### `assertExactHTMLMatchBySelector`
 
@@ -122,9 +120,8 @@ Assert that the most recently queried page contains a number of content tags spe
 selector will be applied to the HTML of the most recent page.  The full HTML of every matching tag will be examined. The
 assertion fails if one of the expectedMatches fails to appear.
 
-[notice]
-`&nbsp;` characters are stripped from the content; make sure that your assertions take this into account.
-[/notice]
+> [!WARNING]
+> `&nbsp;` characters are stripped from the content; make sure that your assertions take this into account.
 
 ## Related documentation
 
