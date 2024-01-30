@@ -10,19 +10,17 @@ The Silverstripe CMS core and supported modules are hosted on [GitHub](https://g
 
 This documentation assumes you are fairly confident with git and GitHub. If that isn't the case, you may want to read some guides for [GitHub](https://docs.github.com/en/get-started/quickstart), [git](https://docs.github.com/en/get-started/using-git), and [pull requests](https://docs.github.com/en/pull-requests).
 
-[hint]
-Note: By supplying code to the Silverstripe CMS core team in issues and pull requests, you agree to assign copyright of that code to Silverstripe Limited, on the condition that Silverstripe Limited releases that code under the BSD license.
-
-We ask for this so that the ownership in the license is clear and unambiguous, and so that community involvement doesn't stop us from being able to continue supporting these projects. By releasing this code under a permissive license, this copyright assignment won't prevent you from using the code in any way you see fit.
-[/hint]
+> [!TIP]
+> Note: By supplying code to the Silverstripe CMS core team in issues and pull requests, you agree to assign copyright of that code to Silverstripe Limited, on the condition that Silverstripe Limited releases that code under the BSD license.
+>
+> We ask for this so that the ownership in the license is clear and unambiguous, and so that community involvement doesn't stop us from being able to continue supporting these projects. By releasing this code under a permissive license, this copyright assignment won't prevent you from using the code in any way you see fit.
 
 ## Before you start working {#before-you-start}
 
 There are a few things that you should do before you start working on a fix:
 
-[info]
-If you want to contribute changes to documentation, please read through the [contributing documentation](./documentation) page.
-[/info]
+> [!NOTE]
+> If you want to contribute changes to documentation, please read through the [contributing documentation](./documentation) page.
 
 ### Consider if your change should be its own module
 
@@ -46,11 +44,10 @@ Refer to [Contributing Issues](./issues_and_bugs/) for more information about fi
 
 ## Step-by-step: how to contribute code {#step-by-step}
 
-[notice]
-The examples below assume you are making a change that applies to the `5.1` branch.
-
-Please adjust the commands as appropriate for the version of Silverstripe CMS that you're targeting. See [picking the right version](#picking-the-right-version).
-[/notice]
+> [!WARNING]
+> The examples below assume you are making a change that applies to the `5.1` branch.
+>
+> Please adjust the commands as appropriate for the version of Silverstripe CMS that you're targeting. See [picking the right version](#picking-the-right-version).
 
 ### Editing files directly on GitHub
 
@@ -71,9 +68,8 @@ As we follow semantic versioning, we name the branches in repositories according
 
 If after reading this section you are still unsure what branch your pull request should go to, consider asking either in the GitHub issue that you address with your PR or in one of the various [community channels](https://www.silverstripe.org/community/).
 
-[hint]
-Refer to our [definition of public API](/project_governance/public_api/) for the following sections.
-[/hint]
+> [!TIP]
+> Refer to our [definition of public API](/project_governance/public_api/) for the following sections.
 
 Any updates to third party dependencies in `composer.json` should aim to target the default branch for a minor release if possible. Targeting a patch release branch is acceptable if updating dependencies is required to fix a high impact or critical bug and is unlikely to result in regressions.
 
@@ -129,9 +125,8 @@ composer reinstall <org>/<module> --prefer-source
     git checkout -b <your-branch-name>
     ```
 
-[hint]
-Use a descriptive name for your branch. For example if you are fixing a bug related to swapping preview modes targetting the `5.1` branch: `pulls/5.1/fix-preview-modes`
-[/hint]
+> [!TIP]
+> Use a descriptive name for your branch. For example if you are fixing a bug related to swapping preview modes targetting the `5.1` branch: `pulls/5.1/fix-preview-modes`
 
 ### Step 4: work on your pull request {#work-on-your-pr}
 
@@ -226,9 +221,8 @@ The core team will review the pull request as time permits. They will most likel
 
 If other changes are merged in before yours, your pull request may end up with merge conflicts. You'll need to resolve those by rebasing your branch on top of the target branch, and then manually resolving the merge conflicts.
 
-[warning]
-Using `--force-with-lease` is necessary after a rebase, because otherwise GitHub will reject your push. This is because your commit hashes will have changed. But beware that you are explicitly telling GitHub that you are intentionally overriding data. Make sure you have the correct branch name when doing that step to avoid accidentally overriding other branches in your forked repository.
-[/warning]
+> [!WARNING]
+> Using `--force-with-lease` is necessary after a rebase, because otherwise GitHub will reject your push. This is because your commit hashes will have changed. But beware that you are explicitly telling GitHub that you are intentionally overriding data. Make sure you have the correct branch name when doing that step to avoid accidentally overriding other branches in your forked repository.
 
 ```bash
 cd vendor/<org>/<module>

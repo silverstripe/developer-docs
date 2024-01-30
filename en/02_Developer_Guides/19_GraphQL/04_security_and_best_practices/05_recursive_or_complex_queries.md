@@ -30,9 +30,8 @@ SilverStripe\GraphQL\Schema\Schema:
         max_query_complexity: 100 # default unlimited
 ```
 
-[info]
-For calculating the query complexity, every field in the query gets a default score 1 (including ObjectType nodes). Total complexity of the query is the sum of all field scores.
-[/info]
+> [!NOTE]
+> For calculating the query complexity, every field in the query gets a default score 1 (including ObjectType nodes). Total complexity of the query is the sum of all field scores.
 
 You can also configure these settings for individual schemas. This allows you to fine-tune the security of your custom public-facing schema without affecting the security of the schema used in the CMS. To do so, either replace `'*'` with the name of your schema in the YAML configuration above, or set the values under the `config` key for your schema using preferred file structure as defined in [configuring your schema](../getting_started/configuring_your_schema/). For example:
 

@@ -18,9 +18,8 @@ The `Sendmail` transport is the most common one and is used by default in Silver
 
 Alternatively you can provide a different `DSN` to select any of the Transport classes provided natively by `symfony/mailer` or other compatible third-party transports. For more information and to see what other transports are available see the [symfony/mailer transport types](https://symfony.com/doc/current/mailer.html#using-a-3rd-party-transport).
 
-[hint]
-The format for the DSN is exactly as defined in the symfony docs linked above. Some common examples are listed below.
-[/hint]
+> [!TIP]
+> The format for the DSN is exactly as defined in the symfony docs linked above. Some common examples are listed below.
 
 To set the DSN string in an environment variable (recommended):
 
@@ -116,16 +115,18 @@ $email->text('My plain text email content');
 $email->send();
 ```
 
-[info]
-The default HTML template for emails is `vendor/silverstripe/framework/templates/SilverStripe/Control/Email/Email.ss`.
-To customise this template, first copy it to `<project-root>/themes/<my-theme>/SilverStripe/Control/Email/Email.ss`. Alternatively, copy it to a different location and use `setHTMLTemplate` when you create the
-`Email` instance. Note - by default the `$EmailContent` variable will escape HTML tags for security reasons. If you feel confident allowing this variable to be rendered as HTML, then update your custom email template to `$EmailContent.RAW`
-[/info]
+> [!NOTE]
+> The default HTML template for emails is `vendor/silverstripe/framework/templates/SilverStripe/Control/Email/Email.ss`.
+> To customise this template, first copy it to `<project-root>/themes/<my-theme>/SilverStripe/Control/Email/Email.ss`. Alternatively, copy it to a different location and use `setHTMLTemplate` when you create the
+> `Email` instance. Note - by default the `$EmailContent` variable will escape HTML tags for security reasons. If you feel confident allowing this variable to be rendered as HTML, then update your custom email template to `$EmailContent.RAW`
 
 ### Templates
 
 HTML emails can use custom templates using the same template language as your website template. You can also pass the
 email object additional information using the `setData` and `addData` methods.
+
+> [!NOTE]
+> Calling `setData()` or `addData()` once or more will cause the email to be rendered using Silverstripe templates. This will override any email content set directly via methods such as `setBody()`, `html()`, or `text()`.
 
 ```ss
 <%-- app/templates/Email/MyCustomEmail.ss --%>
@@ -152,14 +153,9 @@ $email = Email::create()
 $email->send();
 ```
 
-[info]
-Calling `setData()` or `addData()` once or more will cause the email to be rendered using Silverstripe templates. This will override any email content set directly via methods such as `setBody()`, `html()`, or `text()`.
-[/info]
-
-[alert]
-As we've added a new template file (`MyCustomEmail`) make sure you clear the Silverstripe CMS cache for your changes to
-take affect.
-[/alert]
+> [!CAUTION]
+> As we've added a new template file (`MyCustomEmail`) make sure you clear the Silverstripe CMS cache for your changes to
+> take affect.
 
 #### Custom plain templates
 
@@ -209,10 +205,9 @@ $to = [
 $email = Email::create($from, $to, $subject, $body);
 ```
 
-[alert]
-Remember, setting a `from` address that doesn't come from your domain (such as the users email) will likely see your
-email marked as spam. If you want to send from another address think about using the `setReplyTo` method.
-[/alert]
+> [!CAUTION]
+> Remember, setting a `from` address that doesn't come from your domain (such as the users email) will likely see your
+> email marked as spam. If you want to send from another address think about using the `setReplyTo` method.
 
 You will also have to remove the `SS_SEND_ALL_EMAILS_FROM` environment variable if it is present.
 
@@ -262,10 +257,9 @@ $email->replyTo('reply@example.com');
 
 If you wish to handle email send failures then you can wrap `$email->send()` with a try/catch block that catches the Symfony Mailer `TransportExceptionInterface`.
 
-[hint]
-You might get a Symfony Mailer `RfcComplianceException` when instantiating the `Email` object if the email address you're trying to send to or from is invalid.
-In some cases you'll want to catch and handle that exception as well.
-[/hint]
+> [!TIP]
+> You might get a Symfony Mailer `RfcComplianceException` when instantiating the `Email` object if the email address you're trying to send to or from is invalid.
+> In some cases you'll want to catch and handle that exception as well.
 
 ```php
 use SilverStripe\Control\Email\Email;

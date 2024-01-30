@@ -227,9 +227,8 @@ We can also easily create new drop-up menus by defining new tabs within the
 $fields->addFieldToTab('ActionMenus.MyDropUp', FormAction::create('minor', 'Minor action in a new drop-up'));
 ```
 
-[hint]
-Empty tabs will be automatically removed from the `FieldList` to prevent clutter.
-[/hint]
+> [!TIP]
+> Empty tabs will be automatically removed from the `FieldList` to prevent clutter.
 
 To make the actions more user-friendly you can also use alternating buttons as
 detailed in the [CMS Alternating Button](cms_alternating_button)

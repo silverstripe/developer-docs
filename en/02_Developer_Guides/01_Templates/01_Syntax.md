@@ -43,10 +43,9 @@ An example of a Silverstripe CMS template is below:
 </html>
 ```
 
-[note]
-Templates can be used for more than HTML output. You can use them to output your data as JSON, XML, CSV or any other
-text-based format.
-[/note]
+> [!NOTE]
+> Templates can be used for more than HTML output. You can use them to output your data as JSON, XML, CSV or any other
+> text-based format.
 
 ## Template file location
 
@@ -76,33 +75,30 @@ $Foo.Bar
 
 These variables will call a method / field on the object and insert the returned value as a string into the template.
 
+> [!WARNING]
+> If you wish to pass arguments to getter functions, you must use the full method name. e.g. `$Thing` will try to access `Thing` as a property, which will ultimately result in `getThing()` being called with no arguments To pass arguments you must use `$getThing('param')`.
+>
+> Also, arguments must be literals, and cannot be other template variables (`$getThing($variable)` will pass the literal string `'$variable'` to the `getThing()` method).
+
 - `$Foo("param")` will call `$obj->Foo("param")`
 - `$Foo.Bar` will call `$obj->Foo()->Bar`
 
-[info]
-Arguments passed into methods can be any non-array literal type (not just strings), e.g:
-
-- `$Foo(1)` will pass `1` as an int
-- `$Foo(0.5)` will pass `0.5` as a float
-- `$Foo(true)` will pass `true` as a boolean
-- `$Foo(null)` will pass `null` as a null primitive
-- `$Foo("param")`, `$Foo('param')`, and `$Foo(param)` will all pass `'param'` as a string. It is recommended that you always use quotes when passing a string for clarity
-[/info]
-
-[notice]
-If you wish to pass arguments to getter functions, you must use the full method name. e.g. `$Thing` will try to access `Thing` as a property, which will ultimately result in `getThing()` being called with no arguments To pass arguments you must use `$getThing('param')`.
-
-Also, arguments must be literals, and cannot be other template variables (`$getThing($variable)` will pass the literal string `'$variable'` to the `getThing()` method).
-[/notice]
+> [!NOTE]
+> Arguments passed into methods can be any non-array literal type (not just strings), e.g:
+>
+> - `$Foo(1)` will pass `1` as an int
+> - `$Foo(0.5)` will pass `0.5` as a float
+> - `$Foo(true)` will pass `true` as a boolean
+> - `$Foo(null)` will pass `null` as a null primitive
+> - `$Foo("param")`, `$Foo('param')`, and `$Foo(param)` will all pass `'param'` as a string. It is recommended that you always use quotes when passing a string for clarity
 
 If a variable returns a string, that string will be inserted into the template. If the variable returns an object, then
 the system will attempt to render the object through its `forTemplate()` method. If the `forTemplate()` method has not
 been defined, the system will return an error.
 
-[note]
-For more details around how variables are inserted and formatted into a template see
-[Formatting, Modifying and Casting Variables](/developer_guides/templates/casting/)
-[/note]
+> [!NOTE]
+> For more details around how variables are inserted and formatted into a template see
+> [Formatting, Modifying and Casting Variables](/developer_guides/templates/casting/)
 
 Variables can come from your database fields, or custom methods you define on your objects.
 
@@ -128,9 +124,8 @@ class MyObject extends DataObject
 <p>You are coming from $UsersIpAddress.</p>
 ```
 
-[note]
-Method names that begin with `get` will automatically be resolved when their prefix is excluded. For example, the above method call `$UsersIpAddress` would also invoke a method named `getUsersIpAddress()`.
-[/note]
+> [!NOTE]
+> Method names that begin with `get` will automatically be resolved when their prefix is excluded. For example, the above method call `$UsersIpAddress` would also invoke a method named `getUsersIpAddress()`.
 
 The variables that can be used in a template vary based on the object currently in scope (see [scope](#scope) below). Scope defines what
 object the methods get called on. For the standard `Page.ss` template the scope is the current [`ContentController`](api:SilverStripe\CMS\Controllers\ContentController)
@@ -164,9 +159,8 @@ A conditional can also use comparisons.
 <% end_if %>
 ```
 
-[notice]
-You can technically omit the `$` prefix for variables inside template tags, but this is a legacy behaviour and can result in unexpected behaviour. Variables should have a `$` prefix, and string literals should have quotes.
-[/notice]
+> [!WARNING]
+> You can technically omit the `$` prefix for variables inside template tags, but this is a legacy behaviour and can result in unexpected behaviour. Variables should have a `$` prefix, and string literals should have quotes.
 
 Conditionals can also provide the `else` case.
 
@@ -214,9 +208,8 @@ For more nuanced conditions you can use the `!=` operator.
 
 Multiple checks can be done using `||`/`or`, or `&&`/ `and`.
 
-[info]
-`or` is functionally equivalent to `||` in template conditions, and `and` is functionally equivalent to `&&`.
-[/info]
+> [!NOTE]
+> `or` is functionally equivalent to `||` in template conditions, and `and` is functionally equivalent to `&&`.
 
 If *either* of the conditions is true.
 
@@ -273,9 +266,8 @@ include.
 <% end_with %>
 ```
 
-[hint]
-Unlike when passing arguments to a function call in templates, arguments passed to a template include can be literals *or* variables.
-[/hint]
+> [!TIP]
+> Unlike when passing arguments to a function call in templates, arguments passed to a template include can be literals *or* variables.
 
 ## Looping over lists
 
@@ -294,13 +286,12 @@ collection.
 This snippet loops over the children of a page, and generates an unordered list showing the `Title` property from each
 page.
 
-[notice]
-The `$Title` inside the loop refers to the Title property on each object that is looped over, not the current page like
-the reference of `$Title` outside the loop.
-
-This demonstrates the concept of scope ([see scope below](#scope)). When inside a `<% loop %>` the scope of the template has changed to the
-object that is being looped over.
-[/notice]
+> [!WARNING]
+> The `$Title` inside the loop refers to the Title property on each object that is looped over, not the current page like
+> the reference of `$Title` outside the loop.
+>
+> This demonstrates the concept of scope ([see scope below](#scope)). When inside a `<% loop %>` the scope of the template has changed to the
+> object that is being looped over.
 
 ### Altering the list
 
@@ -385,10 +376,9 @@ iteration. These are provided by [`SSViewer_BasicIteratorSupport::get_template_i
 </ul>
 ```
 
-[info]
-A common task is to paginate your lists. See the [Pagination](how_tos/pagination) how to for a tutorial on adding
-pagination.
-[/info]
+> [!NOTE]
+> A common task is to paginate your lists. See the [Pagination](how_tos/pagination) how to for a tutorial on adding
+> pagination.
 
 ### `Modulus` and `MultipleOf`
 
@@ -396,10 +386,9 @@ pagination.
 
 `$Modulus` returns the modulus of the numerical position of the item in the data set. You must pass in the number to perform modulus operations to and an optional offset to start from. It returns an integer.
 
-[hint]
-`$Modulus` is useful for floated grid CSS layouts. If you want 3 rows across, put `column-$Modulus(3)` as a class and add a
-`clear: both` to `.column-1`.
-[/hint]
+> [!TIP]
+> `$Modulus` is useful for floated grid CSS layouts. If you want 3 rows across, put `column-$Modulus(3)` as a class and add a
+> `clear: both` to `.column-1`.
 
 ```ss
 <% loop $Children %>
@@ -448,9 +437,8 @@ $Foo <%-- returns "3" --%>
 \$Foo <%-- returns "$Foo" --%>
 ```
 
-[hint]
-For more information on formatting and casting variables see [Formatting, Modifying and Casting Variables](casting)
-[/hint]
+> [!TIP]
+> For more information on formatting and casting variables see [Formatting, Modifying and Casting Variables](casting)
 
 ## Scope
 
@@ -511,9 +499,8 @@ It will create this markup:
 <p>Page 'Child 2' is a child of 'MyPage'</p>
 ```
 
-[notice]
-Each `<% loop %>` or `<% with %>` block results in a change of scope, regardless of how the objects are traversed in the opening statement. See the example below:
-[/notice]
+> [!WARNING]
+> Each `<% loop %>` or `<% with %>` block results in a change of scope, regardless of how the objects are traversed in the opening statement. See the example below:
 
 ```ss
 {$Title} <%-- Page title --%>
@@ -598,9 +585,8 @@ You can also use the `$Me` variable, which outputs the current object in scope b
 $Me
 ```
 
-[notice]
-If the object does not have a `forTemplate()` method implemented, this will throw an error.
-[/notice]
+> [!WARNING]
+> If the object does not have a `forTemplate()` method implemented, this will throw an error.
 
 ## Comments
 

@@ -26,10 +26,9 @@ whenever the schema definition changes, or a new schema definition is added.
 - Any time you run the `dev/build` command on your project.
 - `silverstripe/graphql` will attempt to generate your schema "on-demand" on the first GraphQL request *only* if it wasn’t already generated.
 
-[warning]
-Relying on the "on-demand" schema generation on the first GraphQL request requires some additional consideration.
-See [deploying the schema](deploying_the_schema#on-demand).
-[/warning]
+> [!WARNING]
+> Relying on the "on-demand" schema generation on the first GraphQL request requires some additional consideration.
+> See [deploying the schema](deploying_the_schema#on-demand).
 
 #### Running `dev/graphql/build`
 
@@ -41,16 +40,14 @@ This command takes an optional `schema` parameter. If you only want to generate 
 (e.g. generate your custom schema, but not the CMS schema), you should pass in the name of the
 schema you want to build.
 
-[info]
-If you do not provide a `schema` parameter, the command will build all schemas.
-[/info]
+> [!NOTE]
+> If you do not provide a `schema` parameter, the command will build all schemas.
 
 `vendor/bin/sake dev/graphql/build schema=default`
 
-[info]
-Most of the time, the name of your custom schema is `default`. If you're editing DataObjects
-that are accessed with GraphQL in the CMS, you may have to rebuild the `admin` schema as well.
-[/info]
+> [!NOTE]
+> Most of the time, the name of your custom schema is `default`. If you're editing DataObjects
+> that are accessed with GraphQL in the CMS, you may have to rebuild the `admin` schema as well.
 
 Keep in mind that some of your changes will be in YAML in the `_config/` directory, which also
 requires a flush.
@@ -107,10 +104,9 @@ those *are* meant to be accessible through your webserver.
 See [Tips and Tricks: Schema Introspection](tips_and_tricks#schema-introspection)
 to find out how to generate these files for your own schema.
 
-[alert]
-While it is safe for you to view these files, you should not manually alter them. If you need to make a change
-to your GraphQL schema, you should [update the schema definition](configuring_your_schema) and rebuild your schema.
-[/alert]
+> [!CAUTION]
+> While it is safe for you to view these files, you should not manually alter them. If you need to make a change
+> to your GraphQL schema, you should [update the schema definition](configuring_your_schema) and rebuild your schema.
 
 ### Further reading
 

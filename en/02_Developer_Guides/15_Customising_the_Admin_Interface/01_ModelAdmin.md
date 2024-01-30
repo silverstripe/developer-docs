@@ -11,10 +11,9 @@ searchables list and edit views of [DataObject](api:SilverStripe\ORM\DataObject)
 It uses the framework's knowledge about the model to provide sensible defaults, allowing you to get started in a couple
 of lines of code, while still providing a solid base for customization.
 
-[info]
-The interface is mainly powered by the [GridField](api:SilverStripe\Forms\GridField\GridField) class ([documentation](../forms/field_types/gridfield)), which can
-also be used in other areas of your application.
-[/info]
+> [!NOTE]
+> The interface is mainly powered by the [GridField](api:SilverStripe\Forms\GridField\GridField) class ([documentation](../forms/field_types/gridfield)), which can
+> also be used in other areas of your application.
 
 Let's assume we want to manage a simple product listing as a sample data model: A product can have a name, price, and
 a category.
@@ -86,9 +85,8 @@ class MyAdmin extends ModelAdmin
 This will automatically add a new menu entry to the Silverstripe CMS UI entitled `My Product Admin` and logged in
 users will be able to upload and manage `Product` and `Category` instances through `https://www.example.com/admin/products`.
 
-[alert]
-After defining these classes, make sure you have rebuilt your Silverstripe CMS database and flushed your cache.
-[/alert]
+> [!CAUTION]
+> After defining these classes, make sure you have rebuilt your Silverstripe CMS database and flushed your cache.
 
 ## Defining the `ModelAdmin` models
 
@@ -146,6 +144,12 @@ class MyAdmin extends ModelAdmin
 
 It is trivial to get links to the edit form for managed records.
 
+> [!NOTE]
+> The [getLinkForModelClass()](api:SilverStripe\Admin\ModelAdmin::getLinkForModelClass()) method returns a link
+> for the first tab defined for that class. If you have multiple tabs for a given class (as in the example above)
+> it is better to use [getLinkForModelTab()](api:SilverStripe\Admin\ModelAdmin::getLinkForModelTab()) which will
+> give you a link for the specific tab you pass in.
+
 ```php
 $admin = MyAdmin::singleton();
 if ($admin->isManagedModel(Product::class)) {
@@ -158,18 +162,10 @@ if ($admin->isManagedModel(Product::class)) {
 $tabLink = $admin->getLinkForModelTab('product-category');
 ```
 
-[info]
-The [getLinkForModelClass()](api:SilverStripe\Admin\ModelAdmin::getLinkForModelClass()) method returns a link
-for the first tab defined for that class. If you have multiple tabs for a given class (as in the example above)
-it is better to use [getLinkForModelTab()](api:SilverStripe\Admin\ModelAdmin::getLinkForModelTab()) which will
-give you a link for the specific tab you pass in.
-[/info]
-
-[hint]
-If you want `getLinkForModelClass()` to return the link for a specific tab, you can override the
-[getModelTabForModelClass()](api:SilverStripe\Admin\ModelAdmin::getModelTabForModelClass()) method
-for your `ModelAdmin` subclass.
-[/hint]
+> [!TIP]
+> If you want `getLinkForModelClass()` to return the link for a specific tab, you can override the
+> [getModelTabForModelClass()](api:SilverStripe\Admin\ModelAdmin::getModelTabForModelClass()) method
+> for your `ModelAdmin` subclass.
 
 You can also use the new [CMSEditLinkExtension](api:SilverStripe\Admin\CMSEditLinkExtension) to provide a `CMSEditLink()` method on the record - see [Managing Records](../model/managing_records#getting-an-edit-link).
 
@@ -179,9 +175,8 @@ Each new `ModelAdmin` subclass creates its' own [permission code](../security), 
 `CMS_ACCESS_MyAdmin`. Users with access to the Admin UI will need to have this permission assigned through
 `admin/security/` or have the `ADMIN` permission code in order to gain access to the controller.
 
-[notice]
-For more information on the security and permission system see the [Security Documentation](../security)
-[/notice]
+> [!WARNING]
+> For more information on the security and permission system see the [Security Documentation](../security)
 
 The [DataObject](api:SilverStripe\ORM\DataObject) API has more granular permission control, which is enforced in [ModelAdmin](api:SilverStripe\Admin\ModelAdmin) by default.
 Available checks are `canEdit()`, `canCreate()`, `canView()` and `canDelete()`. Models check for administrator
@@ -265,9 +260,8 @@ class Product extends DataObject
 }
 ```
 
-[hint]
-[SearchContext](../search/searchcontext) documentation has more information on providing the search functionality.
-[/hint]
+> [!TIP]
+> [SearchContext](../search/searchcontext) documentation has more information on providing the search functionality.
 
 ## Displaying results
 

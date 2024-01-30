@@ -14,6 +14,9 @@ actions on the website they shouldn't be able to.
 Any action you define on a controller must be defined in a `$allowed_actions` configuration array. This prevents users from
 directly calling methods that they shouldn't.
 
+> [!NOTE]
+> If the permission check fails, Silverstripe CMS will return a `403` Forbidden HTTP status.
+
 ```php
 namespace App\Control;
 
@@ -45,33 +48,27 @@ class MyController extends Controller
 }
 ```
 
-[notice]
-If you want to add access checks in a subclass for an action which is declared in a parent class, and the parent class *doesn't* declare an access check for that action, your subclass will have to redeclare the action method.
-
-The declaration of the method can be as simple as:
-
-```php
-namespace App\Control;
-
-use SilverStripe\Control\Controller;
-use SilverStripe\Control\HTTPRequest;
-
-class MyController extends Controller
-{
-    // ...
-
-    public function someAction(HTTPRequest $request)
-    {
-        return parent::someAction($request);
-    }
-}
-```
-
-[/notice]
-
-[info]
-If the permission check fails, Silverstripe CMS will return a `403` Forbidden HTTP status.
-[/info]
+> [!WARNING]
+> If you want to add access checks in a subclass for an action which is declared in a parent class, and the parent class *doesn't* declare an access check for that action, your subclass will have to redeclare the action method.
+>
+> The declaration of the method can be as simple as:
+>
+> ```php
+> namespace App\Control;
+>
+> use SilverStripe\Control\Controller;
+> use SilverStripe\Control\HTTPRequest;
+>
+> class MyController extends Controller
+> {
+>     // ...
+>
+>     public function someAction(HTTPRequest $request)
+>     {
+>         return parent::someAction($request);
+>     }
+> }
+> ```
 
 An action named "index" is allowed by default, unless `allowed_actions` is defined as an empty array, or the action
 is specifically restricted.
@@ -254,10 +251,9 @@ class MyController extends Controller
 }
 ```
 
-[notice]
-This is recommended as an addition to access checks defined in `$allowed_actions`, in order to handle more complex checks, rather than a
-replacement.
-[/notice]
+> [!WARNING]
+> This is recommended as an addition to access checks defined in `$allowed_actions`, in order to handle more complex checks, rather than a
+> replacement.
 
 ## Controller level checks
 
@@ -265,9 +261,8 @@ After checking for allowed_actions, each controller invokes its [`init()`](api:S
 common state. If an `init()` method returns a `HTTPResponse` with either a 3xx or 4xx HTTP status code, it'll abort
 execution. This behavior can be used to implement permission checks.
 
-[info]
-`init()` is called regardless of the action that will ultimately handle the request, and executes before the action does.
-[/info]
+> [!NOTE]
+> `init()` is called regardless of the action that will ultimately handle the request, and executes before the action does.
 
 ```php
 namespace App\Control;

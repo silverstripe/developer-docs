@@ -277,11 +277,10 @@ we could filter the result set by a list of `IDs` early on, which would allow us
 a `DataList` throughout the whole cycle, but this would force us to loop over an
 unlimited result set, and that's never a good idea.
 
-[notice]
-If you've picked up on the inconsistency that the `pageInfo` property is now inaccurate, this is a long-standing
-issue with doing post-query filters. Ideally, any middleware that filters a `DataList` should do it at the query level,
-but that's not always possible.
-[/notice]
+> [!WARNING]
+> If you've picked up on the inconsistency that the `pageInfo` property is now inaccurate, this is a long-standing
+> issue with doing post-query filters. Ideally, any middleware that filters a `DataList` should do it at the query level,
+> but that's not always possible.
 
 ### Step 5: apply the plugins
 

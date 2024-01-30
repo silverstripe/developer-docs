@@ -44,9 +44,8 @@ App\Model\BlogCategory:
   fields: '*'
 ```
 
-[info]
-You cannot define operations on nested types. They only accept fields.
-[/info]
+> [!NOTE]
+> You cannot define operations on nested types. They only accept fields.
 
 ### Further reading
 

@@ -85,9 +85,8 @@ public function getMyHtmlVarcharField()
 }
 ```
 
-[info]
-See [Data types and Casting](/developer_guides/model/data_types_and_casting/#overriding) for more information about getter methods.
-[/info]
+> [!NOTE]
+> See [Data types and Casting](/developer_guides/model/data_types_and_casting/#overriding) for more information about getter methods.
 
 ## Defining custom shortcodes
 
@@ -108,15 +107,14 @@ class MyShortCodeProvider
 
 Note that the `$casting` configuration here is optional - it's used in this case to allow directly calling this method from a template. It doesn't affect the actual shortcode functionality at all.
 
-[warning]
-Note that the `$arguments` parameter potentially contains any arbitrary key/value pairs the user has chosen to include.
-It is strongly recommended that you don't directly convert this array into a list of attributes for your final HTML markup
-as that could lead to XSS vulnerabilities in your project.
-
-If you want to use the `$arguments` parameter as a list of attributes for your final HTML markup, it is strongly recommended that you
-pass the array through a filter of allowed arguments using [array_filter()](https://www.php.net/manual/en/function.array-filter.php)
-or similar.
-[/warning]
+> [!WARNING]
+> Note that the `$arguments` parameter potentially contains any arbitrary key/value pairs the user has chosen to include.
+> It is strongly recommended that you don't directly convert this array into a list of attributes for your final HTML markup
+> as that could lead to XSS vulnerabilities in your project.
+>
+> If you want to use the `$arguments` parameter as a list of attributes for your final HTML markup, it is strongly recommended that you
+> pass the array through a filter of allowed arguments using [array_filter()](https://www.php.net/manual/en/function.array-filter.php)
+> or similar.
 
 These parameters are passed to the `parseMyShortCode` callback:
 
@@ -139,9 +137,8 @@ use SilverStripe\View\Parsers\ShortcodeParser;
 ShortcodeParser::get('default')->register('my_shortcode', [MyShortCodeProvider::class, 'parseMyShortCode']);
 ```
 
-[info]
-Note that `my_shortcode` is an arbitrary name which can be made up of alphanumeric characters and the underscore (`_`) character. If you try to register a shortcode with a name using any other characters, it will not work.
-[/info]
+> [!NOTE]
+> Note that `my_shortcode` is an arbitrary name which can be made up of alphanumeric characters and the underscore (`_`) character. If you try to register a shortcode with a name using any other characters, it will not work.
 
 ## Built-in shortcodes
 

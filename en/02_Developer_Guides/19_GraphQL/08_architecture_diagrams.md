@@ -36,9 +36,8 @@ There are two key processes that happen at request time. Although they're run in
 
 The controller receives the query as a request parameter and persists it as state. It then fetches the schema from the schema storage service (generated code). Then, the query is passed to a query handler service that runs the query through the generated schema code, into a stack of resolvers that execute in serial, much like a stack of middlewares, until finally the response is generated and sent down the wire.
 
-[info]
-The concept of the "resolver stack" is illustrated later in this document.
-[/info]
+> [!NOTE]
+> The concept of the "resolver stack" is illustrated later in this document.
 
 ## Schema composition
 
@@ -101,9 +100,8 @@ Sometimes, a resolver needs to be used in multiple contexts, for instance, a gen
 
 To solve this problem, we can use "resolver context".
 
-[info]
-The word "context" is a bit overloaded here. This section has nothing to do with the `$context` parameter that is passed to all resolvers.
-[/info]
+> [!NOTE]
+> The word "context" is a bit overloaded here. This section has nothing to do with the `$context` parameter that is passed to all resolvers.
 
 When resolvers have context, they must be factories, or functions that return functions, using the following pattern:
 

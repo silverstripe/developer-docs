@@ -10,11 +10,10 @@ Fulltext search allows advanced search criteria for searching words within a tex
 Fulltext search can be achieved using the built-in [MySQLDatabase](api:SilverStripe\ORM\Connect\MySQLDatabase) class a more powerful wrapper for Fulltext
 search is provided through a module.
 
-[notice]
-See the [FulltextSearch Module](https://github.com/silverstripe-labs/silverstripe-fulltextsearch/). This module provides
-a high level wrapper for running advanced search services such as Solr, Lucene or Sphinx in the backend rather than
-`MySQL` search.
-[/notice]
+> [!WARNING]
+> See the [FulltextSearch Module](https://github.com/silverstripe-labs/silverstripe-fulltextsearch/). This module provides
+> a high level wrapper for running advanced search services such as Solr, Lucene or Sphinx in the backend rather than
+> `MySQL` search.
 
 ## Adding fulltext support to `MySQLDatabase`
 
@@ -40,11 +39,10 @@ class MyDataObject extends DataObject
 
 The [FulltextSearchable](api:SilverStripe\ORM\Search\FulltextSearchable) extension will add the correct `Fulltext` indexes to the data model.
 
-[alert]
-The [SearchForm](api:SilverStripe\CMS\Search\SearchForm) and [FulltextSearchable](api:SilverStripe\ORM\Search\FulltextSearchable) API's are currently hard coded to be specific to `Page` and `File`
-records and cannot easily be adapted to include custom `DataObject` instances. To include your custom objects in the
-default site search, have a look at those extensions and modify as required.
-[/alert]
+> [!CAUTION]
+> The [SearchForm](api:SilverStripe\CMS\Search\SearchForm) and [FulltextSearchable](api:SilverStripe\ORM\Search\FulltextSearchable) API's are currently hard coded to be specific to `Page` and `File`
+> records and cannot easily be adapted to include custom `DataObject` instances. To include your custom objects in the
+> default site search, have a look at those extensions and modify as required.
 
 ### Fulltext filter
 

@@ -55,9 +55,8 @@ DateField::create('MyDate')
     ->setDateFormat('dd/MM/yyyy');
 ```
 
-[info]
-The formats are based on [ICU format](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#simpledateformat).
-[/info]
+> [!NOTE]
+> The formats are based on [ICU format](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#simpledateformat).
 
 ## Min and max dates
 

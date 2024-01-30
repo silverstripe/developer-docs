@@ -81,9 +81,8 @@ $object === $object2;
 
 As with `create()`, you can pass as many arguments as you need to the instantiated singleton by passing them into `get()` - but you'll need to pass them in as an array to the third argument or as a named `$constructorArgs` argument, since `get()`'s second argument is a boolean to determine whether the instantiated object is a singleton or not.
 
-[info]
-The arguments passed in for the singleton's constructor will only take effect the first time the singleton is instantiated - after that, because it is a singleton and has therefore already been instantiated, the constructor arguments will be ignored.
-[/info]
+> [!NOTE]
+> The arguments passed in for the singleton's constructor will only take effect the first time the singleton is instantiated - after that, because it is a singleton and has therefore already been instantiated, the constructor arguments will be ignored.
 
 ```php
 use App\MyClient;
@@ -137,9 +136,8 @@ $client = Injector::inst()->get(MyClient::class);
 // $client is now an instance of WriteClient
 ```
 
-[info]
-Note that `App\MyClient` [does not have to be an existing class](#service-inheritance) - you can use abitrary strings to identify singleton services. That said, using existing classes can be easier to reason about and can be refactored by automatic tools/IDEs - along with providing a valid default class to use if one is not explicitly registered.
-[/info]
+> [!NOTE]
+> Note that `App\MyClient` [does not have to be an existing class](#service-inheritance) - you can use abitrary strings to identify singleton services. That said, using existing classes can be easier to reason about and can be refactored by automatic tools/IDEs - along with providing a valid default class to use if one is not explicitly registered.
 
 Using Injector imperatively like this is most common [in testing](#testing-with-injector). Usually, the configuration API is used instead.
 
@@ -166,9 +164,8 @@ $object = Injector::inst()->get(MyClient::class);
 
 This allows you to concisely override classes in Silverstripe core or other third-party Silverstripe code.
 
-[info]
-When overriding other configuration beware the [order that configuration is applied](../configuration/#configuration-values). You may have to use the [Before/After](../configuration/#before-after-rules) syntax to apply your override.
-[/info]
+> [!NOTE]
+> When overriding other configuration beware the [order that configuration is applied](../configuration/#configuration-values). You may have to use the [Before/After](../configuration/#before-after-rules) syntax to apply your override.
 
 ### Special YAML syntax
 
@@ -218,9 +215,8 @@ SilverStripe\Core\Injector\Injector:
       secret: '`SS_API_CLIENT_SECRET`'
 ```
 
-[info]
-Note: undefined variables will be replaced with null.
-[/info]
+> [!NOTE]
+> Note: undefined variables will be replaced with null.
 
 You can have multiple environment variables within a single value, though the overall value must start and end with backticks.
 
@@ -237,9 +233,8 @@ SilverStripe\Core\Injector\Injector:
 
 Silverstripe classes can declare a special `$dependencies` array which can quickly configure dependencies when used with the injector API. The `Injector` will evaluate the array values and assign the appropriate value to a property that matches the array key. For example:
 
-[info]
-Just like the YAML syntax discussed above, constants and environment variables can be substitutes in dependency values using backticks.
-[/info]
+> [!NOTE]
+> Just like the YAML syntax discussed above, constants and environment variables can be substitutes in dependency values using backticks.
 
 ```php
 namespace App\Control;
@@ -283,9 +278,8 @@ class MyController extends Controller
 }
 ```
 
-[info]
-Note the properties set by `Injector` must be public properties, or have a public setter method.
-[/info]
+> [!NOTE]
+> Note the properties set by `Injector` must be public properties, or have a public setter method.
 
 When creating a new instance of `App\Control\MyController` via Injector the permissions property will contain an instance of the `ThirdParty\PermissionService` that was resolved by Injector, and the `defaultText` property will contain the string defined in the `$dependencies` array.
 
@@ -487,13 +481,12 @@ use SilverStripe\Core\Injector\Injector;
 $instance = Injector::inst()->get(MyService::class);
 ```
 
-[note]
-For simplicity, the above example doesn't use the `$service` parameter, though it needs to be declared to match the method signature from the `Factory` interface.
-
-The `$service` parameter will hold the name of the service being requested, which allows you to use the same factory class for multiple different services if you want to. In the above example, the value would be `'App\MyService'`.
-
-The `$params` parameter will hold any constructor arguments that are passed into the `get()` method, as an array. In the above example it is simply an empty array.
-[note]
+> [!NOTE]
+> For simplicity, the above example doesn't use the `$service` parameter, though it needs to be declared to match the method signature from the `Factory` interface.
+>
+> The `$service` parameter will hold the name of the service being requested, which allows you to use the same factory class for multiple different services if you want to. In the above example, the value would be `'App\MyService'`.
+>
+> The `$params` parameter will hold any constructor arguments that are passed into the `get()` method, as an array. In the above example it is simply an empty array.
 
 ### Factory method
 

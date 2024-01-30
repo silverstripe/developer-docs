@@ -5,11 +5,10 @@ summary: Add interactivity enhancements to the admin with Javascript
 
 # CMS layout
 
-[notice]
-The following documentation regarding JavaScript layouts does not apply to React components or sections powered by React.
-If you're developing new functionality in React powered sections please refer to
-[ReactJS in Silverstripe CMS](./how_tos/extend_cms_interface/#react-rendered-ui).
-[/notice]
+> [!WARNING]
+> The following documentation regarding JavaScript layouts does not apply to React components or sections powered by React.
+> If you're developing new functionality in React powered sections please refer to
+> [ReactJS in Silverstripe CMS](./how_tos/extend_cms_interface/#react-rendered-ui).
 
 The CMS markup is structured into "panels", which are the base units containing interface components (or other panels),
 as declared by the class `cms-panel`. Some panels can be made collapsible.
@@ -35,17 +34,16 @@ This causes the framework to:
 to the layout manager)
 - trigger `redraw` on children which also cascades deeper into the hierarchy (this is framework activity)
 
-[notice]
-Caveat: `layout` is also triggered when a DOM element is replaced with AJAX in `LeftAndMain::handleAjaxResponse`. In
-this case it is triggered on the parent of the element being replaced.
-Calling the top level `layout` is not enough as it will wrongly descend down the detached element's hierarchy.
-[/notice]
-
-[notice]
-Caveat: invocation order of the `redraws` is crucial here, generally going from innermost to outermost elements.  For
-example, the tab panels have be applied in the CMS form before the form itself is layouted with its sibling panels to
-avoid incorrect dimensions.
-[/notice]
+> [!WARNING]
+> There are some caveats to this:
+>
+> `layout` is also triggered when a DOM element is replaced with AJAX in `LeftAndMain::handleAjaxResponse`. In
+> this case it is triggered on the parent of the element being replaced.
+> Calling the top level `layout` is not enough as it will wrongly descend down the detached element's hierarchy.
+>
+> The invocation order of the `redraws` is crucial here, generally going from innermost to outermost elements.  For
+> example, the tab panels have be applied in the CMS form before the form itself is layouted with its sibling panels to
+> avoid incorrect dimensions.
 
 ![Layout variations](../../_images/cms-architecture.png)
 

@@ -36,9 +36,8 @@ $players = Player::get()->filterAny([
 ]);
 ```
 
-[hint]
-Notice the syntax - to invoke a `SearchFilter` in the `filter()`/`filterAny()`/`find()` or `exclude()`/`excludeAny()` methods, you add a colon after the field name, followed by the name of the filter (excluding the actual word "filter"). e.g. for a `StartsWithFilter`: `'FieldName:StartsWith'`
-[/hint]
+> [!TIP]
+> Notice the syntax - to invoke a `SearchFilter` in the `filter()`/`filterAny()`/`find()` or `exclude()`/`excludeAny()` methods, you add a colon after the field name, followed by the name of the filter (excluding the actual word "filter"). e.g. for a `StartsWithFilter`: `'FieldName:StartsWith'`
 
 Developers can define their own [SearchFilter](api:SilverStripe\ORM\Filters\SearchFilter) if needing to extend the ORM filter and exclude behaviors.
 
@@ -47,23 +46,21 @@ Developers can define their own [SearchFilter](api:SilverStripe\ORM\Filters\Sear
 `SearchFilter`s can also take modifiers. The modifiers currently supported are `":not"`, `":nocase"`, and
 `":case"` (though you can implement custom modifiers on your own `SearchFilter` implementations). These negate the filter, make it case-insensitive and make it case-sensitive, respectively.
 
-[info]
-The default comparison uses the database's default case sensitivity. For MySQL and MSSQL, this is case-insensitive. For PostgreSQL, this is case-sensitive. But you can declare the default
-case sensitivity for your project by setting the `default_case_sensitive` configuration property on `SearchFilter` like so:
-
-```yml
-SilverStripe\ORM\Filters\SearchFilter:
-  default_case_sensitive: false
-```
-
-Though note that for backwards compatibility reasons, `ArrayList` is explicitly case sensitive by default. To change that, you must set `ArrayList.default_case_sensitive` to false.
-
-```yml
-SilverStripe\ORM\ArrayList:
-  default_case_sensitive: false
-```
-
-[/info]
+> [!NOTE]
+> The default comparison uses the database's default case sensitivity. For MySQL and MSSQL, this is case-insensitive. For PostgreSQL, this is case-sensitive. But you can declare the default
+> case sensitivity for your project by setting the `default_case_sensitive` configuration property on `SearchFilter` like so:
+>
+> ```yml
+> SilverStripe\ORM\Filters\SearchFilter:
+>   default_case_sensitive: false
+> ```
+>
+> Though note that for backwards compatibility reasons, `ArrayList` is explicitly case sensitive by default. To change that, you must set `ArrayList.default_case_sensitive` to false.
+>
+> ```yml
+> SilverStripe\ORM\ArrayList:
+>   default_case_sensitive: false
+> ```
 
 ```php
 // Fetch players that their FirstName is exactly 'Sam'
@@ -117,19 +114,17 @@ $players = Player::get()->filter([
 ]);
 ```
 
-[hint]
-You can combine `:not` and either `:nocase` or `:case`. Note that the order doesn't matter - these two calls are equivalent:
-
-```php
-$players = Player::get()->filter([
-    'FirstName:StartsWith:nocase:not' => 'S',
-]);
-$players = Player::get()->filter([
-    'FirstName:StartsWith:not:nocase' => 'S',
-]);
-```
-
-[/hint]
+> [!TIP]
+> You can combine `:not` and either `:nocase` or `:case`. Note that the order doesn't matter - these two calls are equivalent:
+>
+> ```php
+> $players = Player::get()->filter([
+>     'FirstName:StartsWith:nocase:not' => 'S',
+> ]);
+> $players = Player::get()->filter([
+>     'FirstName:StartsWith:not:nocase' => 'S',
+> ]);
+> ```
 
 ## Related lessons
 

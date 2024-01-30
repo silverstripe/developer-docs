@@ -20,9 +20,8 @@ SilverStripe\Forms\TreeDropdownField:
   search_filter: 'StartsWith'
 ```
 
-[hint]
-A very common use of `TreeDropdownField` is the "Insert Link" feature in the TinyMCE WYSIWYG. Setting this configuration to use another filter and adding an index on `Title` and `MenuTitle` for [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) can significantly improve performance.
-[/hint]
+> [!TIP]
+> A very common use of `TreeDropdownField` is the "Insert Link" feature in the TinyMCE WYSIWYG. Setting this configuration to use another filter and adding an index on `Title` and `MenuTitle` for [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) can significantly improve performance.
 
 See [SearchFilter Modifiers](/developer_guides/model/searchfilters/) for more information about search filters.
 
@@ -39,9 +38,8 @@ SilverStripe\ORM\Connect\DBSchemaManager:
     - App\Model\ModelWithManyRecords
 ```
 
-[info]
-Note: The entire inheritance chain (both ancestors and descendents) of models in that configuration array will be excluded from the check and repair step.
-[/info]
+> [!NOTE]
+> Note: The entire inheritance chain (both ancestors and descendents) of models in that configuration array will be excluded from the check and repair step.
 
 You can also disable these checks entirely:
 

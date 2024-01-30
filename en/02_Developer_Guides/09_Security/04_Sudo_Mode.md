@@ -66,9 +66,8 @@ be applied to React components in your module or code to intercept component ren
 information and log in screen, which will validate, activate sudo mode, and re-render the wrapped component afterwards
 on success.
 
-[notice]
-The `WithSudoMode` HOC is exposed via [Webpack's expose-loader plugin](https://webpack.js.org/loaders/expose-loader/). You will need to add it as a [webpack external](https://webpack.js.org/configuration/externals/) to use it. The recommended way to do this is via the [@silverstripe/webpack-config npm package](https://www.npmjs.com/package/@silverstripe/webpack-config) which handles all the external configuration for you.
-[/notice]
+> [!WARNING]
+> The `WithSudoMode` HOC is exposed via [Webpack's expose-loader plugin](https://webpack.js.org/loaders/expose-loader/). You will need to add it as a [webpack external](https://webpack.js.org/configuration/externals/) to use it. The recommended way to do this is via the [@silverstripe/webpack-config npm package](https://www.npmjs.com/package/@silverstripe/webpack-config) which handles all the external configuration for you.
 
 You can get the injector to apply the HOC to your component automatically using [injector transformations](/developer_guides/customising_the_admin_interface/reactjs_redux_and_graphql/#transforming-services-using-middleware):
 

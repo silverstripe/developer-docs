@@ -27,13 +27,12 @@ $config = new TinyMCEConfig();
 $config->setContentCSS([ '/app/client/css/editor.css' ]);
 ```
 
-[notice]
-`silverstripe/admin` adds a small CSS file to `editor_css` which highlights broken links - you'll
-probably want to include that in the array you pass to `setContentCSS()`, either by first calling
-`getContentCSS()` and merging that array with your new one (and passing the result to `setContentCSS()`)
-or by adding `'/_resources/vendor/silverstripe/admin/client/dist/styles/editor.css'` to the array you pass
-to `setContentCSS()`
-[/notice]
+> [!WARNING]
+> `silverstripe/admin` adds a small CSS file to `editor_css` which highlights broken links - you'll
+> probably want to include that in the array you pass to `setContentCSS()`, either by first calling
+> `getContentCSS()` and merging that array with your new one (and passing the result to `setContentCSS()`)
+> or by adding `'/_resources/vendor/silverstripe/admin/client/dist/styles/editor.css'` to the array you pass
+> to `setContentCSS()`
 
 ## Custom style dropdown
 

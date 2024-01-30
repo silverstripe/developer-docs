@@ -18,11 +18,10 @@ queries:
   'readCountries(limit: Int!)': '[Country]'
 ```
 
-[hint]
-In the above example, the `limit` argument is *required* by making it non-nullable. If you want to be able
-to get an un-filtered list, you can instead allow the argument to be nullable by removing the `!`:
-`'readCountries(limit: Int)': '[Country]'`
-[/hint]
+> [!TIP]
+> In the above example, the `limit` argument is *required* by making it non-nullable. If you want to be able
+> to get an un-filtered list, you can instead allow the argument to be nullable by removing the `!`:
+> `'readCountries(limit: Int)': '[Country]'`
 
 We've provided the required argument `limit` to the query, which will allow us to truncate the results.
 Let's update the resolver accordingly.
