@@ -45,9 +45,8 @@ class MyController extends Controller
 }
 ```
 
-[info]
-If the permission check fails, Silverstripe CMS will return a `403` Forbidden HTTP status.
-[/info]
+> [!NOTE]
+> If the permission check fails, Silverstripe CMS will return a `403` Forbidden HTTP status.
 
 An action named "index" is white listed by default, unless `allowed_actions` is defined as an empty array, or the action
 is specifically restricted.
@@ -149,9 +148,8 @@ class MyChildController extends MyController
 }
 ```
 
-[notice]
-Access checks on parent classes need to be overwritten via the [Configuration API](../configuration).
-[/notice]
+> [!WARNING]
+> Access checks on parent classes need to be overwritten via the [Configuration API](../configuration).
 
 ## Forms
 
@@ -210,10 +208,9 @@ class MyController extends Controller
 }
 ```
 
-[notice]
-This is recommended as an addition for `$allowed_actions`, in order to handle more complex checks, rather than a
-replacement.
-[/notice]
+> [!WARNING]
+> This is recommended as an addition for `$allowed_actions`, in order to handle more complex checks, rather than a
+> replacement.
 
 ## Controller level checks
 
@@ -221,9 +218,8 @@ After checking for allowed_actions, each controller invokes its `init()` method,
 common state, If an `init()` method returns a `HTTPResponse` with either a 3xx or 4xx HTTP status code, it'll abort
 execution. This behavior can be used to implement permission checks.
 
-[info]
-`init` is called for any possible action on the controller and before any specific method such as `index`.
-[/info]
+> [!NOTE]
+> `init` is called for any possible action on the controller and before any specific method such as `index`.
 
 ```php
 namespace App\Control;

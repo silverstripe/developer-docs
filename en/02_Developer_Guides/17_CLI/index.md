@@ -19,21 +19,19 @@ cd your-webroot/
 php vendor/silverstripe/framework/cli-script.php dev/build
 ```
 
-[notice]
-Your command line PHP version is likely to use a different configuration as your webserver (run `php -i` to find out
-more). This can be a good thing, your CLI can be configured to use higher memory limits than you would want your website
-to have.
-[/notice]
+> [!WARNING]
+> Your command line PHP version is likely to use a different configuration as your webserver (run `php -i` to find out
+> more). This can be a good thing, your CLI can be configured to use higher memory limits than you would want your website
+> to have.
 
 ## Sake - Silverstripe CMS make
 
 Sake is a simple wrapper around `cli-script.php`. It also tries to detect which `php` executable to use if more than one
 are available. It is accessible via `vendor/bin/sake`.
 
-[info]
-If you are using a Debian server: Check you have the php-cli package installed for sake to work. If you get an error
-when running the command PHP -v, then you may not have php-cli installed so sake won't work.
-[/info]
+> [!NOTE]
+> If you are using a Debian server: Check you have the php-cli package installed for sake to work. If you get an error
+> when running the command PHP -v, then you may not have php-cli installed so sake won't work.
 
 ### Installation
 
@@ -44,9 +42,8 @@ cd your-webroot/
 sudo ./vendor/bin/sake installsake
 ```
 
-[warning]
-This currently only works on UNIX like systems, not on Windows.
-[/warning]
+> [!WARNING]
+> This currently only works on UNIX like systems, not on Windows.
 
 ### Configuration
 
@@ -78,10 +75,9 @@ sake dev/
 sake dev/build "flush=1"
 ```
 
-[alert]
-You have to run "sake" with the same system user that runs your web server,
-otherwise "flush" won't be able to clean the cache properly.
-[/alert]
+> [!CAUTION]
+> You have to run "sake" with the same system user that runs your web server,
+> otherwise "flush" won't be able to clean the cache properly.
 
 It can also be handy if you have a long running script..
 
@@ -146,9 +142,8 @@ sake -start my_process
 sake -stop my_process
 ```
 
-[notice]
-`sake` stores `pid` and log files in the site root directory.
-[/notice]
+> [!WARNING]
+> `sake` stores `pid` and log files in the site root directory.
 
 ## Arguments
 

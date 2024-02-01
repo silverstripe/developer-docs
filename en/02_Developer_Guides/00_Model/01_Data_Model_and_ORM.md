@@ -63,10 +63,9 @@ It **won't** do any of the following
 - Rename any tables that it doesn't recognize. This allows other applications to coexist in the same database, as long as
   their table names don't match a Silverstripe CMS data class.
 
-[notice]
-You need to be logged in as an administrator to perform this command, unless your site is in [dev mode](../debugging),
-or the command is run through [CLI](../cli).
-[/notice]
+> [!WARNING]
+> You need to be logged in as an administrator to perform this command, unless your site is in [dev mode](../debugging),
+> or the command is run through [CLI](../cli).
 
 When rebuilding the database schema through the [ClassLoader](api:SilverStripe\Core\Manifest\ClassLoader) the following additional properties are
 automatically set on the `DataObject`.
@@ -127,9 +126,8 @@ Or, a better way is to use the `create` method.
 $player = Player::create();
 ```
 
-[notice]
-Using the `create()` method provides chainability, which can add elegance and brevity to your code, e.g. `Player::create()->write()`. More importantly, however, it will look up the class in the [Injector](../extending/injector) so that the class can be overridden by [dependency injection](http://en.wikipedia.org/wiki/Dependency_injection).
-[/notice]
+> [!WARNING]
+> Using the `create()` method provides chainability, which can add elegance and brevity to your code, e.g. `Player::create()->write()`. More importantly, however, it will look up the class in the [Injector](../extending/injector) so that the class can be overridden by [dependency injection](http://en.wikipedia.org/wiki/Dependency_injection).
 
 Database columns and properties can be set as class properties on the object. The Silverstripe CMS ORM handles the saving
 of the values through a custom `__set()` method.
@@ -175,6 +173,9 @@ echo $player->dbObject('LastEdited')->Ago();
 The `ORM` uses a "fluent" syntax, where you specify a query by chaining together different methods.  Two common methods
 are `filter()` and `sort()`:
 
+> [!NOTE]
+> Provided `filter` values are automatically escaped and do not require any escaping.
+
 ```php
 $members = Player::get()->filter([
     'FirstName' => 'Sam',
@@ -183,15 +184,10 @@ $members = Player::get()->filter([
 // returns a `DataList` containing all the `Player` records that have the `FirstName` of 'Sam'
 ```
 
-[info]
-Provided `filter` values are automatically escaped and do not require any escaping.
-[/info]
-
-[info]
-`DataObject::get()->byID()` and `DataObject::get_by_id()` achieve similar results, but the object returned by `DataObject::get_by_id()` is cached against a `static` property within `DataObject`.
-
-`DataObject::get_by_id()` is a legacy ORM method, and it is recommended that you use `DataObject::get()->byID()` wherever possible
-[/info]
+> [!NOTE]
+> `DataObject::get()->byID()` and `DataObject::get_by_id()` achieve similar results, but the object returned by `DataObject::get_by_id()` is cached against a `static` property within `DataObject`.
+>
+> `DataObject::get_by_id()` is a legacy ORM method, and it is recommended that you use `DataObject::get()->byID()` wherever possible
 
 ## Lazy loading
 
@@ -445,11 +441,10 @@ $teams = Team::get()->filter('Players.Sum(PointsScored):LessThan', 300);
 It is also possible to filter by a PHP callback, this will force the data model to fetch all records and loop them in
 PHP, thus `filter()` or `filterAny()` are to be preferred over `filterByCallback()`.
 
-[notice]
-Because `filterByCallback()` has to run in PHP, it has a significant performance tradeoff, and should not be used on large recordsets.
-
-`filterByCallback()` will always return  an `ArrayList`.
-[/notice]
+> [!WARNING]
+> Because `filterByCallback()` has to run in PHP, it has a significant performance tradeoff, and should not be used on large recordsets.
+>
+> `filterByCallback()` will always return  an `ArrayList`.
 
 The first parameter to the callback is the item, the second parameter is the list itself. The callback will run once
 for each record, if the callback returns true, this record will be added to the list of returned items.
@@ -557,9 +552,8 @@ offset, if not provided as an argument, will default to 0.
 $members = Member::get()->sort('Surname')->limit(10, 4);
 ```
 
-[alert]
-Note that the `limit` argument order is different from a MySQL LIMIT clause.
-[/alert]
+> [!CAUTION]
+> Note that the `limit` argument order is different from a MySQL LIMIT clause.
 
 ### Mapping classes to tables with `DataObjectSchema`
 
@@ -657,10 +651,9 @@ $members = Member::get()
     ->innerJoin('Group_Members', '"Rel"."MemberID" = "Member"."ID"', 'Rel');
 ```
 
-[alert]
-Passing a *$join* statement will filter results further by the JOINs performed against the foreign table. It will
-**not** return the additionally joined data.
-[/alert]
+> [!CAUTION]
+> Passing a *$join* statement will filter results further by the JOINs performed against the foreign table. It will
+> **not** return the additionally joined data.
 
 ### Default values
 
@@ -680,10 +673,9 @@ class Player extends DataObject
 }
 ```
 
-[notice]
-Note: Alternatively you can set defaults directly in the database-schema (rather than the object-model). See
-[Data Types and Casting](/developer_guides/model/data_types_and_casting) for details.
-[/notice]
+> [!WARNING]
+> Note: Alternatively you can set defaults directly in the database-schema (rather than the object-model). See
+> [Data Types and Casting](/developer_guides/model/data_types_and_casting) for details.
 
 ## Subclasses
 

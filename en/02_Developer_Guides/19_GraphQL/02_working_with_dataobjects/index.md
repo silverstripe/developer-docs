@@ -11,10 +11,9 @@ and adding read/write operations. We'll also look at some of the plugins that ar
 like [sorting, filtering, and pagination](query_plugins), as well as some more advanced concepts like
 [permissions](permissions), [inheritance](inheritance) and [property mapping](property_mapping).
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 [CHILDREN]

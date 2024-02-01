@@ -8,9 +8,8 @@ summary: Create objects for modifying request and response objects across contro
 HTTP Middlewares allow you to add code that will run before or after a request has been delegated to the router. These might be used for
 authentication, logging, caching, request processing, and many other purposes.
 
-[notice]
-Note this interface replaces the Silverstripe CMS 3 interface [RequestFilter](api:SilverStripe\Control\RequestFilter), which still works but is deprecated.
-[/notice]
+> [!WARNING]
+> Note this interface replaces the Silverstripe CMS 3 interface [RequestFilter](api:SilverStripe\Control\RequestFilter), which still works but is deprecated.
 
 To create a middleware class, implement `SilverStripe\Control\Middleware\HTTPMiddleware` and define the
 `process(HTTPRequest $request, callable $delegate)` method. You can do anything you like in this

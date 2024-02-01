@@ -103,10 +103,9 @@ $members = Member::get()->where(['"Name" = ?' => $_GET['name']]);
 $members = Member::get()->where(sprintf('"Name" = %s', Convert::raw2sql($_GET['name'], true)));
 ```
 
-[warning]
-It is NOT good practice to "be sure" and convert the data passed to the functions above manually. This might
-result in *double escaping* and alters the actually saved data (e.g. by adding slashes to your content).
-[/warning]
+> [!WARNING]
+> It is NOT good practice to "be sure" and convert the data passed to the functions above manually. This might
+> result in *double escaping* and alters the actually saved data (e.g. by adding slashes to your content).
 
 ### Manual escaping
 
@@ -214,10 +213,9 @@ XSS (Cross-Site-Scripting). With some basic guidelines, you can ensure your outp
 displaying a blog post in HTML from a trusted author, or escaping a search parameter from an untrusted visitor before
 redisplaying it).
 
-[notice]
-Note: Silverstripe CMS templates do not remove tags, please use [strip_tags()](http://php.net/strip_tags) for this purpose
-or [sanitize](http://htmlpurifier.org/) it correctly.
-[/notice]
+> [!WARNING]
+> Note: Silverstripe CMS templates do not remove tags, please use [strip_tags()](http://php.net/strip_tags) for this purpose
+> or [sanitize](http://htmlpurifier.org/) it correctly.
 
 See [http://shiflett.org/articles/foiling-cross-site-attacks](http://shiflett.org/articles/foiling-cross-site-attacks)
 for in-depth information about "Cross-Site-Scripting".
@@ -343,10 +341,9 @@ class MyObject extends DataObject
 }
 ```
 
-[info]
-If `$title` was a public property called `$Title`, it would also be casted the same way that the result of
-`$getTitle()` is casted.
-[/info]
+> [!NOTE]
+> If `$title` was a public property called `$Title`, it would also be casted the same way that the result of
+> `$getTitle()` is casted.
 
 Template:
 
@@ -369,23 +366,21 @@ template, you'll need to take care of casting and escaping yourself in PHP.
 The [Convert](api:SilverStripe\Core\Convert) class has utilities for this, mainly *Convert::raw2xml()* and *Convert::raw2att()* (which is
 also used by *XML* and *ATT* in template code).
 
-[warning]
-Most of the `Convert::raw2` methods accept arrays and do not affect array keys.
-If you serialize your data, make sure to do that before you pass it to `Convert::raw2` methods.
-
-For example:
-
-```php
-use SilverStripe\Core\Convert;
-
-// WRONG!
-json_encode(Convert::raw2sql($request->getVar('multiselect')));
-
-// Correct!
-Convert::raw2sql(json_encode($request->getVar('multiselect')));
-```
-
-[/warning]
+> [!WARNING]
+> Most of the `Convert::raw2` methods accept arrays and do not affect array keys.
+> If you serialize your data, make sure to do that before you pass it to `Convert::raw2` methods.
+>
+> For example:
+>
+> ```php
+> use SilverStripe\Core\Convert;
+>
+> // WRONG!
+> json_encode(Convert::raw2sql($request->getVar('multiselect')));
+>
+> // Correct!
+> Convert::raw2sql(json_encode($request->getVar('multiselect')));
+> ```
 
 PHP:
 
@@ -818,10 +813,9 @@ SilverStripe\Core\Injector\Injector:
       TokenCookieSecure: true
 ```
 
-[info]
-There is not currently an easy way to pass a `samesite` attribute value for setting this cookie - but you can set the
-default value for the attribute for all cookies. See [the main cookies documentation](/developer_guides/cookies_and_sessions/cookies#samesite-attribute) for more information.
-[/info]
+> [!NOTE]
+> There is not currently an easy way to pass a `samesite` attribute value for setting this cookie - but you can set the
+> default value for the attribute for all cookies. See [the main cookies documentation](/developer_guides/cookies_and_sessions/cookies#samesite-attribute) for more information.
 
 For other cookies set by your application we should also ensure the users are provided with secure cookies by setting
 the "Secure" and "HTTPOnly" flags. These flags prevent them from being stolen by an attacker through JavaScript.

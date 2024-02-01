@@ -18,9 +18,8 @@ properties API:
 - Configuration is normally set once during initialization and then not changed.
 - Configuration is normally set by a knowledgeable technical user, such as a developer, not the end user.
 
-[notice]
-For providing content editors or CMS users a place to manage configuration see the [SiteConfig](siteconfig) module.
-[/notice]
+> [!WARNING]
+> For providing content editors or CMS users a place to manage configuration see the [SiteConfig](siteconfig) module.
 
 ## Configuration properties
 
@@ -136,10 +135,9 @@ echo implode(', ', MyClass::config()->option_one);
 // returns 'Qux'
 ```
 
-[notice]
-There is no way currently to restrict read or write access to any configuration property, or influence/check the values
-being read or written.
-[/notice]
+> [!WARNING]
+> There is no way currently to restrict read or write access to any configuration property, or influence/check the values
+> being read or written.
 
 ## Configuration values
 
@@ -170,11 +168,10 @@ Class\With\Array\Config:
 
 - If the value is not an array, the highest priority value is used without any attempt to merge
 
-[alert]
-The exception to this is "false-ish" values - empty arrays, empty strings, etc. When merging a non-false-ish value with
-a false-ish value, the result will be the non-false-ish value regardless of priority. When merging two false-ish values
-the result will be the higher priority false-ish value.
-[/alert]
+> [!CAUTION]
+> The exception to this is "false-ish" values - empty arrays, empty strings, etc. When merging a non-false-ish value with
+> a false-ish value, the result will be the non-false-ish value regardless of priority. When merging two false-ish values
+> the result will be the higher priority false-ish value.
 
 The locations that configuration values are taken from in highest -> lowest priority order are:
 
@@ -185,10 +182,9 @@ order, where the item that is latest is highest priority)
 - The composite configuration value of the parent class of this class
 - Any static set on an "additional static source" class (such as an extension) named the same as the name of the property
 
-[notice]
-It is an error to have mixed types of the same named property in different locations. An error will not necessarily
-be raised due to optimizations in the lookup code.
-[/notice]
+> [!WARNING]
+> It is an error to have mixed types of the same named property in different locations. An error will not necessarily
+> be raised due to optimizations in the lookup code.
 
 ## Configuration masks
 
@@ -214,18 +210,16 @@ bitwise `|` operator.
 
 ## Configuration YAML syntax and rules
 
-[alert]
-As of Silverstripe 4, YAML files can no longer be placed any deeper than 2 directories deep. As this was an unintended bug, this change will only affect you if you nest your modules deeper than the top level of your project.
-[/alert]
+> [!CAUTION]
+> As of Silverstripe 4, YAML files can no longer be placed any deeper than 2 directories deep. As this was an unintended bug, this change will only affect you if you nest your modules deeper than the top level of your project.
 
 Each module can have a directory immediately underneath the main module directory called `_config/`. Inside this
 directory you can add YAML files that contain values for the configuration system.
 
-[info]
-The name of the files within the applications `_config` directly are arbitrary. Our examples use
-`app/_config/app.yml` but you can break this file down into smaller files, or clearer patterns like `extensions.yml`,
-`email.yml` if you want. For add-on's and modules, it is recommended that you name them with `<module_name>.yml`.
-[/info]
+> [!NOTE]
+> The name of the files within the applications `_config` directly are arbitrary. Our examples use
+> `app/_config/app.yml` but you can break this file down into smaller files, or clearer patterns like `extensions.yml`,
+> `email.yml` if you want. For add-on's and modules, it is recommended that you name them with `<module_name>.yml`.
 
 The structure of each YAML file is a series of headers and values separated by YAML document separators.
 
@@ -242,9 +236,8 @@ SilverStripe\Control\Director:
 ---
 ```
 
-[info]
-If there is only one set of values the header can be omitted.
-[/info]
+> [!NOTE]
+> If there is only one set of values the header can be omitted.
 
 Each value section of a YAML file has:
 
@@ -310,10 +303,9 @@ after value sections with a name of `rootroutes`. However because `\*` has three
 
 In this case `\*` means "every value section *except* ones that have a fragment name of rootroutes".
 
-[alert]
-It is possible to create chains that are unsolvable. For instance, A must be before B, B must be before C, C must be
-before A. In this case you will get an error when accessing your site.
-[/alert]
+> [!CAUTION]
+> It is possible to create chains that are unsolvable. For instance, A must be before B, B must be before C, C must be
+> before A. In this case you will get an error when accessing your site.
 
 ## Exclusionary rules
 
@@ -381,11 +373,10 @@ Only:
 ---
 ```
 
-[alert]
-When you have more than one rule for a nested fragment, they're joined like
-`FRAGMENT_INCLUDED = (ONLY && ONLY) && !(EXCEPT && EXCEPT)`.
-That is, the fragment will be included if all Only rules match, except if all Except rules match.
-[/alert]
+> [!CAUTION]
+> When you have more than one rule for a nested fragment, they're joined like
+> `FRAGMENT_INCLUDED = (ONLY && ONLY) && !(EXCEPT && EXCEPT)`.
+> That is, the fragment will be included if all Only rules match, except if all Except rules match.
 
 ## Unit tests
 

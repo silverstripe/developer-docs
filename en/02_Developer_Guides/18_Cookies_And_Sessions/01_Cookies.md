@@ -28,9 +28,8 @@ Cookie::set($name, $value, $expiry = 90, $path = null, $domain = null, $secure =
 // Cookie::set('MyApplicationPreference', 'Yes');
 ```
 
-[info]
-To set a cookie for less than 1 day, you can assign an `$expiry` value that is lower than 1. e.g. `Cookie::set('name', 'value', $expiry = 0.5);` will set a cookie for 12 hours.
-[/info]
+> [!NOTE]
+> To set a cookie for less than 1 day, you can assign an `$expiry` value that is lower than 1. e.g. `Cookie::set('name', 'value', $expiry = 0.5);` will set a cookie for 12 hours.
 
 ### Get
 
@@ -63,9 +62,8 @@ SilverStripe\Control\Cookie:
   default_samesite: 'Strict'
 ```
 
-[info]
-Note that this *doesn't* apply for the session cookie, which is handled separately. See [Sessions](/developer_guides/cookies_and_sessions/sessions#samesite-attribute).
-[/info]
+> [!NOTE]
+> Note that this *doesn't* apply for the session cookie, which is handled separately. See [Sessions](/developer_guides/cookies_and_sessions/sessions#samesite-attribute).
 
 ## Cookie_Backend
 

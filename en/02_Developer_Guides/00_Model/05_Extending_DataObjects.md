@@ -88,10 +88,9 @@ class Player extends DataObject
 }
 ```
 
-[notice]
-Note: There are no separate methods for `onBeforeCreate()` and `onBeforeUpdate()`. Please check `$this->isInDb()` to toggle
-these two modes, as shown in the example above.
-[/notice]
+> [!WARNING]
+> Note: There are no separate methods for `onBeforeCreate()` and `onBeforeUpdate()`. Please check `$this->isInDb()` to toggle
+> these two modes, as shown in the example above.
 
 ## Related lessons
 

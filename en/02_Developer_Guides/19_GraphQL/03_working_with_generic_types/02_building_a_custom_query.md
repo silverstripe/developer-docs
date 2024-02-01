@@ -6,11 +6,10 @@ summary: Add a custom query for any type of data
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 ## Building a custom query
 
@@ -65,12 +64,11 @@ queries:
     resolver: [ 'App\GraphQL\Resolver\MyResolver', 'resolveCountries' ]
 ```
 
-[notice]
-Note the difference in syntax here between the `type` and the `resolver` - the type declaration
-*must* have quotes around it, because we are saying "this is a list of `Country` objects". The value
-of this must be a YAML *string*. But the resolver must *not* be surrounded in quotes. It is explicitly
-a YAML array, so that PHP recognises it as a `callable`.
-[/notice]
+> [!WARNING]
+> Note the difference in syntax here between the `type` and the `resolver` - the type declaration
+> *must* have quotes around it, because we are saying "this is a list of `Country` objects". The value
+> of this must be a YAML *string*. But the resolver must *not* be surrounded in quotes. It is explicitly
+> a YAML array, so that PHP recognises it as a `callable`.
 
 Now, we just have to build the schema:
 
@@ -114,13 +112,12 @@ And the expected response:
 }
 ```
 
-[notice]
-Keep in mind that [plugins](../working_with_DataObjects/query_plugins)
-don't apply in this context - at least without updating the resolver
-to account for them. Most importantly this means you need to
-implement your own `canView()` checks. It also means you need
-to add your own filter functionality, such as [pagination](adding_pagination).
-[/notice]
+> [!WARNING]
+> Keep in mind that [plugins](../working_with_DataObjects/query_plugins)
+> don't apply in this context - at least without updating the resolver
+> to account for them. Most importantly this means you need to
+> implement your own `canView()` checks. It also means you need
+> to add your own filter functionality, such as [pagination](adding_pagination).
 
 ## Resolver method arguments
 

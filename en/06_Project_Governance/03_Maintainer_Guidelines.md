@@ -10,10 +10,9 @@ The maintainer guidelines apply to [supported modules](./supported_modules/). Un
 
 This document outlines expectations on maintainers of Silverstripe CMS. It also forms the default expectations for maintainers of [supported modules](./supported_modules/), unless more specific contribution guidelines are available for a module.
 
-[note]
-A lot of extra information is available in the [Contributing](/contributing/) documentation.
-All maintainers should be familiar with those docs as they explain many details about how we work.
-[/note]
+> [!NOTE]
+> A lot of extra information is available in the [Contributing](/contributing/) documentation.
+> All maintainers should be familiar with those docs as they explain many details about how we work.
 
 Refer to the [triage and peer review](/contributing/triage_resources/) for information about how those tasks are performed.
 
@@ -52,9 +51,8 @@ CMS Squad members have write access to core repositories in order to work effect
 
 ### Peer reviewers
 
-[info]
-This is a new role, and is currently in a trial period. It is likely to change over time as we learn what works and what doesn't.
-[/info]
+> [!NOTE]
+> This is a new role, and is currently in a trial period. It is likely to change over time as we learn what works and what doesn't.
 
 This role is made up of community members who have demonstrated a willingness and ability to improve Silverstripe CMS through their contributions to the open source supported modules. It empowers community members to have a more active role in ensuring pull requests get merged, and builds more momentum for community-created pull requests.
 
@@ -106,9 +104,8 @@ There will be a low-touch background check before inviting the contributor to th
 
 ### Contribution refiners
 
-[info]
-This is a new role, and is currently in a trial period. It is likely to change over time as we learn what works and what doesn't.
-[/info]
+> [!NOTE]
+> This is a new role, and is currently in a trial period. It is likely to change over time as we learn what works and what doesn't.
 
 This role is made up of community members who have demonstrated a willingness and ability to improve Silverstripe CMS through their contributions to the open source supported modules. It empowers community members to have a more active role in identifying and refining bug reports and pull requests with high value potential so that they can be resolved more quickly.
 

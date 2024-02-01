@@ -9,10 +9,9 @@ One of the best ways to get the top performance out of Silverstripe CMS is to by
 time, connecting to the database and formatting your templates. This is only appropriate approach on web pages that
 have completely static content.
 
-[info]
-If you want to cache part of a page, or your site has interactive elements such as forms, then
-[Partial Caching](partial_caching) is more suitable.
-[/info]
+> [!NOTE]
+> If you want to cache part of a page, or your site has interactive elements such as forms, then
+> [Partial Caching](partial_caching) is more suitable.
 
 By publishing the page as HTML it's possible to run Silverstripe CMS from behind a corporate firewall, on a low performance
 server or serve millions of hits an hour without expensive hardware.

@@ -249,11 +249,10 @@ correctly configured form.
 
 ## JavaScript through jQuery.Entwine
 
-[notice]
-The following documentation regarding Entwine does not apply to React components or sections powered by React.
-If you're developing new functionality in React powered sections please refer to
-[ReactJS in Silverstripe CMS](./How_Tos/Extend_CMS_Interface.md#reactjs-in-silverstripe).
-[/notice]
+> [!WARNING]
+> The following documentation regarding Entwine does not apply to React components or sections powered by React.
+> If you're developing new functionality in React powered sections please refer to
+> [ReactJS in Silverstripe CMS](./How_Tos/Extend_CMS_Interface.md#reactjs-in-silverstripe).
 
 [jQuery.entwine](https://github.com/hafriedlander/jquery.entwine) is a thirdparty library
 which allows us to attach behaviour to DOM elements in a flexible and structured mannger.

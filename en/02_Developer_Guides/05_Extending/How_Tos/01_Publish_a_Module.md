@@ -91,9 +91,8 @@ Say you have a module which supports Silverstripe CMS 3.0. A new release of this
 in Silverstripe CMS 3.1. In this case, you would create a new branch for the 3.0 compatible code base of your module. This
 allows you to continue fixing bugs on this older release branch.
 
-[info]
-As a convention, the `master` branch of your module should always work with the `master` branch of Silverstripe CMS.
-[/info]
+> [!NOTE]
+> As a convention, the `master` branch of your module should always work with the `master` branch of Silverstripe CMS.
 
 Other branches should be created on your module as needed if they're required to support specific Silverstripe CMS releases.
 

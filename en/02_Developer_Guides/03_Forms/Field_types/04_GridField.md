@@ -6,6 +6,9 @@ icon: table
 
 # `GridField`
 
+> [!TIP]
+> GridField can only be used with `$list` data sets that are of the type `SS_List` such as `DataList` or `ArrayList`.
+
 [GridField](api:SilverStripe\Forms\GridField\GridField) is Silverstripe CMS's implementation of data grids. The main purpose of the `FormField` is to display
 tabular data in a format that is easy to view and modify. It can be thought of as a HTML table with some tricks.
 
@@ -16,14 +19,9 @@ use SilverStripe\Forms\GridField\GridField;
 $field = GridField::create($name, $title, $list);
 ```
 
-[hint]
-GridField can only be used with `$list` data sets that are of the type `SS_List` such as `DataList` or `ArrayList`.
-[/hint]
-
-[notice]
-[GridField](api:SilverStripe\Forms\GridField\GridField) powers the automated data UI of [ModelAdmin](api:SilverStripe\Admin\ModelAdmin). For more information about `ModelAdmin` see the
-[Customizing the CMS](/developer_guides/customising_the_admin_interface) guide.
-[/notice]
+> [!WARNING]
+> [GridField](api:SilverStripe\Forms\GridField\GridField) powers the automated data UI of [ModelAdmin](api:SilverStripe\Admin\ModelAdmin). For more information about `ModelAdmin` see the
+> [Customizing the CMS](/developer_guides/customising_the_admin_interface) guide.
 
 Each `GridField` is built from a number of components grouped into the [GridFieldConfig](api:SilverStripe\Forms\GridField\GridFieldConfig). Without any components,
 a `GridField` has almost no functionality. The `GridFieldConfig` instance and the attached [GridFieldComponent](api:SilverStripe\Forms\GridField\GridFieldComponent) are
@@ -214,18 +212,16 @@ $gridField->setConfig($config);
 
 ### `GridFieldConfig_RecordViewer`
 
+> [!CAUTION]
+> The `DataObject` class displayed must define a `canView()` method that returns a boolean on whether the user can view
+> this record.
+
 Similar to `GridFieldConfig_Base` with the addition support of the ability to view a `GridFieldDetailForm` containing
 a read-only view of the data record.
 
-[info]
-The data row show must be a `DataObject` subclass. The fields displayed in the read-only view come from
-`DataObject::getCMSFields()`.
-[/info]
-
-[alert]
-The `DataObject` class displayed must define a `canView()` method that returns a boolean on whether the user can view
-this record.
-[/alert]
+> [!NOTE]
+> The data row show must be a `DataObject` subclass. The fields displayed in the read-only view come from
+> `DataObject::getCMSFields()`.
 
 ```php
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordViewer;
@@ -242,17 +238,15 @@ $gridField->setConfig($config);
 
 ### `GridFieldConfig_RecordEditor`
 
+> [!CAUTION]
+> Permission control for editing and deleting the record uses the `canEdit()` and `canDelete()` methods on the
+> `DataObject` object.
+
 Similar to `GridFieldConfig_RecordViewer` with the addition support to edit or delete each of the records.
 
-[info]
-The data row show must be a `DataObject` subclass. The fields displayed in the edit view come from
-`DataObject::getCMSFields()`.
-[/info]
-
-[alert]
-Permission control for editing and deleting the record uses the `canEdit()` and `canDelete()` methods on the
-`DataObject` object.
-[/alert]
+> [!NOTE]
+> The data row show must be a `DataObject` subclass. The fields displayed in the edit view come from
+> `DataObject::getCMSFields()`.
 
 ```php
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
@@ -444,10 +438,9 @@ Fragments are designated areas within a `GridField` which can be shared between 
 your own fragments by using a `\$DefineFragment` placeholder in your components' template. This example will simply
 create an area rendered before the table wrapped in a simple `<div>`.
 
-[notice]
-Please note that in templates, you'll need to escape the dollar sign on `\$DefineFragment`. These are specially
-processed placeholders as opposed to native template syntax.
-[/notice]
+> [!WARNING]
+> Please note that in templates, you'll need to escape the dollar sign on `\$DefineFragment`. These are specially
+> processed placeholders as opposed to native template syntax.
 
 ```php
 namespace App\Form\GridField;

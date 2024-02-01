@@ -8,11 +8,10 @@ summary: A more in depth look at how to map requests to particular controllers a
 Routing is the process of mapping URL's to [Controller](api:SilverStripe\Control\Controller) and actions. In the introduction we defined a new custom route
 for our `TeamController` mapping any `teams` URL to our `TeamController`
 
-[info]
-If you're using the `cms` module with and dealing with `Page` objects then for your custom `Page Type` controllers you
-would extend `ContentController` or `PageController`. You don't need to define the routes value as the `cms` handles
-routing.
-[/info]
+> [!NOTE]
+> If you're using the `cms` module with and dealing with `Page` objects then for your custom `Page Type` controllers you
+> would extend `ContentController` or `PageController`. You don't need to define the routes value as the `cms` handles
+> routing.
 
 These routes by standard, go into a `routes.yml` file in your applications `_config` folder alongside your other
 [Configuration](../configuration) information.
@@ -32,9 +31,8 @@ SilverStripe\Control\Director:
     '': 'App\Control\HomeController'
 ```
 
-[notice]
-To understand the syntax for the `routes.yml` file better, read the [Configuration](../configuration) documentation.
-[/notice]
+> [!WARNING]
+> To understand the syntax for the `routes.yml` file better, read the [Configuration](../configuration) documentation.
 
 ## Parameters
 
@@ -50,9 +48,8 @@ It also contains 3 `parameters` or `params` for short. `$Action`, `$ID` and `$Na
 which will be filled when the user makes their request. Request parameters are available on the `HTTPRequest` object
 and able to be pulled out from a controller using `$this->getRequest()->param($name)`.
 
-[info]
-All Controllers have access to `$this->getRequest()` for the request object and `$this->getResponse()` for the response.
-[/info]
+> [!NOTE]
+> All Controllers have access to `$this->getRequest()` for the request object and `$this->getResponse()` for the response.
 
 Here is what those parameters would look like for certain requests
 
@@ -105,9 +102,8 @@ echo $this->getRequest()->param('ID');
 The [RequestHandler](api:SilverStripe\Control\RequestHandler) class will parse all rules you specify against the following patterns. The most specific rule
 will be the one followed for the response.
 
-[alert]
-A rule must always start with alphabetical ([A-Za-z]) characters or a $Variable declaration
-[/alert]
+> [!CAUTION]
+> A rule must always start with alphabetical ([A-Za-z]) characters or a $Variable declaration
 
  | Pattern     | Description |
  | ----------- | --------------- |
@@ -199,13 +195,12 @@ class StaffController extends Controller
 
 ## URL handlers
 
-[alert]
-You **must** use the **$url_handlers** static array described here if your URL
-pattern does not use the Controller class's default pattern of
-`$Action//$ID/$OtherID`. If you fail to do so, and your pattern has more than
-2 parameters, your controller will throw the error "I can't handle sub-URLs of
-a *class name* object" with HTTP status 404.
-[/alert]
+> [!CAUTION]
+> You **must** use the **$url_handlers** static array described here if your URL
+> pattern does not use the Controller class's default pattern of
+> `$Action//$ID/$OtherID`. If you fail to do so, and your pattern has more than
+> 2 parameters, your controller will throw the error "I can't handle sub-URLs of
+> a *class name* object" with HTTP status 404.
 
 In the above example the URLs were configured using the [Director](api:SilverStripe\Control\Director) rules in the **routes.yml** file. Alternatively
 you can specify these in your Controller class via the **$url_handlers** static array. This array is processed by the
@@ -299,9 +294,8 @@ class BreadAPIController extends Controller
 }
 ```
 
-[alert]
-In Silverstripe CMS versions prior to 4.6, an empty key (`''`) must be used in place of the `'/'` key. When specifying an HTTP method, the empty string must be separated from the method (e.g. `'GET '`). The empty key and slash key are also equivalent in Director rules.
-[/alert]
+> [!CAUTION]
+> In Silverstripe CMS versions prior to 4.6, an empty key (`''`) must be used in place of the `'/'` key. When specifying an HTTP method, the empty string must be separated from the method (e.g. `'GET '`). The empty key and slash key are also equivalent in Director rules.
 
 ## Nested request handlers
 

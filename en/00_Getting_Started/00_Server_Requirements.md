@@ -101,9 +101,8 @@ also needs write access for the webserver user to the following locations:
   [schema introspection](/developer_guides/graphql/tips_and_tricks#schema-introspection). You should treat this folder
   the same way you treat the `.graphql-generated` folder.
 
-[info]
-If you are still using silverstripe/graphql 3.x, you do not need the `.graphql-generated` or `public/_graphql` directories.
-[/info]
+> [!NOTE]
+> If you are still using silverstripe/graphql 3.x, you do not need the `.graphql-generated` or `public/_graphql` directories.
 
 If you aren't explicitly [packaging](#building-packaging-deployment)
 your Silverstripe CMS project during your deployment process, additional write access may be required to generate supporting

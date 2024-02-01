@@ -8,11 +8,10 @@ icon: rocket
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 ## Activating the default GraphQL server
 
@@ -27,10 +26,9 @@ in the user space (e.g. `/graphql`) - i.e. your custom schema, while `admin` ref
 GraphQL server used by CMS modules (`admin/graphql`). You can also [set up a new schema server](#setting-up-a-custom-graphql-server)
 if you wish.
 
-[info]
-The word "server" here refers to a route with its own isolated GraphQL schema. It does
-not refer to a web server.
-[/info]
+> [!NOTE]
+> The word "server" here refers to a route with its own isolated GraphQL schema. It does
+> not refer to a web server.
 
 By default, `silverstripe/graphql` does not route any GraphQL servers. To activate the default,
 public-facing GraphQL server that ships with the module, just add a rule to [`Director`](api:SilverStripe\Control\Director).

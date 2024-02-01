@@ -8,11 +8,10 @@ icon: tools
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 ## Building a schema with procedural code
 
@@ -27,11 +26,10 @@ types is that they're dynamic. So the procedural API for schemas has to be prett
 
 Lastly, if you just prefer writing PHP to writing YAML, this is a good option, too.
 
-[notice]
-One thing you cannot do with the procedural API, though it may be tempting, is define resolvers
-on the fly as closures. Resolvers must be static methods on a class, and are evaluated during
-the schema build.
-[/notice]
+> [!WARNING]
+> One thing you cannot do with the procedural API, though it may be tempting, is define resolvers
+> on the fly as closures. Resolvers must be static methods on a class, and are evaluated during
+> the schema build.
 
 ### Adding executable code
 

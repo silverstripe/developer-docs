@@ -7,11 +7,10 @@ summary: Add arguments to your fields, queries, and mutations
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 ## Adding arguments
 
@@ -24,11 +23,10 @@ queries:
   'readCountries(limit: Int!)': '[Country]'
 ```
 
-[hint]
-In the above example, the `limit` argument is *required* by making it non-nullable. If you want to be able
-to get an un-filtered list, you can instead allow the argument to be nullable by removing the `!`:
-`'readCountries(limit: Int)': '[Country]'`
-[/hint]
+> [!TIP]
+> In the above example, the `limit` argument is *required* by making it non-nullable. If you want to be able
+> to get an un-filtered list, you can instead allow the argument to be nullable by removing the `!`:
+> `'readCountries(limit: Int)': '[Country]'`
 
 We've provided the required argument `limit` to the query, which will allow us to truncate the results.
 Let's update the resolver accordingly.

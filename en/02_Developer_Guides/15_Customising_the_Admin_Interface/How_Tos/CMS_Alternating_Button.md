@@ -90,11 +90,10 @@ class MyObject extends DataObject
 
 ## Frontend support
 
-[notice]
-The following documentation regarding jQuery, jQueryUI and Entwine does not apply to React components or sections powered by React.
-If you're developing new functionality in React powered sections please refer to
-[ReactJS in Silverstripe CMS](./extend_cms_interface.md#reactjs-in-silverstripe).
-[/notice]
+> [!WARNING]
+> The following documentation regarding jQuery, jQueryUI and Entwine does not apply to React components or sections powered by React.
+> If you're developing new functionality in React powered sections please refer to
+> [ReactJS in Silverstripe CMS](./extend_cms_interface.md#reactjs-in-silverstripe).
 
 As with the *Save* and *Save & publish* buttons, you might want to add some scripted reactions to user actions on the
 frontend. You can affect the state of the button through the jQuery UI calls.

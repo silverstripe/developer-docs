@@ -13,20 +13,19 @@ from published content shown to your website visitors.
 
 Versioning in Silverstripe CMS is handled through the [Versioned](api:SilverStripe\Versioned\Versioned) class. As a [DataExtension](api:SilverStripe\ORM\DataExtension) it is possible to be applied to any [DataObject](api:SilverStripe\ORM\DataObject) subclass. The extension class will automatically update read and write operations done via the ORM via the `augmentSQL` database hook.
 
-[notice]
-There are two complementary modules that improve content editor experience around "owned" nested objects (e.g. elemental blocks).
-Those are in experimental status right now, but we would appreciate any feedback and contributions.
-
-You can check them out on GitHub:
-
-- <https://github.com/silverstripe/silverstripe-versioned-snapshots>
-- <https://github.com/silverstripe/silverstripe-versioned-snapshot-admin>
-
-The first one adds extra metadata to versions about object parents at the moment of version creation.
-The second module extends CMS History UI adding control over nested objects.
-
-![Example screenshot from versioned-snapshot-admin](../../_images/snapshot-admin.png)
-[/notice]
+> [!WARNING]
+> There are two complementary modules that improve content editor experience around "owned" nested objects (e.g. elemental blocks).
+> Those are in experimental status right now, but we would appreciate any feedback and contributions.
+>
+> You can check them out on GitHub:
+>
+> - <https://github.com/silverstripe/silverstripe-versioned-snapshots>
+> - <https://github.com/silverstripe/silverstripe-versioned-snapshot-admin>
+>
+> The first one adds extra metadata to versions about object parents at the moment of version creation.
+> The second module extends CMS History UI adding control over nested objects.
+>
+> ![Example screenshot from versioned-snapshot-admin](../../_images/snapshot-admin.png)
 
 ## Understanding versioning concepts
 
@@ -65,11 +64,10 @@ Silverstripe CMS makes this possible by using the concept of *cascade publishing
 
 A non-recursive publish operation is also available if you want to publish a new version of a object without cascade publishing all its children.
 
-[alert]
-Declaring ownership implies publish permissions on owned objects.
-Built-in controllers using cascading publish operations check canPublish()
-on the owner, but not on the owned object.
-[/alert]
+> [!CAUTION]
+> Declaring ownership implies publish permissions on owned objects.
+> Built-in controllers using cascading publish operations check canPublish()
+> on the owner, but not on the owned object.
 
 #### Ownership of unversioned object
 
@@ -94,11 +92,10 @@ Changes to many objects can be grouped together using the [`ChangeSet`](api:Silv
 Records can be added to a changeset in the CMS by using the "Add to campaign" button
 that is available on the edit forms of all pages and files. Programmatically, this is done by creating a `SilverStripe\Versioned\ChangeSet` object and invoking its `addObject(DataObject $record)` method.
 
-[info]
-DataObjects can be added to more than one ChangeSet.
-Most of the time, these objects contain changes.
-A ChangeSet can contain unchanged objects as well.
-[/info]
+> [!NOTE]
+> DataObjects can be added to more than one ChangeSet.
+> Most of the time, these objects contain changes.
+> A ChangeSet can contain unchanged objects as well.
 
 #### Implicit vs. Explicit inclusions
 
@@ -115,6 +112,10 @@ It is possible for an item to be included both implicitly and explicitly in a ch
 This section explains how to take a regular DataObject and add versioning to it.
 
 ### Applying the `Versioned` extension to your `DataObject`
+
+> [!WARNING]
+> Versioning only works if you are adding the extension to the base class. That is, the first subclass
+> of `DataObject`. Adding this extension to children of the base class will have unpredictable behaviour.
 
 ```php
 namespace App\Model;
@@ -148,15 +149,9 @@ class VersionedModel extends DataObject
 }
 ```
 
-[notice]
-The extension is automatically applied to the `SiteTree` class. For more information on extensions see
-[extending](/developer_guides/extending/) and the [configuration](/developer_guides/configuration/) documentation.
-[/notice]
-
-[warning]
-Versioning only works if you are adding the extension to the base class. That is, the first subclass
-of `DataObject`. Adding this extension to children of the base class will have unpredictable behaviour.
-[/warning]
+> [!WARNING]
+> The extension is automatically applied to the `SiteTree` class. For more information on extensions see
+> [extending](/developer_guides/extending/) and the [configuration](/developer_guides/configuration/) documentation.
 
 ### Defining ownership between related versioned `DataObject` models
 
@@ -370,10 +365,9 @@ use SilverStripe\Versioned\Versioned;
 $historicalRecord = Versioned::get_version('MyRecord', $recordId, $versionId);
 ```
 
-[alert]
-The record is retrieved as a `DataObject`, but saving back modifications via `write()` will create a new version,
-rather than modifying the existing one.
-[/alert]
+> [!CAUTION]
+> The record is retrieved as a `DataObject`, but saving back modifications via `write()` will create a new version,
+> rather than modifying the existing one.
 
 In order to get a list of all versions for a specific record, we need to generate specialized [Versioned_Version](api:SilverStripe\Versioned\Versioned_Version)
 objects, which expose the same database information as a `DataObject`, but also include information about when and how
@@ -540,10 +534,9 @@ Depending on whether staging is enabled, one or more new tables will be created 
 is always created to track historic versions for your model. If staging is enabled this will also create a new
 `<class>_Live` table once you've rebuilt the database.
 
-[notice]
-Note that the "Stage" naming has a special meaning here, it will leave the original table name unchanged, rather than
-adding a suffix.
-[/notice]
+> [!WARNING]
+> Note that the "Stage" naming has a special meaning here, it will leave the original table name unchanged, rather than
+> adding a suffix.
 
 - `MyRecord` table: Contains staged data
 - `MyRecord_Live` table: Contains live data
@@ -706,22 +699,20 @@ SilverStripe\Control\Director:
     'my-objects/$ID': 'App\Control\MyObjectController'
 ```
 
-[alert]
-The `choose_site_stage()` call only deals with setting the default stage, and doesn't check if the user is
-authenticated to view it. As with any other controller logic, please use `DataObject->canView()` to determine
-permissions, and avoid exposing unpublished content to your users.
-[/alert]
+> [!CAUTION]
+> The `choose_site_stage()` call only deals with setting the default stage, and doesn't check if the user is
+> authenticated to view it. As with any other controller logic, please use `DataObject->canView()` to determine
+> permissions, and avoid exposing unpublished content to your users.
 
 ### Controlling permissions to versioned `DataObject` models
 
 By default, `Versioned` will come out of the box with security extensions which restrict the visibility of objects in Draft (stage) or Archive viewing mode.
 
-[alert]
-As is standard practice, user code should always invoke `canView()` on any object before
-rendering it. DataLists do not filter on `canView()` automatically, so this must be
-done via user code. This can be achieved either by wrapping `<% if $canView %>;` in
-your template, or by implementing your visibility check in PHP.
-[/alert]
+> [!CAUTION]
+> As is standard practice, user code should always invoke `canView()` on any object before
+> rendering it. DataLists do not filter on `canView()` automatically, so this must be
+> done via user code. This can be achieved either by wrapping `<% if $canView %>;` in
+> your template, or by implementing your visibility check in PHP.
 
 #### Version specific *can* methods
 
@@ -909,11 +900,10 @@ Since Silverstripe CMS 4.3 you can use the React and GraphQL driven history view
 comparisons for a versioned DataObject. This is automatically enabled for SiteTree objects and content blocks in
 [dnadesign/silverstripe-elemental](https://github.com/dnadesign/silverstripe-elemental).
 
-[warning]
-Because of the lack of specificity in the `HistoryViewer.Form_ItemEditForm` scope used when injecting the history viewer to the DOM, only one model can have a working history panel at a time, with exception to `SiteTree` which has its own history viewer scope. For example, if you already have `dnadesign/silverstripe-elemental` installed, the custom history viewer instance injected as a part of this documentation will *break* the one provided by the elemental module.
-
-There are ways you can get around this limitation. You may wish to put some conditional logic in `app/client/src/boot/index.js` below to only perform the transformations if the current location is within a specific model admin, for example.
-[/warning]
+> [!WARNING]
+> Because of the lack of specificity in the `HistoryViewer.Form_ItemEditForm` scope used when injecting the history viewer to the DOM, only one model can have a working history panel at a time, with exception to `SiteTree` which has its own history viewer scope. For example, if you already have `dnadesign/silverstripe-elemental` installed, the custom history viewer instance injected as a part of this documentation will *break* the one provided by the elemental module.
+>
+> There are ways you can get around this limitation. You may wish to put some conditional logic in `app/client/src/boot/index.js` below to only perform the transformations if the current location is within a specific model admin, for example.
 
 If you want to enable the history viewer for a custom versioned DataObject, you will need to:
 
@@ -922,11 +912,10 @@ If you want to enable the history viewer for a custom versioned DataObject, you 
 - Register your GraphQL queries and mutations with Injector
 - Add a HistoryViewerField to the DataObject's `getCMSFields`
 
-[notice]
-**Please note:** these examples are given in the context of project-level customisation. You may need to adjust
-the webpack configuration slightly for use in a module. They are also designed to be used on Silverstripe CMS 4.3 or
-later.
-[/notice]
+> [!WARNING]
+> **Please note:** these examples are given in the context of project-level customisation. You may need to adjust
+> the webpack configuration slightly for use in a module. They are also designed to be used on Silverstripe CMS 4.3 or
+> later.
 
 ### Setup {#history-viewer-setup}
 
@@ -960,14 +949,9 @@ class MyVersionedObject extends DataObject
 If you haven't already configured frontend asset (JavaScript/CSS) building for your project, you will need to configure some basic
 packages to be built in order to enable history viewer functionality. This section includes a very basic webpack configuration which uses [@silverstripe/webpack-config](https://www.npmjs.com/package/@silverstripe/webpack-config).
 
-[hint]
-If you have this configured for your project already, ensure you have the `react-apollo` and `graphql-tag` libraries in your `package.json`
-requirements (with the appropriate version constraints from below), and skip this section.
-[/hint]
-
-[notice]
-Using `@silverstripe/webpack-config` will keep your transpiled bundle size smaller and ensure you are using the correct versions of `react-apollo` and `graphql-tag`, as these will automatically be added as [webpack externals](https://webpack.js.org/configuration/externals/). If you are not using that npm package, it is very important you use the correct versions of those dependencies.
-[/notice]
+> [!TIP]
+> If you have this configured for your project already, ensure you have the `react-apollo` and `graphql-tag` libraries in your `package.json`
+> requirements (with the appropriate version constraints from below), and skip this section.
 
 You can configure your directory structure like so:
 
@@ -992,6 +976,9 @@ You can configure your directory structure like so:
   }
 }
 ```
+
+> [!WARNING]
+> Using `@silverstripe/webpack-config` will keep your transpiled bundle size smaller and ensure you are using the correct versions of `react-apollo` and `graphql-tag`, as these will automatically be added as [webpack externals](https://webpack.js.org/configuration/externals/). If you are not using that npm package, it is very important you use the correct versions of those dependencies.
 
 ```js
 // webpack.config.js
@@ -1033,9 +1020,8 @@ module.exports = [
 
 At this stage, running `yarn build` should correctly build `app/client/dist/js/bundle.js`.
 
-[notice]
-Don't forget to [configure your project's "exposed" folders](/developer_guides/templates/requirements/#configuring-your-project-exposed-folders) and run `composer vendor-expose` on the command line so that the browser has access to your new dist JS file.
-[/notice]
+> [!WARNING]
+> Don't forget to [configure your project's "exposed" folders](/developer_guides/templates/requirements/#configuring-your-project-exposed-folders) and run `composer vendor-expose` on the command line so that the browser has access to your new dist JS file.
 
 ### Create and use GraphQL schema {#history-viewer-gql}
 
@@ -1269,77 +1255,75 @@ export { mutation, config };
 export default graphql(mutation, config);
 ```
 
-[hint]
-While `silverstripe/graphql` v4 ignores the namespace when generating names for types, queries, and mutations, v3 includes the first part of the namespace in each of those designations. If you're implementing this for a project that still uses `silverstripe/graphql` v3, make the following changes:
-
-```diff
-# app/client/src/state/readOneMyVersionedObjectQuery.js
- import { graphql } from 'react-apollo';
- import gql from 'graphql-tag';
-
--// Note that "readOneMyVersionedObject" is the query name in the schema, while
-+// Note that "readOneAppMyVersionedObject" is the query name in the schema, while
- // "ReadHistoryViewerMyVersionedObject" is an arbitrary name we're using for this invocation
- // of the query
- const query = gql`
- query ReadHistoryViewerMyVersionedObject ($id: ID!, $limit: Int!, $offset: Int!) {
--    readOneMyVersionedObject(
-+    readOneAppMyVersionedObject(
-       versioning: {
-         mode: ALL_VERSIONS
-       },
--      filter: {
--        id: { eq: $id }
--      }
-+      id: $id
-     ) {
-       id
-       versions (limit: $limit, offset: $offset, sort: {
-
-...
-
-     data: {
-       error,
-       refetch,
--       readOneMyVersionedObject,
-+       readOneAppMyVersionedObject,
-       loading: networkLoading,
-     },
-     ownProps: {
-
-...
-
-       recordId,
-     },
-   }) {
--    const versions = readOneMyVersionedObject || null;
-+    const versions = readOneAppMyVersionedObject || null;
-
-     const errors = error && error.graphQLErrors &&
-
-...
-```
-
-```diff
-# app/client/src/state/revertToMyVersionedObjectVersionMutation.js
- import { graphql } from 'react-apollo';
- import gql from 'graphql-tag';
-
--// Note that "rollbackMyVersionedObject" is the mutation name in the schema, while
-+// Note that "rollbackAppMyVersionedObject" is the mutation name in the schema, while
- // "revertToMyVersionedObject" is an arbitrary name we're using for this invocation
- // of the mutation
- const mutation = gql`
- mutation revertToMyVersionedObject($id:ID!, $toVersion:Int!) {
--  rollbackMyVersionedObject(
-+  rollbackAppMyVersionedObject(
-     id: $id
-     toVersion: $toVersion
-   ) {
-...
-```
-
-[/hint]
+> [!TIP]
+> While `silverstripe/graphql` v4 ignores the namespace when generating names for types, queries, and mutations, v3 includes the first part of the namespace in each of those designations. If you're implementing this for a project that still uses `silverstripe/graphql` v3, make the following changes:
+>
+> ```diff
+> # app/client/src/state/readOneMyVersionedObjectQuery.js
+>  import { graphql } from 'react-apollo';
+>  import gql from 'graphql-tag';
+>
+> -// Note that "readOneMyVersionedObject" is the query name in the schema, while
+> +// Note that "readOneAppMyVersionedObject" is the query name in the schema, while
+>  // "ReadHistoryViewerMyVersionedObject" is an arbitrary name we're using for this invocation
+>  // of the query
+>  const query = gql`
+>  query ReadHistoryViewerMyVersionedObject ($id: ID!, $limit: Int!, $offset: Int!) {
+> -    readOneMyVersionedObject(
+> +    readOneAppMyVersionedObject(
+>        versioning: {
+>          mode: ALL_VERSIONS
+>        },
+> -      filter: {
+> -        id: { eq: $id }
+> -      }
+> +      id: $id
+>      ) {
+>        id
+>        versions (limit: $limit, offset: $offset, sort: {
+>
+> ...
+>
+>      data: {
+>        error,
+>        refetch,
+> -       readOneMyVersionedObject,
+> +       readOneAppMyVersionedObject,
+>        loading: networkLoading,
+>      },
+>      ownProps: {
+>
+> ...
+>
+>        recordId,
+>      },
+>    }) {
+> -    const versions = readOneMyVersionedObject || null;
+> +    const versions = readOneAppMyVersionedObject || null;
+>
+>      const errors = error && error.graphQLErrors &&
+>
+> ...
+> ```
+>
+> ```diff
+> # app/client/src/state/revertToMyVersionedObjectVersionMutation.js
+>  import { graphql } from 'react-apollo';
+>  import gql from 'graphql-tag';
+>
+> -// Note that "rollbackMyVersionedObject" is the mutation name in the schema, while
+> +// Note that "rollbackAppMyVersionedObject" is the mutation name in the schema, while
+>  // "revertToMyVersionedObject" is an arbitrary name we're using for this invocation
+>  // of the mutation
+>  const mutation = gql`
+>  mutation revertToMyVersionedObject($id:ID!, $toVersion:Int!) {
+> -  rollbackMyVersionedObject(
+> +  rollbackAppMyVersionedObject(
+>      id: $id
+>      toVersion: $toVersion
+>    ) {
+> ...
+> ```
 
 #### Register your GraphQL query and mutation with `Injector`
 

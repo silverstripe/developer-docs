@@ -7,11 +7,10 @@ summary: Learn how to customise field names, use dot syntax, and use aggregate f
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 ## Property mapping and dot syntax
 
@@ -30,10 +29,9 @@ Page:
       property: Content
 ```
 
-[notice]
-When using explicit property mapping, you must also define an explicit type, as it can
-no longer be inferred.
-[/notice]
+> [!WARNING]
+> When using explicit property mapping, you must also define an explicit type, as it can
+> no longer be inferred.
 
 ### Dot-separated accessors
 

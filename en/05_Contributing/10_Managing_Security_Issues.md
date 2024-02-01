@@ -28,9 +28,8 @@ This process is usually started once someone [reports a security issue](issues_a
 
 ### When receiving a report
 
-[hint]
-Ensure the reporter is given a justification for all issues we conclude are not security vulnerabilities.
-[/hint]
+> [!TIP]
+> Ensure the reporter is given a justification for all issues we conclude are not security vulnerabilities.
 
 1. An automated response is sent back to the reporter to acknowledge receipt of their vulnerability report.
 1. Perform an initial assessment of the report. If the report does not qualify as a security issue, reply to the reporter thanking them for their efforts and explaining that we won't be handling this as a security issue.
@@ -55,9 +54,8 @@ Ensure the reporter is given a justification for all issues we conclude are not 
 1. Once a CVE has been assigned, add it to the GitHub issue and respond to the issue reporter.
     - Ask the reporter if they want to be credited for the disclosure and under what name.
 
-[warning]
-Make sure you read the [special circumstances](#special-circumstances) section below in case there are more or different steps you need to follow.
-[/warning]
+> [!WARNING]
+> Make sure you read the [special circumstances](#special-circumstances) section below in case there are more or different steps you need to follow.
 
 ### Creating a GitHub security advisory
 

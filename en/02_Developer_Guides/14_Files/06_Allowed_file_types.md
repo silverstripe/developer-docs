@@ -32,9 +32,8 @@ Any file not included in this config, or in the default list of extensions, will
 any requests to the assets directory. Invalid files will be blocked regardless of whether they
 exist or not, and will not invoke any PHP processes.
 
-[warning]
-While SVG images are a popular format to display images on the web, they are not included in the file extension whitelist because they can contain arbitrary scripts that will be executed when the image is rendered in a browser. Allowing CMS users to upload SVG images would be a significant XSS risk. We strongly advise developers against whitelisting the `svg` file extension.
-[/warning]
+> [!WARNING]
+> While SVG images are a popular format to display images on the web, they are not included in the file extension whitelist because they can contain arbitrary scripts that will be executed when the image is rendered in a browser. Allowing CMS users to upload SVG images would be a significant XSS risk. We strongly advise developers against whitelisting the `svg` file extension.
 
 You can also remove pre-existing entries from the whitelist by setting them to `false`.
 

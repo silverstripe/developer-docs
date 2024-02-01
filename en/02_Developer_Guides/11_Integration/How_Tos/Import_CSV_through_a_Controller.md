@@ -81,7 +81,6 @@ class MyController extends Controller
 }
 ```
 
-[alert]
-This interface is not secured, consider using [Permission::check()](api:SilverStripe\Security\Permission::check()) to limit the controller to users with certain
-access rights.
-[/alert]
+> [!CAUTION]
+> This interface is not secured, consider using [Permission::check()](api:SilverStripe\Security\Permission::check()) to limit the controller to users with certain
+> access rights.

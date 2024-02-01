@@ -12,9 +12,8 @@ If you are involved with triage of Silverstripe CMS core and supported modules, 
 
 You can also optionally subscribe to the repository via [GitHub watch functionality](https://docs.github.com/en/account-and-profile/managing-subscriptions-and-notifications-on-github/setting-up-notifications/configuring-notifications#configuring-your-watch-settings-for-an-individual-repository).
 
-[hint]
-When performing these tasks, make sure to adhere to the [code of conduct](/project_governance/code_of_conduct/) and [maintainer guidelines](/project_governance/maintainer_guidelines/#guidelines).
-[/hint]
+> [!TIP]
+> When performing these tasks, make sure to adhere to the [code of conduct](/project_governance/code_of_conduct/) and [maintainer guidelines](/project_governance/maintainer_guidelines/#guidelines).
 
 ## How to triage
 
