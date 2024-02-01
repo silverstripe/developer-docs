@@ -19,9 +19,8 @@ is fetched from a [cache backend](../performance/caching), instead of being rege
 
 This is not a definitive example of the syntax, but it shows the most common use case.
 
-[note]
-See also the [Complete syntax definition](#complete-syntax-definition) section
-[/note]
+> [!NOTE]
+> See also the [Complete syntax definition](#complete-syntax-definition) section
 
 The key parts are `$CacheKey` and `$CacheCondition`.
 The following sections explain every one of them in more detail.
@@ -32,9 +31,8 @@ The following sections explain every one of them in more detail.
 
 Defines a unique key for the cache storage.
 
-[warning]
-Avoid heavy computations in `$CacheKey` as it is evaluated for every template render.
-[/warning]
+> [!WARNING]
+> Avoid heavy computations in `$CacheKey` as it is evaluated for every template render.
 
 The syntax is an optional list of template expressions delimited by commas:
 
@@ -152,10 +150,9 @@ Without a condition:
 - your cache backend will always be queried for cache (for every template render)
 - your cache backend may be cluttered with redundant and useless data
 
-[warning]
-The `$CacheCondition` value is evaluated on every template render and should be as lightweight as possible.
-If you need a complex condition, it may be sensible to calculate the condition in `onBeforeWrite()` for your model and store the result in the database.
-[/warning]
+> [!WARNING]
+> The `$CacheCondition` value is evaluated on every template render and should be as lightweight as possible.
+> If you need a complex condition, it may be sensible to calculate the condition in `onBeforeWrite()` for your model and store the result in the database.
 
 ## Cache storage
 
@@ -165,11 +162,10 @@ By default, it is initialised by `SilverStripe\Core\Cache\DefaultCacheFactory` w
 - `namespace: "cacheblock"`
 - `defaultLifetime: 600`
 
-[note]
-The defaultLifetime is in seconds, so a value of `600` means every cache record expires in 10 minutes.
-If you have good `$CacheKey` and `$CacheCondition` implementations, you may want to tune these settings to
-improve performance.
-[/note]
+> [!NOTE]
+> The defaultLifetime is in seconds, so a value of `600` means every cache record expires in 10 minutes.
+> If you have good `$CacheKey` and `$CacheCondition` implementations, you may want to tune these settings to
+> improve performance.
 
 Example below shows how to set partial cache expiry to one hour.
 
@@ -214,10 +210,9 @@ The template processor will transparently flatten the structure into something s
 <% cached $PageKey %><%-- Footer goes here --%><% end_cached %>
 ```
 
-[note]
-`$PageKey` is used twice, but evaluated only once per render because of [template object caching](caching/#object-caching).
-If the body section should also be cached with the same requirements as the header and footer sections, it may make sense to use `<% cached $PageKey, $BodyKey %>`.
-[/note]
+> [!NOTE]
+> `$PageKey` is used twice, but evaluated only once per render because of [template object caching](caching/#object-caching).
+> If the body section should also be cached with the same requirements as the header and footer sections, it may make sense to use `<% cached $PageKey, $BodyKey %>`.
 
 ## Uncached
 
@@ -238,45 +233,42 @@ In this example, the body content is not cached, but the header and footer secti
 
 Because of the nested block flattening (see above), it works seamlessly on any level of depth.
 
-[warning]
-The `uncached` block only works on the lexical level.
-If you have a template that caches content rendering another template with included uncached blocks,
-those will not have any effect on the parent template caching blocks.
-[/warning]
+> [!WARNING]
+> The `uncached` block only works on the lexical level.
+> If you have a template that caches content rendering another template with included uncached blocks,
+> those will not have any effect on the parent template caching blocks.
 
 ## Nesting in LOOP and IF blocks
 
 Currently, a cache block cannot be included in `if` and `loop` blocks.
 The template engine will throw an error letting you know if you've done this.
 
-[note]
-You may often get around this using aggregates or by un-nesting the block.
-
-For example:
-
-```ss
-<% cached $LastEdited %>
-  <% loop $Children %>
-      <% cached $Up.LastEdited, $LastEdited %>
-          $Name
-      <% end_cached %>
-  <% end_loop %>
-<% end_cached %>
-```
-
-Might be re-written (and more efficient) as something like this:
-
-```ss
-<% cached $LastEdited %>
-    <% cached $LastEdited, $AllChildren.max('LastEdited') %>
-        <% loop $Children %>
-            $Name
-        <% end_loop %>
-    <% end_cached %>
-<% end_cached %>
-```
-
-[/note]
+> [!NOTE]
+> You may often get around this using aggregates or by un-nesting the block.
+>
+> For example:
+>
+> ```ss
+> <% cached $LastEdited %>
+>   <% loop $Children %>
+>       <% cached $Up.LastEdited, $LastEdited %>
+>           $Name
+>       <% end_cached %>
+>   <% end_loop %>
+> <% end_cached %>
+> ```
+>
+> Might be re-written (and more efficient) as something like this:
+>
+> ```ss
+> <% cached $LastEdited %>
+>     <% cached $LastEdited, $AllChildren.max('LastEdited') %>
+>         <% loop $Children %>
+>             $Name
+>         <% end_loop %>
+>     <% end_cached %>
+> <% end_cached %>
+> ```
 
 ## Unless (syntax sugar)
 

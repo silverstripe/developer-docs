@@ -24,9 +24,8 @@ A simplistic approach is to build the schema in your local development environme
 
 This approach has the advantage of being very simple, but it will pollute your commits with massive diffs for the generated code.
 
-[notice]
-Make sure you set your site to `live` mode and remove any `DEBUG_SCHEMA=1` from your `.env` file if it is there before generating the schema to be committed.
-[/notice]
+> [!WARNING]
+> Make sure you set your site to `live` mode and remove any `DEBUG_SCHEMA=1` from your `.env` file if it is there before generating the schema to be committed.
 
 #### Explicitly build the schema during each deployment {#build-during-deployment}
 
@@ -54,9 +53,8 @@ While benchmarking schema generation performance, we measured that a schema expo
 
 Our expectation is that on-demand schema generation will be performant for most projects with small or medium schemas.
 
-[warning]
-Note that with this approach you will need to remove or empty the `.graphql-generated/` and `public/_graphql/` folders on each server for each deployment that includes a change to the schema definition, or you risk having an outdated GraphQL schema. The "on-demand" schema generation does not detect changes to the schema definition.
-[/warning]
+> [!WARNING]
+> Note that with this approach you will need to remove or empty the `.graphql-generated/` and `public/_graphql/` folders on each server for each deployment that includes a change to the schema definition, or you risk having an outdated GraphQL schema. The "on-demand" schema generation does not detect changes to the schema definition.
 
 #### Build the schema during/before deployment and share it across your servers {#multi-server-shared-dirs}
 

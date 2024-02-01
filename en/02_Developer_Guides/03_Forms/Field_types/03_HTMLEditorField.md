@@ -85,11 +85,10 @@ in the framework (and the `cms` module in case you've got that installed).
 There can be multiple configs, which should always be created / accessed using [HTMLEditorConfig::get()](api:SilverStripe\Forms\HTMLEditor\HTMLEditorConfig::get()). You can
 then set the currently active config using `HTMLEditorConfig::set_active()`.
 
-[notice]
-The order in which the `_config.php` files are executed depends on the module names. Execution
-order is alphabetical, so if you set a TinyMCE option in the `aardvark/_config.php` (i.e. the module name is simply `aardvark`),
-this will be overridden in `vendor/silverstripe/admin/_config.php` (because the module name is `silverstripe/admin`) and your modification will disappear.
-[/notice]
+> [!WARNING]
+> The order in which the `_config.php` files are executed depends on the module names. Execution
+> order is alphabetical, so if you set a TinyMCE option in the `aardvark/_config.php` (i.e. the module name is simply `aardvark`),
+> this will be overridden in `vendor/silverstripe/admin/_config.php` (because the module name is `silverstripe/admin`) and your modification will disappear.
 
 ## Adding and removing capabilities
 
@@ -98,9 +97,8 @@ In its simplest form, the configuration of the editor includes adding and removi
 You can add plugins to the editor using the Framework's [TinyMCEConfig::enablePlugins()](api:SilverStripe\Forms\HTMLEditor\TinyMCEConfig::enablePlugins()) method. This will
 transparently generate the relevant underlying TinyMCE code.
 
-[hint]
-The `enablePlugins()` method is implemented on `TinyCMEConfig`, which is a subclass of `HTMLEditorConfig`. This is true of most of the configuration methods used in this documentation. We've done an explicit `instanceof` check here for correctness, but in reality unless your project introduces an alternative WYSIWYG editor, you can safely omit that check. The remaining examples in this documentation will omit the check.
-[/hint]
+> [!TIP]
+> The `enablePlugins()` method is implemented on `TinyCMEConfig`, which is a subclass of `HTMLEditorConfig`. This is true of most of the configuration methods used in this documentation. We've done an explicit `instanceof` check here for correctness, but in reality unless your project introduces an alternative WYSIWYG editor, you can safely omit that check. The remaining examples in this documentation will omit the check.
 
 ```php
 // app/_config.php
@@ -113,10 +111,9 @@ if ($editorConfig instanceof TinyMCEConfig) {
 }
 ```
 
-[notice]
-This utilities the TinyMCE's [external_plugins](https://www.tiny.cloud/docs/tinymce/6/editor-important-options/#external_plugins)
-option under the hood.
-[/notice]
+> [!WARNING]
+> This utilities the TinyMCE's [external_plugins](https://www.tiny.cloud/docs/tinymce/6/editor-important-options/#external_plugins)
+> option under the hood.
 
 Plugins and advanced themes can provide additional buttons that can be added (or removed) through the
 configuration. Here is an example of adding a `ssmacron` button after the `charmap` button:
@@ -135,11 +132,10 @@ use SilverStripe\Forms\HTMLEditor\TinyMCEConfig;
 TinyMCEConfig::get('cms')->removeButtons('tablecontrols', 'blockquote', 'hr');
 ```
 
-[notice]
-Internally `HTMLEditorConfig` uses the TinyMCE's `toolbar` option to configure these. See the
-[TinyMCE documentation of this option](https://www.tiny.cloud/docs/tinymce/6/toolbar-configuration-options/#toolbar)
-for more details.
-[/notice]
+> [!WARNING]
+> Internally `HTMLEditorConfig` uses the TinyMCE's `toolbar` option to configure these. See the
+> [TinyMCE documentation of this option](https://www.tiny.cloud/docs/tinymce/6/toolbar-configuration-options/#toolbar)
+> for more details.
 
 ### Setting options
 
@@ -184,10 +180,9 @@ $validElements = str_replace('iframe[', 'iframe[data-*|');
 $editor->setOption('extended_valid_elements', $validElements);
 ```
 
-[notice]
-The default setting for the CMS's `extended_valid_elements` we are overriding here can be found in
-`vendor/silverstripe/admin/_config.php`.
-[/notice]
+> [!WARNING]
+> The default setting for the CMS's `extended_valid_elements` we are overriding here can be found in
+> `vendor/silverstripe/admin/_config.php`.
 
 ## Enabling custom plugins
 
@@ -200,14 +195,13 @@ use SilverStripe\Forms\HTMLEditor\TinyMCEConfig;
 TinyMCEConfig::get('cms')->enablePlugins(['myplugin' => 'app/javascript/myplugin/editor_plugin.js']);
 ```
 
-[hint]
-The path for the plugin file must be one of the following:
-
-- `null` (if the plugin being enabled is a built-in plugin)
-- a path, relative to your `_resources/` directory, to the plugin file
-- a `ModuleResource` instance representing the plugin JavaScript file (see `silverstripe/admin`'s `_config.php` file for examples)
-- an absolute URL (e.g. for a third-party plugin to be fetched from a CDN).
-[/hint]
+> [!TIP]
+> The path for the plugin file must be one of the following:
+>
+> - `null` (if the plugin being enabled is a built-in plugin)
+> - a path, relative to your `_resources/` directory, to the plugin file
+> - a `ModuleResource` instance representing the plugin JavaScript file (see `silverstripe/admin`'s `_config.php` file for examples)
+> - an absolute URL (e.g. for a third-party plugin to be fetched from a CDN).
 
 You can learn how to [create a plugin](https://www.tiny.cloud/docs/tinymce/6/creating-a-plugin/) from the TinyMCE documentation.
 

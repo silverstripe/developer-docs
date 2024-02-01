@@ -22,9 +22,8 @@ installed globally. You should now be able to run the command:
 composer help
 ```
 
-[info]
-If you already have Composer installed, make sure it is composer 2 by running `composer --version`. If you're running Composer 1, run [`composer self-update`](https://getcomposer.org/doc/03-cli.md#self-update-selfupdate). You may also want to check out the [upgrade guide for Composer 1.x to 2.0](https://getcomposer.org/upgrade/UPGRADE-2.0.md).
-[/info]
+> [!NOTE]
+> If you already have Composer installed, make sure it is composer 2 by running `composer --version`. If you're running Composer 1, run [`composer self-update`](https://getcomposer.org/doc/03-cli.md#self-update-selfupdate). You may also want to check out the [upgrade guide for Composer 1.x to 2.0](https://getcomposer.org/upgrade/UPGRADE-2.0.md).
 
 ## Create a new site
 
@@ -35,14 +34,13 @@ version:
 composer create-project silverstripe/installer my-project
 ```
 
-[hint]
-With the above command, `my-project` is the path (relative to your current working directory) where Composer will create the project.
-
-For example, on OSX, you might want to create a project as a sub-directory of `~/Sites`. You could do that by running `cd ~/Sites` before
-the above command.
-
-If that directory doesn't exist, Composer will create it for you.
-[/hint]
+> [!TIP]
+> With the above command, `my-project` is the path (relative to your current working directory) where Composer will create the project.
+>
+> For example, on OSX, you might want to create a project as a sub-directory of `~/Sites`. You could do that by running `cd ~/Sites` before
+> the above command.
+>
+> If that directory doesn't exist, Composer will create it for you.
 
 If you want to get additional fixtures for testing, such as behat and phpunit configuration, an
 example `.env.example` file, and all documentation, then it's recommended to use the `--prefer-source` option
@@ -87,11 +85,10 @@ a [version constraint](https://getcomposer.org/doc/articles/versions.md#writing-
 composer require silverstripe/blog ^2
 ```
 
-[warning]
-**Version constraints:** `master` or `main` is not a legal version string - it's a branch name. These are different things. The
-version string that would get you the branch is `dev-main`. The version string that would get you a numeric branch is
-a little different. The version string for the `5` branch is `5.x-dev`.
-[/warning]
+> [!WARNING]
+> **Version constraints:** `master` or `main` is not a legal version string - it's a branch name. These are different things. The
+> version string that would get you the branch is `dev-main`. The version string that would get you a numeric branch is
+> a little different. The version string for the `5` branch is `5.x-dev`.
 
 ## Updating dependencies
 
@@ -107,14 +104,13 @@ composer update
 Updates to the required modules will be installed, and the `composer.lock` file will get updated with the specific
 commits and version constraints for each of them.
 
-[hint]
-The update command can also be used to *downgrade* dependencies - if you edit your `composer.json` file and set a version
-constraint that will require a lower version to be installed, running `composer update` will "update" your installed
-dependencies to match your constraints, which in this case would install lower versions than what you had previously.
-
-You may occasionally need to use the `--with-all-dependencies` option when downgrading dependencies to avoid conflicting
-version constraints.
-[/hint]
+> [!TIP]
+> The update command can also be used to *downgrade* dependencies - if you edit your `composer.json` file and set a version
+> constraint that will require a lower version to be installed, running `composer update` will "update" your installed
+> dependencies to match your constraints, which in this case would install lower versions than what you had previously.
+>
+> You may occasionally need to use the `--with-all-dependencies` option when downgrading dependencies to avoid conflicting
+> version constraints.
 
 ## Deploying projects with Composer
 
@@ -229,10 +225,9 @@ file. It will appear in your project root, and by default, it will look somethin
 To add modules, you should add more entries into the `"require"` section. For example, we might add the blog and forum
 modules.
 
-[notice]
-Be careful with the commas at the end of the lines! You can run `composer validate` to be sure your `composer.json`
-file is formatted correctly.
-[/notice]
+> [!WARNING]
+> Be careful with the commas at the end of the lines! You can run `composer validate` to be sure your `composer.json`
+> file is formatted correctly.
 
 Save your file, and then run the following command to update the installed packages:
 
@@ -303,16 +298,15 @@ This is how you do it:
 composer require silverstripe/cms
 ```
 
-[notice]
-In most cases, you will probably have a specific branch of the fork you want to install. You should use the appropriate
-version constraint to install that branch. For example, to install a branch called `fix/issue-1990` your version constraint
-should be `dev-fix/issue-1990`.
-
-Depending on what other installed modules have that package as a dependency, you may also need to declare an
-[inline alias](https://getcomposer.org/doc/articles/aliases.md#require-inline-alias).
-
-See more about this in [Forks and branch names](#forks-and-branch-names) below.
-[/notice]
+> [!WARNING]
+> In most cases, you will probably have a specific branch of the fork you want to install. You should use the appropriate
+> version constraint to install that branch. For example, to install a branch called `fix/issue-1990` your version constraint
+> should be `dev-fix/issue-1990`.
+>
+> Depending on what other installed modules have that package as a dependency, you may also need to declare an
+> [inline alias](https://getcomposer.org/doc/articles/aliases.md#require-inline-alias).
+>
+> See more about this in [Forks and branch names](#forks-and-branch-names) below.
 
 Composer will scan all of the repositories you list, collect meta-data about the packages within them, and use them in
 favour of the packages listed on packagist. To switch back to using the mainline version of the package, just remove

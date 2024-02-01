@@ -77,12 +77,11 @@ Most commonly this is through the "Access to Files section" permission.
 Custom implementations (e.g. APIs or custom file viewers) can have
 further restrictions in your project.
 
-[warning]
-When implementing your own `canView()` logic through [extensions](/developer_guides/extending/extensions),
-existing unprotected files are not retroactively moved to the protected asset store.
-While those new permissions are honoured in the CMS, protected files through custom `canView()`
-can still be downloaded through a public URL until a `write()` operation is triggered on them.
-[/warning]
+> [!WARNING]
+> When implementing your own `canView()` logic through [extensions](/developer_guides/extending/extensions),
+> existing unprotected files are not retroactively moved to the protected asset store.
+> While those new permissions are honoured in the CMS, protected files through custom `canView()`
+> can still be downloaded through a public URL until a `write()` operation is triggered on them.
 
 ## Asset stores
 
@@ -222,10 +221,9 @@ $object->SecretFile->protectFile();
 $object->PublicFile->publishFile();
 ```
 
-[notice]
-One thing to note is that all variants of a single file will be treated as
-a single entity for access control, so specific variants cannot be individually controlled.
-[/notice]
+> [!WARNING]
+> One thing to note is that all variants of a single file will be treated as
+> a single entity for access control, so specific variants cannot be individually controlled.
 
 ## How file access is protected
 

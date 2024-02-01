@@ -12,9 +12,8 @@ Note that the release cadence and pre-release time frame are indicative only. We
 
 Our minor release policy is more flexible because minor release upgrades are more straightforward to manage than major release upgrades.
 
-[info]
-Refer to our [definition of public API](/project_governance/public_api/).
-[/info]
+> [!NOTE]
+> Refer to our [definition of public API](/project_governance/public_api/).
 
 ## Scope of the policy
 

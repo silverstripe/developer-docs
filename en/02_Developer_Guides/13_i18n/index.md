@@ -305,23 +305,21 @@ If you want to run the text collector for just one module you can use the 'modul
 You can also run the text collector against multiple specific modules by separating the module names with a comma:
 `https://www.example.com/dev/tasks/i18nTextCollectorTask/?module=silverstripe%2Fcms,silverstripe%2Fframework`
 
-[info]
-The `%2F` in `silverstripe%2Fcms` is a `/` which has been encoded for use in a URL in a non-ambiguous way.
-[/info]
+> [!NOTE]
+> The `%2F` in `silverstripe%2Fcms` is a `/` which has been encoded for use in a URL in a non-ambiguous way.
 
 The text collector also collects text for themes - if you want to run text collection on a specific theme, reference the theme
 with prefix `themes:`, e.g:
 `https://www.example.com/dev/tasks/i18nTextCollectorTask/?module=themes:my-theme`
 
-[hint]
-You can also run this task via the command line using sake, e.g:
-
-```bash
-sake dev/tasks/i18nTextCollectorTask module=themes:my-theme,silverstripe/framework
-```
-
-See [the sake documentation](/developer_guides/cli/) for details about using sake.
-[/hint]
+> [!TIP]
+> You can also run this task via the command line using sake, e.g:
+>
+> ```bash
+> sake dev/tasks/i18nTextCollectorTask module=themes:my-theme,silverstripe/framework
+> ```
+>
+> See [the sake documentation](/developer_guides/cli/) for details about using sake.
 
 ## Module priority
 

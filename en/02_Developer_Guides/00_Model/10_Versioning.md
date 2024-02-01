@@ -13,21 +13,20 @@ Versioning in Silverstripe CMS is handled through the [`Versioned`](api:SilverSt
 The `Versioned` extension is applied to pages in the CMS (the [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) class) - along with some other core `DataObject` models such as files - by default. Draft content edited in the CMS can be different
 from published content shown to your website visitors.
 
-[notice]
-There are two complementary modules that improve content editor experience around "owned" nested objects (e.g. elemental blocks).
-Those are in experimental status right now, but we would appreciate any feedback and contributions.
-
-You can check them out on GitHub:
-
-- <https://github.com/silverstripe/silverstripe-versioned-snapshots>
-- <https://github.com/silverstripe/silverstripe-versioned-snapshot-admin>
-
-The first one adds extra metadata to versions about object parents at the moment of version creation.
-The second module extends CMS History UI adding control over nested objects.
-
-Here is an example screenshot from `silverstripe/versioned-snapshot-admin`:
-![a screenshot of the versioned-snapshot-admin module's "history" interface showing version history of data relations](../../_images/snapshot-admin.png)
-[/notice]
+> [!WARNING]
+> There are two complementary modules that improve content editor experience around "owned" nested objects (e.g. elemental blocks).
+> Those are in experimental status right now, but we would appreciate any feedback and contributions.
+>
+> You can check them out on GitHub:
+>
+> - <https://github.com/silverstripe/silverstripe-versioned-snapshots>
+> - <https://github.com/silverstripe/silverstripe-versioned-snapshot-admin>
+>
+> The first one adds extra metadata to versions about object parents at the moment of version creation.
+> The second module extends CMS History UI adding control over nested objects.
+>
+> Here is an example screenshot from `silverstripe/versioned-snapshot-admin`:
+> ![a screenshot of the versioned-snapshot-admin module's "history" interface showing version history of data relations](../../_images/snapshot-admin.png)
 
 ## Understanding versioning concepts
 
@@ -42,17 +41,15 @@ By default, adding the `Versioned` extension to a `DataObject` will create 2 sta
 - "Stage" for tracking draft content (aka "draft")
 - "Live" for tracking content publicly visible (aka "published").
 
-[info]
-Yes, the draft stage is called the "Stage" stage. In this documentation we'll try to differentiate between the stage named "Stage" and the concept of a stage by giving the named stage a capital S and putting quotes around it - but in some cases we'll just refer to it as "draft" because often that's the more intuitive way to think of it.
-[/info]
+> [!NOTE]
+> Yes, the draft stage is called the "Stage" stage. In this documentation we'll try to differentiate between the stage named "Stage" and the concept of a stage by giving the named stage a capital S and putting quotes around it - but in some cases we'll just refer to it as "draft" because often that's the more intuitive way to think of it.
 
 Publishing a versioned `DataObject` is equivalent to copying the version from the "Stage" stage to the "Live" stage.
 
 If you just want to keep track of the version history of a model's records but you don't need to separate draft and published versions, you can apply the `Versioned` extension to your `DataObject` without stages. This will allow you to keep track of all changes that have been applied to a DataObject and who made them.
 
-[hint]
-The `Versioned` class has a `Versioned::DRAFT` constant to refer to the "Stage" stage, and `Versioned::LIVE` to refer to the "Live" stage. It can be useful to use those in your PHP code when you need to refer to the stages.
-[/hint]
+> [!TIP]
+> The `Versioned` class has a `Versioned::DRAFT` constant to refer to the "Stage" stage, and `Versioned::LIVE` to refer to the "Live" stage. It can be useful to use those in your PHP code when you need to refer to the stages.
 
 ### Ownership and relations between `DataObject` models {#ownership}
 
@@ -73,11 +70,10 @@ Silverstripe CMS makes this possible by using the concept of *cascade publishing
 
 A non-recursive publish operation is also available if you want to publish a new version of a object without cascade publishing all its children.
 
-[alert]
-Declaring ownership implies publish permissions on owned objects.
-Built-in controllers using cascading publish operations check `canPublish()`
-on the owner, but not on the owned object.
-[/alert]
+> [!CAUTION]
+> Declaring ownership implies publish permissions on owned objects.
+> Built-in controllers using cascading publish operations check `canPublish()`
+> on the owner, but not on the owned object.
 
 #### Ownership of unversioned object
 
@@ -104,11 +100,10 @@ Changes to many objects can be grouped together using the [`ChangeSet`](api:Silv
 Records can be added to a changeset in the CMS by using the "Add to campaign" button
 that is available on the edit forms of all pages and files. Programmatically, this is done by creating a `ChangeSet` object and invoking its [`addObject(DataObject $record)`](api:SilverStripe\Versioning\ChangeSet::addObject()) method.
 
-[info]
-DataObjects can be added to more than one ChangeSet.
-Most of the time, these objects contain changes.
-A ChangeSet can contain unchanged objects as well.
-[/info]
+> [!NOTE]
+> DataObjects can be added to more than one ChangeSet.
+> Most of the time, these objects contain changes.
+> A ChangeSet can contain unchanged objects as well.
 
 #### Implicit vs. Explicit inclusions
 
@@ -125,6 +120,10 @@ It is possible for an item to be included both implicitly and explicitly in a ch
 This section explains how to take a regular `DataObject` and add versioning to it.
 
 ### Applying the `Versioned` extension to your `DataObject`
+
+> [!WARNING]
+> Versioning only works if you are adding the extension to the base class. That is, the first subclass
+> of `DataObject`. Adding this extension to children of the base class will have unpredictable behaviour.
 
 Adding versioning to a `DataObject` model is as easy as applying the [`Versioned`](api:SilverStripe\Versioned\Versioned) extension to it, either via PHP or YAML configuration. This will apply versioning *with stages*, meaning you can have a draft and a published version of your records.
 
@@ -172,15 +171,9 @@ App\Model\MyStagedModel:
     - SilverStripe\Versioned\Versioned.versioned
 ```
 
-[notice]
-The `Versioned` extension is automatically applied to the `SiteTree` class. For more information on extensions see
-[extending](/developer_guides/extending/) and the [Configuration](/developer_guides/configuration/) documentation.
-[/notice]
-
-[warning]
-Versioning only works if you are adding the extension to the base class. That is, the first subclass
-of `DataObject`. Adding this extension to children of the base class will have unpredictable behaviour.
-[/warning]
+> [!WARNING]
+> The `Versioned` extension is automatically applied to the `SiteTree` class. For more information on extensions see
+> [extending](/developer_guides/extending/) and the [Configuration](/developer_guides/configuration/) documentation.
 
 #### Versioning a `many_many` relation
 
@@ -235,12 +228,11 @@ class ProductCategory extends DataObject
 
 By default, `Versioned` will come out of the box with security extensions which restrict the visibility of objects in Draft ("Stage") or Archive viewing mode.
 
-[alert]
-As is standard practice, user code should always invoke `canView()` on any object before
-rendering it. DataLists do not filter on `canView()` automatically, so this must be
-done via user code. This can be achieved either by wrapping `<% if $canView %>;` in
-your template, or by implementing your visibility check in PHP.
-[/alert]
+> [!CAUTION]
+> As is standard practice, user code should always invoke `canView()` on any object before
+> rendering it. DataLists do not filter on `canView()` automatically, so this must be
+> done via user code. This can be achieved either by wrapping `<% if $canView %>;` in
+> your template, or by implementing your visibility check in PHP.
 
 #### Version specific *can* methods {#permission-methods}
 
@@ -254,9 +246,8 @@ Versioned DataObjects get additional permission check methods to verify what ope
 
 These methods accept an optional `Member` argument. If not provided, they will assume you want to check the permission against the current `Member`. When performing a version operation on behalf of a `Member`, you'll probably want to use these methods to confirm they are authorised.
 
-[warning]
-Like with the base `can` permission checks, these checks are *not* performed automatically when invoking the associated action via PHP. i.e. if you call `publishSingle()` on a record in your own code, Silverstripe CMS will *not* check if the currently authenticated user has permission to publish the record. Make sure you are performing permission checks by calling these `can` methods before invoking the associated actions.
-[/warning]
+> [!WARNING]
+> Like with the base `can` permission checks, these checks are *not* performed automatically when invoking the associated action via PHP. i.e. if you call `publishSingle()` on a record in your own code, Silverstripe CMS will *not* check if the currently authenticated user has permission to publish the record. Make sure you are performing permission checks by calling these `can` methods before invoking the associated actions.
 
 ```php
 $record = MyRecord::get()->byID(99);
@@ -448,9 +439,8 @@ class MyPage extends Page
 
 You must declare both `owns` and `cascade_deletes` if you want all publish, unpublish, and archive actions to carry through.
 
-[info]
-Note that ownership cannot be used with polymorphic relations (i.e. `has_one` to non-type specific `DataObject`).
-[/info]
+> [!NOTE]
+> Note that ownership cannot be used with polymorphic relations (i.e. `has_one` to non-type specific `DataObject`).
 
 #### Unversioned `DataObject` ownership
 
@@ -599,6 +589,9 @@ By default, all records are retrieved from the "Stage" (aka draft) stage, which 
 
 You can explicitly request a specific stage through various static methods on the `Versioned` class.
 
+> [!TIP]
+> Note that in the below examples we just return the `DataList` without executing it. We don't need to execute the query, the reading mode is attached to the `DataList` as soon as it's created via the [`augmentDataQueryCreation()`](api:SilverStripe\Versioned\Versioned::augmentDataQueryCreation()) extension hook implementation.
+
 ```php
 use SilverStripe\Versioned\Versioned;
 
@@ -640,13 +633,8 @@ $liveRecords = MyRecord::get();
 Versioned::set_reading_mode($oldMode);
 ```
 
-[info]
-`Versioned::set_stage(Versioned::LIVE)` is the equivalent of `Versioned::set_reading_mode('Stage.' . Versioned::LIVE)`.
-[/info]
-
-[hint]
-Note that in the above examples we just return the `DataList` without executing it. We don't need to execute the query, the reading mode is attached to the `DataList` as soon as it's created via the [`augmentDataQueryCreation()`](api:SilverStripe\Versioned\Versioned::augmentDataQueryCreation()) extension hook implementation.
-[/hint]
+> [!NOTE]
+> `Versioned::set_stage(Versioned::LIVE)` is the equivalent of `Versioned::set_reading_mode('Stage.' . Versioned::LIVE)`.
 
 ### Reading historical versions
 
@@ -662,9 +650,8 @@ $historicalRecord = Versioned::get_version(MyRecord::class, id: 5, version: 6);
 
 The record is retrieved as a regular `DataObject` record with its values set to the values it had when that version was originally saved.
 
-[alert]
-Saving modifications via `write()` will create a *new* version, rather than modifying the existing one.
-[/alert]
+> [!CAUTION]
+> Saving modifications via `write()` will create a *new* version, rather than modifying the existing one.
 
 In order to get a list of all versions for a specific record, we get the record version data as specialized [`Versioned_Version`](api:SilverStripe\Versioned\Versioned_Version)
 objects, which expose the same database information as a `DataObject`, but also include information about when and how
@@ -841,9 +828,8 @@ Depending on whether staging is enabled, one or more new tables will be created 
 is always created to track historic versions for your model. If staging is enabled this will also create a new
 `<originalTable>_Live` table once you've rebuilt the database.
 
-[notice]
-Note that the "Stage" stage doesn't get its own table - instead, the original table represents the "Stage" stage.
-[/notice]
+> [!WARNING]
+> Note that the "Stage" stage doesn't get its own table - instead, the original table represents the "Stage" stage.
 
 - `MyRecord` table: Contains "Stage" (draft) data
 - `MyRecord_Live` table: Contains "Live" (published) data
@@ -883,10 +869,9 @@ these are presented in might still contain dependent objects that are versioned.
 
 You can opt for a session base stage setting through the `Versioned.use_session` configuration property.
 
-[warning]
-Settin `Versioned.use_session` can lead to leaking unpublished information, e.g. if a live URL is viewed in draft mode,
-and the result is cached due to aggressive cache settings (not varying on cookie values).
-[/warning]
+> [!WARNING]
+> Settin `Versioned.use_session` can lead to leaking unpublished information, e.g. if a live URL is viewed in draft mode,
+> and the result is cached due to aggressive cache settings (not varying on cookie values).
 
 ```php
 // app/src/Model/MyObject.php
@@ -978,11 +963,10 @@ SilverStripe\Control\Director:
     'my-objects/$ID': 'App\Control\MyObjectController'
 ```
 
-[alert]
-The `choose_site_stage()` call only deals with setting the default stage, and doesn't check if the user is
-authenticated to view it. As with any other controller logic, please use `DataObject->canView()` to determine
-permissions, and avoid exposing unpublished content to your users.
-[/alert]
+> [!CAUTION]
+> The `choose_site_stage()` call only deals with setting the default stage, and doesn't check if the user is
+> authenticated to view it. As with any other controller logic, please use `DataObject->canView()` to determine
+> permissions, and avoid exposing unpublished content to your users.
 
 #### Templates variables
 
@@ -1039,11 +1023,10 @@ You can use the React and GraphQL driven history viewer UI to display historic c
 comparisons for a versioned DataObject. This is automatically enabled for SiteTree objects and content blocks in
 [dnadesign/silverstripe-elemental](https://github.com/dnadesign/silverstripe-elemental).
 
-[warning]
-Because of the lack of specificity in the `HistoryViewer.Form_ItemEditForm` scope used when injecting the history viewer to the DOM, only one model can have a working history panel at a time, with exception to `SiteTree` which has its own history viewer scope. For example, if you already have `dnadesign/silverstripe-elemental` installed, the custom history viewer instance injected as a part of this documentation will *break* the one provided by the elemental module.
-
-There are ways you can get around this limitation. You may wish to put some conditional logic in `app/client/src/boot/index.js` below to only perform the transformations if the current location is within a specific model admin, for example.
-[/warning]
+> [!WARNING]
+> Because of the lack of specificity in the `HistoryViewer.Form_ItemEditForm` scope used when injecting the history viewer to the DOM, only one model can have a working history panel at a time, with exception to `SiteTree` which has its own history viewer scope. For example, if you already have `dnadesign/silverstripe-elemental` installed, the custom history viewer instance injected as a part of this documentation will *break* the one provided by the elemental module.
+>
+> There are ways you can get around this limitation. You may wish to put some conditional logic in `app/client/src/boot/index.js` below to only perform the transformations if the current location is within a specific model admin, for example.
 
 If you want to enable the history viewer for a custom versioned DataObject, you will need to:
 
@@ -1052,10 +1035,9 @@ If you want to enable the history viewer for a custom versioned DataObject, you 
 - Register your GraphQL queries and mutations with Injector
 - Add a HistoryViewerField to the DataObject's `getCMSFields`
 
-[notice]
-**Please note:** these examples are given in the context of project-level customisation. You may need to adjust
-the webpack configuration slightly for use in a module.
-[/notice]
+> [!WARNING]
+> **Please note:** these examples are given in the context of project-level customisation. You may need to adjust
+> the webpack configuration slightly for use in a module.
 
 ### Setup {#history-viewer-setup}
 
@@ -1089,14 +1071,9 @@ class MyVersionedObject extends DataObject
 If you haven't already configured frontend asset (JavaScript/CSS) building for your project, you will need to configure some basic
 packages to be built in order to enable history viewer functionality. This section includes a very basic webpack configuration which uses [@silverstripe/webpack-config](https://www.npmjs.com/package/@silverstripe/webpack-config).
 
-[hint]
-If you have this configured for your project already, ensure you have the `@apollo/client` and `graphql-tag` libraries in your `package.json`
-requirements (with the appropriate version constraints from below), and skip this section.
-[/hint]
-
-[notice]
-Using `@silverstripe/webpack-config` will keep your transpiled bundle size smaller and ensure you are using the correct versions of `@apollo/client` and `graphql-tag`, as these will automatically be added as [webpack externals](https://webpack.js.org/configuration/externals/). If you are not using that npm package, it is very important you use the correct versions of those dependencies.
-[/notice]
+> [!TIP]
+> If you have this configured for your project already, ensure you have the `@apollo/client` and `graphql-tag` libraries in your `package.json`
+> requirements (with the appropriate version constraints from below), and skip this section.
 
 You can configure your directory structure like so:
 
@@ -1122,6 +1099,9 @@ You can configure your directory structure like so:
   }
 }
 ```
+
+> [!WARNING]
+> Using `@silverstripe/webpack-config` will keep your transpiled bundle size smaller and ensure you are using the correct versions of `@apollo/client` and `graphql-tag`, as these will automatically be added as [webpack externals](https://webpack.js.org/configuration/externals/). If you are not using that npm package, it is very important you use the correct versions of those dependencies.
 
 ```js
 // webpack.config.js
@@ -1151,9 +1131,8 @@ module.exports = [
 
 At this stage, running `yarn build` should correctly build `app/client/dist/js/bundle.js`.
 
-[notice]
-Don't forget to [configure your project's "exposed" folders](/developer_guides/templates/requirements/#configuring-your-project-exposed-folders) and run `composer vendor-expose` on the command line so that the browser has access to your new dist JS file.
-[/notice]
+> [!WARNING]
+> Don't forget to [configure your project's "exposed" folders](/developer_guides/templates/requirements/#configuring-your-project-exposed-folders) and run `composer vendor-expose` on the command line so that the browser has access to your new dist JS file.
 
 ### Create and use GraphQL schema {#history-viewer-gql}
 

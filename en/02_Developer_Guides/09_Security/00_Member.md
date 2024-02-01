@@ -29,10 +29,9 @@ if ($member) {
 
 ## Subclassing
 
-[warning]
-This is the least desirable way of extending the [Member](api:SilverStripe\Security\Member) class. It's better to use [DataExtension](api:SilverStripe\ORM\DataExtension)
-(see below).
-[/warning]
+> [!WARNING]
+> This is the least desirable way of extending the [Member](api:SilverStripe\Security\Member) class. It's better to use [DataExtension](api:SilverStripe\ORM\DataExtension)
+> (see below).
 
 You can define subclasses of [Member](api:SilverStripe\Security\Member) to add extra fields or functionality to the built-in membership system.
 

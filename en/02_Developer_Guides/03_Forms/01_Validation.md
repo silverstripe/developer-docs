@@ -65,11 +65,10 @@ class MyFormPageController extends PageController
 In this example we will be required to input a value for `Name` and a valid email address for `Email` before the
 `doSubmitForm` method is called.
 
-[info]
-Each individual [FormField](api:SilverStripe\Forms\FormField) instance is responsible for validating the submitted content through the
-[FormField::validate()](api:SilverStripe\Forms\FormField::validate()) method. By default, this just checks the value exists. Fields like `EmailField` override
-`validate` to check for a specific format.
-[/info]
+> [!NOTE]
+> Each individual [FormField](api:SilverStripe\Forms\FormField) instance is responsible for validating the submitted content through the
+> [FormField::validate()](api:SilverStripe\Forms\FormField::validate()) method. By default, this just checks the value exists. Fields like `EmailField` override
+> `validate` to check for a specific format.
 
 ## Extensions
 
@@ -94,11 +93,10 @@ class FormFieldValidationExtension extends Extension
 }
 ```
 
-[notice]
-This extension hook will not work without the ampersand (`&`) in the `&$result` argument. This is because the return
-value of the function is ignored, so the validation result has to be updated by changing the value of the `$result`
-variable. This is known as [passing by reference](https://www.php.net/manual/en/language.references.pass.php).
-[/notice]
+> [!WARNING]
+> This extension hook will not work without the ampersand (`&`) in the `&$result` argument. This is because the return
+> value of the function is ignored, so the validation result has to be updated by changing the value of the `$result`
+> variable. This is known as [passing by reference](https://www.php.net/manual/en/language.references.pass.php).
 
 ## Validation in `FormField` subclasses
 
@@ -132,9 +130,8 @@ should trigger a validation error on the page) and pass this to the `extendValid
 to hook into the validation logic. In addition, in the event of failed validation, a useful error message must be set
 on the given validator.
 
-[notice]
-You can also override the entire `Form` validation by subclassing `Form` and defining a `validate` method on the form.
-[/notice]
+> [!WARNING]
+> You can also override the entire `Form` validation by subclassing `Form` and defining a `validate` method on the form.
 
 ## Form action validation
 
@@ -351,9 +348,8 @@ call `setValidator` easily. However, a `DataObject` can provide its own `Validat
 [ModelAdmin](api:SilverStripe\Admin\ModelAdmin) and [GridField](api:SilverStripe\Forms\GridField\GridField) will
 respect the provided `Validator`/s and handle displaying error and success responses to the user.
 
-[info]
-Again, custom error messages can be provided through the `FormField`
-[/info]
+> [!NOTE]
+> Again, custom error messages can be provided through the `FormField`
 
 ```php
 namespace App\PageType;
@@ -390,10 +386,9 @@ class MyPage extends Page
 }
 ```
 
-[hint]
-You can also update the `CompositeValidator` by creating an `Extension` and implementing the
-`updateCMSCompositeValidator()` method.
-[/hint]
+> [!TIP]
+> You can also update the `CompositeValidator` by creating an `Extension` and implementing the
+> `updateCMSCompositeValidator()` method.
 
 ## Related lessons
 

@@ -54,14 +54,16 @@ various assumptions the ORM and code based on it have:
 We'll explain some ways to use the low-level APIs with the full power of SQL,
 but still maintain a connection to the ORM where possible.
 
-[warning]
-Please read our [security topic](/developer_guides/security) to find out
-how to properly prepare user input and variables for use in queries
-[/warning]
+> [!WARNING]
+> Please read our [security topic](/developer_guides/security) to find out
+> how to properly prepare user input and variables for use in queries
 
 ## Usage
 
 ### Getting table names
+
+> [!WARNING]
+> Because of the way the ORM interacts with class inheritance, some models will spread their data across multiple tables. See [Joining tables for a DataObject inheritance chain](#joins-for-inheritance) below for information about how to handle that scenario.
 
 While you could hardcode table names into your SQL queries, that invites human error and means you have to make sure you know exactly what table stores which data for every class in the class hierarchy of the model you're interested in. Luckily, the [`DataObjectSchema`](api:SilverStripe\ORM\DataObjectSchema) class knows all about the database schema for your `DataObject` models. The following methods in particular may be useful to you:
 
@@ -71,15 +73,10 @@ While you could hardcode table names into your SQL queries, that invites human e
 - [`tableForField()`](api:SilverStripe\ORM\DataObjectSchema::tableForField()): Get the table name in the class hierarchy which contains a given field column.
 - [`tableName()`](api:SilverStripe\ORM\DataObjectSchema::tableName()): Get table name for the given class. Note that this does not confirm a table actually exists (or should exist), but returns the name that would be used if this table did exist. Make sure to call `classHasTable()` before using this table name in a query.
 
-[hint]
-While the default database connector will work fine without explicitly ANSI-quoting table names in queries, it is good practice to make sure they are quoted (especially if you're writing these queries in a module that will be publicly shared) to ensure your queries will work on other database connectors such as [`PostgreSQLDatabase`](https://github.com/silverstripe/silverstripe-postgresql) which explicitly require ANSI quoted table names.
-
-You can do that by passing the raw table name into [`DB::get_conn()->escapeIdentifier()`](api:SilverStripe\ORM\Connect\Database::escapeIdentifier()), which will ensure it is correctly escaped according to the rules of the currently active database connector.
-[/hint]
-
-[notice]
-Because of the way the ORM interacts with class inheritance, some models will spread their data across multiple tables. See [Joining tables for a DataObject inheritance chain](#joins-for-inheritance) below for information about how to handle that scenario.
-[/notice]
+> [!TIP]
+> While the default database connector will work fine without explicitly ANSI-quoting table names in queries, it is good practice to make sure they are quoted (especially if you're writing these queries in a module that will be publicly shared) to ensure your queries will work on other database connectors such as [`PostgreSQLDatabase`](https://github.com/silverstripe/silverstripe-postgresql) which explicitly require ANSI quoted table names.
+>
+> You can do that by passing the raw table name into [`DB::get_conn()->escapeIdentifier()`](api:SilverStripe\ORM\Connect\Database::escapeIdentifier()), which will ensure it is correctly escaped according to the rules of the currently active database connector.
 
 ### SELECT
 
@@ -130,9 +127,8 @@ foreach ($result as $row) {
 }
 ```
 
-[info]
-There's a lot to this API - we highly recommend that you check out the PHPDoc comments on the methods in this class to learn more about the specific usages of each - for example, the [`addWhere()`](api:SilverStripe\ORM\Queries\SQLSelect::addWhere()) method's PHPDoc includes multiple examples of different syntaxes that can be passed into it.
-[/info]
+> [!NOTE]
+> There's a lot to this API - we highly recommend that you check out the PHPDoc comments on the methods in this class to learn more about the specific usages of each - for example, the [`addWhere()`](api:SilverStripe\ORM\Queries\SQLSelect::addWhere()) method's PHPDoc includes multiple examples of different syntaxes that can be passed into it.
 
 The result of [`SQLSelect::execute()`](api:SilverStripe\ORM\Queries\SQLSelect::execute()) is an array lightly wrapped in a database-specific subclass of [`Query`](api:SilverStripe\ORM\Connect\Query).
 This class implements the [`IteratorAggregate`](https://www.php.net/manual/en/class.iteratoraggregate.php) interface, and provides convenience methods for accessing the data.
@@ -328,11 +324,10 @@ With some queries you'll know ahead of time how many values you're including in 
 
 In those cases, you can use the [`DB::placeholders()`](api:SilverStripe\ORM\DB::placeholders()) method, which prepares these placeholders for you.
 
-[info]
-If you need this for some thing other than inclusion in an `IN` SQL operation, you can pass a custom delimiter as the second argument to `DB::placeholders()`.
-
-Also note that you can pass an integer in as the first argument rather than an array of values, if you want.
-[/info]
+> [!NOTE]
+> If you need this for some thing other than inclusion in an `IN` SQL operation, you can pass a custom delimiter as the second argument to `DB::placeholders()`.
+>
+> Also note that you can pass an integer in as the first argument rather than an array of values, if you want.
 
 Example: Get the fields for all players in a team which has more than 15 wins.
 
@@ -354,14 +349,12 @@ $sqlQuery->setFrom($playerTableName)->where([
 $results = $sqlQuery->execute();
 ```
 
-[info]
-This is obviously a contrived example - this could easily (and more efficiently) be done using the ORM:
-
-```php
-$players = Player::get()->filter('Teams.Wins:GreaterThan', 15);
-```
-
-[/info]
+> [!NOTE]
+> This is obviously a contrived example - this could easily (and more efficiently) be done using the ORM:
+>
+> ```php
+> $players = Player::get()->filter('Teams.Wins:GreaterThan', 15);
+> ```
 
 ### Joining tables for a `DataObject` inheritance chain {#joins-for-inheritance}
 
@@ -401,24 +394,22 @@ foreach ($columns as $alias => $ansiQuotedColumn) {
 }
 ```
 
-[hint]
-If we want all of the fields for *all* models in the class hierarchy (mimicking `Product::get()` where `Product` is the first subclass of `DataObject` - see the example in the [Introduction to the Data Model and ORM](data_model_and_orm/#subclasses)), we can do this by using a `LEFT JOIN` (like above), ommitting the `WHERE` clause on the `ClassName` field, and making sure we join *all* tables for the inheritance chain regardless of the fields being selected. To do that, make sure you're using the first `DataObject` class as your first main query class (replace `Computer` above with `Product`, in this example), remove the call to `$select->addWhere()`, and add the following code to the end of the above example:
-
-```php
-// Make sure we join all the tables for the model inheritance chain
-foreach (ClassInfo::subclassesFor(Product::class, includeBaseClass: false) as $class) {
-    if ($schema->classHasTable($class)) {
-        $classTable = $schema->tableName($class);
-        if (!$select->isJoinedTo($classTable)) {
-            $quotedClassTable = DB::get_conn()->escapeIdentifier($classTable);
-            $joinOnClause = $schema->sqlColumnForField(Product::class, 'ID') . ' = ' . $quotedClassTable . '."ID"';
-            $select->addLeftJoin($quotedClassTable, $joinOnClause);
-        }
-    }
-}
-```
-
-[/hint]
+> [!TIP]
+> If we want all of the fields for *all* models in the class hierarchy (mimicking `Product::get()` where `Product` is the first subclass of `DataObject` - see the example in the [Introduction to the Data Model and ORM](data_model_and_orm/#subclasses)), we can do this by using a `LEFT JOIN` (like above), ommitting the `WHERE` clause on the `ClassName` field, and making sure we join *all* tables for the inheritance chain regardless of the fields being selected. To do that, make sure you're using the first `DataObject` class as your first main query class (replace `Computer` above with `Product`, in this example), remove the call to `$select->addWhere()`, and add the following code to the end of the above example:
+>
+> ```php
+> // Make sure we join all the tables for the model inheritance chain
+> foreach (ClassInfo::subclassesFor(Product::class, includeBaseClass: false) as $class) {
+>     if ($schema->classHasTable($class)) {
+>         $classTable = $schema->tableName($class);
+>         if (!$select->isJoinedTo($classTable)) {
+>             $quotedClassTable = DB::get_conn()->escapeIdentifier($classTable);
+>             $joinOnClause = $schema->sqlColumnForField(Product::class, 'ID') . ' = ' . $quotedClassTable . '."ID"';
+>             $select->addLeftJoin($quotedClassTable, $joinOnClause);
+>         }
+>     }
+> }
+> ```
 
 ### Common table expressions (CTE aka the `WITH` clause) {#cte}
 
@@ -579,9 +570,8 @@ foreach ($results as $row) {
 }
 ```
 
-[hint]
-Note that you do *not* have to call `execute()` with these methods, unlike the abstraction layer in the other examples. This is because you're passing the entire query into the method - you can't change the query after it's passed in, so it gets executed right away. The return type for these methods is the same as the return type for the [`execute()`](api::SilverStripe\ORM\Queries\SQLExpression::execute()) methods on the `SQLExpression` classes.
-[/hint]
+> [!TIP]
+> Note that you do *not* have to call `execute()` with these methods, unlike the abstraction layer in the other examples. This is because you're passing the entire query into the method - you can't change the query after it's passed in, so it gets executed right away. The return type for these methods is the same as the return type for the [`execute()`](api::SilverStripe\ORM\Queries\SQLExpression::execute()) methods on the `SQLExpression` classes.
 
 ### Data types
 

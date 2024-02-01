@@ -44,14 +44,13 @@ Once you've installed Node.js and yarn, run the following command once in the `s
 yarn install
 ```
 
-[notice]
-The `silverstripe/admin` repository includes some components and dependencies that other modules
-need to work. Make sure that in addition to the module(s) who's code you're touching, you also run
-`yarn install` in the directory for `silverstripe/admin`.
-
-You may need to first run `composer reinstall silverstripe/admin --prefer-source` if you installed
-that module without `--prefer-source` originally.
-[/notice]
+> [!WARNING]
+> The `silverstripe/admin` repository includes some components and dependencies that other modules
+> need to work. Make sure that in addition to the module(s) who's code you're touching, you also run
+> `yarn install` in the directory for `silverstripe/admin`.
+>
+> You may need to first run `composer reinstall silverstripe/admin --prefer-source` if you installed
+> that module without `--prefer-source` originally.
 
 ## Build commands
 

@@ -21,12 +21,11 @@ There are some several members of this ecosystem that all work together to provi
 
 All of these pillars of the frontend application can be customised, giving you more control over how the admin interface looks, feels, and behaves.
 
-[alert]
-These technologies underpin the future of Silverstripe CMS development, but their current implementation is
-*experimental*. Our APIs are not expected to change drastically between releases, but they are excluded from
-our [semantic versioning](https://semver.org) commitments for the time being. Any breaking changes will be
-clearly signalled in release notes.
-[/alert]
+> [!CAUTION]
+> These technologies underpin the future of Silverstripe CMS development, but their current implementation is
+> *experimental*. Our APIs are not expected to change drastically between releases, but they are excluded from
+> our [semantic versioning](https://semver.org) commitments for the time being. Any breaking changes will be
+> clearly signalled in release notes.
 
 First, a brief summary of what each of these are:
 
@@ -255,6 +254,9 @@ const addLoggingMiddleware = (next) => (error) => {
 If you've created a module using React, it's a good idea to afford other developers an
 API to enhance those components, forms, and state. To do that, simply register them with `Injector`.
 
+> [!WARNING]
+> Because of the unique structure of the `form` middleware, you cannot register new services to `Injector.form`.
+
 ```js
 // my-public-module/js/main.js
 import Injector from 'lib/Injector';
@@ -269,15 +271,10 @@ Services can then be fetched using their respective `.get()` methods.
 const MyComponent = Injector.component.get('MyComponent');
 ```
 
-[notice]
-Because of the unique structure of the `form` middleware, you cannot register new services to `Injector.form`.
-[/notice]
-
-[alert]
-Overwriting components by calling `register()` multiple times for the same
-service name is discouraged, and will throw an error. Should you really need to do this,
-you can pass `{ force: true }` as the third argument to the `register()` function.
-[/alert]
+> [!CAUTION]
+> Overwriting components by calling `register()` multiple times for the same
+> service name is discouraged, and will throw an error. Should you really need to do this,
+> you can pass `{ force: true }` as the third argument to the `register()` function.
 
 ### Transforming services using middleware
 
@@ -358,14 +355,12 @@ Injector.transform(
 );
 ```
 
-[info]
-This flag can only be used once per transformation.
-The following are not allowed:
-
-- `{ before: ['*', 'something-else'] }`
-- `{ after: '*', before: 'something-else' }`
-
-[/info]
+> [!NOTE]
+> This flag can only be used once per transformation.
+> The following are not allowed:
+>
+> - `{ before: ['*', 'something-else'] }`
+> - `{ after: '*', before: 'something-else' }`
 
 ### Injector context
 
@@ -617,6 +612,9 @@ Injector.transform(
 );
 ```
 
+> [!WARNING]
+> It is critical that you end series of mutation calls with `getState()`.
+
 The `alterSchema()` function takes a callback, with an instance of `FormStateManager` (`form` in the
 above example) as a parameter. `FormStateMangaer` allows you to declaratively update the form schema
 API using several helper methods, including:
@@ -629,14 +627,9 @@ API using several helper methods, including:
 - `addFieldClass(fieldName:string, cssClassName:string)`
 - `removeFieldClass(fieldName:string, cssClassName:string)`
 
-[info]
-For a complete list of props that are available to update on a `Field` object,
-see <https://redux-form.com/8.3.0/docs/api/field.md/#props-you-can-pass-to-field>
-[/info]
-
-[notice]
-It is critical that you end series of mutation calls with `getState()`.
-[/notice]
+> [!NOTE]
+> For a complete list of props that are available to update on a `Field` object,
+> see <https://redux-form.com/8.3.0/docs/api/field.md/#props-you-can-pass-to-field>
 
 In addition to mutation methods, several readonly methods are available on `FormSchemaManager` to read the current form state, including:
 
@@ -978,9 +971,8 @@ Injector.ready(() => {
 });
 ```
 
-[info]
-`this[0]` is how we get the underlying DOM element that the jQuery object is wrapping. We can't pass `this` directly into the `createRoot()` function because react doesn't know how to deal with a jQuery object wrapper. See [the jQuery documentation](https://api.jquery.com/Types/#jQuery) for more information about that syntax.
-[/info]
+> [!NOTE]
+> `this[0]` is how we get the underlying DOM element that the jQuery object is wrapping. We can't pass `this` directly into the `createRoot()` function because react doesn't know how to deal with a jQuery object wrapper. See [the jQuery documentation](https://api.jquery.com/Types/#jQuery) for more information about that syntax.
 
 The `silverstripe/admin` module provides `apolloClient` and `store` objects in the global namespace to be shared by other modules. We'll make use of those, and create our own app wrapped in `<ApolloProvider />`.
 
@@ -1065,22 +1057,21 @@ Dynamic GraphQL queries are generated by populating pre-baked templates with spe
 
 In this example, we're using the `READ` template, which needs to know the plural name of the object (e.g. `READ` with `Notes` makes a `readNotes` query), whether pagination is activated, and which fields you want to query.
 
-[hint]
-For simplicity, we're not querying any relations or otherwise nested data here. If we had, for example, a `foo` relation with a `title` field and this was exposed in the schema, we would need to add it to the fields array like this:
-
-```js
-const query = {
-  // ...
-  fields: [
-    'foo', [
-      'title',
-    ]
-  ],
-};
-```
-
-You might instinctively try to use JSON object notation for this instead, but that won't work.
-[/hint]
+> [!TIP]
+> For simplicity, we're not querying any relations or otherwise nested data here. If we had, for example, a `foo` relation with a `title` field and this was exposed in the schema, we would need to add it to the fields array like this:
+>
+> ```js
+> const query = {
+>   // ...
+>   fields: [
+>     'foo', [
+>       'title',
+>     ]
+>   ],
+> };
+> ```
+>
+> You might instinctively try to use JSON object notation for this instead, but that won't work.
 
 #### Register all the things
 
@@ -1102,18 +1093,16 @@ const registerDependencies = () => {
 export default registerDependencies;
 ```
 
-[hint]
-If you have a lot of components or queries to add, you can use `registerMany` instead:
-
-```js
-Injector.component.registerMany({
-  NotesList,
-  NotesListItem,
-  // ...etc
-});
-```
-
-[/hint]
+> [!TIP]
+> If you have a lot of components or queries to add, you can use `registerMany` instead:
+>
+> ```js
+> Injector.component.registerMany({
+>   NotesList,
+>   NotesListItem,
+>   // ...etc
+> });
+> ```
 
 We use `Injector.query.register()` to register our `readNotes` query so that other projects can extend it.
 
@@ -1250,9 +1239,8 @@ App\Model\Note:
 
 Let's first update the `NotesListItem` to contain our new field.
 
-[notice]
-Note that we're overriding the entire `NotesListItem` component. This is the main reason we broke the original list up into smaller components.
-[/notice]
+> [!WARNING]
+> Note that we're overriding the entire `NotesListItem` component. This is the main reason we broke the original list up into smaller components.
 
 ```js
 // app/client/src/transformNotesListItem.js
@@ -1351,10 +1339,9 @@ Injector.transform(
 );
 ```
 
-[hint]
-This transformation could either be transpiled as-is, or if you have other JavaScript to include in this module you might want to export it as a function and call it from some entry point.
-Don't forget to add the transpiled result to the CMS e.g. via the `SilverStripe\Admin\LeftAndMain.extra_requirements_javascript` configuration property.
-[/hint]
+> [!TIP]
+> This transformation could either be transpiled as-is, or if you have other JavaScript to include in this module you might want to export it as a function and call it from some entry point.
+> Don't forget to add the transpiled result to the CMS e.g. via the `SilverStripe\Admin\LeftAndMain.extra_requirements_javascript` configuration property.
 
 ### Creating extensible mutations
 
@@ -1382,9 +1369,8 @@ const AddForm = ({ onAdd }) => {
 export default AddForm;
 ```
 
-[info]
-Because this isn't a full react tutorial, we've avoided the complexity of ensuring the list gets updated when we add an item to the form. You'll have to refresh the page to see your note after adding it.
-[/info]
+> [!NOTE]
+> Because this isn't a full react tutorial, we've avoided the complexity of ensuring the list gets updated when we add an item to the form. You'll have to refresh the page to see your note after adding it.
 
 And we'll inject that component into our `App` container.
 

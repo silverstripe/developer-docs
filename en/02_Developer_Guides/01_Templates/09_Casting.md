@@ -47,10 +47,9 @@ For every field used in templates, a casting helper will be applied. This will f
 `casting` helper on your model specific to that field, and will fall back to the `default_cast` config
 in case none are specified.
 
-[note]
-By default, all content without a type explicitly defined in a `$casting` array will use the `ViewableData.default_cast` configuration. By default,
-that configuration is set to `Text`, so HTML characters are escaped.
-[/note]
+> [!NOTE]
+> By default, all content without a type explicitly defined in a `$casting` array will use the `ViewableData.default_cast` configuration. By default,
+> that configuration is set to `Text`, so HTML characters are escaped.
 
 ### Common casting types
 
@@ -116,16 +115,14 @@ All `DBField` instances share the following useful methods for formatting their 
 - [`URLATT()`](api:SilverStripe\ORM\FieldType\DBField::URLATT()) - encodes strings for use in URLs via [`urlencode()`](https://www.php.net/manual/en/function.urlencode.php)
 - [`JSON()`](api:SilverStripe\ORM\FieldType\DBField::JSON()) - encodes the value as a JSON string via [`json_encode()`](https://www.php.net/manual/en/function.json-encode.php)
 
-[info]
-See [the API documentation](api:SilverStripe\ORM\FieldType) for all the formatting methods available to you for the various field types.
-[/info]
+> [!NOTE]
+> See [the API documentation](api:SilverStripe\ORM\FieldType) for all the formatting methods available to you for the various field types.
 
 ## Escaping HTML values in templates {#escaping}
 
-[notice]
-For specific security advice related to escaping values, see the [Security](/developer_guides/security/secure_coding/#xss-cross-site-scripting)
-documentation.
-[/notice]
+> [!WARNING]
+> For specific security advice related to escaping values, see the [Security](/developer_guides/security/secure_coding/#xss-cross-site-scripting)
+> documentation.
 
 The concept of escaping values in templates is ultimately just a combination of formatting and casting.
 
@@ -136,12 +133,11 @@ See the [casting](#casting) section above for
 instructions on configuring your model to declare casting types for fields, and how some of the more common
 casting types affect escaping.
 
-[info]
-In addition to escaping via casting, `DBField` instances have an `escape_type` configuration property which is
-either set to `"xml"` or `"raw"`. This configuration tells you whether XML content will be escaped or not, but does
-*not* actually directly affect the casting of the value in templates. That is determined by what is returned from
-the `forTemplate()` method (or any method explicitly called from within the template).
-[/info]
+> [!NOTE]
+> In addition to escaping via casting, `DBField` instances have an `escape_type` configuration property which is
+> either set to `"xml"` or `"raw"`. This configuration tells you whether XML content will be escaped or not, but does
+> *not* actually directly affect the casting of the value in templates. That is determined by what is returned from
+> the `forTemplate()` method (or any method explicitly called from within the template).
 
 ### Escape methods in templates
 
@@ -150,15 +146,12 @@ Within the template, fields can have their encoding customised at a certain leve
 See the [formatting](#formatting) section above for some of the more common formatting methods available
 and how they affect escaping.
 
-[hint]
-If you are unsure of whether the field has been cast to `HTMLText` but you know
-it contains safe HTML content, you can use `.RAW` to ensure the HTML is not escaped.
-[/hint]
-
-[warning]
-Be careful using `.RAW` on non HTML field types - if the value being formatted includes content provided
-by the user you could be introducing attack vectors for cross-site scripting attacks.
-[/warning]
+> [!TIP]
+> If you are unsure of whether the field has been cast to `HTMLText` but you know
+> it contains safe HTML content, you can use `.RAW` to ensure the HTML is not escaped.
+>
+> But be careful using `.RAW` on non HTML field types - if the value being formatted includes content provided
+> by the user you could be introducing attack vectors for cross-site scripting attacks.
 
 ## Cast summary methods
 

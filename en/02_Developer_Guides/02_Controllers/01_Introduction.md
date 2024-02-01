@@ -8,10 +8,9 @@ summary: A brief look at the definition of a Controller, creating actions and ho
 The following example is for a simple [`Controller`](api:SilverStripe\Control\Controller) class. When building off the Silverstripe CMS you will
 subclass the base `Controller` class.
 
-[info]
-If you're using the `cms` module and dealing with [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) records then for your custom page controllers you
-would extend [`ContentController`](api:SilverStripe\CMS\Controllers\ContentController) or `PageController`.
-[/info]
+> [!NOTE]
+> If you're using the `cms` module and dealing with [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) records then for your custom page controllers you
+> would extend [`ContentController`](api:SilverStripe\CMS\Controllers\ContentController) or `PageController`.
 
 ```php
 // app/src/Control/TeamController.php
@@ -34,21 +33,19 @@ class TeamController extends Controller
 }
 ```
 
-[warning]
-When choosing names for actions, avoid using the same name you've used for relations on the model the controller represents. If you have relations with the same name as controller actions, templates rendered for that controller which refer to the relation won't render as expected - they will attempt to render the action where you expect to be using the relation.
-
-For example if the controller above was for a `Team` model which had a `Players` relation, the action should not also be named `players`. Something like `showPlayers` would be more appropriate.
-[/warning]
+> [!WARNING]
+> When choosing names for actions, avoid using the same name you've used for relations on the model the controller represents. If you have relations with the same name as controller actions, templates rendered for that controller which refer to the relation won't render as expected - they will attempt to render the action where you expect to be using the relation.
+>
+> For example if the controller above was for a `Team` model which had a `Players` relation, the action should not also be named `players`. Something like `showPlayers` would be more appropriate.
 
 ## Routing
 
 We need to define the URL that this controller can be accessed on. In our case, the `TeamsController` should be visible
 at `https://www.example.com/teams/` and the `players` custom action is at `https://www.example.com/team/players/`.
 
-[info]
-If you're extending `ContentController` or `PageController` for your `SiteTree` records you don't need to define the routes value as the `cms` handles
-routing for those.
-[/info]
+> [!NOTE]
+> If you're extending `ContentController` or `PageController` for your `SiteTree` records you don't need to define the routes value as the `cms` handles
+> routing for those.
 
 ```yml
 # app/_config/routes.yml
@@ -61,9 +58,8 @@ SilverStripe\Control\Director:
     'teams//$Action/$ID/$Name': 'App\Control\TeamController'
 ```
 
-[alert]
-Make sure that after modifying the `routes.yml` file you clear your Silverstripe CMS caches using `?flush=1`.
-[/alert]
+> [!CAUTION]
+> Make sure that after modifying the `routes.yml` file you clear your Silverstripe CMS caches using `?flush=1`.
 
 For more information about creating custom routes, see the [Routing](routing) documentation.
 
@@ -84,12 +80,11 @@ Action methods can return one of four things:
 1. an `HTTPResponse`. This can either be a new response or `$this->getResponse()`.
 1. `$this` or `$this->customise()`. This will render the controller using the appropriate template and set the rendered result as the body for the current `HTTPResponse`.
 
-[hint]
-
-- returning `$this` is the equivalent of returning an empty array.
-- returning `$this->customise()` is the equivalent of returning an array with data.
-
-[/hint]
+> [!TIP]
+> There are a couple of things to note here:
+>
+> - returning `$this` is the equivalent of returning an empty array.
+> - returning `$this->customise()` is the equivalent of returning an array with data.
 
 See [templates](#templates) below for information about declaring what template to use in the above scenarios.
 
@@ -182,9 +177,8 @@ The template to use for a given action is determined in the following order:
 1. If a template exists with the name of this class or any of its ancestors (with no suffix), it will be used.
     - e.g. for the `App\Control\TeamController` example, it would look for `templates/App/Control/TeamController.ss` and `templates/SilverStripe/Control/Controller.ss`.
 
-[note]
-Subclasses of `ContentController` additionally check for templates named similarly to the model the controller represents - for example a `HomePageController` class which represents a `HomePage` model will look for `HomePage_{action}.ss` after checking `HomePageController_{action}.ss`.
-[/note]
+> [!NOTE]
+> Subclasses of `ContentController` additionally check for templates named similarly to the model the controller represents - for example a `HomePageController` class which represents a `HomePage` model will look for `HomePage_{action}.ss` after checking `HomePageController_{action}.ss`.
 
 You can declare templates to be used for an action by setting the `templates` array. The key should be the name of the action,
 and the value should be a template name, or array of template names in cascading precedence.
@@ -206,27 +200,25 @@ class TeamController extends Controller
 }
 ```
 
-[warning]
-The `templates` property is *not* a configuration property, so if you declare it directly as in the above example you will
-override any templates declared in parent classes. If you want to keep template declarations from parent classes, you could
-apply new templates in a constructor like so:
-
-```php
-namespace App\Control;
-
-class TeamController extends SomeParentController
-{
-    // ...
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->templates['showPlayers'] => 'TemplateForPlayers';
-    }
-}
-```
-
-[/warning]
+> [!WARNING]
+> The `templates` property is *not* a configuration property, so if you declare it directly as in the above example you will
+> override any templates declared in parent classes. If you want to keep template declarations from parent classes, you could
+> apply new templates in a constructor like so:
+>
+> ```php
+> namespace App\Control;
+>
+> class TeamController extends SomeParentController
+> {
+>     // ...
+>
+>     public function __construct()
+>     {
+>         parent::__construct();
+>         $this->templates['showPlayers'] => 'TemplateForPlayers';
+>     }
+> }
+> ```
 
 As mentioned in [Actions](#actions) above, controller actions can return a string or `HTTPResponse` to bypass this template selection process.
 
@@ -258,10 +250,9 @@ $playersActionLink = $teamController::Link('players');
 
 You can of course also use `$Link` in a template.
 
-[notice]
-If you have more complex logic for determining the link for your controller, you can override the `Link()` method - in that case you should
-be sure to invoke the `updateLink` extension method so that extensions can make changes as necessary: `$this->extend('updateLink', $link, $action);`
-[/notice]
+> [!WARNING]
+> If you have more complex logic for determining the link for your controller, you can override the `Link()` method - in that case you should
+> be sure to invoke the `updateLink` extension method so that extensions can make changes as necessary: `$this->extend('updateLink', $link, $action);`
 
 ## Connecting pages to controllers
 

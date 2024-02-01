@@ -54,11 +54,10 @@ use SilverStripe\Core\Environment;
 Environment::getEnv('SS_DATABASE_CLASS');
 ```
 
-[hint]
-The `Environment::getEnv()` method will return `false` both if there was no value set for a variable or if
-the variable was explicitly set as `false`. You can determine whether a variable has been set by calling
-[`Environment::hasEnv()`](api:SilverStripe\Core\Environment::hasEnv()).
-[/hint]
+> [!TIP]
+> The `Environment::getEnv()` method will return `false` both if there was no value set for a variable or if
+> the variable was explicitly set as `false`. You can determine whether a variable has been set by calling
+> [`Environment::hasEnv()`](api:SilverStripe\Core\Environment::hasEnv()).
 
 Individual settings can be assigned via [`Environment::setEnv()`](api:SilverStripe\Core\Environment::setEnv()) or [`Environment::putEnv()`](api:SilverStripe\Core\Environment::putEnv()) methods.
 
@@ -67,9 +66,8 @@ use SilverStripe\Core\Environment;
 Environment::setEnv('API_KEY', 'AABBCCDDEEFF012345');
 ```
 
-[warning]
-`Environment::getEnv()` will return `false` whether the variable was explicitly set as `false` or simply wasn't set at all. You can use [`Environment::hasEnv()`](api:SilverStripe\Core\Environment::hasEnv()) to check whether an environment variable was set or not.
-[/warning]
+> [!WARNING]
+> `Environment::getEnv()` will return `false` whether the variable was explicitly set as `false` or simply wasn't set at all. You can use [`Environment::hasEnv()`](api:SilverStripe\Core\Environment::hasEnv()) to check whether an environment variable was set or not.
 
 ### Using environment variables in config
 
@@ -91,9 +89,8 @@ $loader = new EnvironmentLoader();
 $loader->loadFile($env);
 ```
 
-[warning]
-Note that because `_config.php` is processed after YAML configuration, variables set in these extra `.env` files cannot be used inside YAML config.
-[/warning]
+> [!WARNING]
+> Note that because `_config.php` is processed after YAML configuration, variables set in these extra `.env` files cannot be used inside YAML config.
 
 ## Core environment variables
 

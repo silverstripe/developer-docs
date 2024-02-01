@@ -5,11 +5,10 @@ iconBrand: js
 
 # jQuery entwine
 
-[notice]
-The following documentation regarding jQuery and Entwine does not apply to React components or sections powered by React.
-If you're developing new functionality in React powered sections please refer to
-[React, Redux, and GraphQL](/developer_guides/customising_the_admin_interface/reactjs_redux_and_graphql/).
-[/notice]
+> [!WARNING]
+> The following documentation regarding jQuery and Entwine does not apply to React components or sections powered by React.
+> If you're developing new functionality in React powered sections please refer to
+> [React, Redux, and GraphQL](/developer_guides/customising_the_admin_interface/reactjs_redux_and_graphql/).
 
 jQuery Entwine was originally written by [Hamish Friedlander](https://github.com/hafriedlander/jquery.entwine).
 
@@ -27,9 +26,8 @@ $('div').entwine({
 });
 ```
 
-[info]
-The definitions you provide are *not* bound to the elements that match at definition time. You can declare behaviour prior to the DOM existing in any form (i.e. prior to DOMReady) and later calls and event handlers will function correctly.
-[/info]
+> [!NOTE]
+> The definitions you provide are *not* bound to the elements that match at definition time. You can declare behaviour prior to the DOM existing in any form (i.e. prior to DOMReady) and later calls and event handlers will function correctly.
 
 ### Selector specifity and "inheritance" {#specificity}
 
@@ -91,9 +89,8 @@ Attribute text
 Nonsense
 ```
 
-[notice]
-For selectors with *the same* level of specificity, the definition which is declared first takes precedence.
-[/notice]
+> [!WARNING]
+> For selectors with *the same* level of specificity, the definition which is declared first takes precedence.
 
 #### Calling less-specific logic from a definition with higher-specificity
 
@@ -235,9 +232,8 @@ $('.green').entwine({
 });
 ```
 
-[hint]
-Remember, if you wanted the background colour to change for the div with class `green` as well, you can simply call `this._super()` in the click event handler declared for that selector. See [Selector specifity and "inheritance"](#specificity) for more information about how this works.
-[/hint]
+> [!TIP]
+> Remember, if you wanted the background colour to change for the div with class `green` as well, you can simply call `this._super()` in the click event handler declared for that selector. See [Selector specifity and "inheritance"](#specificity) for more information about how this works.
 
 ### Handling events from other elements
 
@@ -269,11 +265,10 @@ Note that an onunmatch block must be paired with an onmatch block - an onunmatch
 
 You can also declare a function with the name `onadd` which is similar to `onmatch` but is explicitly triggered by the element being added to the DOM. This means if the element already exists when you declare this function, your function will not be called (but `onmatch` would be). Similarly, if you delcare a function called `onremove`, it will be called when an element is *removed* from the DOM. This does not need an `onadd` function to be declared, unlike `onunmatch`.
 
-[warning]
-The `onmatch` and `onadd` events are triggered `asynchronously` - this means that after you add an element to the DOM, it is not guaranteed that functionality in your `onmatch` or `onadd` function for that element will be processed immediately. This is handled using a [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver).
-
-The `onunmatch` and `onremove` events are triggered synchronously however, so you can rely on the element still existing when these functions are called. The element will not be removed from the DOM until the `onunmatch` and `onremove` functions for the element have been called and finished executing.
-[/warning]
+> [!WARNING]
+> The `onmatch` and `onadd` events are triggered `asynchronously` - this means that after you add an element to the DOM, it is not guaranteed that functionality in your `onmatch` or `onadd` function for that element will be processed immediately. This is handled using a [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver).
+>
+> The `onunmatch` and `onremove` events are triggered synchronously however, so you can rely on the element still existing when these functions are called. The element will not be removed from the DOM until the `onunmatch` and `onremove` functions for the element have been called and finished executing.
 
 ## Properties
 
@@ -295,9 +290,8 @@ $('div').getMyProperty(); // returns 32
 
 ## Namespaces
 
-[hint]
-Most entwine logic defined in core Silverstripe CMS modules uses the `ss` namespace.
-[/hint]
+> [!TIP]
+> Most entwine logic defined in core Silverstripe CMS modules uses the `ss` namespace.
 
 To avoid name clashes, to allow multiple bindings to the same event, and to generally seperate a set of functions from other code, you can use namespaces. These are declared by calling the `jQuery.entwine()` function and passing in both the namespace name and a callback, which contains all entwine declarations which belong to that namespace:
 
@@ -317,18 +311,16 @@ You can then call these functions like this:
 $('div').entwine('foo.bar').baz();
 ```
 
-[info]
-Notice that `$` is passed in as an argument to the callback function. This is a *different object* than the `$` which the `entwine()` function is being called on, which contains information about the namespace that you have defined. Another way to write the namespace closure, which illustrates this point, would be like so:
-
-```js
-jQuery.entwine('foo.bar', ($) => {
-  $('div').entwine({
-    // declarations here
-  });
-});
-```
-
-[/info]
+> [!NOTE]
+> Notice that `$` is passed in as an argument to the callback function. This is a *different object* than the `$` which the `entwine()` function is being called on, which contains information about the namespace that you have defined. Another way to write the namespace closure, which illustrates this point, would be like so:
+>
+> ```js
+> jQuery.entwine('foo.bar', ($) => {
+>   $('div').entwine({
+>     // declarations here
+>   });
+> });
+> ```
 
 Namespaced functions, properties, and event handlers work just like regular functions (`this` is still set to a matching DOM Node). However, specifity is calculated per namespace. This is particularly useful for events, because given this:
 
@@ -383,6 +375,9 @@ $('div').entwine({
 
 With the above entwine declarations, calling
 
+> [!NOTE]
+> Note that trying to call `$('div').bar();` would throw an uncaught `TypeError` saying something like "$(...).bar is not a function", because the `bar()` function was defined in a namespace, but we are trying to call that function from *outside* of that namespace.
+
 ```js
 $('div').entwine('foo').bar();
 ```
@@ -394,45 +389,40 @@ baz
 qux
 ```
 
-[info]
-Note that trying to call `$('div').bar();` would throw an uncaught `TypeError` saying something like "$(...).bar is not a function", because the `bar()` function was defined in a namespace, but we are trying to call that function from *outside* of that namespace.
-[/info]
-
-[warning]
-Note that 'exists' means that a function is declared in this namespace for *any* selector, not just a matching one. Given the dom
-
-```html
-<div>Internal text</div>
-```
-
-And the entwine definitions
-
-```js
-$.entwine('foo', ($) => {
-  $('div').entwine({
-    bar() {
-      this.baz();
-    },
-  });
-
-  $('span').entwine({
-    baz() {
-      // eslint-disable-next-line no-console
-      console.log('a');
-    },
-  });
-});
-
-$('div').entwine({
-  baz() {
-    // eslint-disable-next-line no-console
-    console.log('b');
-  },
-});
-```
-
-Then calling `$('div')entwine('foo').bar();` will *not* display "b". Even though the `span` rule could never match a `div`, because `baz()` is defined for some rule in the `foo` namespace, the base namespace will never be checked.
-[/warning]
+> [!WARNING]
+> Note that 'exists' means that a function is declared in this namespace for *any* selector, not just a matching one. Given the dom
+>
+> ```html
+> <div>Internal text</div>
+> ```
+>
+> And the entwine definitions
+>
+> ```js
+> $.entwine('foo', ($) => {
+>   $('div').entwine({
+>     bar() {
+>       this.baz();
+>     },
+>   });
+>
+>   $('span').entwine({
+>     baz() {
+>       // eslint-disable-next-line no-console
+>       console.log('a');
+>     },
+>   });
+> });
+>
+> $('div').entwine({
+>   baz() {
+>     // eslint-disable-next-line no-console
+>     console.log('b');
+>   },
+> });
+> ```
+>
+> Then calling `$('div')entwine('foo').bar();` will *not* display "b". Even though the `span` rule could never match a `div`, because `baz()` is defined for some rule in the `foo` namespace, the base namespace will never be checked.
 
 ### Calling to another namespace (and forcing base)
 

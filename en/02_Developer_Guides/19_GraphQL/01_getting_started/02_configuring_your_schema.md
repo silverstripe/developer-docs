@@ -65,11 +65,10 @@ have to `flush=1` every time you make a schema update, which will slow down your
 It is recommended that you store your schema YAML **outside of the _config directory** to
 increase performance and remove the need for flushing when you [build your schema](building_the_schema).
 
-[notice]
-This doesn't mean there is never a need to `flush=1` when building your schema. If you were to add a new
-schema, make a change to the value of this `src` attribute, or create new PHP classes, those are still
-standard config changes which won't take effect without a flush.
-[/notice]
+> [!WARNING]
+> This doesn't mean there is never a need to `flush=1` when building your schema. If you were to add a new
+> schema, make a change to the value of this `src` attribute, or create new PHP classes, those are still
+> standard config changes which won't take effect without a flush.
 
 We can do this by adding a `src` key to our `app/_config/graphql.yml` schema definition
 that maps to a directory relative to the project root.
@@ -86,22 +85,20 @@ SilverStripe\GraphQL\Schema\Schema:
 Your `src` must be an array. This allows further source files to be merged into your schema.
 This feature can be use to extend the schema of third party modules.
 
-[info]
-Your directory can also be relative to a module reference, e.g. `somevendor/somemodule: _graphql`:
-
-```yml
-# app/_config/graphql.yml
-SilverStripe\GraphQL\Schema\Schema:
-  schemas:
-    default:
-      src:
-        - app/_graphql
-        - module/_graphql
-        # The next line would map to `vendor/somevendor/somemodule/_graphql`
-        - 'somevendor/somemodule: _graphql'
-```
-
-[/info]
+> [!NOTE]
+> Your directory can also be relative to a module reference, e.g. `somevendor/somemodule: _graphql`:
+>
+> ```yml
+> # app/_config/graphql.yml
+> SilverStripe\GraphQL\Schema\Schema:
+>   schemas:
+>     default:
+>       src:
+>         - app/_graphql
+>         - module/_graphql
+>         # The next line would map to `vendor/somevendor/somemodule/_graphql`
+>         - 'somevendor/somemodule: _graphql'
+> ```
 
 Now, in the new `app/_graphql` folder, we can create YAML file definitions.
 
@@ -183,10 +180,9 @@ be implicitly placed in the corresponding section of the schema - e.g. any confi
 added to a `.yml` file in `app/_graphql/config/` will be implicitly added to
 `SilverStripe\GraphQL\Schema\Schema.schemas.default.config`.
 
-[hint]
-The names of the actual files here do not matter. You could for example have a separate file
-for each of your types, e.g. `app/_graphql/types/my-first-type.yml`.
-[/hint]
+> [!TIP]
+> The names of the actual files here do not matter. You could for example have a separate file
+> for each of your types, e.g. `app/_graphql/types/my-first-type.yml`.
 
 ```yml
 # app/_graphql/config/config.yml
@@ -263,10 +259,9 @@ and [resolver discovery](../working_with_generic_types/resolver_discovery) secti
 
 Let's define a generic type for our GraphQL schema.
 
-[info]
-Generic types don't map to `DataObject` classes - they're useful for querying more 'generic' data (hence the name).
-You'll learn more about adding DataObjects in [working with DataObjects](../working_with_DataObjects).
-[/info]
+> [!NOTE]
+> Generic types don't map to `DataObject` classes - they're useful for querying more 'generic' data (hence the name).
+> You'll learn more about adding DataObjects in [working with DataObjects](../working_with_DataObjects).
 
 ```yml
 # app/_graphql/types.yml
@@ -296,10 +291,9 @@ To define a type as required (non-null), you add an exclamation mark: `String!`
 
 Often times, you may want to do both: `[String!]!`
 
-[notice]
-Look out for the footgun, here. Make sure your bracketed type is in quotes
-(i.e. `'[String]'`, not `[String]`), otherwise it's valid YAML that will get parsed as an array!
-[/notice]
+> [!WARNING]
+> Look out for the footgun, here. Make sure your bracketed type is in quotes
+> (i.e. `'[String]'`, not `[String]`), otherwise it's valid YAML that will get parsed as an array!
 
 That's all there is to it! To learn how we can take this further, check out the
 [working with generic types](../working_with_generic_types) documentation. Otherwise,

@@ -13,9 +13,8 @@ icon: tachometer-alt
 Use conditions whenever possible. The cache tag supports defining conditions via either `if` or `unless` keyword.
 Those are optional, however is highly recommended.
 
-[warning]
-Avoid performing heavy computations in conditionals, as they are evaluated for every template rendering.
-[/warning]
+> [!WARNING]
+> Avoid performing heavy computations in conditionals, as they are evaluated for every template rendering.
 
 If you cache without conditions:
 
@@ -62,57 +61,50 @@ otherwise. By using aggregates, we do that like this:
 %>
 ```
 
+> [!NOTE]
+> The use of the fully qualified classname is necessary.
+>
+> The use of both `.max('LastEdited')` and `.count()` makes sure we check for any object
+> edited or deleted since the cache was last built.
+
 The cache for this will update whenever a page is added, removed or edited.
 
-[note]
-The use of the fully qualified classname is necessary.
-[/note]
-
-[note]
-The use of both `.max('LastEdited')` and `.count()` makes sure we check for any object
-edited or deleted since the cache was last built.
-[/note]
-
-[warning]
-Be careful using aggregates. Remember that the database is usually one of the performance bottlenecks.
-Keep in mind that every key of every cached block is recalculated for every template render, regardless of caching
-result. Aggregating SQL queries are usually produce more load on the database than simple select queries,
-especially if you query records by Primary Key or join tables using database indices properly.
-
-Sometimes it may be cheaper to not cache altogether, rather than cache a block using a bunch of heavy aggregating SQL
-queries.
-
-Let us consider two versions:
-
-```ss
-# Version 1 (bad)
-
-<% cached
-    $List('SilverStripe\CMS\Model\SiteTree').max('LastEdited'),
-    $List('SilverStripe\CMS\Model\SiteTree').count()
-%>
-    Parent title is: $Me.Parent.Title
-<% end_cached %>
-```
-
-```ss
-# Version 2 (better performance than Version 1)
-
-Parent title is: $Me.Parent.Title
-```
-
-`Version 1` always generates two heavy aggregating SQL queries for the database on every
-template render.
-`Version 2` always generates a single and more performant SQL query fetching the record by its Primary Key.
-
-[/warning]
-
-[warning]
-If you use the same aggregate in a template more than once, it will be recalculated every time
-unless you move it out into a separate
-[controller method](../templates/partial_template_caching/#cache-key-calculated-in-controller).
-[Object Caching](../templates/caching/#object-caching) only works for single variables and not for chained expressions.
-[/warning]
+> [!WARNING]
+> Be careful using aggregates. Remember that the database is usually one of the performance bottlenecks.
+> Keep in mind that every key of every cached block is recalculated for every template render, regardless of caching
+> result. Aggregating SQL queries are usually produce more load on the database than simple select queries,
+> especially if you query records by Primary Key or join tables using database indices properly.
+>
+> Sometimes it may be cheaper to not cache altogether, rather than cache a block using a bunch of heavy aggregating SQL
+> queries.
+>
+> Let us consider two versions:
+>
+> ```ss
+> # Version 1 (bad)
+>
+> <% cached
+>     $List('SilverStripe\CMS\Model\SiteTree').max('LastEdited'),
+>     $List('SilverStripe\CMS\Model\SiteTree').count()
+> %>
+>     Parent title is: $Me.Parent.Title
+> <% end_cached %>
+> ```
+>
+> ```ss
+> # Version 2 (better performance than Version 1)
+>
+> Parent title is: $Me.Parent.Title
+> ```
+>
+> `Version 1` always generates two heavy aggregating SQL queries for the database on every
+> template render.
+> `Version 2` always generates a single and more performant SQL query fetching the record by its Primary Key.
+>
+> Note also that if you use the same aggregate in a template more than once, it will be recalculated every time
+> unless you move it out into a separate
+> [controller method](../templates/partial_template_caching/#cache-key-calculated-in-controller).
+> [Object Caching](../templates/caching/#object-caching) only works for single variables and not for chained expressions.
 
 ## Purposely stale data
 
@@ -163,6 +155,9 @@ All you need to do to swap the cache backend for partial template cache blocks i
 
 Here's an example of how it could be done:
 
+> [!NOTE]
+> For the below example to work it is necessary to have the Injector service `App\Cache\Service.memcached` defined somewhere in the configs.
+
 ```yml
 # app/_config/cache.yml
 ---
@@ -174,12 +169,7 @@ SilverStripe\Core\Injector\Injector:
   Psr\SimpleCache\CacheInterface.cacheblock: '%$App\Cache\Service.memcached'
 ```
 
-[note]
-For the above example to work it is necessary to have the Injector service `App\Cache\Service.memcached` defined somewhere in the configs.
-[/note]
-
-[warning]
-The default filesystem cache backend does not support auto cleanup of the residual files with expired cache records.
-If your project relies on Template Caching heavily (e.g. thousands of cache records daily), you may want to keep en eye on the
-filesystem storage. Sooner or later its capacity may be exhausted.
-[/warning]
+> [!WARNING]
+> The default filesystem cache backend does not support auto cleanup of the residual files with expired cache records.
+> If your project relies on Template Caching heavily (e.g. thousands of cache records daily), you may want to keep en eye on the
+> filesystem storage. Sooner or later its capacity may be exhausted.

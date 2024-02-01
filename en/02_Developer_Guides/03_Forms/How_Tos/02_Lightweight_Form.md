@@ -13,9 +13,8 @@ For example, a basic search form. We want to use the [Form](api:SilverStripe\For
 totally custom template to meet our needs. To do this, we'll provide the class with a unique template through
 [`setTemplate()`](api:SilverStripe\Forms\Form::setTemplate()).
 
-[info]
-If you just want to change the template for a given form field instead, you can call [`setTemplate()`](api:SilverStripe\Forms\FormField::setTemplate()) on the individual field.
-[/info]
+> [!NOTE]
+> If you just want to change the template for a given form field instead, you can call [`setTemplate()`](api:SilverStripe\Forms\FormField::setTemplate()) on the individual field.
 
 ```php
 // app/src/PageType/SearchPage.php
@@ -64,6 +63,5 @@ class SearchPage extends Page
 `SearchForm.ss` will be executed within the scope of the `Form` object so has access to any of the methods and
 properties on [Form](api:SilverStripe\Forms\Form) such as `$Fields` and `$Actions`.
 
-[notice]
-To understand more about Scope or the syntax for custom templates, read the [Templates](../../templates) guide.
-[/notice]
+> [!WARNING]
+> To understand more about Scope or the syntax for custom templates, read the [Templates](../../templates) guide.

@@ -67,10 +67,9 @@ Silverstripe\SiteConfig\SiteConfig:
     - App\Extension\CustomSiteConfig
 ```
 
-[notice]
-After adding the class and the YAML change, make sure to rebuild your database by visiting `https://www.example.com/dev/build`.
-You may also need to reload the screen with a `?flush=1` i.e.`https://www.example.com/admin/settings?flush=1`.
-[/notice]
+> [!WARNING]
+> After adding the class and the YAML change, make sure to rebuild your database by visiting `https://www.example.com/dev/build`.
+> You may also need to reload the screen with a `?flush=1` i.e.`https://www.example.com/admin/settings?flush=1`.
 
 You can define as many extensions for `SiteConfig` as you need. For example, if you're developing a module and want to
 provide the users a place to configure site-wide settings then the `SiteConfig` panel is the place to go it.

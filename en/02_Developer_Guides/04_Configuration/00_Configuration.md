@@ -18,9 +18,8 @@ properties API:
 - Configuration is normally set once during initialization and then not changed.
 - Configuration is normally set by a knowledgeable technical user, such as a developer, not the end user.
 
-[notice]
-For providing content editors or CMS users a place to manage configuration see the [SiteConfig](siteconfig) module.
-[/notice]
+> [!WARNING]
+> For providing content editors or CMS users a place to manage configuration see the [SiteConfig](siteconfig) module.
 
 ## Configuration properties
 
@@ -44,28 +43,26 @@ class MyClass
 }
 ```
 
-[info]
-Generally speaking, a private static property in Silverstripe CMS means a configuration property.
-If you want a private static property that has no interactions with the configuration API, you can
-mark it `@internal` in the property's PHPdoc.
-
-```php
-namespace App;
-
-use SilverStripe\Core\Config\Configurable;
-
-class MyClass
-{
-    use Configurable;
-
-    /**
-     * @internal
-     */
-    private static $not_config;
-}
-```
-
-[/info]
+> [!NOTE]
+> Generally speaking, a private static property in Silverstripe CMS means a configuration property.
+> If you want a private static property that has no interactions with the configuration API, you can
+> mark it `@internal` in the property's PHPdoc.
+>
+> ```php
+> namespace App;
+>
+> use SilverStripe\Core\Config\Configurable;
+>
+> class MyClass
+> {
+>     use Configurable;
+>
+>     /**
+>      * @internal
+>      */
+>     private static $not_config;
+> }
+> ```
 
 ## Accessing configuration properties
 
@@ -123,9 +120,8 @@ App\MyClass:
     - Baz
 ```
 
-[hint]
-See [Configuration YAML Syntax and Rules](#configuration-yaml-syntax-and-rules) below for more information about the YAML configuration syntax.
-[/hint]
+> [!TIP]
+> See [Configuration YAML Syntax and Rules](#configuration-yaml-syntax-and-rules) below for more information about the YAML configuration syntax.
 
 The values we've defined in YAML are *merged* with the existing configuration (see [Configuration Values](#configuration-values) below):
 
@@ -139,10 +135,9 @@ echo MyClass::config()->get('option_one');
 echo implode(', ', MyClass::config()->get('option_two'));
 ```
 
-[notice]
-There is no way currently to restrict read or write access to any configuration property, or influence/validate the values
-being read or written.
-[/notice]
+> [!WARNING]
+> There is no way currently to restrict read or write access to any configuration property, or influence/validate the values
+> being read or written.
 
 ## Configuration values
 
@@ -174,11 +169,10 @@ rules:
     ```
 - If the value is not an array, the highest priority value is used without any attempt to merge
 
-[alert]
-The exception to this is "falsey" values - empty arrays, empty strings, etc. When merging a truthy value with
-a falsey value, the result will be the truthy value regardless of priority. When merging two falsey values
-the result will be the higher priority falsey value.
-[/alert]
+> [!CAUTION]
+> The exception to this is "falsey" values - empty arrays, empty strings, etc. When merging a truthy value with
+> a falsey value, the result will be the truthy value regardless of priority. When merging two falsey values
+> the result will be the higher priority falsey value.
 
 The locations that configuration values are taken from in highest to lowest priority order are:
 
@@ -189,10 +183,9 @@ The locations that configuration values are taken from in highest to lowest prio
 - The composite configuration value of the parent class of this class
 - Any static set on an "additional static source" class (such as an extension) named the same as the name of the property
 
-[notice]
-It is incorrect to have mixed types of the same named property in different locations - but an error will not necessarily
-be raised due to optimizations in the lookup code.
-[/notice]
+> [!WARNING]
+> It is incorrect to have mixed types of the same named property in different locations - but an error will not necessarily
+> be raised due to optimizations in the lookup code.
 
 ## Configuration masks
 
@@ -218,18 +211,16 @@ bitwise `|` operator.
 
 ## Configuration YAML syntax and rules
 
-[alert]
-YAML files can not be placed any deeper than 2 directories deep. This will only affect you if you nest your modules deeper than the top level of your project.
-[/alert]
+> [!CAUTION]
+> YAML files can not be placed any deeper than 2 directories deep. This will only affect you if you nest your modules deeper than the top level of your project.
 
 Each module can have a directory immediately underneath the main module directory called `_config/`. Inside this
 directory you can add YAML files that contain values for the configuration system.
 
-[info]
-The name of the files within the project's `_config/` directly are arbitrary. Our examples use
-`app/_config/app.yml` but you can break this file down into smaller files, or clearer patterns like `extensions.yml`,
-`email.yml` if you want.
-[/info]
+> [!NOTE]
+> The name of the files within the project's `_config/` directly are arbitrary. Our examples use
+> `app/_config/app.yml` but you can break this file down into smaller files, or clearer patterns like `extensions.yml`,
+> `email.yml` if you want.
 
 ### Syntax
 
@@ -251,9 +242,8 @@ SilverStripe\Control\Director:
 The header typically includes the name of this value set and some rules which apply to it - e.g. to evaluate this value set
 before or after some other named set.
 
-[info]
-If there is only one set of values and you don't want any rules to apply to the value set, the header can be omitted.
-[/info]
+> [!NOTE]
+> If there is only one set of values and you don't want any rules to apply to the value set, the header can be omitted.
 
 Each value set of a YAML file implicitly has a reference path which is made up of the module name, the config file name,
 and a fragment identifier. Reference paths look like this: `module/file#fragment` - e.g `admin/routes#adminroutes`.
@@ -303,9 +293,8 @@ You do not have to specify all portions of a reference path. Any portion may be 
 out all together. Either has the same affect - that portion will be ignored when checking a value section's reference
 path, and will always match. You may even specify just `'*'`, which means "all value sections".
 
-[notice]
-Be careful when using wildcards, as this can result in circular dependencies. An error will be thrown if that happens.
-[/notice]
+> [!WARNING]
+> Be careful when using wildcards, as this can result in circular dependencies. An error will be thrown if that happens.
 
 When a particular value section matches both a `Before` *and* an `After` rule, this may be a problem. Clearly
 one value section can not be both before *and* after another. However when you have used wildcards, if there
@@ -322,10 +311,9 @@ after value sections with a name of `rootroutes`. However because `'*'` implicit
 (it is the equivalent of `'*/*#*'`) but `#rootroutes` only has two (it is the equivalent of `'*/*#rootroutes'`), the `Before`
 rule ultimately gets evaluated as meaning "every value section *except* ones that have a fragment name of rootroutes".
 
-[alert]
-It is possible to create chains that are unsolvable. For instance, A must be before B, B must be before C, C must be
-before A. In this case you will get an error when accessing your site.
-[/alert]
+> [!CAUTION]
+> It is possible to create chains that are unsolvable. For instance, A must be before B, B must be before C, C must be
+> before A. In this case you will get an error when accessing your site.
 
 #### Exclusionary rules
 
@@ -393,11 +381,10 @@ Only:
 ---
 ```
 
-[alert]
-When you have more than one rule for a nested fragment, they're joined like
-`FRAGMENT_INCLUDED = (ONLY && ONLY) && !(EXCEPT && EXCEPT)`.
-That is, the fragment will be included if all Only rules match, except if all Except rules match.
-[/alert]
+> [!CAUTION]
+> When you have more than one rule for a nested fragment, they're joined like
+> `FRAGMENT_INCLUDED = (ONLY && ONLY) && !(EXCEPT && EXCEPT)`.
+> That is, the fragment will be included if all Only rules match, except if all Except rules match.
 
 ## Unit tests
 

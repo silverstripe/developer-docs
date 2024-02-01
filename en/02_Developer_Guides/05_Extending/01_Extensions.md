@@ -13,10 +13,9 @@ trait applied within core, modules or even their own code to make it more reusab
 Extensions are defined as subclasses of the [`Extension`](api:SilverStripe\Core\Extension) class.
 Typically, subclasses of the [`DataExtension`](api:SilverStripe\ORM\DataExtension) class are used for extending a [`DataObject`](api:SilverStripe\ORM\DataObject) subclass.
 
-[info]
-For performance reasons a few classes are excluded from receiving extensions, including `ViewableData`
-and `RequestHandler`. You can still apply extensions to descendants of these classes.
-[/info]
+> [!NOTE]
+> For performance reasons a few classes are excluded from receiving extensions, including `ViewableData`
+> and `RequestHandler`. You can still apply extensions to descendants of these classes.
 
 ```php
 // app/src/Extension/MyMemberExtension.php
@@ -38,9 +37,8 @@ class MyMemberExtension extends DataExtension
 }
 ```
 
-[info]
-Convention is for extension class names to end in `Extension`. This isn't a requirement but makes it clearer
-[/info]
+> [!NOTE]
+> Convention is for extension class names to end in `Extension`. This isn't a requirement but makes it clearer
 
 After this class has been created, it does not yet apply it to any object. We need to tell Silverstripe CMS what classes
 we want to add the `MyMemberExtension` to. To activate this extension, add the following via the [Configuration API](../configuration).
@@ -151,18 +149,16 @@ App\Extension\MyDataClassConfigExtension:
   new_config_property: true
 ```
 
-[notice]
-Note that the value for `key1` in the `my_configuration_property` array was *not* overridden by the extension class. Configuration declared in an extension class is merged into the base class as a lower priority than the base class itself. Where there is any collision between the configuration declared on the base class and on the extension class, the base class configuration is used.
-
-If you need to override values, you should do so using the [yml configuration API](/developer_guides/configuration/configuration).
-
-```yml
-App\Data\MyDataClass:
-  my_configuration_property:
-    key1: 'is overridden'
-```
-
-[/notice]
+> [!WARNING]
+> Note that the value for `key1` in the `my_configuration_property` array was *not* overridden by the extension class. Configuration declared in an extension class is merged into the base class as a lower priority than the base class itself. Where there is any collision between the configuration declared on the base class and on the extension class, the base class configuration is used.
+>
+> If you need to override values, you should do so using the [yml configuration API](/developer_guides/configuration/configuration).
+>
+> ```yml
+> App\Data\MyDataClass:
+>   my_configuration_property:
+>     key1: 'is overridden'
+> ```
 
 See [Configuration API](/developer_guides/configuration/configuration/) for more information about configuration properties.
 
@@ -218,9 +214,8 @@ $member = Security::getCurrentUser();
 echo $member->getGreeting();
 ```
 
-[notice]
-Note that `protected`, `private`, and `static` methods *are not* accessible from the extended object/class.
-[/notice]
+> [!WARNING]
+> Note that `protected`, `private`, and `static` methods *are not* accessible from the extended object/class.
 
 ## Modifying existing methods
 
@@ -269,9 +264,8 @@ class MyMemberExtension extends DataExtension
 }
 ```
 
-[info]
-In this case the `$validator` argument can be modified directly, as it is an object. To modify literals, you will need to [explicitly pass by reference](https://www.php.net/manual/en/language.references.pass.php).
-[/info]
+> [!NOTE]
+> In this case the `$validator` argument can be modified directly, as it is an object. To modify literals, you will need to [explicitly pass by reference](https://www.php.net/manual/en/language.references.pass.php).
 
 Another common example of when you will want to modify a method is to update the default CMS fields for an object in an
 extension. The `CMS` provides a `updateCMSFields` Extension Hook to tie into.
@@ -303,10 +297,9 @@ class MyMemberExtension extends DataExtension
 }
 ```
 
-[notice]
-If you're providing a module or working on code that may need to be extended by  other code, it should provide a *hook*
-which allows an Extension to modify the results.
-[/notice]
+> [!WARNING]
+> If you're providing a module or working on code that may need to be extended by  other code, it should provide a *hook*
+> which allows an Extension to modify the results.
 
 ```php
 namespace App\Model;
@@ -356,10 +349,9 @@ callback to be executed immediately before and after `extend()` is called on ext
 This is useful in many cases where working with modules such as `tractorcow/silverstripe-fluent` which operate on `DataObject` fields
 that must exist in the `FieldList` at the time that `$this->extend('UpdateCMSFields')` is called.
 
-[notice]
-Please note that each callback is only ever called once, and then cleared, so multiple extensions to the same function
-require that a callback is registered each time, if necessary.
-[/notice]
+> [!WARNING]
+> Please note that each callback is only ever called once, and then cleared, so multiple extensions to the same function
+> require that a callback is registered each time, if necessary.
 
 Example: A class that wants to control default values during object  initialization. The code needs to assign a value
 if not specified in `self::$defaults`, but before extensions have been called:
@@ -390,9 +382,8 @@ class MyModel extends DataObject
 
 Example 2: User code can intervene in the process of extending CMS fields.
 
-[notice]
-This method is preferred to disabling, enabling, and calling field extensions manually.
-[/notice]
+> [!WARNING]
+> This method is preferred to disabling, enabling, and calling field extensions manually.
 
 ```php
 namespace App\Model;
@@ -446,12 +437,11 @@ class CustomisedSomeExtension extends SomeExtension
 }
 ```
 
-[notice]
-Please note that overriding the extension like this should be done in YAML configuration using the injector only. It is not recommended
-to use `Config::modify()->set()` to adjust the implementation class name of an extension after the configuration
-manifest has been loaded, which may not work consistently due to the "extra methods" cache having already been
-populated.
-[/notice]
+> [!WARNING]
+> Please note that overriding the extension like this should be done in YAML configuration using the injector only. It is not recommended
+> to use `Config::modify()->set()` to adjust the implementation class name of an extension after the configuration
+> manifest has been loaded, which may not work consistently due to the "extra methods" cache having already been
+> populated.
 
 ## Related lessons
 

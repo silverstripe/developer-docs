@@ -41,11 +41,10 @@ The `version` field on your `DataObject` will include the following fields:
 - `liveVersion`: Boolean (True if the version is the one that is currently live)
 - `latestDraftVersion`: Boolean (True if the version is the latest draft version)
 
-[info]
-Note that `author` and `publisher` are in relation to the given *version* of the object - these are
-not necessarily the same as the author and publisher of the *original* record (i.e. the author may not
-be the person who created the object, they're the person who saved a specific version of it).
-[/info]
+> [!NOTE]
+> Note that `author` and `publisher` are in relation to the given *version* of the object - these are
+> not necessarily the same as the author and publisher of the *original* record (i.e. the author may not
+> be the person who created the object, they're the person who saved a specific version of it).
 
 Let's look at it in context:
 

@@ -35,10 +35,9 @@ class MyPageController extends PageController
 }
 ```
 
-[notice]
-Note that the concept of "pages" used in pagination does not necessarily mean that we're dealing with `Page` classes,
-it's just a term to describe a sub-collection of the list.
-[/notice]
+> [!WARNING]
+> Note that the concept of "pages" used in pagination does not necessarily mean that we're dealing with `Page` classes,
+> it's just a term to describe a sub-collection of the list.
 
 There are two ways to generate pagination controls: [PaginatedList::Pages()](api:SilverStripe\ORM\PaginatedList::Pages()) and
 [PaginatedList::PaginationSummary()](api:SilverStripe\ORM\PaginatedList::PaginationSummary()). In this example we will use `PaginationSummary()`.

@@ -84,13 +84,12 @@ class MyFormPageController extends PageController
 $HelloForm
 ```
 
-[info]
-The examples above use `FormField::create()` instead of the  `new` operator (`new FormField()`). This is best practice,
-as it allows you to use [dependency injection](/developer_guides/extending/injector/) to replace the actual class being used at runtime.
-
-As an extra incentive, it also allows you to chain operations like `setTitle()` without assigning the field instance to a temporary
-variable.
-[/info]
+> [!NOTE]
+> The examples above use `FormField::create()` instead of the  `new` operator (`new FormField()`). This is best practice,
+> as it allows you to use [dependency injection](/developer_guides/extending/injector/) to replace the actual class being used at runtime.
+>
+> As an extra incentive, it also allows you to chain operations like `setTitle()` without assigning the field instance to a temporary
+> variable.
 
 When constructing the `Form` instance (`Form::create($controller, $name)`) both controller and name are required. The
 `$controller` and `$name` are used to allow Silverstripe CMS to calculate the origin of the `Form object`. When a user
@@ -125,10 +124,9 @@ class MyFormPageController extends PageController
 
 See [URL Handlers](/developer_guides/controllers/routing/#url-handlers) for more information about handling controller actions.
 
-[notice]
-Form actions (`doSayHello()`), on the other hand, should *not* be included in `$allowed_actions`; these are handled
-separately through [Form::httpSubmission()](api:SilverStripe\Forms\Form::httpSubmission()).
-[/notice]
+> [!WARNING]
+> Form actions (`doSayHello()`), on the other hand, should *not* be included in `$allowed_actions`; these are handled
+> separately through [Form::httpSubmission()](api:SilverStripe\Forms\Form::httpSubmission()).
 
 ## Adding formFields
 
@@ -140,9 +138,8 @@ use SilverStripe\Forms\TextField;
 TextField::create($name, $title, $value);
 ```
 
-[info]
-A list of the common FormField subclasses is available on the [Common Subclasses](field_types/common_subclasses/) page.
-[/info]
+> [!NOTE]
+> A list of the common FormField subclasses is available on the [Common Subclasses](field_types/common_subclasses/) page.
 
 The fields are added to the [FieldList](api:SilverStripe\Forms\FieldList) `fields` property on the `Form` and can be modified at up to the point the
 `Form` is rendered.
@@ -202,20 +199,18 @@ Fields can be removed from the form.
 $form->getFields()->removeByName('Email');
 ```
 
-[alert]
-Forms can be tabbed (such as the CMS interface). In these cases, there are additional functions such as `addFieldToTab`
-and `removeFieldByTab` to ensure the fields are on the correct interface. See [Tabbed Forms](tabbed_forms) for more
-information on the CMS interface.
-[/alert]
+> [!CAUTION]
+> Forms can be tabbed (such as the CMS interface). In these cases, there are additional functions such as `addFieldToTab`
+> and `removeFieldByTab` to ensure the fields are on the correct interface. See [Tabbed Forms](tabbed_forms) for more
+> information on the CMS interface.
 
 ## Modifying formFields
 
 Each [FormField](api:SilverStripe\Forms\FormField) subclass has a number of methods you can call on it to customise its' behavior or HTML markup. The
 default `FormField` object has several methods for doing common operations.
 
-[notice]
-Most of the `set` operations will return the object back so methods can be chained.
-[/notice]
+> [!WARNING]
+> Most of the `set` operations will return the object back so methods can be chained.
 
 ```php
 use SilverStripe\Forms\TextField;
@@ -341,10 +336,9 @@ with the particular button. In the previous example, clicking the 'Another Butto
 - The `Form` instance.
 - The `Controller` instance.
 
-[notice]
-If the `$action` method cannot be found on any of those or is marked as `private` or `protected`, an error will be
-thrown.
-[/notice]
+> [!WARNING]
+> If the `$action` method cannot be found on any of those or is marked as `private` or `protected`, an error will be
+> thrown.
 
 The `$action` method takes two arguments:
 

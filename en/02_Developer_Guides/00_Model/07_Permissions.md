@@ -11,17 +11,15 @@ checks. Often it makes sense to centralize those checks on the model, regardless
 
 The API provides four methods for this purpose: `canEdit()`, `canCreate()`, `canView()` and `canDelete()`.
 
-[hint]
-Versioned models have additional permission methods - see [Version specific `can` methods](versioning#permission-methods).
-[/hint]
+> [!TIP]
+> Versioned models have additional permission methods - see [Version specific `can` methods](versioning#permission-methods).
 
 Since they're PHP methods, they can contain arbitrary logic matching your own requirements. They can optionally receive
 a `$member` argument, and default to the currently logged in member (through `Security::getCurrentUser()`).
 
-[notice]
-By default, all `DataObject` subclasses can only be edited, created and viewed by users with the 'ADMIN' permission code.
-Make sure you implement these methods for models which should be editable by members with more restrictive permission models.
-[/notice]
+> [!WARNING]
+> By default, all `DataObject` subclasses can only be edited, created and viewed by users with the 'ADMIN' permission code.
+> Make sure you implement these methods for models which should be editable by members with more restrictive permission models.
 
 In this example, the `MyDataObject` model can be viewed, edited, deleted, and created by any user with the `CMS_ACCESS_CMSMain` permission code, aka "Access to 'Pages' section".
 
@@ -99,11 +97,10 @@ class MyDataObject extends SomeParentObject
 
 See the [User Permissions](/developer_guides/security/permissions/) section for more information about defining permissions.
 
-[alert]
-These checks are not enforced on low-level ORM operations such as `write()` or `delete()`, but rather rely on being
-checked in the invoking code. The CMS default sections as well as custom interfaces like [`ModelAdmin`](api:SilverStripe\Admin\ModelAdmin) or
-[`GridField`](api:SilverStripe\Forms\GridField\GridField) already enforce these permissions.
-[/alert]
+> [!CAUTION]
+> These checks are not enforced on low-level ORM operations such as `write()` or `delete()`, but rather rely on being
+> checked in the invoking code. The CMS default sections as well as custom interfaces like [`ModelAdmin`](api:SilverStripe\Admin\ModelAdmin) or
+> [`GridField`](api:SilverStripe\Forms\GridField\GridField) already enforce these permissions.
 
 ## Defining permissions in extensions
 

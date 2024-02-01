@@ -24,10 +24,9 @@ Page:
       property: Content
 ```
 
-[notice]
-When using explicit property mapping, you must also define an explicit type, as it can
-no longer be inferred.
-[/notice]
+> [!WARNING]
+> When using explicit property mapping, you must also define an explicit type, as it can
+> no longer be inferred.
 
 ### Dot-separated accessors
 

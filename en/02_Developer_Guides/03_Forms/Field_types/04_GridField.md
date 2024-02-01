@@ -25,9 +25,8 @@ use SilverStripe\Forms\GridField\GridField;
 $field = GridField::create($name, $title, $list);
 ```
 
-[hint]
-GridField can only be used with `$list` data sets that are of the type `SS_List` such as `DataList` or `ArrayList`.
-[/hint]
+> [!TIP]
+> GridField can only be used with `$list` data sets that are of the type `SS_List` such as `DataList` or `ArrayList`.
 
 Each `GridField` is built from a number of components grouped into the [GridFieldConfig](api:SilverStripe\Forms\GridField\GridFieldConfig). Without any components,
 a `GridField` has almost no functionality. The `GridFieldConfig` instance and the attached [GridFieldComponent](api:SilverStripe\Forms\GridField\GridFieldComponent) are
@@ -242,6 +241,9 @@ $gridField->setConfig($config);
 
 ### `GridFieldConfig_RecordEditor`
 
+> [!CAUTION]
+> Permission control for editing and deleting the record uses the `canEdit()` and `canDelete()` methods on the class that represents your data.
+
 Similar to `GridFieldConfig_RecordViewer` with the addition support to edit or delete each of the records.
 
 [info]
@@ -256,10 +258,6 @@ The class representing your data *must* implement [`DataObjectInterface`](api:Si
 
 See [using `GridField` with arbitrary data](/developer_guides/forms/using_gridfield_with_arbitrary_data/) for more information.
 [/warning]
-
-[alert]
-Permission control for editing and deleting the record uses the `canEdit()` and `canDelete()` methods on the class that represents your data.
-[/alert]
 
 ```php
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
@@ -467,10 +465,9 @@ Fragments are designated areas within a `GridField` which can be shared between 
 your own fragments by using a `\$DefineFragment` placeholder in your component's template. This example will simply
 create an area rendered before the table wrapped in a simple `<div>`.
 
-[notice]
-Please note that in templates, you'll need to escape the dollar sign on `\$DefineFragment`. These are specially
-processed placeholders as opposed to native template syntax.
-[/notice]
+> [!WARNING]
+> Please note that in templates, you'll need to escape the dollar sign on `\$DefineFragment`. These are specially
+> processed placeholders as opposed to native template syntax.
 
 ```php
 namespace App\Form\GridField;

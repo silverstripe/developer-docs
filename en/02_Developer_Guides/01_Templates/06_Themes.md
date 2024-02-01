@@ -25,10 +25,9 @@ composer require my_vendor/my_theme [version]
 
 *Note:* `[version]` should be replaced with a version constraint if you know it, otherwise leave it blank to pull the latest version compatible with your project.
 
-[alert]
-As you've added new files to your Silverstripe CMS installation, make sure you clear the Silverstripe CMS cache by appending
-`?flush=1` to your website URL (e.g `https://www.example.com/?flush=1`).
-[/alert]
+> [!CAUTION]
+> As you've added new files to your Silverstripe CMS installation, make sure you clear the Silverstripe CMS cache by appending
+> `?flush=1` to your website URL (e.g `https://www.example.com/?flush=1`).
 
 ### Configuring themes
 
@@ -81,9 +80,8 @@ In the above configuration, `$public` and `$default` are special placeholders.
 Any resources you put in that directory can be accessed the same way you access regular theme resources, such as via [the requirements API](requirements)
 or the [`ThemeResourceLoader`](api:SilverStripe\View\ThemeResourceLoader).
 
-[warning]
-We recommend you don't include any templates in the public directory, as doing so could expose sensitive information such as information about your database schema.
-[/warning]
+> [!WARNING]
+> We recommend you don't include any templates in the public directory, as doing so could expose sensitive information such as information about your database schema.
 
 `$default` refers to all modules which have a `template/` directory (including your project). Typically this goes at the end of the themes configuration,
 so that your themes take precedence over any templates provided by modules.

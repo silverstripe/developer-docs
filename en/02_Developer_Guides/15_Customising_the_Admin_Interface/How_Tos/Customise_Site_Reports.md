@@ -23,9 +23,8 @@ SilverStripe\Reports\Report:
   limit_count_in_overview: 500
 ```
 
-[notice]
-Note that some reports may have overridden the `getCount` method, and for those reports this may not apply.
-[/notice]
+> [!WARNING]
+> Note that some reports may have overridden the `getCount` method, and for those reports this may not apply.
 
 ## Default reports
 
