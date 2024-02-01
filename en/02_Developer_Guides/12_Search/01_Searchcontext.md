@@ -13,9 +13,8 @@ search parameters and an object class it acts on.
 The default output of a [SearchContext](api:SilverStripe\ORM\Search\SearchContext) is either a [SQLSelect](api:SilverStripe\ORM\Queries\SQLSelect) object for further refinement, or a
 [DataObject](api:SilverStripe\ORM\DataObject) instance.
 
-[notice]
-[SearchContext](api:SilverStripe\ORM\Search\SearchContext) is mainly used by [ModelAdmin](/developer_guides/customising_the_admin_interface/modeladmin), as it powers the [`DataObject::$searchable_fields` configuration](/developer_guides/model/scaffolding#searchable-fields).
-[/notice]
+> [!WARNING]
+> [SearchContext](api:SilverStripe\ORM\Search\SearchContext) is mainly used by [ModelAdmin](/developer_guides/customising_the_admin_interface/modeladmin), as it powers the [`DataObject::$searchable_fields` configuration](/developer_guides/model/scaffolding#searchable-fields).
 
 ## Usage
 
@@ -77,15 +76,12 @@ class MyDataObject extends DataObject
 }
 ```
 
-[notice]
+> [!WARNING]
+> In case you need multiple contexts, consider name-spacing your request parameters by using `FieldList->namespace()` on
+> the `$fields` constructor parameter.
+
 See the [SearchFilter](../model/searchfilters) documentation for more information about filters to use such as the
 `GreaterThanFilter`.
-[/notice]
-
-[notice]
-In case you need multiple contexts, consider name-spacing your request parameters by using `FieldList->namespace()` on
-the `$fields` constructor parameter.
-[/notice]
 
 ### Customising the general search field
 

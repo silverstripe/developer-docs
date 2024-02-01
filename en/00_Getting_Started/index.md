@@ -29,9 +29,8 @@ Within the newly created `my-project` folder, point your webserver at the `publi
 
 Now create a `.env` file in your project root (not the `public/` folder).
 
-[hint]
-If you used `silverstripe/installer` to create your project, you can rename the `.env.example` file to `.env`. It includes the minimum required [environment variables](environment_management).
-[/hint]
+> [!TIP]
+> If you used `silverstripe/installer` to create your project, you can rename the `.env.example` file to `.env`. It includes the minimum required [environment variables](environment_management).
 
 Replace the placeholders as required:
 

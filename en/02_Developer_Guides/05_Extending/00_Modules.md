@@ -48,9 +48,8 @@ on your project's stability configuration.
 To lock down to a specific version, branch or commit, read up on
 ["lock" files](https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control).
 
-[notice]
-After you add or remove modules, make sure you rebuild the database, class and configuration manifests by going to `https://www.example.com/dev/build?flush=1`
-[/notice]
+> [!WARNING]
+> After you add or remove modules, make sure you rebuild the database, class and configuration manifests by going to `https://www.example.com/dev/build?flush=1`
 
 ## Creating a module {#create}
 
@@ -101,10 +100,9 @@ In most cases we recommended using a new project, at least at first.
 If this is a module you intend to be available publicly, it might make sense to submit the repository to
 [Packagist](https://packagist.org/) at this stage.
 
-[note]
-If you want your module to be private or for some reason don't want to publish it in packagist just yet,
-see [Including a private module in your project](#including-a-private-module-in-your-project) below.
-[/note]
+> [!NOTE]
+> If you want your module to be private or for some reason don't want to publish it in packagist just yet,
+> see [Including a private module in your project](#including-a-private-module-in-your-project) below.
 
 Once you've done that, you can simply install it like
 you would any other dependency - just make sure you use the `--prefer-source` option, which will ensure
@@ -114,11 +112,10 @@ Composer installs the module directly from GitHub and keeps the initialised loca
 composer require my_vendor/module_name:dev-main --prefer-source
 ```
 
-[hint]
-The `dev-main` portion of the above command above is a version constraint which tells Composer to install your module from the `main` branch.
-If you are using a different branch name, you should use the correct branch here instead (e.g. if the branch name is `development`, the constraint
-will be `dev-development`).
-[/hint]
+> [!TIP]
+> The `dev-main` portion of the above command above is a version constraint which tells Composer to install your module from the `main` branch.
+> If you are using a different branch name, you should use the correct branch here instead (e.g. if the branch name is `development`, the constraint
+> will be `dev-development`).
 
 Once Composer has installed the module, you can develop your module in the `vendor/my_vendor/module_name` directory,
 and commit/push changes from there to the remote repository in GitHub.
@@ -130,9 +127,8 @@ Including public or private repositories that are not indexed on **Packagist** i
 
 For our example module you can add the following lines to your `composer.json` file in the root directory of your main project.
 
-[notice]
-This goes into the `composer.json` for the Silverstripe CMS project where you're installing your module, *not* into the `composer.json` of your module itself.
-[/notice]
+> [!WARNING]
+> This goes into the `composer.json` for the Silverstripe CMS project where you're installing your module, *not* into the `composer.json` of your module itself.
 
 ```json
 {

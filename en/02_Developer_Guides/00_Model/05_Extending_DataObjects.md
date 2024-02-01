@@ -10,9 +10,8 @@ You can add properties and methods to existing [`DataObject`](api:SilverStripe\O
 The following documentation outlines some common hooks that the [`Extension`](api:SilverStripe\Core\Extension) API provides specifically for managing
 data records. Note that this is *not* an exhaustive list - we encourage you to look at the source code to see what other extension hooks are available.
 
-[warning]
-Avoid using the hooks shown here for checking permissions or validating data - there are specific mechanisms for handling those scenarios. See [permissions](permissions) and [validation](validation) respectively.
-[/warning]
+> [!WARNING]
+> Avoid using the hooks shown here for checking permissions or validating data - there are specific mechanisms for handling those scenarios. See [permissions](permissions) and [validation](validation) respectively.
 
 ## `onBeforeWrite`
 
@@ -85,10 +84,9 @@ class Player extends DataObject
 }
 ```
 
-[notice]
-Note: There are no separate methods for `onBeforeCreate()` and `onBeforeUpdate()`. Please check `$this->isInDb()` to toggle
-these two modes, as shown in the example above.
-[/notice]
+> [!WARNING]
+> Note: There are no separate methods for `onBeforeCreate()` and `onBeforeUpdate()`. Please check `$this->isInDb()` to toggle
+> these two modes, as shown in the example above.
 
 ## Related lessons
 

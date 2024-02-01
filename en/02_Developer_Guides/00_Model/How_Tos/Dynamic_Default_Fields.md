@@ -5,10 +5,9 @@ summary: Learn how to add default values to your models
 
 # Default values and records
 
-[hint]
-This page is about defining default values and records in your model class, which only affects *new* records. You can set defaults directly in the database-schema, which affects *existing* records as well. See
-[Data Types and Casting](/developer_guides/model/data_types_and_casting/#default-values) for details.
-[/hint]
+> [!TIP]
+> This page is about defining default values and records in your model class, which only affects *new* records. You can set defaults directly in the database-schema, which affects *existing* records as well. See
+> [Data Types and Casting](/developer_guides/model/data_types_and_casting/#default-values) for details.
 
 ## Static default values
 
@@ -63,47 +62,45 @@ class Dog extends DataObject
 }
 ```
 
-[hint]
-This method is called very early in the process of instantiating a new record, before any relations are set for it. If you want to set values based on, for example, a `has_one` relation called `Parent`, you can do that by implementing [`onBeforeWrite()`](/developer_guides/model/extending_dataobjects/#onbeforewrite) or a [setter method](/developer_guides/model/data_types_and_casting/#overriding) - for example:
-
-```php
-namespace App\Model;
-
-use SilverStripe\ORM\DataObject;
-
-class Dog extends DataObject
-{
-    // ...
-
-    public function onBeforeWrite()
-    {
-        // Only do this if the record hasn't been written to the database yet (optional)
-        if (!$this->isInDb()) {
-            $parent = $this->Parent();
-            // Set the FullTitle based on the parent, if one exists
-            if ($parent->exists()) {
-                $this->FullTitle = $parent->Title . ': ' . $this->Title;
-            } else {
-                $this->FullTitle = $this->Title;
-            }
-        }
-    }
-
-    // or
-
-    public function setFullTitle($value): static
-    {
-        $parent = $this->Parent();
-        // Set the FullTitle based on the parent, if one exists
-        if ($parent->exists()) {
-            $value = $parent->Title . ': ' . $value;
-        }
-        return $this->setField('FullTitle', $value);
-    }
-}
-```
-
-[/hint]
+> [!TIP]
+> This method is called very early in the process of instantiating a new record, before any relations are set for it. If you want to set values based on, for example, a `has_one` relation called `Parent`, you can do that by implementing [`onBeforeWrite()`](/developer_guides/model/extending_dataobjects/#onbeforewrite) or a [setter method](/developer_guides/model/data_types_and_casting/#overriding) - for example:
+>
+> ```php
+> namespace App\Model;
+>
+> use SilverStripe\ORM\DataObject;
+>
+> class Dog extends DataObject
+> {
+>     // ...
+>
+>     public function onBeforeWrite()
+>     {
+>         // Only do this if the record hasn't been written to the database yet (optional)
+>         if (!$this->isInDb()) {
+>             $parent = $this->Parent();
+>             // Set the FullTitle based on the parent, if one exists
+>             if ($parent->exists()) {
+>                 $this->FullTitle = $parent->Title . ': ' . $this->Title;
+>             } else {
+>                 $this->FullTitle = $this->Title;
+>             }
+>         }
+>     }
+>
+>     // or
+>
+>     public function setFullTitle($value): static
+>     {
+>         $parent = $this->Parent();
+>         // Set the FullTitle based on the parent, if one exists
+>         if ($parent->exists()) {
+>             $value = $parent->Title . ': ' . $value;
+>         }
+>         return $this->setField('FullTitle', $value);
+>     }
+> }
+> ```
 
 ## Static default records
 

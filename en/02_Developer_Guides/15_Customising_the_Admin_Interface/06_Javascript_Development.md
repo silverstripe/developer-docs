@@ -21,11 +21,10 @@ There are many ways to solve the problem of transpiling. The toolchain we use in
 
 ## jQuery, jQuery UI and jQuery.Entwine: our libraries of choice
 
-[notice]
-The following documentation regarding jQuery, jQueryUI and Entwine does not apply to React components or sections powered by React.
-If you're developing new functionality in React powered sections please refer to
-[ReactJS, Redux, and GraphQL](./reactjs_redux_and_graphql).
-[/notice]
+> [!WARNING]
+> The following documentation regarding jQuery, jQueryUI and Entwine does not apply to React components or sections powered by React.
+> If you're developing new functionality in React powered sections please refer to
+> [ReactJS, Redux, and GraphQL](./reactjs_redux_and_graphql).
 
 We predominantly use [jQuery](https://jquery.com) as our abstraction library for DOM related programming, within the
 Silverstripe CMS and certain framework aspects.
@@ -140,9 +139,8 @@ NoConflict mode is enabled by default in the Silverstripe CMS JavaScript.
 You have to ensure that DOM elements you want to act on are loaded before using them. jQuery provides a wrapper around
 the `window.onload` and `document.ready` events.
 
-[info]
-This doesn't apply to jQuery entwine declarations, which will apply to elements matching your selectors as they get added to the DOM, even if that happens before or after your code is executed. See [the entwine documentation](jquery_entwine) for more details about this.
-[/info]
+> [!NOTE]
+> This doesn't apply to jQuery entwine declarations, which will apply to elements matching your selectors as they get added to the DOM, even if that happens before or after your code is executed. See [the entwine documentation](jquery_entwine) for more details about this.
 
 ```js
 (function ($) {
@@ -176,9 +174,8 @@ $('.cms-container').on('click', 'input[[type=submit]]', function () {
 });
 ```
 
-[hint]
-You can do this using entwine as well, which has the added benefit of not requiring your original selector to match a DOM element initially (e.g. for the above example if there are no `.cms-container` elements, or those elements are removed and re-added to the DOM, your native binding won't work but an entwine one will).
-[/hint]
+> [!TIP]
+> You can do this using entwine as well, which has the added benefit of not requiring your original selector to match a DOM element initially (e.g. for the above example if there are no `.cms-container` elements, or those elements are removed and re-added to the DOM, your native binding won't work but an entwine one will).
 
 ### Assume element collections
 

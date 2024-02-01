@@ -43,11 +43,10 @@ class Player extends DataObject
 This `Player` class definition will create a database table `Player` with columns for `PlayerNumber`, `FirstName` and
 so on. After writing this class, we need to regenerate the database schema.
 
-[hint]
-You can technically omit the `table_name` property, and a default table name will be created based on the fully qualified class name - but this can result in table names that are too long for the database engine to handle. We recommend that you *always* explicitly declare a table name for your models.
-
-See more in [Mapping classes to tables with `DataObjectSchema`](#mapping-classes-to-tables) below.
-[/hint]
+> [!TIP]
+> You can technically omit the `table_name` property, and a default table name will be created based on the fully qualified class name - but this can result in table names that are too long for the database engine to handle. We recommend that you *always* explicitly declare a table name for your models.
+>
+> See more in [Mapping classes to tables with `DataObjectSchema`](#mapping-classes-to-tables) below.
 
 ## Generating the database schema
 
@@ -55,9 +54,8 @@ After adding, modifying or removing `DataObject` subclasses, make sure to rebuil
 database schema is generated automatically by visiting `/dev/build` (e.g. `https://www.example.com/dev/build`) in your browser
 while authenticated as an administrator, or by running `sake dev/build` on the command line (see [Command Line Interface](/developer_guides/cli/) to learn more about `sake`).
 
-[info]
-In "dev" mode, you do not need to be authenticated to run `/dev/build`. See [Environment Types](/developer_guides/debugging/environment_types) for more information.
-[/info]
+> [!NOTE]
+> In "dev" mode, you do not need to be authenticated to run `/dev/build`. See [Environment Types](/developer_guides/debugging/environment_types) for more information.
 
 This script will analyze the existing schema, compare it to what's required by your data classes, and alter the schema
 as required.
@@ -119,11 +117,10 @@ However, a better way is to use the `create()` method.
 $player = Player::create();
 ```
 
-[hint]
-Using the `create()` method provides chainability (known as a "fluent API" or "[fluent interface](https://en.wikipedia.org/wiki/Fluent_interface)"), which can add elegance and brevity to your code, e.g. `Player::create(['FirstName' => 'Sam'])->write()`.
-
-More importantly, however, it will look up the class in the [`Injector`](api:SilverStripe\Core\Injector\Injector) so that the class can be overridden by [dependency injection](../extending/injector). For this reason, instantiating records using the `new` keyword is considered bad practice.
-[/hint]
+> [!TIP]
+> Using the `create()` method provides chainability (known as a "fluent API" or "[fluent interface](https://en.wikipedia.org/wiki/Fluent_interface)"), which can add elegance and brevity to your code, e.g. `Player::create(['FirstName' => 'Sam'])->write()`.
+>
+> More importantly, however, it will look up the class in the [`Injector`](api:SilverStripe\Core\Injector\Injector) so that the class can be overridden by [dependency injection](../extending/injector). For this reason, instantiating records using the `new` keyword is considered bad practice.
 
 Database columns (aka fields) can be set as class properties on the object. The Silverstripe CMS ORM handles the saving
 of the values through a custom `__set()` method.
@@ -152,6 +149,9 @@ $id = $player->write();
 With the `Player` class defined we can query our data using the ORM. The ORM provides
 shortcuts and methods for fetching, sorting and filtering data from our database.
 
+> [!TIP]
+> All of the below methods to get a single record will return `null` if there is no record to return.
+
 ```php
 // returns a `DataList` containing all the `Player` objects.
 $players = Player::get();
@@ -165,13 +165,8 @@ $player = Player::get()->byID(2);
 $player = Playet::get_by_id(2);
 ```
 
-[hint]
-All of the above methods to get a single record will return `null` if there is no record to return.
-[/hint]
-
-[info]
-`DataObject::get()->byID()` and `DataObject::get_by_id()` achieve similar results, though the object returned by `DataObject::get_by_id()` is cached against a `static` property within `DataObject`.
-[/info]
+> [!NOTE]
+> `DataObject::get()->byID()` and `DataObject::get_by_id()` achieve similar results, though the object returned by `DataObject::get_by_id()` is cached against a `static` property within `DataObject`.
 
 The ORM uses a "fluent" syntax, where you specify a query by chaining together different methods.  Two common methods
 are `filter()` and `sort()`:
@@ -185,17 +180,15 @@ $members = Player::get()->filter([
 
 There's a lot more to filtering and sorting, so make sure to keep reading.
 
-[info]
-Values passed in to the `filter()` and `sort()` methods are automatically escaped and do not require any additional escaping. This makes it easy to safely filter/sort records by user input.
-[/info]
+> [!NOTE]
+> Values passed in to the `filter()` and `sort()` methods are automatically escaped and do not require any additional escaping. This makes it easy to safely filter/sort records by user input.
 
 ### Querying data when you have a record
 
 When you have a `DataObject` record, it already has all of its database field data attached to it. You can get those values without triggering further database queries.
 
-[notice]
-This does not apply to relations, which are always lazy loaded. See the [Relations between Records](relations) documentation for more information.
-[/notice]
+> [!WARNING]
+> This does not apply to relations, which are always lazy loaded. See the [Relations between Records](relations) documentation for more information.
 
 ```php
 $player = Player::get()->byID(2);
@@ -215,9 +208,8 @@ All database fields have a default value format which you can retrieve by treati
 
 The ORM doesn't actually execute the [SQLSelect](api:SilverStripe\ORM\Queries\SQLSelect) query until you iterate on the result (e.g. with a `foreach()` or `<% loop %>`).
 
-[hint]
-Some convenience methods (e.g. [`column()`](api:SilverStripe\ORM\DataList::column()) or aggregator methods like [`min()`](api:SilverStripe\ORM\DataList::min())) will also execute the query.
-[/hint]
+> [!TIP]
+> Some convenience methods (e.g. [`column()`](api:SilverStripe\ORM\DataList::column()) or aggregator methods like [`min()`](api:SilverStripe\ORM\DataList::min())) will also execute the query.
 
 It's smart enough to generate a single efficient query at the last moment in time without needing to post-process the
 result set in PHP. In `MySQL` the query generated by the ORM may look something like this
@@ -267,9 +259,8 @@ if ($players->exists()) {
 }
 ```
 
-[hint]
-While you could use `if ($players->Count() > 0)` for this condition, the `exists()` method uses an `EXISTS` SQL query, which is more performant.
-[/hint]
+> [!TIP]
+> While you could use `if ($players->Count() > 0)` for this condition, the `exists()` method uses an `EXISTS` SQL query, which is more performant.
 
 See the [Lists](lists) documentation for more information on dealing with [SS_List](api:SilverStripe\ORM\SS_List) instances.
 
@@ -454,20 +445,18 @@ $teams = Team::get()->filter('Players.Avg(PointsScored):GreaterThan', 15);
 $teams = Team::get()->filter('Players.Sum(PointsScored):LessThan', 300);
 ```
 
-[hint]
-The above examples are using "dot notation" to get the aggregations of the `Players` relation on the `Teams` model. See [Relations between Records](relations) to learn more.
-[/hint]
+> [!TIP]
+> The above examples are using "dot notation" to get the aggregations of the `Players` relation on the `Teams` model. See [Relations between Records](relations) to learn more.
 
 ### `filterByCallback`
 
 It is possible to filter by a PHP callback using the [`filterByCallback()`](api:SilverStripe\ORM\DataList::filterByCallback()) method. This will force the data model to fetch all records and loop them in
 PHP which will be much worse for performance, thus `filter()` or `filterAny()` are to be preferred over `filterByCallback()`.
 
-[notice]
-Because `filterByCallback()` has to run in PHP, it has a significant performance tradeoff, and should not be used on large recordsets.
-
-`filterByCallback()` will always return an `ArrayList`.
-[/notice]
+> [!WARNING]
+> Because `filterByCallback()` has to run in PHP, it has a significant performance tradeoff, and should not be used on large recordsets.
+>
+> `filterByCallback()` will always return an `ArrayList`.
 
 The first parameter to the callback is the record, the second parameter is the list itself. The callback will run once
 for each record. The callback must return a boolean value. If the callback returns true, the current record will be included in the list of returned items.
@@ -683,11 +672,10 @@ $members = Member::get()
     ->innerJoin('Group_Members', '"Rel"."MemberID" = "Member"."ID"', 'Rel');
 ```
 
-[alert]
-Using a join will *filter* results further by the JOINs performed against the foreign table. It will
-**not return** the additionally joined data. For the examples above, we're still only selecting values for the fields
-on the `Member` class table.
-[/alert]
+> [!CAUTION]
+> Using a join will *filter* results further by the JOINs performed against the foreign table. It will
+> **not return** the additionally joined data. For the examples above, we're still only selecting values for the fields
+> on the `Member` class table.
 
 ### Default values
 
@@ -769,9 +757,8 @@ Product_Digital_Computer:
   IsPreBuilt: 'Boolean'
 ```
 
-[hint]
-Note that because `DigitalProduct` doesn't define any new fields it doesn't need its own table. We should still declare a `$table_name` though - who knows if this model might have its own table created in the future (e.g. if we add fields to it later on).
-[/hint]
+> [!TIP]
+> Note that because `DigitalProduct` doesn't define any new fields it doesn't need its own table. We should still declare a `$table_name` though - who knows if this model might have its own table created in the future (e.g. if we add fields to it later on).
 
 Accessing the data is transparent to the developer.
 

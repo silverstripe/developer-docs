@@ -77,17 +77,16 @@ SilverStripe\Admin\AdminRootController:
 
 When extending the CMS or creating modules, you can take advantage of various functions that will return the configured admin URL (by default 'admin' is returned):
 
-[warning]
-Depending on your configuration, the returned value *may or may not* include a trailing slash. The default is to not include one, but you should take care to not
-explicitly expect one scenario or the other.
-
-In PHP you can use [Controller::join_links()](api:SilverStripe\Control\Controller::join_links()) or pass an argument to
-[AdminRootController::admin_url()](api:SilverStripe\Admin\AdminRootController::admin_url()) to ensure only one `/` character separates the admin URL from the rest of
-your path.
-
-In JavaScript, if you are using [@silverstripe/webpack-config](https://www.npmjs.com/package/@silverstripe/webpack-config), you can use the `joinUrlPaths()` utility
-function.
-[/warning]
+> [!WARNING]
+> Depending on your configuration, the returned value *may or may not* include a trailing slash. The default is to not include one, but you should take care to not
+> explicitly expect one scenario or the other.
+>
+> In PHP you can use [Controller::join_links()](api:SilverStripe\Control\Controller::join_links()) or pass an argument to
+> [AdminRootController::admin_url()](api:SilverStripe\Admin\AdminRootController::admin_url()) to ensure only one `/` character separates the admin URL from the rest of
+> your path.
+>
+> In JavaScript, if you are using [@silverstripe/webpack-config](https://www.npmjs.com/package/@silverstripe/webpack-config), you can use the `joinUrlPaths()` utility
+> function.
 
 In PHP you should use:
 
@@ -234,11 +233,10 @@ correctly configured form.
 
 ## JavaScript through jQuery.Entwine
 
-[notice]
-The following documentation regarding Entwine does not apply to React components or sections powered by React.
-If you're developing new functionality in React powered sections please refer to
-[React, Redux, and GraphQL](/developer_guides/customising_the_admin_interface/reactjs_redux_and_graphql/).
-[/notice]
+> [!WARNING]
+> The following documentation regarding Entwine does not apply to React components or sections powered by React.
+> If you're developing new functionality in React powered sections please refer to
+> [React, Redux, and GraphQL](/developer_guides/customising_the_admin_interface/reactjs_redux_and_graphql/).
 
 jQuery.entwine is a library
 which allows us to attach behaviour to DOM elements in a flexible and structured manner.
@@ -793,9 +791,8 @@ jQuery('input.myfield.lazy-loadable').entwine({
 });
 ```
 
-[info]
-The `myfield` CSS class isn't strictly necessary here (nor is the input for that matter) - it's just being used so we have a more specific selector. That way we know our JavaScript code will only trigger for the relevant element, and not for every lazy-loadable element in the DOM.
-[/info]
+> [!NOTE]
+> The `myfield` CSS class isn't strictly necessary here (nor is the input for that matter) - it's just being used so we have a more specific selector. That way we know our JavaScript code will only trigger for the relevant element, and not for every lazy-loadable element in the DOM.
 
 If you apply the `myfield` and `lazy-loadable` CSS classes to some form field on a tab other than main, then when you swap to the tab containing that field it will trigger the lazyload event for that element.
 

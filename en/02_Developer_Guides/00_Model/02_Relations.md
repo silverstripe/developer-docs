@@ -52,27 +52,25 @@ class Team extends DataObject
 This defines a one-to-many relationship called `Team` which links any number of `Player` records to a single `Team` record. The ORM handles navigating the relationship
 and provides a short syntax for accessing the related object.
 
-[hint]
-Relations don't only apply to your own `DataObject` models - you can make relations to core models such as `File` and `Image` as well:
-
-```php
-namespace App\Model;
-
-use SilverStripe\Assets\File;
-use SilverStripe\Assets\Image;
-use SilverStripe\ORM\DataObject;
-
-class Team extends DataObject
-{
-    private static $has_one = [
-        'Teamphoto' => Image::class,
-        'Lineup' => File::class,
-    ];
-    // ...
-}
-```
-
-[/hint]
+> [!TIP]
+> Relations don't only apply to your own `DataObject` models - you can make relations to core models such as `File` and `Image` as well:
+>
+> ```php
+> namespace App\Model;
+>
+> use SilverStripe\Assets\File;
+> use SilverStripe\Assets\Image;
+> use SilverStripe\ORM\DataObject;
+>
+> class Team extends DataObject
+> {
+>     private static $has_one = [
+>         'Teamphoto' => Image::class,
+>         'Lineup' => File::class,
+>     ];
+>     // ...
+> }
+> ```
 
 At the database level, the `has_one` from our example above creates a `TeamID` field on the `Player` table. A `has_many` field does not impose any database changes. It merely injects a new method into the class to access the related records (in this case, `Players()`)
 
@@ -86,9 +84,8 @@ echo $player->Team()->Title;
 // returns the 'Title' column on the 'Team' or `getTitle` if it exists.
 ```
 
-[info]
-Even if the `$player` record doesn't have any team record saved in its `Team` relation, `$player->Team()` will return a `Team` object. In that case, it will be an *empty* record, with only default values applied. You can validate if that is the case by calling [`exists()`](api:SilverStripe\ORM\DataObject::exists()) on the record (e.g. `$player->Team()->exists()`).
-[/info]
+> [!NOTE]
+> Even if the `$player` record doesn't have any team record saved in its `Team` relation, `$player->Team()` will return a `Team` object. In that case, it will be an *empty* record, with only default values applied. You can validate if that is the case by calling [`exists()`](api:SilverStripe\ORM\DataObject::exists()) on the record (e.g. `$player->Team()->exists()`).
 
 The relationship can also be navigated in [templates](../templates).
 
@@ -155,13 +152,12 @@ class Fan extends DataObject
 }
 ```
 
-[warning]
-Note: The use of polymorphic relationships can affect query performance, especially
-on joins, and also increases the complexity of the database and necessary user code.
-They should be used sparingly, and only where additional complexity would otherwise
-be necessary. For example additional parent classes for each respective relationship, or
-duplication of code.
-[/warning]
+> [!WARNING]
+> Note: The use of polymorphic relationships can affect query performance, especially
+> on joins, and also increases the complexity of the database and necessary user code.
+> They should be used sparingly, and only where additional complexity would otherwise
+> be necessary. For example additional parent classes for each respective relationship, or
+> duplication of code.
 
 ### `belongs_to`
 
@@ -172,9 +168,8 @@ corresponding `has_one`. A single database column named `<relationship-name>ID` 
 Similarly with `has_many` below, [dot notation](#dot-notation) can (and for best practice *should*) be used to explicitly specify the `has_one` which refers to this relation.
 This is not mandatory unless the relationship would be otherwise ambiguous.
 
-[hint]
-You can use `RelationValidationService` for validation of relationships. This tool will point out the relationships which may need a review. See [Validating relations](#validating-relations) for more information.
-[/hint]
+> [!TIP]
+> You can use `RelationValidationService` for validation of relationships. This tool will point out the relationships which may need a review. See [Validating relations](#validating-relations) for more information.
 
 ```php
 namespace App\Model;
@@ -206,17 +201,16 @@ class Coach extends DataObject
 
 Defines one-to-many joins. As you can see from the previous example, `$has_many` goes hand in hand with `$has_one`.
 
-[alert]
-When defining a `has_many` relation, you *must* specify a `has_one` relationship on the related class as well. To add a `has_one` relation on core classes, yml config settings can be used:
-
-```yml
-SilverStripe\Assets\Image:
-  has_one:
-    Team: App\Model\Team
-```
-
-Note that in some cases you may be better off using a `many_many` relation instead. Carefully consider whether you are defining a "one-to-many" or a "many-to-many" relationship.
-[/alert]
+> [!CAUTION]
+> When defining a `has_many` relation, you *must* specify a `has_one` relationship on the related class as well. To add a `has_one` relation on core classes, yml config settings can be used:
+>
+> ```yml
+> SilverStripe\Assets\Image:
+>   has_one:
+>     Team: App\Model\Team
+> ```
+>
+> Note that in some cases you may be better off using a `many_many` relation instead. Carefully consider whether you are defining a "one-to-many" or a "many-to-many" relationship.
 
 ```php
 namespace App\Model;
@@ -323,23 +317,20 @@ class Company extends DataObject
 
 Multiple `has_many` or `belongs_to` relationships are okay *without* dot notation if they aren't linking to the same model class. Otherwise, using dot notation is required. With that said, dot notation is recommended in all cases as it makes your code more resilient to change. Adding new relationships is easier when you don't need to review and update existing ones.
 
-[hint]
-You can use `RelationValidationService` for validation of relationships. This tool will point out the relationships which may need a review. See [Validating relations](#validating-relations) for more information.
-[/hint]
+> [!TIP]
+> You can use `RelationValidationService` for validation of relationships. This tool will point out the relationships which may need a review. See [Validating relations](#validating-relations) for more information.
 
 ## `many_many` relationships {#many-many}
 
-[warning]
-Please specify a `belongs_many_many` relationship on the related class as well in order to have the necessary accessors available on both ends. See [`belongs_many_many`](#belongs-many-many) for more information.
-[/warning]
+> [!WARNING]
+> Please specify a `belongs_many_many` relationship on the related class as well in order to have the necessary accessors available on both ends. See [`belongs_many_many`](#belongs-many-many) for more information.
 
 Defines many-to-many relationships. This type of relationship requires a new table which has an `ID` column to represent the relationship itself and a column for each of the IDs of the related records.
 
 There are two ways this relationship can be declared which are (described below) depending on how the developer wishes to manage this join table.
 
-[hint]
-You can use `RelationValidationService` for validation of relationships. This tool will point out the relationships which may need a review. See [Validating relations](#validating-relations) for more information.
-[/hint]
+> [!TIP]
+> You can use `RelationValidationService` for validation of relationships. This tool will point out the relationships which may need a review. See [Validating relations](#validating-relations) for more information.
 
 ### Automatic `many_many` table {#automatic-many-many-table}
 
@@ -479,9 +470,8 @@ $team = Team::get()->byId(1);
 $supporters = $team->Supporters()->filter(['Ranking' => 1]);
 ```
 
-[hint]
-For records accessed in a [`ManyManyThroughList`](api:SilverStripe\ORM\ManyManyThroughList), you can access the join record (e.g. for our example above a `TeamSupporter` instance) by calling [`getJoin()`](api:SilverStripe\ORM\DataObject::getJoin()) or as the `$Join` property in templates.
-[/hint]
+> [!TIP]
+> For records accessed in a [`ManyManyThroughList`](api:SilverStripe\ORM\ManyManyThroughList), you can access the join record (e.g. for our example above a `TeamSupporter` instance) by calling [`getJoin()`](api:SilverStripe\ORM\DataObject::getJoin()) or as the `$Join` property in templates.
 
 #### Polymorphic `many_many`
 
@@ -622,22 +612,20 @@ The relationship can also be navigated in [templates](../templates).
 <% end_with %>
 ```
 
-[hint]
-For many_many through relations, the join record can be accessed via [`$Join`](api:SilverStripe\ORM\DataObject::getJoin()) or the actual relation name (e.g. `$TeamSupporter`). This is useful if your template is class-agnostic and doesn't know specifically what relation names are used.
-
-This also provides three ways to access the extra fields on a many_many through relation:
-
-```ss
-<% with $Supporter %>
-    <% loop $Supports %>
-        Access extrafields directly: $Ranking
-        Access extrafields using getJoin: $Join.Ranking
-        Access extrafields using the somewhat-magic join-class selector: $TeamSupporter.Ranking
-    <% end_loop %>
-<% end_with %>
-```
-
-[/hint]
+> [!TIP]
+> For many_many through relations, the join record can be accessed via [`$Join`](api:SilverStripe\ORM\DataObject::getJoin()) or the actual relation name (e.g. `$TeamSupporter`). This is useful if your template is class-agnostic and doesn't know specifically what relation names are used.
+>
+> This also provides three ways to access the extra fields on a many_many through relation:
+>
+> ```ss
+> <% with $Supporter %>
+>     <% loop $Supports %>
+>         Access extrafields directly: $Ranking
+>         Access extrafields using getJoin: $Join.Ranking
+>         Access extrafields using the somewhat-magic join-class selector: $TeamSupporter.Ranking
+>     <% end_loop %>
+> <% end_with %>
+> ```
 
 ## `belongs_many_many` {#belongs-many-many}
 
@@ -837,23 +825,21 @@ Eager loading can be used in templates. The following example assumes that `$MyT
 
 Eager loading supports all relationship types.
 
-[notice]
-Eager loading is only intended to be used in read-only scenarios such as when outputting data on the front-end of a website. When using default lazy-loading, relationship methods will return a subclass of [`DataList`](api:SilverStripe\ORM\DataList) such as [`HasManyList`](api:SilverStripe\ORM\HasManyList). However when using eager-loading, an [`EagerLoadedList`](api:SilverStripe\ORM\EagerLoadedList) will be returned instead. `EagerLoadedList` has common methods such as `filter()`, `sort()`, `limit()` and `reverse()` available to manipulate its data, as well as some methods you'd expect on the various relation list implementations such as [`getExtraData()`](api:SilverStripe\ORM\EagerLoadedList::getExtraData()).
-
-Note that filtering or sorting an `EagerLoadedList` will be done in PHP rather than as part of the database query, since we have already loaded all its relevant data into memory.
-
-Note also that `EagerLoadedList` can't filter or sort by fields on relations using dot notation (e.g. `sort('MySubRelation.Title')` won't work).
-[/notice]
+> [!WARNING]
+> Eager loading is only intended to be used in read-only scenarios such as when outputting data on the front-end of a website. When using default lazy-loading, relationship methods will return a subclass of [`DataList`](api:SilverStripe\ORM\DataList) such as [`HasManyList`](api:SilverStripe\ORM\HasManyList). However when using eager-loading, an [`EagerLoadedList`](api:SilverStripe\ORM\EagerLoadedList) will be returned instead. `EagerLoadedList` has common methods such as `filter()`, `sort()`, `limit()` and `reverse()` available to manipulate its data, as well as some methods you'd expect on the various relation list implementations such as [`getExtraData()`](api:SilverStripe\ORM\EagerLoadedList::getExtraData()).
+>
+> Note that filtering or sorting an `EagerLoadedList` will be done in PHP rather than as part of the database query, since we have already loaded all its relevant data into memory.
+>
+> Note also that `EagerLoadedList` can't filter or sort by fields on relations using dot notation (e.g. `sort('MySubRelation.Title')` won't work).
 
 ## Cascading deletions
 
 Relationships between objects can cause cascading deletions, if necessary, through configuration of the
 `cascade_deletes` config on the class that declares the relationship.
 
-[alert]
-Declaring `cascade_deletes` implies delete permissions on the listed objects.
-Built-in controllers using delete operations check `canDelete()` on the owner, but not on the owned object.
-[/alert]
+> [!CAUTION]
+> Declaring `cascade_deletes` implies delete permissions on the listed objects.
+> Built-in controllers using delete operations check `canDelete()` on the owner, but not on the owned object.
 
 ```php
 namespace App\Model;
@@ -881,9 +867,8 @@ If your object is versioned, `cascade_deletes` will also act as "cascade unpubli
 on a parent object will trigger unpublish on the child, similarly to how `owns` causes triggered publishing.
 See the [versioning docs](/developer_guides/model/versioning) for more information on ownership.
 
-[alert]
-If the child model is not versioned, `cascade_deletes` will result in the child record being *deleted* if the parent is unpublished! Be sure to check whether both sides of the relationship are versioned before declaring `cascade_deletes`.
-[/alert]
+> [!CAUTION]
+> If the child model is not versioned, `cascade_deletes` will result in the child record being *deleted* if the parent is unpublished! Be sure to check whether both sides of the relationship are versioned before declaring `cascade_deletes`.
 
 ## Cascading duplications
 
@@ -948,9 +933,8 @@ $dupe = $parent->duplicate(relations: false);
 $dupe = $parent->duplicate(relations: ['Children']);
 ```
 
-[info]
-The first parameter in `duplicate()` is `$doWrite` and determines whether the new duplicate record(s) will be written to the database. The second parameter is `$relations`, and it works as described above.
-[/info]
+> [!NOTE]
+> The first parameter in `duplicate()` is `$doWrite` and determines whether the new duplicate record(s) will be written to the database. The second parameter is `$relations`, and it works as described above.
 
 ## Adding relations
 
@@ -972,11 +956,10 @@ $team->Supporters()->add($supporter);
 
 Note that `add()` and `remove()` happen instantaneously. You don't have to call `write()` on anything after using those methods.
 
-[hint]
-To set what record is in a `has_one` relation, just set the `<relation-name>ID` field - e.g: `$player->TeamID = $team->ID;`
-
-Don't forget to write the record (`$player->write();`)!
-[/hint]
+> [!TIP]
+> To set what record is in a `has_one` relation, just set the `<relation-name>ID` field - e.g: `$player->TeamID = $team->ID;`
+>
+> Don't forget to write the record (`$player->write();`)!
 
 ## Custom relations
 
@@ -1004,21 +987,19 @@ class Team extends DataObject
 }
 ```
 
-[notice]
-Adding new records to a filtered `RelationList` like in the example above doesn't automatically set the filtered
-criteria on the added record - the record is added to the relation but is otherwise unaltered.
-
-```php
-$newPlayer = Player::create(['Status' => 'Inactive']);
-$newPlayer->write();
-
-$playersList = Team()->get_one()->Players()->filter('Status', 'Active');
-$playersList->add($newPlayer);
-// Still returns 'Inactive'
-$status = $newPlayer->Status;
-```
-
-[/notice]
+> [!WARNING]
+> Adding new records to a filtered `RelationList` like in the example above doesn't automatically set the filtered
+> criteria on the added record - the record is added to the relation but is otherwise unaltered.
+>
+> ```php
+> $newPlayer = Player::create(['Status' => 'Inactive']);
+> $newPlayer->write();
+>
+> $playersList = Team()->get_one()->Players()->filter('Status', 'Active');
+> $playersList->add($newPlayer);
+> // Still returns 'Inactive'
+> $status = $newPlayer->Status;
+> ```
 
 ## Relations on unsaved objects
 

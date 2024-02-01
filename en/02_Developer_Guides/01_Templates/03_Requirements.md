@@ -88,9 +88,8 @@ You can require resources using the `require` template statement.
 
 Also see [Direct resource urls](#direct-resource-urls) below if you need to include the resource URL directly in your template.
 
-[alert]
-Requiring resources from the template is restricted compared to the PHP API.
-[/alert]
+> [!CAUTION]
+> Requiring resources from the template is restricted compared to the PHP API.
 
 ## PHP requirements API
 
@@ -224,18 +223,16 @@ Requirements::combine_files(
 );
 ```
 
-[alert]
-To make debugging easier in your local environment, combined files is disabled when running your application in `dev`
-mode. You can re-enable dev combination by setting `Requirements_Backend.combine_in_dev` to true.
-[/alert]
+> [!CAUTION]
+> To make debugging easier in your local environment, combined files is disabled when running your application in `dev`
+> mode. You can re-enable dev combination by setting `Requirements_Backend.combine_in_dev` to true.
 
 ### Configuring combined file storage
 
 Silverstripe CMS provides an API for combining multiple resource files together into a single file to reduce the number of network calls required.
 
-[notice]
-It is generally accepted that if your webserver supports HTTP/2, multiple smaller resource files are better than a larger combined file. If you are using Apache, you will need to use php-fpm to support HTTP/2.
-[/notice]
+> [!WARNING]
+> It is generally accepted that if your webserver supports HTTP/2, multiple smaller resource files are better than a larger combined file. If you are using Apache, you will need to use php-fpm to support HTTP/2.
 
 In some situations or server configurations, it may be necessary to customise the behaviour of generated JavaScript
 files in order to ensure that current files are served in requests.
@@ -245,9 +242,8 @@ where `<hash>` represents the hash of the source files used to generate that con
 as used by the [`AssetStore`](api:SilverStripe\Assets\Storage\AssetStore) backend, is used for this storage, but it can be substituted for any
 other backend.
 
-[info]
-Note that these combined files are stored as assets (by default in the `public/assets` directory), rather than being stored with other resources in your `public/_resources` directory.
-[/info]
+> [!NOTE]
+> Note that these combined files are stored as assets (by default in the `public/assets` directory), rather than being stored with other resources in your `public/_resources` directory.
 
 You can also use any of the below options in order to tweak this behaviour:
 
@@ -340,11 +336,10 @@ Requirements::combine_files('print.css', $printStylesheets, 'print');
 By default, all requirements files are flushed (deleted) when manifests are flushed (see [Flushing](/developer_guides/execution_pipeline/manifests/#flushing)).
 This can be disabled by setting the `Requirements.disable_flush_combined` config to `true`.
 
-[alert]
-When combining CSS files, take care of relative urls, as these will not be re-written to match
-the destination location of the resulting combined CSS unless you have set the
-`Requirements_Backend.resolve_relative_css_refs` configuration property to `true`.
-[/alert]
+> [!CAUTION]
+> When combining CSS files, take care of relative urls, as these will not be re-written to match
+> the destination location of the resulting combined CSS unless you have set the
+> `Requirements_Backend.resolve_relative_css_refs` configuration property to `true`.
 
 ### Combined JS files
 
@@ -383,9 +378,8 @@ use SilverStripe\View\Requirements;
 Requirements::clear('modulename/javascript/some-lib.js');
 ```
 
-[alert]
-Depending on where you call this command, a Requirement might be *re-included* afterwards.
-[/alert]
+> [!CAUTION]
+> Depending on where you call this command, a Requirement might be *re-included* afterwards.
 
 ## Blocking
 
@@ -399,20 +393,18 @@ One common example is to block `jquery.js` which would otherwise be added to the
 Requirements::block('some/module:client/dist/jquery.js');
 ```
 
-[alert]
-The CMS also uses the `Requirements` system, and its operation can be affected by `block()` calls. Avoid this by
-limiting the scope of your blocking operations, e.g. in `init()` of your controller.
-[/alert]
+> [!CAUTION]
+> The CMS also uses the `Requirements` system, and its operation can be affected by `block()` calls. Avoid this by
+> limiting the scope of your blocking operations, e.g. in `init()` of your controller.
 
 ## Inclusion order
 
 Requirements acts like a stack, where everything is rendered sequentially in the order it was included. There is no way
 to change inclusion-order, other than using *Requirements::clear* and rebuilding the whole set of requirements.
 
-[alert]
-Inclusion order is both relevant for CSS and JavaScript files in terms of dependencies, inheritance and overlays - be
-careful when messing with the order of requirements.
-[/alert]
+> [!CAUTION]
+> Inclusion order is both relevant for CSS and JavaScript files in terms of dependencies, inheritance and overlays - be
+> careful when messing with the order of requirements.
 
 ## JavaScript placement
 
@@ -458,9 +450,8 @@ If you want to get a resource for a *specific* theme or from somewhere that is n
 <img src="$resourceURL('themes/simple/images')/$Image.jpg">
 ```
 
-[hint]
-Notice the `vendor/module:some/path/to/file.jpg` syntax (used to get a resource from a specific module) is only valid for the `$resourceURL()` helper method. It won't work for `themedResourceURL()`.
-[/hint]
+> [!TIP]
+> Notice the `vendor/module:some/path/to/file.jpg` syntax (used to get a resource from a specific module) is only valid for the `$resourceURL()` helper method. It won't work for `themedResourceURL()`.
 
 ### Resource URLs or filepaths from a PHP context
 

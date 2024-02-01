@@ -86,9 +86,8 @@ class ModulePage extends Page
 }
 ```
 
-[notice]
-Notice that we're sorting as part of the ORM call. While `GroupedList` does have a `sort()` method, it doesn't work how you might expect, as it returns a sorted copy of the underlying list rather than sorting the list in place.
-[/notice]
+> [!WARNING]
+> Notice that we're sorting as part of the ORM call. While `GroupedList` does have a `sort()` method, it doesn't work how you might expect, as it returns a sorted copy of the underlying list rather than sorting the list in place.
 
 The final step is to render this into a template. The `GroupedBy()` method breaks up the set into
 a number of sets, grouped by the field that is passed as the parameter.

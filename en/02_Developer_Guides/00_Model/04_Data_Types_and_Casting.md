@@ -92,9 +92,8 @@ class Car extends DataObject
 }
 ```
 
-[info]
-`Enum` fields will use the first defined value as the default if you don't explicitly declare one. In the example above, the default value would be "New" if it hadn't been declared.
-[/info]
+> [!NOTE]
+> `Enum` fields will use the first defined value as the default if you don't explicitly declare one. In the example above, the default value would be "New" if it hadn't been declared.
 
 ## Formatting output
 
@@ -137,38 +136,36 @@ $name = $player->getName();
 $name = $player->getName()->LimitCharacters(2);
 ```
 
-[hint]
-For `DBField` types that represent strings, you can just treat the instance like a string.
-
-```php
-$player = Player::get()->byId(1);
-// returns the string "Name: Sam Minnée"
-$string = 'Name: ' . $player->Name;
-```
-
-For other types, we need to make sure we get the value from the `DBField` instance first:
-
-```php
-$player = Player::get()->byId(1);
-// where `getAge()` returns a `DBInt` field:
-// this will throw a "TypeError: Unsupported operand types: SilverStripe\ORM\FieldType\DBInt + int"
-$player->Age + 5;
-// returns the correct int value as a result
-$player->Age->value + 5;
-```
-
-That doesn't apply to templates, where we can just treat all `DBField` instances as though they are primitives *or* call methods on them:
-
-```ss
-<% with $player %>
-    <%-- prints out the name, e.g. Sam Minnée --%>
-    $Name
-    <%-- prints out the name in all caps, e.g. SAM MINNÉE --%>
-    $Name.UpperCase
-<% end_with %>
-```
-
-[/hint]
+> [!TIP]
+> For `DBField` types that represent strings, you can just treat the instance like a string.
+>
+> ```php
+> $player = Player::get()->byId(1);
+> // returns the string "Name: Sam Minnée"
+> $string = 'Name: ' . $player->Name;
+> ```
+>
+> For other types, we need to make sure we get the value from the `DBField` instance first:
+>
+> ```php
+> $player = Player::get()->byId(1);
+> // where `getAge()` returns a `DBInt` field:
+> // this will throw a "TypeError: Unsupported operand types: SilverStripe\ORM\FieldType\DBInt + int"
+> $player->Age + 5;
+> // returns the correct int value as a result
+> $player->Age->value + 5;
+> ```
+>
+> That doesn't apply to templates, where we can just treat all `DBField` instances as though they are primitives *or* call methods on them:
+>
+> ```ss
+> <% with $player %>
+>     <%-- prints out the name, e.g. Sam Minnée --%>
+>     $Name
+>     <%-- prints out the name in all caps, e.g. SAM MINNÉE --%>
+>     $Name.UpperCase
+> <% end_with %>
+> ```
 
 On the most basic level, the `DBField` classes can be used for simple conversions from one value to another, e.g. to round a number.
 
@@ -191,9 +188,8 @@ DBField::create_field('Date', '1982-01-01')->TimeDiff();
 Most objects in Silverstripe CMS extend from [ViewableData](api:SilverStripe\View\ViewableData), which means they know how to present themselves in a view
 context. Rather than manually returning objects from your custom functions. You can use the `$casting` configuration property. This casting only happens when you get the values in a template, so calling the method in your PHP code will always return the raw value.
 
-[hint]
-While these examples are using `DataObject` subclasses, you can use the `$casting` configuration property on *any* `ViewableData` subclass.
-[/hint]
+> [!TIP]
+> While these examples are using `DataObject` subclasses, you can use the `$casting` configuration property on *any* `ViewableData` subclass.
 
 ```php
 namespace App\Model;
@@ -299,9 +295,8 @@ class Product extends DataObject
 }
 ```
 
-[hint]
-Note that in the example above we've used a PHPDoc comment to indicate that the `$Cost` property is a `float`, even though the database field type is `Int`. This is because the `getCost()` getter method will automatically be used when trying to access `Cost` as a property (i.e. `$product->Cost` will return the result of `$product->getCost()`).
-[/hint]
+> [!TIP]
+> Note that in the example above we've used a PHPDoc comment to indicate that the `$Cost` property is a `float`, even though the database field type is `Int`. This is because the `getCost()` getter method will automatically be used when trying to access `Cost` as a property (i.e. `$product->Cost` will return the result of `$product->getCost()`).
 
 ## API documentation
 

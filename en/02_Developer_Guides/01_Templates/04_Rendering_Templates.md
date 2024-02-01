@@ -77,38 +77,34 @@ $this->customise($data)->renderWith(['Coach_Message', 'Page']);
 
 This will look for a global `templates/Coach_Message.ss` template, and if it doesn't find one, will use `templates/Page.ss` as the main template. Then, when it encounters `$Layout` in that template, it will find and use the `templates/Layout/Coach_Message.ss` file to substitute that variable.
 
-[hint]
-You will often have templates named after specific classes, as discussed in [template types and locations](template_inheritance/#template-types-and-locations). In that case, you can simply use `MyClass::class` syntax here. e.g:
-
-```php
-use App\Model\Coach;
-
-$this->customise($data)->renderWith([Coach::class . '_Message', Page::class]);
-```
-
-This will search for the following templates:
-
-- `templates/App/Model/Coach_Message.ss`
-- `templates/Page.ss`
-- `templates/App/Model/Layout/Coach_Message.ss`
-- `templates/Layout/Page.ss`
-
-[/hint]
+> [!TIP]
+> You will often have templates named after specific classes, as discussed in [template types and locations](template_inheritance/#template-types-and-locations). In that case, you can simply use `MyClass::class` syntax here. e.g:
+>
+> ```php
+> use App\Model\Coach;
+>
+> $this->customise($data)->renderWith([Coach::class . '_Message', Page::class]);
+> ```
+>
+> This will search for the following templates:
+>
+> - `templates/App/Model/Coach_Message.ss`
+> - `templates/Page.ss`
+> - `templates/App/Model/Layout/Coach_Message.ss`
+> - `templates/Layout/Page.ss`
 
 See [template types and locations](template_inheritance/#template-types-and-locations) for more information.
 
-[info]
-Most classes in Silverstripe CMS you want in your template extend `ViewableData` and allow you to call `renderWith`. This
-includes [Controller](api:SilverStripe\Control\Controller), [FormField](api:SilverStripe\Forms\FormField) and [DataObject](api:SilverStripe\ORM\DataObject) instances.
-
-```php
-$controller->renderWith([MyController::class, MyBaseController::class]);
-
-use SilverStripe\Security\Security;
-Security::getCurrentUser()->renderWith('Member_Profile');
-```
-
-[/info]
+> [!NOTE]
+> Most classes in Silverstripe CMS you want in your template extend `ViewableData` and allow you to call `renderWith`. This
+> includes [Controller](api:SilverStripe\Control\Controller), [FormField](api:SilverStripe\Forms\FormField) and [DataObject](api:SilverStripe\ORM\DataObject) instances.
+>
+> ```php
+> $controller->renderWith([MyController::class, MyBaseController::class]);
+>
+> use SilverStripe\Security\Security;
+> Security::getCurrentUser()->renderWith('Member_Profile');
+> ```
 
 ## Advanced use cases
 
@@ -138,27 +134,26 @@ class MyPageController extends PageController
 }
 ```
 
-[hint]
-`Controller` already has a shortcut for the above scenario. Instead of explicitly calling `renderWith()` above, you can declare a template with the following naming convension: `[modelOrControllerClass]_[action].ss` e.g. `Page_iwantmyajax.ss`, `HomePage_iwantmyajax.ss`, or `PageController_iwantmyajax.ss`.
-
-With a template that follows that naming convention in place, the PHP for the `iwantmyajax()` becomes:
-
-```php
-public function iwantmyajax()
-{
-    if (!Director::is_ajax()) {
-        return $this->httpError(400);
-    }
-    // will feed $this into $this->prepareResponse(), which will render $this using templates defined
-    // in $this->getViewer()
-    return $this;
-}
-```
-
-This ultimately uses [`SSViewer::get_templates_by_class()`](api::SilverStripe\View\SSViewer::get_templates_by_class()) to find the templates for the class or its parent classes with the action as a suffix.
-
-If you don't have any logic to add in the action, you can forego implementing a method altogether - all you need is to add the action name in the `$allowed_actions` configuration array and make sure you have an appropriately named template.
-[/hint]
+> [!TIP]
+> `Controller` already has a shortcut for the above scenario. Instead of explicitly calling `renderWith()` above, you can declare a template with the following naming convension: `[modelOrControllerClass]_[action].ss` e.g. `Page_iwantmyajax.ss`, `HomePage_iwantmyajax.ss`, or `PageController_iwantmyajax.ss`.
+>
+> With a template that follows that naming convention in place, the PHP for the `iwantmyajax()` becomes:
+>
+> ```php
+> public function iwantmyajax()
+> {
+>     if (!Director::is_ajax()) {
+>         return $this->httpError(400);
+>     }
+>     // will feed $this into $this->prepareResponse(), which will render $this using templates defined
+>     // in $this->getViewer()
+>     return $this;
+> }
+> ```
+>
+> This ultimately uses [`SSViewer::get_templates_by_class()`](api::SilverStripe\View\SSViewer::get_templates_by_class()) to find the templates for the class or its parent classes with the action as a suffix.
+>
+> If you don't have any logic to add in the action, you can forego implementing a method altogether - all you need is to add the action name in the `$allowed_actions` configuration array and make sure you have an appropriately named template.
 
 ## Rendering arbitrary data in templates
 
@@ -199,9 +194,8 @@ class MyPageController extends PageController
 }
 ```
 
-[notice]
-A common mistake is trying to loop over an array directly in a template - this won't work. You'll need to wrap the array in some `ViewableData` instance as mentioned above.
-[/notice]
+> [!WARNING]
+> A common mistake is trying to loop over an array directly in a template - this won't work. You'll need to wrap the array in some `ViewableData` instance as mentioned above.
 
 ## Related lessons
 

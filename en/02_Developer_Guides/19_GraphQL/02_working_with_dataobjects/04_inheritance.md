@@ -136,11 +136,10 @@ query {
 You can think of interfaces in this context as abstractions of *parent classes* - and the best part is
 they're generated automatically. We don't need to manually define or implement the interfaces.
 
-[info]
-A good way to determine whether you need an inline fragment is to ask
-"can this field appear on any other types in the query?" If the answer is yes, you want to use an interface,
-which is usually the parent class with the "Interface" suffix.
-[/info]
+> [!NOTE]
+> A good way to determine whether you need an inline fragment is to ask
+> "can this field appear on any other types in the query?" If the answer is yes, you want to use an interface,
+> which is usually the parent class with the "Interface" suffix.
 
 ### Inheritance: a deep dive
 
@@ -336,10 +335,9 @@ query {
 }
 ```
 
-[info]
-The above example shows a query for elements on all elemental pages - but for most situations you will
-probably only want to query the elements on one page at a time.
-[/info]
+> [!NOTE]
+> The above example shows a query for elements on all elemental pages - but for most situations you will
+> probably only want to query the elements on one page at a time.
 
 ### Optional: use unions instead of interfaces
 

@@ -139,19 +139,12 @@ seen by the fields prefixed with `=>`.
 Each one of our Players has a relationship to a Team, this is shown with the `Team` field for each `Player` being set
 to `=>App\Test\Team.` followed by a team name.
 
-[info]
 Take the player John in our example YAML, his team is the Hurricanes which is represented by `=>App\Test\Team.hurricanes`. This
 sets the `has_one` relationship for John with with the `Team` object `hurricanes`.
-[/info]
 
-[hint]
-Note that we use the name of the relationship (Team), and not the name of the
-database field (TeamID).
-[/hint]
-
-[hint]
-Also be aware the target of a relationship must be defined before it is referenced, for example the `hurricanes` team must appear in the fixture file before the line `Team: =>App\Test\Team.hurricanes`.
-[/hint]
+> [!TIP]
+> Note that we use the name of the relationship (Team), and not the name of the
+> database field (TeamID).
 
 This style of relationship declaration can be used for any type of relationship (i.e. `has_one`, `has_many`, `many_many`).
 
@@ -176,6 +169,9 @@ App\Test\Team:
     Players: =>App\Test\Player.joe,=>App\Test\Player.jack
 ```
 
+> [!WARNING]
+> Be aware the target of a relationship must be defined before it is referenced, for example the `hurricanes` team must appear in the fixture file before the line `Team: =>App\Test\Team.hurricanes`.
+
 The database is populated by instantiating `DataObject` objects and setting the fields declared in the `YAML`, then
 calling `write()` on those objects. Take for instance the `hurricances` record in the `YAML`. It is equivalent to
 writing:
@@ -193,10 +189,9 @@ $team->write();
 $team->Players()->add($john);
 ```
 
-[notice]
-As the YAML fixtures will call `write`, any `onBeforeWrite()` or default value logic will be executed as part of the
-test.
-[/notice]
+> [!WARNING]
+> As the YAML fixtures will call `write`, any `onBeforeWrite()` or default value logic will be executed as part of the
+> test.
 
 ## Fixtures for namespaced classes
 
@@ -213,9 +208,8 @@ App\Test\Team:
     Players: =>App\Test\Player.john
 ```
 
-[notice]
-If your tests are failing and your database has table names that follow the fully qualified class names, you've probably forgotten to implement `private static $table_name = 'Player';` on your namespaced class. See [DataObject](api:SilverStripe\ORM\DataObject) for an example.
-[/notice]
+> [!WARNING]
+> If your tests are failing and your database has table names that follow the fully qualified class names, you've probably forgotten to implement `private static $table_name = 'Player';` on your namespaced class. See [DataObject](api:SilverStripe\ORM\DataObject) for an example.
 
 ## Defining many_many_extraFields
 
@@ -295,9 +289,8 @@ While manually defined fixtures provide full flexibility, they offer very little
 Alternatively, you can use the [FixtureFactory](api:SilverStripe\Dev\FixtureFactory) class, which allows you to set default values, callbacks on object
 creation, and dynamic/lazy value setting.
 
-[hint]
-`SapphireTest` uses `FixtureFactory` under the hood when it is provided with YAML based fixtures.
-[/hint]
+> [!TIP]
+> `SapphireTest` uses `FixtureFactory` under the hood when it is provided with YAML based fixtures.
 
 The idea is that rather than instantiating objects directly, we'll have a factory class for them. This factory can have
 *blueprints* defined on it, which tells the factory how to instantiate an object of a specific type. Blueprints need a
@@ -325,10 +318,9 @@ $obj = $factory->createObject(Team::class, 'hurricanes', [
 ]);
 ```
 
-[warning]
-It is important to remember that fixtures are referenced by arbitrary identifiers ('hurricanes'). These are internally
-mapped to their database identifiers.
-[/warning]
+> [!WARNING]
+> It is important to remember that fixtures are referenced by arbitrary identifiers ('hurricanes'). These are internally
+> mapped to their database identifiers.
 
 After we've created this object in the factory, `getId` is used to retrieve it by the identifier.
 

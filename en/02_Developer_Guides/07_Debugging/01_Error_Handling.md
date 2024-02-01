@@ -12,10 +12,9 @@ configurations: one for development environments, and another for test or live e
 environments, Silverstripe CMS will deal harshly with any warnings or errors: a full call-stack is shown and execution
 stops for anything, giving you early warning of a potential issue to handle.
 
-[info]
-There are a range of monolog handlers available, both in the core package and in add-ons. See the
-[Monolog documentation](https://github.com/Seldaek/monolog/blob/main/doc/01-usage.md) for more information.
-[/info]
+> [!NOTE]
+> There are a range of monolog handlers available, both in the core package and in add-ons. See the
+> [Monolog documentation](https://github.com/Seldaek/monolog/blob/main/doc/01-usage.md) for more information.
 
 ## Raising errors and logging diagnostic information
 
@@ -169,6 +168,9 @@ The calls key, `MailHandler`, can be anything you like: its main purpose is to l
 
 ### Logging to a file
 
+> [!WARNING]
+> You will need to make sure the user running the PHP process has write access to the log file, wherever you choose to put it.
+
 To log to a file, you can use Monolog's `StreamHandler`, like this:
 
 ```yml
@@ -183,19 +185,14 @@ SilverStripe\Core\Injector\Injector:
       - "info"
 ```
 
-[warning]
-The log file path must be an absolute file path, as relative paths may behave differently between CLI and HTTP requests. If you want to use a *relative* path, you can use the `SS_ERROR_LOG` environment variable to declare a file path that is relative to your project root:
-
-```bash
-SS_ERROR_LOG="./silverstripe.log"
-```
-
-You don't need any of the YAML configuration above if you are using the `SS_ERROR_LOG` environment variable - but you can use a combination of the environment variable and YAML configuration if you want to configure multiple error log files.
-[/warning]
-
-[notice]
-You will need to make sure the user running the PHP process has write access to the log file, wherever you choose to put it.
-[/notice]
+> [!WARNING]
+> The log file path must be an absolute file path, as relative paths may behave differently between CLI and HTTP requests. If you want to use a *relative* path, you can use the `SS_ERROR_LOG` environment variable to declare a file path that is relative to your project root:
+>
+> ```bash
+> SS_ERROR_LOG="./silverstripe.log"
+> ```
+>
+> You don't need any of the YAML configuration above if you are using the `SS_ERROR_LOG` environment variable - but you can use a combination of the environment variable and YAML configuration if you want to configure multiple error log files.
 
 The `info` argument provides the minimum level to start logging at.
 
@@ -280,11 +277,10 @@ SilverStripe\Core\Injector\Injector:
       Body: "The website server has not been able to respond to your request"
 ```
 
-[info]
-In addition to Silverstripe CMS integrated logging, it is advisable to fall back to PHP's native logging functionality. A
-script might terminate before it reaches the Silverstripe CMS error handling, for example in the case of a fatal error. Make
-sure `log_errors` and `error_log` in your PHP ini file are configured.
-[/info]
+> [!NOTE]
+> In addition to Silverstripe CMS integrated logging, it is advisable to fall back to PHP's native logging functionality. A
+> script might terminate before it reaches the Silverstripe CMS error handling, for example in the case of a fatal error. Make
+> sure `log_errors` and `error_log` in your PHP ini file are configured.
 
 ## Replacing default implementations
 

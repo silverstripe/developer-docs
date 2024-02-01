@@ -147,11 +147,10 @@ $app->addMiddleware(new MyApplicationMiddleware());
 // ...
 ```
 
-[info]
-It's pretty rare to need to modify the `index.php` file directly like this - if you need to do it, make sure you clearly document this change
-somewhere, e.g. in your project's README.md file if you have one, both for your own reference and for any other developers working on the project
-with you.
-[/info]
+> [!NOTE]
+> It's pretty rare to need to modify the `index.php` file directly like this - if you need to do it, make sure you clearly document this change
+> somewhere, e.g. in your project's README.md file if you have one, both for your own reference and for any other developers working on the project
+> with you.
 
 Beware that by this point, the Silverstripe framework features you normally rely on (e.g.: ORM, Injector, services configured by Injector, the config API) won't be
 available in your middleware or in `index.php` because they won't have been initialised yet.

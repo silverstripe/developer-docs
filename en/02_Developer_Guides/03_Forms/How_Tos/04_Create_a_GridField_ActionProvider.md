@@ -21,12 +21,11 @@ perform custom operations on a row:
 1. Create a custom action
 1. [Add your custom action to the `GridFieldConfig`](#add-action-to-config)
 
-[info]
-To create a custom action follow the [Basic GridField custom action boilerplate](#custom-action-boilerplate) below.
-
-If you would like to create a custom action in the GridField action menu follow the
-[Add a GridField custom action to the `GridField_ActionMenu`](#implement-gridfield-actionmenuitem)
-[/info]
+> [!NOTE]
+> To create a custom action follow the [Basic GridField custom action boilerplate](#custom-action-boilerplate) below.
+>
+> If you would like to create a custom action in the GridField action menu follow the
+> [Add a GridField custom action to the `GridField_ActionMenu`](#implement-gridfield-actionmenuitem)
 
 ## Basic `GridField` custom action boilerplate {#custom-action-boilerplate}
 

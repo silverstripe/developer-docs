@@ -27,12 +27,11 @@ Let's take this a step further and paginate it using a plugin.
 Since pagination is a fairly common task, we can take advantage of some reusable code here and just add a generic
 plugin for paginating.
 
-[notice]
-If you're paginating a `DataList`, you might want to consider using models with read operations (instead of declaring
-them as generic types with generic queries), which paginate by default using the `paginateList` plugin.
-You can use generic typing and follow the below instructions too but it requires code that, for `DataObject` models,
-you get for free.
-[/notice]
+> [!WARNING]
+> If you're paginating a `DataList`, you might want to consider using models with read operations (instead of declaring
+> them as generic types with generic queries), which paginate by default using the `paginateList` plugin.
+> You can use generic typing and follow the below instructions too but it requires code that, for `DataObject` models,
+> you get for free.
 
 Let's add the plugin to our query:
 

@@ -18,11 +18,10 @@ the same `Member` session is used to authenticate GraphQL requests, however if y
 are performing requests from an anonymous/external application you may need to
 authenticate before you can complete a request.
 
-[notice]
-Please note that when implementing GraphQL resources it is the developer's
-responsibility to ensure that permission checks are implemented wherever
-resources are accessed.
-[/notice]
+> [!WARNING]
+> Please note that when implementing GraphQL resources it is the developer's
+> responsibility to ensure that permission checks are implemented wherever
+> resources are accessed.
 
 ### Default authentication
 
@@ -93,9 +92,8 @@ is applicable in the current request context (provided as an argument).
 
 Here's an example for implementing HTTP basic authentication:
 
-[notice]
-Note that basic authentication for GraphQL will bypass Multi-Factor Authentication (MFA) if that's enabled. Using basic authentication for GraphQL is considered insecure if you are using MFA.
-[/notice]
+> [!WARNING]
+> Note that basic authentication for GraphQL will bypass Multi-Factor Authentication (MFA) if that's enabled. Using basic authentication for GraphQL is considered insecure if you are using MFA.
 
 ```yml
 SilverStripe\GraphQL\Auth\Handler:

@@ -56,13 +56,12 @@ query {
 }
 ```
 
-[notice]
-If you're not familiar with the jargon of `edges` and `node`, don't worry too much about it
-for now. It's just a pretty well-established convention for pagination in GraphQL, mostly owing
-to its frequent use with [cursor-based pagination](https://graphql.org/learn/pagination/), which
-isn't something we do in Silverstripe CMS. You can ignore `edges.node` and just use `nodes` if
-you want to.
-[/notice]
+> [!WARNING]
+> If you're not familiar with the jargon of `edges` and `node`, don't worry too much about it
+> for now. It's just a pretty well-established convention for pagination in GraphQL, mostly owing
+> to its frequent use with [cursor-based pagination](https://graphql.org/learn/pagination/), which
+> isn't something we do in Silverstripe CMS. You can ignore `edges.node` and just use `nodes` if
+> you want to.
 
 #### Limiting pagination
 
@@ -85,9 +84,8 @@ SilverStripe\GraphQL\Schema\Plugin\PaginationPlugin:
   max_limit: 10
 ```
 
-[notice]
-If you want to *increase* the limit beyond the default value, you will also need to set a new `default_limit` configuration value on the `PaginationPlugin`.
-[/notice]
+> [!WARNING]
+> If you want to *increase* the limit beyond the default value, you will also need to set a new `default_limit` configuration value on the `PaginationPlugin`.
 
 #### Disabling pagination
 
@@ -164,10 +162,9 @@ query {
 }
 ```
 
-[notice]
-While it is possible to filter using multiple comparators, segmenting them into
-disjunctive groups (e.g. "OR" and "AND" clauses) is not yet supported.
-[/notice]
+> [!WARNING]
+> While it is possible to filter using multiple comparators, segmenting them into
+> disjunctive groups (e.g. "OR" and "AND" clauses) is not yet supported.
 
 Nested fields are supported by default:
 
@@ -213,9 +210,8 @@ App\Model\ProductCategory:
             title: true
 ```
 
-[info]
-You can also add all fields with `'*': true`, just like with standard model definitions.
-[/info]
+> [!NOTE]
+> You can also add all fields with `'*': true`, just like with standard model definitions.
 
 ##### Adding non-native filter fields
 
@@ -285,10 +281,9 @@ class ProductResolver
 }
 ```
 
-[info]
-Custom filter fields are also a good opportunity to implement something like `filterByCallback` on your list for
-particularly complex computations that cannot be done at the database level.
-[/info]
+> [!NOTE]
+> Custom filter fields are also a good opportunity to implement something like `filterByCallback` on your list for
+> particularly complex computations that cannot be done at the database level.
 
 #### Disabling the filter plugin
 
