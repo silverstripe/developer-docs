@@ -167,13 +167,12 @@ in situations like adding multiple lists of links to a [`SiteConfig`](api:Silver
 An additional column is created called `<relationship-name>Relation`, along with the `<relationship-name>Class`
 and `<relationship-name>ID` columns of a normal polymorphic `has_one` relation.
 
-[warning]
-If you save records into the `has_one` relation programatically, you must set the relation in the
-`<relationship-name>Relation` field, or it won't be included when you fetch the `has_many` relation list.
-
-Generally it is better to instead add the record with the `has_one` relation into its corresponding `has_many` relation
-directly - see [adding relations](#adding-relations).
-[/warning]
+> [!WARNING]
+> If you save records into the `has_one` relation programatically, you must set the relation in the
+> `<relationship-name>Relation` field, or it won't be included when you fetch the `has_many` relation list.
+>
+> Generally it is better to instead add the record with the `has_one` relation into its corresponding `has_many` relation
+> directly - see [adding relations](#adding-relations).
 
 To specify that a `has_one` relation is multi-relational define the relation like so:
 
@@ -198,9 +197,8 @@ class Fan extends DataObject
 }
 ```
 
-[hint]
-Multi-relational `has_one` relations *must* be [polymorphic](#polymorphic-has-one).
-[/hint]
+> [!TIP]
+> Multi-relational `has_one` relations *must* be [polymorphic](#polymorphic-has-one).
 
 It is best practice for your `has_many` relations to indicate which relation they're pointing at using dot notation. For example:
 
@@ -265,19 +263,18 @@ class Coach extends DataObject
 
 Defines one-to-many joins. As you can see from the previous example, `$has_many` goes hand in hand with `$has_one`.
 
-[alert]
-When defining a `has_many` relation, you *must* specify a `has_one` relationship on the related class as well. To add a `has_one` relation on core classes, yml config settings can be used:
-
-```yml
-SilverStripe\Assets\Image:
-  has_one:
-    Team: App\Model\Team
-```
-
-You can point multiple `has_many` relations at a single `has_one` relation if you use a [multi-relational `has_one`](#multi-relational-has-one).
-
-Note that in some cases you may be better off using a `many_many` relation instead. Carefully consider whether you are defining a "one-to-many" or a "many-to-many" relationship.
-[/alert]
+> [!CAUTION]
+> When defining a `has_many` relation, you *must* specify a `has_one` relationship on the related class as well. To add a `has_one` relation on core classes, yml config settings can be used:
+>
+> ```yml
+> SilverStripe\Assets\Image:
+>   has_one:
+>     Team: App\Model\Team
+> ```
+>
+> You can point multiple `has_many` relations at a single `has_one` relation if you use a [multi-relational `has_one`](#multi-relational-has-one).
+>
+> Note that in some cases you may be better off using a `many_many` relation instead. Carefully consider whether you are defining a "one-to-many" or a "many-to-many" relationship.
 
 ```php
 namespace App\Model;

@@ -8,9 +8,8 @@ icon: table
 
 [`GridField`](api:SilverStripe\Forms\GridField\GridField) is often used for displaying and editing `DataObject` records - but it can be used with other data as well. You might have data that is pulled from an API for example, which you want to display in the admin area of your Silverstripe CMS project.
 
-[info]
-This document assumes you're familiar with `GridField` - see the [`GridField` documentation](/developer_guides/forms/field_types/gridfield/) for information about using `GridField`.
-[/info]
+> [!NOTE]
+> This document assumes you're familiar with `GridField` - see the [`GridField` documentation](/developer_guides/forms/field_types/gridfield/) for information about using `GridField`.
 
 Data which isn't represented by `DataObject` records can come in two forms:
 
@@ -25,11 +24,10 @@ Some grid field components may require specific information, such as which colum
 
 Regardless of how you get your data, whether it's from a web API or some other source, you'll need to store it in an `ArrayList`. For best results, each record should also be explicitly instantiated as an `ArrayData` object in the list.
 
-[hint]
-The `ID` field shown here isn't necessary if you only want to view the records as rows in the `GridField`, but if you want to be able to view *each* record in a read-only form view, the `ID` field is mandatory.
-
-See [viewing data in a form](#arraydata-view) for more information.
-[/hint]
+> [!TIP]
+> The `ID` field shown here isn't necessary if you only want to view the records as rows in the `GridField`, but if you want to be able to view *each* record in a read-only form view, the `ID` field is mandatory.
+>
+> See [viewing data in a form](#arraydata-view) for more information.
 
 ```php
 use SilverStripe\ORM\ArrayList;
@@ -116,9 +114,8 @@ For data to be viewed in a read-only form, each record in the list must have an 
 
 You'll need to add a `GridFieldDetailForm` component to the `GridField` and tell it how to represent your data by passing a [`FieldList`](api:SilverStripe\Forms\FieldList) into [`GridFieldDetailForm::setFields()`](api:SilverStripe\Forms\GridField\GridFieldDetailForm::setFields()).
 
-[hint]
-Because `ArrayData` doesn't implement a `canEdit()` method, the form will be implicitly turned into a read-only form for you. You don't need to worry about passing in read-only form fields.
-[/hint]
+> [!TIP]
+> Because `ArrayData` doesn't implement a `canEdit()` method, the form will be implicitly turned into a read-only form for you. You don't need to worry about passing in read-only form fields.
 
 ```php
 use SilverStripe\Forms\FieldList;
@@ -151,11 +148,10 @@ However, if you omit these method implementations, you must instead pass the req
 
 To represent your data as rows in a `GridField`, you can rely on the default `GridFieldConfig` object that the field will build for itself. If you implement a `summaryFields()` method in your data class, the `GridField` will call that method to find out what fields it should display.
 
-[hint]
-The `ID` field shown here isn't necessary if you only want to view/edit the records as rows in the `GridField`, but if you want to be able to view *each* record in a read-only form view, the `ID` field is mandatory.
-
-See [viewing data in a form](#custom-view) for more information.
-[/hint]
+> [!TIP]
+> The `ID` field shown here isn't necessary if you only want to view/edit the records as rows in the `GridField`, but if you want to be able to view *each* record in a read-only form view, the `ID` field is mandatory.
+>
+> See [viewing data in a form](#custom-view) for more information.
 
 ```php
 namespace App\Data;
@@ -221,9 +217,8 @@ If you want to be able to filter your `GridField`, you will need to tell the `Gr
 
 What's more, we don't have to pass the search fields into the `BasicSearchContext` instance either if we implement a `scaffoldSearchFields()` method.
 
-[hint]
-You can optionally implement the `i18n_singular_name()` method to return a localised string to represent the plural name of this model. This is used in the filter header as the placeholder text for the general search field.
-[/hint]
+> [!TIP]
+> You can optionally implement the `i18n_singular_name()` method to return a localised string to represent the plural name of this model. This is used in the filter header as the placeholder text for the general search field.
 
 ```php
 namespace App\Data;
@@ -257,9 +252,8 @@ class DataRepresentation extends ViewableData
 
 No changes are required to the `GridField` components, assuming you didn't remove the `GridFieldFilterHeader` component.
 
-[hint]
-The `BasicSearchContext` respects some (*but not all*) [`$searchable_fields` configuration options](/developer_guides/model/scaffolding/#searchable-fields), so you can implement a `searchableFields()` method in your class to further customise the `GridField` filtering experience.
-[/hint]
+> [!TIP]
+> The `BasicSearchContext` respects some (*but not all*) [`$searchable_fields` configuration options](/developer_guides/model/scaffolding/#searchable-fields), so you can implement a `searchableFields()` method in your class to further customise the `GridField` filtering experience.
 
 ### Exporting data {#custom-export}
 
@@ -282,9 +276,8 @@ If the class representing your data has a `getCMSFields()` method, the return va
 
 If your class doesn't implement a `canEdit()` method, or it does and the method returns `false`, the form will be read-only.
 
-[hint]
-You can optionally implement the `i18n_plural_name()` method to return a localised string to represent the singular name of this model. This is used in the add button, breadcrumbs, and toasts.
-[/hint]
+> [!TIP]
+> You can optionally implement the `i18n_plural_name()` method to return a localised string to represent the singular name of this model. This is used in the add button, breadcrumbs, and toasts.
 
 ```php
 namespace App\Data;
@@ -332,9 +325,8 @@ For new records, the `write()` method *must* set the `ID` field on the record, s
 
 Records with no `ID` field or which have a non-numeric value for their `ID` field are considered new (unsaved) records.
 
-[hint]
-If you have specific validation rules you want to apply, you can also implement a `getCMSCompositeValidator()` method as described in [validation in the CMS](/developer_guides/forms/validation/#validation-in-the-cms).
-[/hint]
+> [!TIP]
+> If you have specific validation rules you want to apply, you can also implement a `getCMSCompositeValidator()` method as described in [validation in the CMS](/developer_guides/forms/validation/#validation-in-the-cms).
 
 ```php
 namespace App\Data;
@@ -421,13 +413,11 @@ $gridField->getConfig()->addComponent(GridFieldEditButton::create());
 
 You can also enable creating new records and deleting records by adding the [`GridFieldAddNewButton`](api:SilverStripe\Forms\GridField\GridFieldAddNewButton) and [`GridFieldDeleteAction`](api:SilverStripe\Forms\GridField\GridFieldDeleteAction) components to your `GridField` config.
 
-[hint]
-At this point your `GridField` config is essentially the same as a [`GridFieldConfig_RecordEditor`](api:SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor) - so you could set up your `GridField` like so:
-
-```php
-use SilverStripe\Forms\GridField\GridField;
-use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
-$gridField = GridField::create('MyData', 'My data', $list, GridFieldConfig_RecordEditor::create());
-```
-
-[/hint]
+> [!TIP]
+> At this point your `GridField` config is essentially the same as a [`GridFieldConfig_RecordEditor`](api:SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor) - so you could set up your `GridField` like so:
+>
+> ```php
+> use SilverStripe\Forms\GridField\GridField;
+> use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
+> $gridField = GridField::create('MyData', 'My data', $list, GridFieldConfig_RecordEditor::create());
+> ```
