@@ -133,11 +133,10 @@ $email = Email::create($from, $to, $subject, $body);
 $email->send();
 ```
 
-[info]
-The default HTML template for emails is named `GenericEmail` and is located in `vendor/silverstripe/framework/templates/SilverStripe/Email/`.
-To customise this template, copy it to the `app/templates/Email/` folder or use `setHTMLTemplate` when you create the
-`Email` instance.
-[/info]
+> [!NOTE]
+> The default HTML template for emails is named `GenericEmail` and is located in `vendor/silverstripe/framework/templates/SilverStripe/Email/`.
+> To customise this template, copy it to the `app/templates/Email/` folder or use `setHTMLTemplate` when you create the
+> `Email` instance.
 
 ### Templates
 
@@ -173,10 +172,9 @@ if ($email->send()) {
 }
 ```
 
-[alert]
-As we've added a new template file (`MyCustomEmail`) make sure you clear the Silverstripe CMS cache for your changes to
-take affect.
-[/alert]
+> [!CAUTION]
+> As we've added a new template file (`MyCustomEmail`) make sure you clear the Silverstripe CMS cache for your changes to
+> take affect.
 
 #### Custom plain templates
 
@@ -210,10 +208,9 @@ SilverStripe\Control\Email\Email:
     support@example.com: 'Support team'
 ```
 
-[alert]
-Remember, setting a `from` address that doesn't come from your domain (such as the users email) will likely see your
-email marked as spam. If you want to send from another address think about using the `setReplyTo` method.
-[/alert]
+> [!CAUTION]
+> Remember, setting a `from` address that doesn't come from your domain (such as the users email) will likely see your
+> email marked as spam. If you want to send from another address think about using the `setReplyTo` method.
 
 You will also have to remove the `SS_SEND_ALL_EMAILS_FROM` environment variable if it is present.
 
@@ -271,9 +268,8 @@ $email = Email::create(/* ... */);
 $email->getSwiftMessage()->getHeaders()->addTextHeader('HeaderName', 'HeaderValue');
 ```
 
-[info]
-See this [Wikipedia](http://en.wikipedia.org/wiki/E-mail#Message_header) entry for a list of header names.
-[/info]
+> [!NOTE]
+> See this [Wikipedia](http://en.wikipedia.org/wiki/E-mail#Message_header) entry for a list of header names.
 
 ## Disabling emails
 

@@ -85,11 +85,10 @@ in the framework (and the `cms` module in case you've got that installed).
 There can be multiple configs, which should always be created / accessed using [TinyMCEConfig::get()](api:SilverStripe\Forms\HTMLEditor\TinyMCEConfig::get()). You can
 then set the currently active config using `set_active()`.
 
-[notice]
-Currently the order in which the `_config.php` files are executed depends on the module directory names. Execution
-order is alphabetical, so if you set a TinyMCE option in the `aardvark/_config.php`, this will be overridden in
-`vendor/silverstripe/framework/admin/_config.php` and your modification will disappear.
-[/notice]
+> [!WARNING]
+> Currently the order in which the `_config.php` files are executed depends on the module directory names. Execution
+> order is alphabetical, so if you set a TinyMCE option in the `aardvark/_config.php`, this will be overridden in
+> `vendor/silverstripe/framework/admin/_config.php` and your modification will disappear.
 
 ## Adding and removing capabilities
 
@@ -105,11 +104,10 @@ use SilverStripe\Forms\HTMLEditor\TinyMCEConfig;
 TinyMCEConfig::get('cms')->enablePlugins('media');
 ```
 
-[notice]
-This utilities the TinyMCE's `PluginManager::load` function under the hood (check the
-[TinyMCE documentation on plugin loading](http://www.tinymce.com/wiki.php/API3:method.tinymce.AddOnManager.load) for
-details).
-[/notice]
+> [!WARNING]
+> This utilities the TinyMCE's `PluginManager::load` function under the hood (check the
+> [TinyMCE documentation on plugin loading](http://www.tinymce.com/wiki.php/API3:method.tinymce.AddOnManager.load) for
+> details).
 
 Plugins and advanced themes can provide additional buttons that can be added (or removed) through the
 configuration. Here is an example of adding a `ssmacron` button after the `charmap` button:
@@ -130,11 +128,10 @@ use SilverStripe\Forms\HTMLEditor\TinyMCEConfig;
 TinyMCEConfig::get('cms')->removeButtons('tablecontrols', 'blockquote', 'hr');
 ```
 
-[notice]
-Internally [TinyMCEConfig](api:SilverStripe\Forms\HTMLEditor\TinyMCEConfig) uses the TinyMCE's `theme_advanced_buttons` option to configure these. See the
-[TinyMCE documentation of this option](http://www.tinymce.com/wiki.php/Configuration:theme_advanced_buttons_1_n)
-for more details.
-[/notice]
+> [!WARNING]
+> Internally [TinyMCEConfig](api:SilverStripe\Forms\HTMLEditor\TinyMCEConfig) uses the TinyMCE's `theme_advanced_buttons` option to configure these. See the
+> [TinyMCE documentation of this option](http://www.tinymce.com/wiki.php/Configuration:theme_advanced_buttons_1_n)
+> for more details.
 
 ### Setting options
 
@@ -163,10 +160,9 @@ TinyMCEConfig::get('cms')->setOption(
 );
 ```
 
-[notice]
-The default setting for the CMS's `extended_valid_elements` we are overriding here can be found in
-`vendor/silverstripe/admin/_config.php`.
-[/notice]
+> [!WARNING]
+> The default setting for the CMS's `extended_valid_elements` we are overriding here can be found in
+> `vendor/silverstripe/admin/_config.php`.
 
 ## Writing custom plugins
 

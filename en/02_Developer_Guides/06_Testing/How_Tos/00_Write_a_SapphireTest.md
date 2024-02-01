@@ -85,17 +85,15 @@ Firstly we define a static `$fixture_file`, this should point to a file that rep
 represented as a YAML [Fixture](../fixtures). When our test is run, the data from this file will be loaded into a test
 database and discarded at the end of the test.
 
-[notice]
-The `fixture_file` property can be path to a file, or an array of strings pointing to many files. The path must be
-absolute from your website's root folder.
-[/notice]
+> [!WARNING]
+> The `fixture_file` property can be path to a file, or an array of strings pointing to many files. The path must be
+> absolute from your website's root folder.
 
 The second part of our class is the `testURLGeneration` method. This method is our test. When the test is executed,
 methods prefixed with the word `test` will be run.
 
-[notice]
-The test database is rebuilt every time one of these methods is run.
-[/notice]
+> [!WARNING]
+> The test database is rebuilt every time one of these methods is run.
 
 Inside our test method is the `objFromFixture` method that will generate an object for us based on data from our fixture
 file. To identify to the object, we provide a class name and an identifier. The identifier is specified in the YAML file
@@ -116,9 +114,8 @@ Just like on web requests, Silverstripe CMS caches metadata about the execution 
 vendor/bin/phpunit app/tests/PageTest.php '' flush=1
 ```
 
-[info]
-For more information on PHPUnit's assertions see the [PHPUnit manual](http://www.phpunit.de/manual/current/en/api.html#api.assert).
-[/info]
+> [!NOTE]
+> For more information on PHPUnit's assertions see the [PHPUnit manual](http://www.phpunit.de/manual/current/en/api.html#api.assert).
 
 ## Related documentation
 

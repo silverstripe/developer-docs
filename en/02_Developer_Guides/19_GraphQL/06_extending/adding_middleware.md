@@ -6,11 +6,10 @@ summary: Add middleware to to extend query execution
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 ## Adding middleware
 
@@ -23,10 +22,9 @@ In `silverstripe/graphql`, middleware is used for query execution,
 but could ostensibly be used elsewhere too if the API ever accomodates
 such an expansion.
 
-[notice]
-The middleware API in the `silverstripe/graphql` module is separate from other common middleware
-APIs in Silverstripe CMS, such as `HTTPMiddleware`. The two are not interchangable.
-[/notice]
+> [!WARNING]
+> The middleware API in the `silverstripe/graphql` module is separate from other common middleware
+> APIs in Silverstripe CMS, such as `HTTPMiddleware`. The two are not interchangable.
 
 The signature for middleware (defined in [`QueryMiddleware`](api:SilverStripe\GraphQL\Middleware\QueryMiddleware)) looks like this:
 

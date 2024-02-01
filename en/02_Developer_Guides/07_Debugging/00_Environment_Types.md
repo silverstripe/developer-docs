@@ -17,11 +17,10 @@ When developing your websites, adding page types or installing modules you shoul
 you will see full error back traces and view the development tools without having to be logged in as an administrator
 user.
 
-[alert]
-**dev mode should not be enabled long term on live sites for security reasons**. In dev mode by outputting back traces
-of function calls a hacker can gain information about your environment (including passwords) so you should use dev mode
-on a public server very carefully.
-[/alert]
+> [!CAUTION]
+> **dev mode should not be enabled long term on live sites for security reasons**. In dev mode by outputting back traces
+> of function calls a hacker can gain information about your environment (including passwords) so you should use dev mode
+> on a public server very carefully.
 
 ## Test mode
 
@@ -50,9 +49,8 @@ When using CGI/FastCGI with Apache, you will have to add the `RewriteRule .* - [
 
 All error messages are suppressed from the user and the application is in it's most *secure* state.
 
-[alert]
-Live sites should always run in live mode. You should not run production websites in dev mode.
-[/alert]
+> [!CAUTION]
+> Live sites should always run in live mode. You should not run production websites in dev mode.
 
 ## Checking environment type
 

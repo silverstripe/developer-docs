@@ -7,11 +7,10 @@ summary: A guide on how DataObject models with the Versioned extension behave in
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 ## Versioned content
 
@@ -47,11 +46,10 @@ The `version` field on your `DataObject` will include the following fields:
 - `liveVersion`: Boolean (True if the version is the one that is currently live)
 - `latestDraftVersion`: Boolean (True if the version is the latest draft version)
 
-[info]
-Note that `author` and `publisher` are in relation to the given *version* of the object - these are
-not necessarily the same as the author and publisher of the *original* record (i.e. the author may not
-be the person who created the object, they're the person who saved a specific version of it).
-[/info]
+> [!NOTE]
+> Note that `author` and `publisher` are in relation to the given *version* of the object - these are
+> not necessarily the same as the author and publisher of the *original* record (i.e. the author may not
+> be the person who created the object, they're the person who saved a specific version of it).
 
 Let's look at it in context:
 

@@ -5,11 +5,10 @@ summary: Miscellaneous useful tips for working with your GraphQL schema
 
 # Tips & tricks
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 ## Debugging the generated code
 
@@ -21,11 +20,10 @@ of differentiating between the two.
 When debugging, however, it's much easier if these classnames are human-readable. To turn on debug mode, add `DEBUG_SCHEMA=1`
 to your environment file. The classnames and filenames in the generated code directory will then match their type names.
 
-[warning]
-Take care not to use `DEBUG_SCHEMA=1` as an inline environment variable to your build command, e.g.
-`DEBUG_SCHEMA=1 vendor/bin/sake dev/graphql/build` because any activity that happens at run time, e.g. querying the schema
-will fail, since the environment variable is no longer set.
-[/warning]
+> [!WARNING]
+> Take care not to use `DEBUG_SCHEMA=1` as an inline environment variable to your build command, e.g.
+> `DEBUG_SCHEMA=1 vendor/bin/sake dev/graphql/build` because any activity that happens at run time, e.g. querying the schema
+> will fail, since the environment variable is no longer set.
 
 In live mode, full obfuscation kicks in and the filenames become unreadable. You can only determine the type they map
 to by looking at the generated classes and finding the `// @type:<typename>` inline comment, e.g. `// @type:Page`.
@@ -72,9 +70,8 @@ By default three are provided, which cover most use cases:
 
 All of these implementations can be configured through `Injector`.
 
-[notice]
-Note that each schema gets its own set of persisted queries. In these examples, we're using the `default` schema.
-[/notice]
+> [!WARNING]
+> Note that each schema gets its own set of persisted queries. In these examples, we're using the `default` schema.
 
 #### FileProvider
 
@@ -93,9 +90,8 @@ A flat file in the path `/var/www/project/query-mapping.json` should contain som
 {"someUniqueID":"query{validateToken{Valid Message Code}}"}
 ```
 
-[notice]
-The file path must be absolute.
-[/notice]
+> [!WARNING]
+> The file path must be absolute.
 
 #### HTTPProvider
 
@@ -133,9 +129,8 @@ To access a persisted query, simply pass an `id` parameter in the request in lie
 
 `GET http://example.com/graphql?id=someID`
 
-[notice]
-Note that if you pass `query` along with `id`, an exception will be thrown.
-[/notice]
+> [!WARNING]
+> Note that if you pass `query` along with `id`, an exception will be thrown.
 
 ## Query caching (caution: EXPERIMENTAL)
 
@@ -163,9 +158,8 @@ SilverStripe\ORM\DataObject:
     - SilverStripe\GraphQL\Extensions\QueryRecorderExtension
 ```
 
-[warning]
-This feature is experimental, and has not been thoroughly evaluated for security. Use at your own risk.
-[/warning]
+> [!WARNING]
+> This feature is experimental, and has not been thoroughly evaluated for security. Use at your own risk.
 
 ## Schema introspection {#schema-introspection}
 

@@ -30,9 +30,8 @@ If you find a problem related to how the documentation is displayed which can't 
 - If you are fixing incorrect or incomplete information, you should create a PR that targets the most recent patch release branch branch for the relevant major release line (e.g. `4.13`).
 - If you are adding documentation for functionality that has not yet been released, you should target the most recent minor release branch branch (e.g. `5`).
 
-[warning]
-You should make your changes in the lowest major branch they apply to. For instance, if you fix a spelling issue that you found in the CMS 4 documentation, submit your fix to the `4.13` branch in GitHub and it'll be copied to the most recent major version of the documentation automatically. *Don't submit multiple pull requests for the same change*.
-[/warning]
+> [!WARNING]
+> You should make your changes in the lowest major branch they apply to. For instance, if you fix a spelling issue that you found in the CMS 4 documentation, submit your fix to the `4.13` branch in GitHub and it'll be copied to the most recent major version of the documentation automatically. *Don't submit multiple pull requests for the same change*.
 
 ## Editing online
 
@@ -129,52 +128,46 @@ Silverstripe CMS documentation has a few special syntax extensions that normal m
 There are several built-in block styles for calling out a paragraph of text. Please use these graphical elements
 sparingly.
 
-[info]
-"Info box": An info box is useful for adding, deepening or accenting information in the main text. They can be used for background knowledge, or to provide links to further information (ie, a "see also" link).
-[/info]
+These callout blocks are compatible with [GitHub markdown alerts](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts), so they'll display correctly both on this website as well as in GitHub directly.
 
-Code for an Info box:
+> [!NOTE]
+> "Note box": A note box is useful for adding, deepening or accenting information in the main text. They can be used for background knowledge, or to provide links to further information (ie, a "see also" link).
 
-```text
-[info]
-...
-[/info]
-```
-
-[hint]
-"Hint box": A hint box is great for pointing out extra use cases or hints about how to use a feature.
-[/hint]
-
-Code for a Hint box:
+Code for a note box:
 
 ```text
-[hint]
-...
-[/hint]
+> [!NOTE]
+> ...
 ```
 
-[warning]
-"Warning box": A warning box is useful for pointing out gotchas or technical notifications relating to the main text. For example, notifying users about a deprecated feature.
-[/warning]
+> [!TIP]
+> "Tip box": A tip box is great for pointing out extra use cases or tips about how to use a feature.
+
+Code for a tip box:
+
+```text
+> [!TIP]
+> ...
+```
+
+> [!WARNING]
+> "Warning box": A warning box is useful for pointing out gotchas or technical notifications relating to the main text. For example, notifying users about a deprecated feature.
 
 Code for a Warning box:
 
 ```text
-[warning]
-...
-[/warning]
+> [!WARNING]
+> ...
 ```
 
-[alert]
-"Alert box": An alert box is good for for calling out a severe bug or a technical issue requiring a user's attention. For example, suppose a rare edge case sometimes leads to a variable being overwritten incorrectly. An alert box can be used to alert the user to this case so they can write their own code to handle it.
-[/alert]
+> [!CAUTION]
+> Caution box": A caution box is good for for calling out a severe bug or a technical issue requiring a user's attention. For example, suppose a rare edge case sometimes leads to a variable being overwritten incorrectly. A caution box can be used to alert the user to this case so they can write their own code to handle it.
 
-Code for an Alert box:
+Code for a caution box:
 
 ```text
-[alert]
-...
-[/alert]
+> [!CAUTION]
+> ...
 ```
 
 ### Links to documentation

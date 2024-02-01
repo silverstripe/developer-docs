@@ -67,10 +67,9 @@ class MyModel extends DataObject
 }
 ```
 
-[info]
-Most classes in Silverstripe CMS you want in your template extend `ViewableData` and allow you to call `renderWith`. This
-includes [Controller](api:SilverStripe\Control\Controller), [FormField](api:SilverStripe\Forms\FormField) and [DataObject](api:SilverStripe\ORM\DataObject) instances.
-[/info]
+> [!NOTE]
+> Most classes in Silverstripe CMS you want in your template extend `ViewableData` and allow you to call `renderWith`. This
+> includes [Controller](api:SilverStripe\Control\Controller), [FormField](api:SilverStripe\Forms\FormField) and [DataObject](api:SilverStripe\ORM\DataObject) instances.
 
 ```php
 use SilverStripe\Security\Security;

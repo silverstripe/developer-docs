@@ -79,10 +79,9 @@ class MyTestObject extends DataObject
 }
 ```
 
-[alert]
-Please note that if you have previously used the removed `value` key to define an index's contents, Silverstripe CMS will
-now throw an error. Use `columns` instead.
-[/alert]
+> [!CAUTION]
+> Please note that if you have previously used the removed `value` key to define an index's contents, Silverstripe CMS will
+> now throw an error. Use `columns` instead.
 
 ## Complex/Composite indexes
 

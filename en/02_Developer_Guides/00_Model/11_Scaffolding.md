@@ -73,22 +73,16 @@ class MyDataObject extends DataObject
 You can also alter the fields of built-in and module `DataObject` classes through your own
 [DataExtension](/developer_guides/extending/extensions), and a call to `DataExtension->updateCMSFields`.
 
-[info]
-`FormField` scaffolding takes [`$field_labels` config](#field-labels) into account as well.
-[/info]
+> [!NOTE]
+> `FormField` scaffolding takes [`$field_labels` config](#field-labels) into account as well.
 
 ## Searchable fields
 
 The `$searchable_fields` property uses a mixed array format that can be used to further customise your generated admin
 system. The default is a set of array values listing the fields.
 
-[info]
-`$searchable_fields` will default to use the [`$summary_fields` config](#summary-fields), excluding anything that isn't a database field (such as method calls) if not explicitly defined.
-[/info]
-
-[warning]
-If you define a `searchable_fields` configuration, *do not* specify fields that are not stored in the database (such as methods), as this will cause an error.
-[/warning]
+> [!NOTE]
+> `$searchable_fields` will default to use the [`$summary_fields` config](#summary-fields), excluding anything that isn't a database field (such as method calls) if not explicitly defined.
 
 ```php
 namespace App\Model;
@@ -103,6 +97,9 @@ class MyDataObject extends DataObject
     ];
 }
 ```
+
+> [!WARNING]
+> If you define a `searchable_fields` configuration, *do not* specify fields that are not stored in the database (such as methods), as this will cause an error.
 
 ### General search field
 
@@ -132,9 +129,8 @@ class MyDataObject extends DataObject
 
 By default the general search field uses the name "q". If you already use that field name or search query in your [SearchContext](/developer_guides/search/searchcontext), you can change this to whatever name you prefer either globally or per class:
 
-[hint]
-If you set `general_search_field_name` to any empty string, general search will be disabled entirely. Instead, the first field in your searchable fields configuration will be used, which was the default behaviour prior to Silverstripe CMS 4.12.
-[/hint]
+> [!TIP]
+> If you set `general_search_field_name` to any empty string, general search will be disabled entirely. Instead, the first field in your searchable fields configuration will be used, which was the default behaviour prior to Silverstripe CMS 4.12.
 
 ##### Globally change the general search field name via YAML config {#general-field-name-yaml}
 
@@ -190,9 +186,8 @@ class MyDataObject extends DataObject
 }
 ```
 
-[warning]
-You may get unexpected results using some filters if you don't disable splitting the query into terms - for example if you use an [ExactMatchFilter](api:SilverStripe\ORM\Filters\ExactMatchFilter), each term in the query *must* exactly match the value in at least one field to get a match. If you disable splitting terms, the whole query must exactly match a field value instead.
-[/warning]
+> [!WARNING]
+> You may get unexpected results using some filters if you don't disable splitting the query into terms - for example if you use an [ExactMatchFilter](api:SilverStripe\ORM\Filters\ExactMatchFilter), each term in the query *must* exactly match the value in at least one field to get a match. If you disable splitting terms, the whole query must exactly match a field value instead.
 
 #### Splitting search queries into individual terms
 
@@ -384,9 +379,8 @@ class Player extends DataObject
 
 Use a single search field that matches on multiple database fields with `'match_any'`. This also supports specifying a field and a filter, though it is not necessary to do so.
 
-[alert]
-If you don't specify a field, you must use the name of a real database field instead of a custom name so that a default field can be determined.
-[/alert]
+> [!CAUTION]
+> If you don't specify a field, you must use the name of a real database field instead of a custom name so that a default field can be determined.
 
 ```php
 namespace App\Model;

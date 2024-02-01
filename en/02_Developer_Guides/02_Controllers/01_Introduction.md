@@ -39,15 +39,10 @@ class TeamController extends Controller
 We need to define the URL that this controller can be accessed on. In our case, the `TeamsController` should be visible
 at <http://yoursite.com/teams/> and the `players` custom action is at <http://yoursite.com/team/players/>.
 
-[info]
-If you're using the `cms` module with and dealing with `Page` objects then for your custom `Page Type` controllers you
-would extend `ContentController` or `PageController`. You don't need to define the routes value as the `cms` handles
-routing.
-[/info]
-
-[alert]
-Make sure that after you have modified the `routes.yml` file, that you clear your Silverstripe CMS caches using `?flush=1`.
-[/alert]
+> [!NOTE]
+> If you're using the `cms` module with and dealing with `Page` objects then for your custom `Page Type` controllers you
+> would extend `ContentController` or `PageController`. You don't need to define the routes value as the `cms` handles
+> routing.
 
 ```yml
 # app/_config/routes.yml
@@ -60,6 +55,9 @@ SilverStripe\Control\Director:
     'teams//$Action/$ID/$Name': 'App\Control\TeamController'
 ```
 
+> [!CAUTION]
+> Make sure that after you have modified the `routes.yml` file, that you clear your Silverstripe CMS caches using `?flush=1`.
+
 For more information about creating custom routes, see the [Routing](routing) documentation.
 
 ## Actions
@@ -67,9 +65,8 @@ For more information about creating custom routes, see the [Routing](routing) do
 Controllers respond by default to an `index` method. You don't need to define this method (as it's assumed) but you
 can override the `index()` response to provide custom data back to the [Template and Views](../templates).
 
-[notice]
-It is standard in Silverstripe CMS for your controller actions to be `lowercasewithnospaces`
-[/notice]
+> [!WARNING]
+> It is standard in Silverstripe CMS for your controller actions to be `lowercasewithnospaces`
 
 Action methods can return one of four main things:
 

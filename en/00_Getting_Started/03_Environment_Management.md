@@ -56,9 +56,8 @@ use SilverStripe\Core\Environment;
 Environment::setEnv('API_KEY', 'AABBCCDDEEFF012345');
 ```
 
-[warning]
-`Environment::getEnv()` will return `false` whether the variable was explicitly set as `false` or simply wasn't set at all. You can use [`Environment::hasEnv()`](api:SilverStripe\Core\Environment::hasEnv()) to check whether an environment variable was set or not.
-[/warning]
+> [!WARNING]
+> `Environment::getEnv()` will return `false` whether the variable was explicitly set as `false` or simply wasn't set at all. You can use [`Environment::hasEnv()`](api:SilverStripe\Core\Environment::hasEnv()) to check whether an environment variable was set or not.
 
 ### Using environment variables in config
 
@@ -74,9 +73,8 @@ SilverStripe\Core\Injector\Injector:
             ThisWillNotSubstitute: 'lorem `REGULAR_TEXT` ipsum'
 ```
 
-[info]
-Environment variables cannot be used outside of Injector config as of version 4.2.
-[/info]
+> [!NOTE]
+> Environment variables cannot be used outside of Injector config as of version 4.2.
 
 ## Including an extra `.env` file
 

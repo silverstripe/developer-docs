@@ -48,12 +48,11 @@ SilverStripe\Core\Injector\Injector:
       namespace: "myCache"
 ```
 
-[alert]
-Please note that if you have the `silverstripe/versioned` module installed (automatically installed by the
-`silverstripe/cms` module), caches will automatically be segmented by current “stage”. This ensures that
-any content written to the cache in the *draft* reading mode isn’t accidentally exposed in the *live* reading mode.
-Please read the [versioned cache segmentation](#versioned-cache-segmentation) section for more information.
-[/alert]
+> [!CAUTION]
+> Please note that if you have the `silverstripe/versioned` module installed (automatically installed by the
+> `silverstripe/cms` module), caches will automatically be segmented by current “stage”. This ensures that
+> any content written to the cache in the *draft* reading mode isn’t accidentally exposed in the *live* reading mode.
+> Please read the [versioned cache segmentation](#versioned-cache-segmentation) section for more information.
 
 Cache objects are instantiated through a [CacheFactory](SilverStripe\Core\Cache\CacheFactory),
 which determines which cache adapter is used (see "Adapters" below for details).

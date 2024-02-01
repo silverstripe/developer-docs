@@ -7,11 +7,10 @@ summary: An overview of how the DataObject model can influence the creation of t
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 ## The `DataObject` model type
 
@@ -49,10 +48,9 @@ Case in point, by supplying a value of `*` for `fields` , we're saying that we w
 on the `Page` class. This includes the first level of relationships, as defined on `has_one`, `has_many`,
 or `many_many`.
 
-[notice]
-Fields on relationships will not inherit the `*` fields selector, and will only expose their ID by default.
-To add additional fields for those relationships you will need to add the corresponding `DataObject` model types.
-[/notice]
+> [!WARNING]
+> Fields on relationships will not inherit the `*` fields selector, and will only expose their ID by default.
+> To add additional fields for those relationships you will need to add the corresponding `DataObject` model types.
 
 The `*` value on `operations` tells the schema to create all available queries and mutations
  for the DataObject, including:
@@ -70,6 +68,11 @@ Now that we've changed our schema, we need to build it using the `dev/graphql/bu
 Now we can access our schema on the default GraphQL endpoint, `/graphql`.
 
 Test it out!
+
+> [!NOTE]
+> Note the use of the default arguments on `date`. Fields created from `DBFields`
+> generate their own default sets of arguments. For more information, see
+> [DBFieldArgs](query_plugins#dbfieldargs).
 
 **A query:**
 
@@ -95,16 +98,9 @@ query {
 }
 ```
 
-[info]
-Note the use of the default arguments on `date`. Fields created from `DBFields`
-generate their own default sets of arguments. For more information, see
-[DBFieldArgs](query_plugins#dbfieldargs).
-[/info]
-
-[info]
-The `... on BlogPage` syntax is called an [inline fragment](https://graphql.org/learn/queries/#inline-fragments).
-You can learn more about this syntax in the [Inheritance](../inheritance) section.
-[/info]
+> [!NOTE]
+> The `... on BlogPage` syntax is called an [inline fragment](https://graphql.org/learn/queries/#inline-fragments).
+> You can learn more about this syntax in the [Inheritance](../inheritance) section.
 
 **A mutation:**
 
@@ -119,9 +115,8 @@ mutation {
 }
 ```
 
-[hint]
-Did you get a permissions error? Make sure you're authenticated as someone with appropriate access.
-[/hint]
+> [!TIP]
+> Did you get a permissions error? Make sure you're authenticated as someone with appropriate access.
 
 ### Configuring operations
 
@@ -199,22 +194,20 @@ App\Model\ProductCategory:
     featured: true
 ```
 
-[notice]
-A couple things to note here:
-
-- By assigning a value of `true` to the field, we defer to the model to infer the type for the field. To override that, we can always add a `type` property:
-
-    ```yml
-    App\Model\Product:
-      fields:
-        onSale:
-          type: Boolean
-    ```
-
-- The mapping of our field names to the `DataObject` property is case-insensitive. It is a
-convention in GraphQL APIs to use lowerCamelCase fields, so this is given by default.
-
-[/notice]
+> [!WARNING]
+> A couple things to note here:
+>
+> - By assigning a value of `true` to the field, we defer to the model to infer the type for the field. To override that, we can always add a `type` property:
+>
+>     ```yml
+>     App\Model\Product:
+>       fields:
+>         onSale:
+>           type: Boolean
+>     ```
+>
+> - The mapping of our field names to the `DataObject` property is case-insensitive. It is a
+> convention in GraphQL APIs to use lowerCamelCase fields, so this is given by default.
 
 ### Bulk loading models
 
@@ -299,17 +292,15 @@ By default, four loaders are provided to you to help gather specific classnames:
   - `include: [ 'src/Model/*.model.php' ]`
   - `include: [ 'somevendor/somemodule: src/Model/*.php' ]`
 
+> [!NOTE]
+> `exclude` directives will always supersede `include` directives.
+
 Each block starts with a collection of all classes that gets filtered as each loader runs. The primary job
 of a loader is to *remove* classes from the entire collection, not add them in.
 
-[info]
-`exclude` directives will always supersede `include` directives.
-[/info]
-
-[info]
-If you find that this paints with too big a brush, you can always override individual models explicitly in `models.yml`.
-The bulk loaders run *before* the `models.yml` config is loaded.
-[/info]
+> [!NOTE]
+> If you find that this paints with too big a brush, you can always override individual models explicitly in `models.yml`.
+> The bulk loaders run *before* the `models.yml` config is loaded.
 
 #### `DataObject` subclasses are the default starting point
 
@@ -454,10 +445,9 @@ modelConfig:
     type_formatter: ['App\GraphQL\Formatter', 'formatType']
 ```
 
-[info]
-In the above example, `DataObject` is the result of [`DataObjectModel::getIdentifier()`](api:SilverStripe\GraphQL\Schema\DataObject::getIdentifier()).
-Each model class must declare one of these.
-[/info]
+> [!NOTE]
+> In the above example, `DataObject` is the result of [`DataObjectModel::getIdentifier()`](api:SilverStripe\GraphQL\Schema\DataObject::getIdentifier()).
+> Each model class must declare one of these.
 
 The formatting function in your `App\GraphQL\Formatter` class could look something like:
 

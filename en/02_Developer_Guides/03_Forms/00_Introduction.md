@@ -9,9 +9,8 @@ iconBrand: wpforms
 The HTML `Form` is the most used way to interact with a user. Silverstripe CMS provides classes to generate forms through
 the [Form](api:SilverStripe\Forms\Form) class, [FormField](api:SilverStripe\Forms\FormField) instances to capture data and submissions through [FormAction](api:SilverStripe\Forms\FormAction).
 
-[notice]
-See the [Introduction to frontend forms](https://www.silverstripe.org/learn/lessons/v4/introduction-to-frontend-forms-1) lesson for a step by step process of creating a `Form`
-[/notice]
+> [!WARNING]
+> See the [Introduction to frontend forms](https://www.silverstripe.org/learn/lessons/v4/introduction-to-frontend-forms-1) lesson for a step by step process of creating a `Form`
 
 ## Creating a form
 
@@ -88,11 +87,10 @@ class MyFormPageController extends PageController
 $HelloForm
 ```
 
-[info]
-The examples above use `FormField::create()` instead of the  `new` operator (`new FormField()`). These are functionally
-equivalent, but allows PHP to chain operations like `setTitle()` without assigning the field instance to a temporary
-variable.
-[/info]
+> [!NOTE]
+> The examples above use `FormField::create()` instead of the  `new` operator (`new FormField()`). These are functionally
+> equivalent, but allows PHP to chain operations like `setTitle()` without assigning the field instance to a temporary
+> variable.
 
 When constructing the `Form` instance (`new Form($controller, $name)`) both controller and name are required. The
 `$controller` and `$name` are used to allow Silverstripe CMS to calculate the origin of the `Form object`. When a user
@@ -127,10 +125,9 @@ class MyFormPageController extends PageController
 
 See [routing documentation](/developer_guides/controllers/routing/) for more information about `$allowed_actions` and `$url_handlers`.
 
-[notice]
-Form actions (`doSayHello`), on the other hand, should *not* be included in `$allowed_actions`; these are handled
-separately through [Form::httpSubmission()](api:SilverStripe\Forms\Form::httpSubmission()).
-[/notice]
+> [!WARNING]
+> Form actions (`doSayHello`), on the other hand, should *not* be included in `$allowed_actions`; these are handled
+> separately through [Form::httpSubmission()](api:SilverStripe\Forms\Form::httpSubmission()).
 
 ## Adding formFields
 
@@ -143,9 +140,8 @@ use SilverStripe\Forms\TextField;
 TextField::create($name, $title, $value);
 ```
 
-[info]
-A list of the common FormField subclasses is available on the [Common Subclasses](field_types/common_subclasses/) page.
-[/info]
+> [!NOTE]
+> A list of the common FormField subclasses is available on the [Common Subclasses](field_types/common_subclasses/) page.
 
 The fields are added to the [FieldList](api:SilverStripe\Forms\FieldList) `fields` property on the `Form` and can be modified at up to the point the
 `Form` is rendered.
@@ -205,20 +201,18 @@ Fields can be removed from the form.
 $form->getFields()->removeByName('Email');
 ```
 
-[alert]
-Forms can be tabbed (such as the CMS interface). In these cases, there are additional functions such as `addFieldToTab`
-and `removeFieldByTab` to ensure the fields are on the correct interface. See [Tabbed Forms](tabbed_forms) for more
-information on the CMS interface.
-[/alert]
+> [!CAUTION]
+> Forms can be tabbed (such as the CMS interface). In these cases, there are additional functions such as `addFieldToTab`
+> and `removeFieldByTab` to ensure the fields are on the correct interface. See [Tabbed Forms](tabbed_forms) for more
+> information on the CMS interface.
 
 ## Modifying formFields
 
 Each [FormField](api:SilverStripe\Forms\FormField) subclass has a number of methods you can call on it to customise its' behavior or HTML markup. The
 default `FormField` object has several methods for doing common operations.
 
-[notice]
-Most of the `set` operations will return the object back so methods can be chained.
-[/notice]
+> [!WARNING]
+> Most of the `set` operations will return the object back so methods can be chained.
 
 ```php
 use SilverStripe\Forms\TextField;
@@ -344,10 +338,9 @@ with the particular button. In the previous example, clicking the 'Another Butto
 - The `Form` instance.
 - The `Controller` instance.
 
-[notice]
-If the `$action` method cannot be found on any of those or is marked as `private` or `protected`, an error will be
-thrown.
-[/notice]
+> [!WARNING]
+> If the `$action` method cannot be found on any of those or is marked as `private` or `protected`, an error will be
+> thrown.
 
 The `$action` method takes two arguments:
 

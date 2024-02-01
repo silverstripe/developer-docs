@@ -13,9 +13,8 @@ search parameters and an object class it acts on.
 The default output of a [SearchContext](api:SilverStripe\ORM\Search\SearchContext) is either a [SQLSelect](api:SilverStripe\ORM\Queries\SQLSelect) object for further refinement, or a
 [DataObject](api:SilverStripe\ORM\DataObject) instance.
 
-[notice]
-[SearchContext](api:SilverStripe\ORM\Search\SearchContext) is mainly used by [ModelAdmin](/developer_guides/customising_the_admin_interface/modeladmin), as it powers the [`DataObject::$searchable_fields` configuration](/developer_guides/model/scaffolding#searchable-fields).
-[/notice]
+> [!WARNING]
+> [SearchContext](api:SilverStripe\ORM\Search\SearchContext) is mainly used by [ModelAdmin](/developer_guides/customising_the_admin_interface/modeladmin), as it powers the [`DataObject::$searchable_fields` configuration](/developer_guides/model/scaffolding#searchable-fields).
 
 ## Usage
 
@@ -77,15 +76,11 @@ class MyDataObject extends DataObject
 }
 ```
 
-[notice]
-See the [SearchFilter](../model/searchfilters) documentation for more information about filters to use such as the
-`GreaterThanFilter`.
-[/notice]
+> [!WARNING]
+> In case you need multiple contexts, consider name-spacing your request parameters by using `FieldList->namespace()` on
+> the `$fields` constructor parameter.
 
-[notice]
-In case you need multiple contexts, consider name-spacing your request parameters by using `FieldList->namespace()` on
-the `$fields` constructor parameter.
-[/notice]
+See the [SearchFilter](../model/searchfilters) documentation for more information about filters to use such as the `GreaterThanFilter`.
 
 ### Customising the general search field
 
@@ -198,7 +193,7 @@ Another thing you can't forget is to check the name of the singleton you are usi
 to show the results of your custom search you need at least this content in your template, notice that
 Results.PaginationSummary(4) defines how many pages the search will show in the search results. something like:
 
-**Next   1 2  *3*  4  5 &hellip; 558**  
+**Next   1 2  *3*  4  5 &hellip; 558**
 
 ```ss
 <% if $Results %>
@@ -217,7 +212,7 @@ Results.PaginationSummary(4) defines how many pages the search will show in the 
             <% if $Results.NotFirstPage %>
                 <a class="prev" href="$Results.PrevLink" title="View the previous page">Prev</a>
             <% end_if %>
-        
+
             <span>
                     <% loop $Results.PaginationSummary(4) %>
                     <% if $CurrentBool %>
@@ -231,7 +226,7 @@ Results.PaginationSummary(4) defines how many pages the search will show in the 
                     <% end_if %>
                 <% end_loop %>
             </span>
-        
+
             <% if $Results.NotLastPage %>
                 <a class="next" href="$Results.NextLink" title="View the next page">Next</a>
             <% end_if %>

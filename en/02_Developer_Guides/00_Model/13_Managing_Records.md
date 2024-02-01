@@ -69,10 +69,9 @@ class MyParentModel extends DataObject
 }
 ```
 
-[hint]
-If the `cms_edit_owner` is in some vendor dependency that you don't control, you can always apply `CMSEditLinkExtension`
-and the `cms_edit_owner` via YAML.
-[/hint]
+> [!TIP]
+> If the `cms_edit_owner` is in some vendor dependency that you don't control, you can always apply `CMSEditLinkExtension`
+> and the `cms_edit_owner` via YAML.
 
 With the above code examples, you can call `CMSEditLink()` on any instance of `MyModel` or `MyParentModel` and it will produce
 an appropriate edit link for that record (assuming the relations are set up). This can be used, for example, in email reminders
@@ -81,8 +80,7 @@ to update content, or as a link (available to admins) on the front-end to go str
 It is also useful when [making a previewable `DataObject`](../customising_the_admin_interface/preview/), as `CMSEditLink()` is
 one of the methods in the [CMSPreviewable](api:SilverStripe\ORM\CMSPreviewable) interface.
 
-[info]
-`SiteTree` already has `CMSEditLinkExtension` applied, which means any `cms_edit_owner` pointing to a `has_one` relation of
-a `SiteTree` will work, assuming the page has a `GridField` for its reciprocal `has_many` relation with a `GridFieldDetailForm`
-in it.
-[/info]
+> [!NOTE]
+> `SiteTree` already has `CMSEditLinkExtension` applied, which means any `cms_edit_owner` pointing to a `has_one` relation of
+> a `SiteTree` will work, assuming the page has a `GridField` for its reciprocal `has_many` relation with a `GridFieldDetailForm`
+> in it.

@@ -7,11 +7,10 @@ summary: Ensure that requests to your API come from a whitelist of origins
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 ## Cross-Origin resource sharing (CORS)
 
@@ -67,10 +66,9 @@ Once you have enabled CORS you can then control four new headers in the HTTP Res
    Allow-Headers: 'Authorization, Content-Type, Content-Language'
    ```
 
-   [notice]
-   If you add extra headers to your GraphQL server, you will need to write a
-   custom resolver function to handle the response.
-   [/notice]
+   > [!WARNING]
+   > If you add extra headers to your GraphQL server, you will need to write a
+   > custom resolver function to handle the response.
 
 1. **Access-Control-Allow-Methods.**
 

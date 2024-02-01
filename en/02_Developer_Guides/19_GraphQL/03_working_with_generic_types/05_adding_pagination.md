@@ -6,11 +6,10 @@ summary: Add the pagination plugin to a generic query
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 ## Adding pagination
 
@@ -33,12 +32,11 @@ Let's take this a step further and paginate it using a plugin.
 Since pagination is a fairly common task, we can take advantage of some reusable code here and just add a generic
 plugin for paginating.
 
-[notice]
-If you're paginating a `DataList`, you might want to consider using models with read operations (instead of declaring
-them as generic types with generic queries), which paginate by default using the `paginateList` plugin.
-You can use generic typing and follow the below instructions too but it requires code that, for `DataObject` models,
-you get for free.
-[/notice]
+> [!WARNING]
+> If you're paginating a `DataList`, you might want to consider using models with read operations (instead of declaring
+> them as generic types with generic queries), which paginate by default using the `paginateList` plugin.
+> You can use generic typing and follow the below instructions too but it requires code that, for `DataObject` models,
+> you get for free.
 
 Let's add the plugin to our query:
 

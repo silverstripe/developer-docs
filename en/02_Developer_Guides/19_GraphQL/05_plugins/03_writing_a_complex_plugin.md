@@ -6,11 +6,10 @@ summary: In this tutorial, we'll create a plugin that affects models, queries, a
 
 [CHILDREN asList]
 
-[info]
-You are viewing docs for silverstripe/graphql 4.x.
-If you are using 3.x, documentation can be found
-[in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
-[/info]
+> [!NOTE]
+> You are viewing docs for silverstripe/graphql 4.x.
+> If you are using 3.x, documentation can be found
+> [in the GitHub repository](https://github.com/silverstripe/silverstripe-graphql/tree/3)
 
 ## Writing a complex plugin
 
@@ -282,11 +281,10 @@ we could filter the result set by a list of `IDs` early on, which would allow us
 a `DataList` throughout the whole cycle, but this would force us to loop over an
 unlimited result set, and that's never a good idea.
 
-[notice]
-If you've picked up on the inconsistency that the `pageInfo` property is now inaccurate, this is a long-standing
-issue with doing post-query filters. Ideally, any middleware that filters a `DataList` should do it at the query level,
-but that's not always possible.
-[/notice]
+> [!WARNING]
+> If you've picked up on the inconsistency that the `pageInfo` property is now inaccurate, this is a long-standing
+> issue with doing post-query filters. Ideally, any middleware that filters a `DataList` should do it at the query level,
+> but that's not always possible.
 
 ### Step 5: apply the plugins
 
