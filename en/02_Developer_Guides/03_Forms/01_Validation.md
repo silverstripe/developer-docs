@@ -6,6 +6,10 @@ icon: check-square
 
 # Form validation
 
+> [!HINT]
+> Before you start implementing custom validation logic, check out [validation using `symfony/validator` constraints](/developer_guides/model/validation/#validation-and-constraints)
+> and see if there's an existing constraint that can do the heavy lifting for you.
+
 Silverstripe CMS provides server-side form validation out of the box through the [Validator](api:SilverStripe\Forms\Validator) abstract class and its' child classes
 (see [available validators](#available-validators) below). A single `Validator` instance is set on each `Form`. Validators are implemented as an argument to
 the [Form](api:SilverStripe\Forms\Form) constructor or through the function `setValidator`.
