@@ -13,10 +13,9 @@ Usually `GridField` is used with `DataObject` records - but it can be used with 
 
 See [using `GridField` with arbitrary data](/developer_guides/forms/using_gridfield_with_arbitrary_data/) for more information.
 
-[info]
-`GridField` powers the automated data UI of [ModelAdmin](api:SilverStripe\Admin\ModelAdmin). For more information about `ModelAdmin` see the
-[Customizing the CMS](/developer_guides/customising_the_admin_interface) guide.
-[/info]
+> [!NOTE]
+> `GridField` powers the automated data UI of [ModelAdmin](api:SilverStripe\Admin\ModelAdmin). For more information about `ModelAdmin` see the
+> [Customizing the CMS](/developer_guides/customising_the_admin_interface) guide.
 
 ```php
 use SilverStripe\Forms\GridField\GridField;
@@ -221,12 +220,11 @@ $gridField->setConfig($config);
 Similar to `GridFieldConfig_Base` with the addition support of the ability to view a [`GridFieldDetailForm`](api:SilverStripe\Forms\GridField\GridFieldDetailForm) containing
 a read-only view of the data record.
 
-[info]
-Each record in the list must have an `ID` field, and the value of that field must be a positive integer.
-
-If the class representing your data has a `getCMSFields()` method, the return value of that method will be used for the fields displayed in the read-only view.
-Otherwise, you'll need to pass in a [`FieldList`](api:SilverStripe\Forms\FieldList) to [`GridFieldDetailForm::setFields()`](api:SilverStripe\Forms\GridField\GridFieldDetailForm::setFields()).
-[/info]
+> [!NOTE]
+> Each record in the list must have an `ID` field, and the value of that field must be a positive integer.
+>
+> If the class representing your data has a `getCMSFields()` method, the return value of that method will be used for the fields displayed in the read-only view.
+> Otherwise, you'll need to pass in a [`FieldList`](api:SilverStripe\Forms\FieldList) to [`GridFieldDetailForm::setFields()`](api:SilverStripe\Forms\GridField\GridFieldDetailForm::setFields()).
 
 ```php
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordViewer;
@@ -246,18 +244,15 @@ $gridField->setConfig($config);
 
 Similar to `GridFieldConfig_RecordViewer` with the addition support to edit or delete each of the records.
 
-[info]
 Each record in the list must have an `ID` field, and the value of that field must be a positive integer.
 
 If the class representing your data has a `getCMSFields()` method, the return value of that method will be used for the fields displayed in the read-only view.
 Otherwise, you'll need to pass in a [`FieldList`](api:SilverStripe\Forms\FieldList) to [`GridFieldDetailForm::setFields()`](api:SilverStripe\Forms\GridField\GridFieldDetailForm::setFields()).
-[/info]
 
-[warning]
-The class representing your data *must* implement [`DataObjectInterface`](api:SilverStripe\ORM\DataObjectInterface) so that your records can be edited.
-
-See [using `GridField` with arbitrary data](/developer_guides/forms/using_gridfield_with_arbitrary_data/) for more information.
-[/warning]
+> [!WARNING]
+> The class representing your data *must* implement [`DataObjectInterface`](api:SilverStripe\ORM\DataObjectInterface) so that your records can be edited.
+>
+> See [using `GridField` with arbitrary data](/developer_guides/forms/using_gridfield_with_arbitrary_data/) for more information.
 
 ```php
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;

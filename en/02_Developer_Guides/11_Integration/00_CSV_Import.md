@@ -91,9 +91,8 @@ Let's create a simple upload form (which is used for `MyDataObject` instances).
 You'll need to add a route to your controller to make it accessible via URL
 (see [Routing](../../controllers/routing/)).
 
-[warning]
-Don't forget to perform [permission checks](#permission-checks) if the data is provided by users.
-[/warning]
+> [!WARNING]
+> Don't forget to perform [permission checks](#permission-checks) if the data is provided by users.
 
 ```php
 namespace App\Control;

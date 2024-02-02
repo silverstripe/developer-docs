@@ -23,9 +23,8 @@ Because of this you should generally avoid updating large parts of a DataObject 
 
 Create a subclass of [`LeftAndMain`](api:SilverStripe\Admin\LeftAndMain). This ensures that users must be logged in to the admin interface to access the endpoint. Additionally, it provides access to the methods [`LeftAndMain::jsonSuccess()`](api:SilverStripe\Admin\LeftAndMain::jsonSuccess()) and [`LeftAndMain::jsonError()`](api:SilverStripe\Admin\LeftAndMain::jsonError()).
 
-[warning]
-To enhance security, do not create a direct subclass of [`Controller`](api:SilverStripe\Control\Controller) routed using YAML on the `/admin` route. This practice is strongly discouraged as it circumvents the requirement to log in to the CMS to access the endpoints. At best you'd be re-implementing logic that already exists.
-[/warning]
+> [!WARNING]
+> To enhance security, do not create a direct subclass of [`Controller`](api:SilverStripe\Control\Controller) routed using YAML on the `/admin` route. This practice is strongly discouraged as it circumvents the requirement to log in to the CMS to access the endpoints. At best you'd be re-implementing logic that already exists.
 
 When naming this class, it's best practice to add a "Controller" suffix to this class, for instance name it `MySomethingController`.
 
@@ -114,9 +113,8 @@ Generally you should not include a message outlining the nature of the error whe
 
 If you do include a message, remember that error messages are only intended for developers so do not use the `_t()` function to make them translatable. Do not use any returned messages on the frontend for things like toast notifications, instead those messages should be added directly in JavaScript.
 
-[info]
-Despite the slightly convoluted JSON format returned by `jsonError()` with multiple nodes, its usage remains consistent with `FormSchema`. It's better to use this method for uniformity rather than introducing separate methods for `FormSchema` and non-FormSchema failures.
-[/info]
+> [!NOTE]
+> Despite the slightly convoluted JSON format returned by `jsonError()` with multiple nodes, its usage remains consistent with `FormSchema`. It's better to use this method for uniformity rather than introducing separate methods for `FormSchema` and non-FormSchema failures.
 
 ## CSRF token
 
@@ -130,9 +128,8 @@ import Config from 'lib/Config';
 const securityID = Config.get('SecurityID');
 ```
 
-[warning]
-The `lib/Config` import is provided by the `silverstripe/admin` module via [`@silverstripe/webpack-config`](https://www.npmjs.com/package/@silverstripe/webpack-config).
-[/warning]
+> [!WARNING]
+> The `lib/Config` import is provided by the `silverstripe/admin` module via [`@silverstripe/webpack-config`](https://www.npmjs.com/package/@silverstripe/webpack-config).
 
 Ensure the security of your endpoints by validating the security token on relevant endpoints.
 
@@ -144,9 +141,8 @@ if (!SecurityToken::inst()->checkRequest($this->getRequest())) {
 }
 ```
 
-[info]
-The `400` HTTP status code used here is consistent with the code used when the CSRF check fails when submitting data using `FormSchema`.
-[/info]
+> [!NOTE]
+> The `400` HTTP status code used here is consistent with the code used when the CSRF check fails when submitting data using `FormSchema`.
 
 ## Passing values from PHP to global JavaScript
 
@@ -211,9 +207,8 @@ backend.post(endpoint, data, headers)
   });
 ```
 
-[warning]
-The `lib/Config` and `lib/Backend` imports are provided by the `silverstripe/admin` module via [`@silverstripe/webpack-config`](https://www.npmjs.com/package/@silverstripe/webpack-config).
-[/warning]
+> [!WARNING]
+> The `lib/Config` and `lib/Backend` imports are provided by the `silverstripe/admin` module via [`@silverstripe/webpack-config`](https://www.npmjs.com/package/@silverstripe/webpack-config).
 
 On the controller's endpoint method, retrieve the POST data using `$json = json_decode($this->getRequest()->getBody());`.
 

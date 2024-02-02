@@ -81,6 +81,5 @@ class MyController extends Controller
 }
 ```
 
-[alert]
-If the file you're loading data from is uploaded by a user, you should pass `true` to the [`CsvBulkLoader::setCheckPermissions()`](api:SilverStripe\Dev\CsvBulkLoader::setCheckPermissions()) method. Otherwise, permissions will not be respected and the user may alter data in ways they would otherwise not be permitted to.
-[/alert]
+> [!CAUTION]
+> If the file you're loading data from is uploaded by a user, you should pass `true` to the [`CsvBulkLoader::setCheckPermissions()`](api:SilverStripe\Dev\CsvBulkLoader::setCheckPermissions()) method. Otherwise, permissions will not be respected and the user may alter data in ways they would otherwise not be permitted to.
