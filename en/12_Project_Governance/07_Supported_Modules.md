@@ -7,7 +7,8 @@ description: Modules which are commercially supported by Silverstripe
 
 Silverstripe CMS ships modules that receive commercial support. Commercially supported modules receive regular updates to work with the latest Silverstripe CMS release. Their [public API](/project_governance/public_api/) conforms to [semantic versioning](https://semver.org/). They are covered by:
 
-- our [security release process](/contributing/managing_security_issues) and
+- our [security release process](/contributing/managing_security_issues)
+- our [minor release policy](minor_release_policy)
 - our [major release policy](major_release_policy).
 
 These modules will be supported for the lifetime of Silverstripe CMS 5 in the provided major versions.
@@ -75,6 +76,7 @@ Supported PHP Module | Supported versions
 [silverstripe/hybridsessions](https://packagist.org/packages/silverstripe/hybridsessions) | 3
 [silverstripe/iframe](https://packagist.org/packages/silverstripe/iframe) | 3
 [silverstripe/ldap](https://packagist.org/packages/silverstripe/ldap) | 2
+[silverstripe/linkfield](https://packagist.org/packages/silverstripe/linkfield) | 4
 [silverstripe/lumberjack](https://packagist.org/packages/silverstripe/lumberjack) | 3
 [silverstripe/mfa](https://packagist.org/packages/silverstripe/mfa) | 5
 [silverstripe/realme](https://packagist.org/packages/silverstripe/realme) | 5
