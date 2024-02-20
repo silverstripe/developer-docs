@@ -784,6 +784,11 @@ The N + 1 query problem can be alleviated using eager loading which in this exam
 $teams = Team::get()->eagerLoad('Players');
 ```
 
+> [!CAUTION]
+> Manipulating the eager loading query is significantly (up to ~600%) faster than Filtering an `EagerLoadedlist` after the query has been made.
+>
+> See [manipulating eagerloading queries](#manipulating-eager-loading-queries).
+
 With eager loading now only two queries will be executed:
 
 ```sql
@@ -891,10 +896,61 @@ Eager loading supports all relationship types.
 
 > [!WARNING]
 > Eager loading is only intended to be used in read-only scenarios such as when outputting data on the front-end of a website. When using default lazy-loading, relationship methods will return a subclass of [`DataList`](api:SilverStripe\ORM\DataList) such as [`HasManyList`](api:SilverStripe\ORM\HasManyList). However when using eager-loading, an [`EagerLoadedList`](api:SilverStripe\ORM\EagerLoadedList) will be returned instead. `EagerLoadedList` has common methods such as `filter()`, `sort()`, `limit()` and `reverse()` available to manipulate its data, as well as some methods you'd expect on the various relation list implementations such as [`getExtraData()`](api:SilverStripe\ORM\EagerLoadedList::getExtraData()).
+
+### Manipulating eager loading queries
+
+There are some limitations to manipulating an `EagerLoadedList` (i.e. after the query has been executed).
+
+The main limitation is that filtering or sorting an `EagerLoadedList` will be done in PHP rather than as part of the database query, since we have already loaded all its relevant data into memory.
+
+> [!WARNING]
+> `EagerLoadedList` can't filter or sort by fields on relations using dot notation (e.g. `sort('MySubRelation.Title')` won't work).
 >
-> Note that filtering or sorting an `EagerLoadedList` will be done in PHP rather than as part of the database query, since we have already loaded all its relevant data into memory.
->
-> Note also that `EagerLoadedList` can't filter or sort by fields on relations using dot notation (e.g. `sort('MySubRelation.Title')` won't work).
+> Manipulating the eager loading query is significantly (up to ~600%) faster than Filtering an `EagerLoadedlist` after the query has been made.
+
+You can avoid those problems by applying manipulations such as filtering and sorting to the eager loading query as part of your call to `eagerLoad()`.
+
+You can pass an associative array into the `eagerLoad()` method, with relation chains as the keys and callbacks as the values. The callback accepts a `DataList` argument, and must return a `DataList`.
+
+> [!CAUTION]
+> You can't manipulate the lists of `has_one` or `belongs_to` relations. This functionality is intended primarily as a way to pre-filter or pre-sort `has_many` and `many_many` relations.
+
+```php
+use SilverStripe\ORM\DataList;
+
+$teams = Team::get()->eagerLoad([
+    'Players' => fn (DataList $list) => $list->filter(['Age:GreaterThan' => 18]),
+]);
+```
+
+The list passed into your callback represents the query for that relation on *all* of the records you're fetching. For example, the `$list` variable above is a `DataList` that will fetch all `Player` records in the `Players` relation for all `Team` records (so long as they match the filter applied in the callback).
+
+Note that each relation in the relation chain (e.g. `Players`, `Players.Fans`, `Players.Fans.Events`) can have their own callback:
+
+```php
+use SilverStripe\ORM\DataList;
+
+$teams = Team::get()->eagerLoad([
+    'Players' => fn (DataList $list) => $list->filter(['Age:GreaterThan' => 18]),
+    'Players.Fans' => fn (DataList $list) => $list->filter(['Name:PartialMatch:nocase' => 'Sam']),
+    'Players.Fans.Events' => fn (DataList $list) => $list->filter(['DollarCost:LessThan' => 200]),
+]);
+```
+
+If you have complex branching logic, and in some branches you want to avoid pre-filtering or perform different filtering, you can declare a different callback (or `null`) for that relation chain by calling `eagerLoad()` again. Note that subsequent callbacks *replace* previous callbacks.
+
+```php
+use SilverStripe\ORM\DataList;
+
+$teams = Team::get()->eagerLoad([
+    // Remove any callback that was previously defined for this relation chain
+    'Players' => fn (DataList $list) => null,
+    // Replace any callback that was previously defined for this relation chain.
+    // If you want to apply *additional* filters rather than replacing existing ones, you will
+    // need to declare the original filter again here.
+    'Players.Fans.Events' => fn (DataList $list) => $list->filter(['DollarCost:GreaterThan' => 100]),
+]);
+```
 
 ## Cascading deletions
 
