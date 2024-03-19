@@ -418,10 +418,10 @@ Common Table Expressions are a powerful tool both for optimising complex queries
 Older database servers don't support this functionality, and the core implementation is only valid for MySQL (though community modules may add support for other database connectors). If you are using this functionality in an open source module or a project that you can't guarantee the type and version of database being used, you should wrap the query in a condition checking if CTEs are supported. You can do that by calling [`DB::get_conn()->supportsCteQueries()`](api:SilverStripe\ORM\Connect\Database::supportsCteQueries()).
 
 ```php
-if (DB::get_conn()->supportsCteQueries()) {
-    // Supports non-recursive CTE clause
-} elseif (DB::get_conn()->supportsCteQueries(true)) {
+if (DB::get_conn()->supportsCteQueries(true)) {
     // Supports recursive CTE clause
+} elseif (DB::get_conn()->supportsCteQueries()) {
+    // Supports non-recursive CTE clause
 } else {
     // No CTE support
 }

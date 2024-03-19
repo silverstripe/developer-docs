@@ -8,7 +8,7 @@ icon: check-square
 
 ## Validation using `symfony/validator` constraints {#symfony-validator}
 
-The [`ConstraintValidator`](api:SilverStripe\Core\Validation\ConstraintValidator) class provides an abstraction around [`symfony/validator`](https://symfony.com/doc/current/components/validator.html), so you can easily validate values against symfony's validation constraints and get a [`ValidationResult`](api:SilverStripe\ORM\ValidationResult) object as a result.
+The [`ConstraintValidator`](api:SilverStripe\Core\Validation\ConstraintValidator) class provides an abstraction around [`symfony/validator`](https://symfony.com/doc/current/components/validator.html), so you can easily validate values against symfony's validation constraints and get a [`ValidationResult`](api:SilverStripe\ORM\ValidationResult) object with the result.
 
 ```php
 use SilverStripe\Core\Validation\ConstraintValidator;
@@ -20,7 +20,7 @@ use SilverStripe\Core\Validation\ConstraintValidator;
 $result = ConstraintValidator::validate($valueToValidate, $constraint);
 ```
 
-To test if a URL is valid, for example:
+For example, to test if a URL is valid:
 
 ```php
 use SilverStripe\Core\Validation\ConstraintValidator;
