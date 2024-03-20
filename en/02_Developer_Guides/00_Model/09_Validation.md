@@ -4,40 +4,11 @@ summary: Validate your data at the model level
 icon: check-square
 ---
 
-# Validation and constraints
-
-## Validation using `symfony/validator` constraints {#symfony-validator}
-
-The [`ConstraintValidator`](api:SilverStripe\Core\Validation\ConstraintValidator) class provides an abstraction around [`symfony/validator`](https://symfony.com/doc/current/components/validator.html), so you can easily validate values against symfony's validation constraints and get a [`ValidationResult`](api:SilverStripe\ORM\ValidationResult) object as a result.
-
-```php
-use SilverStripe\Core\Validation\ConstraintValidator;
-
-/**
- * @var \Symfony\Component\Validator\Constraint $constraint
- * @var \SilverStripe\ORM\ValidationResult $result
- */
-$result = ConstraintValidator::validate($valueToValidate, $constraint);
-```
-
-To test if a URL is valid, for example:
-
-```php
-use SilverStripe\Core\Validation\ConstraintValidator;
-use Symfony\Component\Validator\Constraints\Url;
-
-$isValid = ConstraintValidator::validate($url, new Url())->isValid();
-```
-
-You can use most of the constraints listed in Symfony's [supported constraints](https://symfony.com/doc/current/reference/constraints.html) documentation, though note that some of them require additional symfony dependencies.
-
-Validation using constraints that rely on `symfony/doctrine` is explicitly not supported in Silverstripe CMS.
+# Model validation and constraints
 
 ## Model validation
 
-Traditionally, validation in Silverstripe CMS has been mostly handled through [form validation](../forms).
-
-While this is a useful approach, it can lead to data inconsistencies if the record is modified outside of the form context.
+Traditionally, validation in Silverstripe CMS has been mostly handled through [form validation](../forms/validation). While this is a useful approach, it can lead to data inconsistencies if the record is modified outside of the form context.
 
 Most validation constraints are actually data constraints which belong on the model. Silverstripe CMS provides the
 [`DataObject::validate()`](api:SilverStripe\ORM\DataObject::validate()) method for this purpose. The `validate()` method is
@@ -69,7 +40,13 @@ class MyObject extends DataObject
     {
         $result = parent::validate();
 
-        if ($this->Country == 'DE' && $this->Postcode && strlen($this->Postcode) != 5) {
+        // This will add a field specific error to the ValidationResult
+        if (strlen($this->Postcode) > 10) {
+            $result->addFieldError('Postcode', 'Postcode is too long');
+        }
+
+        // This will add a general error to the ValidationResult
+        if ($this->Country == 'DE' && $this->Postcode && strlen($this->Postcode) !== 5) {
             $result->addError('Need five digits for German postcodes');
         }
 
@@ -77,6 +54,33 @@ class MyObject extends DataObject
     }
 }
 ```
+
+## Validation using `symfony/validator` constraints {#symfony-validator}
+
+The [`ConstraintValidator`](api:SilverStripe\Core\Validation\ConstraintValidator) class provides an abstraction around [`symfony/validator`](https://symfony.com/doc/current/components/validator.html), so you can easily validate values against symfony's validation constraints and get a [`ValidationResult`](api:SilverStripe\ORM\ValidationResult) object as a result.
+
+```php
+use SilverStripe\Core\Validation\ConstraintValidator;
+
+/**
+ * @var \Symfony\Component\Validator\Constraint $constraint
+ * @var \SilverStripe\ORM\ValidationResult $result
+ */
+$result = ConstraintValidator::validate($valueToValidate, $constraint);
+```
+
+To test if a URL is valid, for example:
+
+```php
+use SilverStripe\Core\Validation\ConstraintValidator;
+use Symfony\Component\Validator\Constraints\Url;
+
+$isValid = ConstraintValidator::validate($url, new Url())->isValid();
+```
+
+You can use most of the constraints listed in Symfony's [supported constraints](https://symfony.com/doc/current/reference/constraints.html) documentation, though note that some of them require additional symfony dependencies.
+
+Validation using constraints that rely on `symfony/doctrine` is explicitly not supported in Silverstripe CMS.
 
 ## API documentation
 
