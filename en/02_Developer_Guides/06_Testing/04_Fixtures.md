@@ -119,6 +119,9 @@ App\Test\Player:
     Team: =>App\Test\Team.crusaders
 ```
 
+> [!WARNING]
+> If your tests are failing and your database has table names that follow the fully qualified class names, you've probably forgotten to set the [`table_name`](api:SilverStripe\ORM\DataObject->table_name) configuration property on your namespaced class. See [introduction to the data model and ORM](/developer_guides/model/data_model_and_orm/) for more details.
+
 This `YAML` is broken up into three levels, signified by the indentation of each line. In the first level of
 indentation, `Player` and `Team`, represent the class names of the objects we want to be created.
 
@@ -193,25 +196,7 @@ $team->Players()->add($john);
 > As the YAML fixtures will call `write`, any `onBeforeWrite()` or default value logic will be executed as part of the
 > test.
 
-## Fixtures for namespaced classes
-
-You will need to use fully qualified class names in your YAML fixture files. In the above examples, they belong to the global namespace so there is nothing requires, but if you have a deeper DataObject, or it has a relationship to models that are part of the framework for example, you will need to include their namespaces:
-
-```yml
-App\Test\Player:
-  john:
-    Name: join
-App\Test\Team:
-  crusaders:
-    Name: Crusaders
-    Origin: Canterbury
-    Players: =>App\Test\Player.john
-```
-
-> [!WARNING]
-> If your tests are failing and your database has table names that follow the fully qualified class names, you've probably forgotten to implement `private static $table_name = 'Player';` on your namespaced class. See [DataObject](api:SilverStripe\ORM\DataObject) for an example.
-
-## Defining many_many_extraFields
+## Defining `many_many_extraFields`
 
 `many_many` relations can have additional database fields attached to the relationship. For example we may want to
 declare the role each player has in the team.
@@ -280,6 +265,58 @@ App\Test\Team:
         Role: Captain
       - =>App\Test\Player.jack:
         Role: Winger
+```
+
+## Fixtures in custom tables
+
+There are some scenarios, such as testing migration tasks, where you want fixtures that don't relate to a specific `DataObject` model.
+
+You'll need to make sure you create a table for these fixtures in the [`onBeforeLoadFixtures()`](api:SilverStripe\Dev\SapphireTest::onBeforeLoadFixtures()) method.
+
+```php
+namespace App\Tests;
+
+use SilverStripe\Dev\SapphireTest;
+use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;
+
+class MyMigrationTaskTest extends SapphireTest
+{
+    protected static $fixture_file = 'fixtures.yml';
+
+    /**
+     * If any of your tests drop the custom table, you need to set this property.
+     * This will ensure the table is recreated with all its fixtures before each test.
+     */
+    protected $usesTransactions = false;
+
+    public function onBeforeLoadFixtures(): void
+    {
+        // Make sure we have a table to migrate from
+        DB::get_schema()->schemaUpdate(function () {
+            DB::require_table(
+                'my_custom_table',
+                [
+                    'ID' => 'PrimaryKey'
+                    'Title' => 'Varchar',
+                    'Email' => 'Varchar',
+                    'FileID' => 'ForeignKey',
+                ],
+                options: DataObject::config()->get('create_table_options')
+            );
+        });
+        parent::onBeforeLoadFixtures();
+    }
+}
+```
+
+Then you can just use the name of the table as the key for all fixtures which will be created in it.
+
+```yml
+my_custom_table:
+  fixture01:
+    Title: 'migrate email 01'
+    Email: 'me@example.com'
 ```
 
 ## Fixture factories
