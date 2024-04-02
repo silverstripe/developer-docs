@@ -13,38 +13,44 @@ jobs:
       # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategyfail-fast
       fail-fast: false
       matrix:
-        script: [ 'lint-md', 'lint-js', 'lint-php' ]
-    name: ${{ matrix.script }}
+        lint_lang: [ 'lint-md', 'lint-js', 'lint-php' ]
+    name: ${{ matrix.lint_lang }}
     steps:
 
       - name: Checkout code
         uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
 
-      - name: Read .nvmrc
-        id: read-nvm
-        run: |
-          NPM_VERSION=$(cat .nvmrc)
-          echo "version=$NPM_VERSION" >> $GITHUB_OUTPUT
-
-      - name: Install NPM
-        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
-        with:
-          node-version: ${{ steps.read-nvm.outputs.version }}
-
-      - name: Install yarn dependencies
-        run: |
-          npm install --global yarn
-          yarn install
-
       - name: Install PHP
-        if: ${{ matrix.script == 'lint-php' }}
         uses: shivammathur/setup-php@1a18b2267f80291a81ca1d33e7c851fe09e7dfc4 # v2.22.0
         with:
           php-version: 8.1
 
       - name: Install composer dependencies
-        if: ${{ matrix.script == 'lint-php' }}
         run: composer install --prefer-dist --no-progress --ansi --no-interaction --optimize-autoloader
 
+      - name: Read .nvmrc
+        if: ${{ matrix.lint_lang == 'lint-md' || matrix.lint_lang == 'lint-js' }}
+        id: read-nvm
+        run: |
+          NPM_VERSION=$(cat vendor/silverstripe/documentation-lint/.nvmrc)
+          echo "version=$NPM_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Install NPM
+        if: ${{ matrix.lint_lang == 'lint-md' || matrix.lint_lang == 'lint-js' }}
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
+        with:
+          node-version: ${{ steps.read-nvm.outputs.version }}
+
+      - name: Install yarn
+        if: ${{ matrix.lint_lang == 'lint-md' || matrix.lint_lang == 'lint-js' }}
+        run: |
+          npm install --global yarn
+
       - name: Run lint
-        run: yarn ${{ matrix.script }}
+        run: |
+          LINT_LANG=${{ matrix.lint_lang }}
+          # Use string substitution to pull the "lint-" off the beginning of the `LINT_LANG` variable
+          # and add the "--with-" prefix so we have the correct flag for the language, e.g. "--with-md" from "lint-md"
+          FLAG="--with-${LINT_LANG#lint-}"
+          # Run the script
+          vendor/bin/doclint $FLAG
