@@ -12,17 +12,16 @@
     ],
     "authors": [
         {
-            "name": "SilverStripe",
+            "name": "Silverstripe",
             "homepage": "https://silverstripe.com"
         },
         {
-            "name": "The SilverStripe Community",
+            "name": "The Silverstripe Community",
             "homepage": "https://silverstripe.org"
         }
     ],
     "require-dev": {
-        "silverstripe/markdown-php-codesniffer": "^1",
-        "slevomat/coding-standard": "^8.14"
+        "silverstripe/documentation-lint": "^1"
     },
     "config": {
         "allow-plugins": {
