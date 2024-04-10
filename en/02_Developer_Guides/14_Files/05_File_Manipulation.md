@@ -1,10 +1,10 @@
 ---
-title: File manipulation
-summary: Learn how to manipulate file records in code
+title: File manipulation and conversion
+summary: Learn how to manipulate and convert file records in code
 icon: file-medical-alt
 ---
 
-# File manipulation
+# File manipulation and conversion
 
 Asset storage is provided out of the box via a [Flysystem](https://flysystem.thephpleague.com/docs/) backend store. This abstraction allows for files to be stored in any number of different ways, such as storing them in the cloud, so you cannot rely on having a local file path in order to get and manipulate the contents of any given asset.
 
@@ -155,7 +155,49 @@ if ($file) {
 }
 ```
 
-## Convert a file to a different format
+## Convert a file to a different format {#file-conversion}
+
+### The high-level API {#file-conversion-highlevel}
+
+The [`File`](api:SilverStripe\Assets\File) and [`DBFile`](api:SilverStripe\Assets\Storege\DBFile) classes share a trait which implements a [`Convert()`](api:SilverStripe\Assets\ImageManipulation::Convert()) method.
+
+When you call the method and pass in a file extension, if there is a converter registered which can handle conversion of your file to that format, the conversion will be performed.
+
+> [!TIP]
+> The extension in the URL of the resulting file is case sensitive - if you use all caps, the URL for the file will have a file extension in all caps.
+
+You can call the method in PHP or in templates. If the format you are converting *to* is an image format supported by Intervention Image, you can chain any of the [image manipulation methods](./images/) afterward.
+
+```php
+// Convert an image to webp format and apply the FitMax manipulation to the result
+$result = $this->MyImage()->Convert('webp')->FitMax(100, 100);
+```
+
+```ss
+<%-- Convert an image to webp format and apply the FitMax manipulation to the result --%>
+$MyImage.Convert('webp').FitMax(100, 100)
+```
+
+> [!WARNING]
+> Don't include a `.` before the extension. For example, this will not work:
+>
+> ```php
+> $result = $this->MyImage()->Convert('.webp');
+> ```
+
+If the file conversion fails, or there is no converter registered which supports it, it will return `null`, and nothing will be displayed in the template. The error will be logged.
+
+#### How everything is wired together
+
+There is a [`FileConverterManager`](api:SilverStripe\Assets\Conversion\FileConverterManager) class which has an array of classes that implement the [`FileConverter`](api:SilverStripe\Assets\Conversion\FileConverter) interface. These are stored in the [`FileConverterManager.converters`](api:SilverStripe\Assets\Conversion\FileConverterManager->converters) configuration array.
+
+When you call the `Convert()` method on a `File` or `DBFile` object, it tells the `FileConverterManager` to perform the conversion. The `FileConverterManager` loops through the registered converters and calls the [`FileConverter::supportsConversion()`](api:SilverStripe\Assets\Conversion\FileConverter::supportsConversion()) method on each of them until it finds one that can support the requested conversion.
+
+If it finds a converter that can support the conversion, it calls the [`FileConverter::Convert()`](api:SilverStripe\Assets\Conversion\FileConverter::Convert()) method on that converter and returns the result.
+
+If no converter can be found (or if the conversion fails), a [`FileConverterException`](api:SilverStripe\Assets\Conversion\FileConverterException) is thrown.
+
+### The low-level API {#file-conversion-lowlevel}
 
 You can use the [`manipulateExtension()`](api:SilverStripe\Assets\ImageManipulation::manipulateExtension()) method on any `File` or `DBFile` object to create a variant with a different file extension than the original.
 
@@ -165,48 +207,70 @@ This can be very useful if you want to convert a file to a different format for 
 - Converting images to `.webp` for faster page load times
 - Converting documents to `.pdf` so downloaded documents are more portable
 
-### Converting between image formats
+#### Making our own `FileConverter`
 
-Converting between image formats is the easiest example, because we can let [Intervention Image](https://image.intervention.io/v2) do the heavy lifting for us.
+Converting between image formats is the easiest example, because we can let [Intervention Image](https://image.intervention.io/v2) do the heavy lifting for us. Note that there is a built in [`InterventionImageFileConverter`](api:SilverStripe\Assets\Conversion\InterventionImageFileConverter) class which does this already, but we'll use this as an example for how to create our own `FileConverter`.
 
-All we need to do is tell it what extension we want to convert to and how to [handle conflicts](#storage-conflict-resolution), and if that conversion is supported it will be done.
+The `FileConverter` interface requires us to implement two methods:
 
-See [Supported Formats | Intervention Image](https://image.intervention.io/v2/introduction/formats) for supported formats.
+- `supportsConversion()` must return a boolean value indicating whether it would support a given conversion or not.
+- `convert()` performs the actual conversion, or throws a [`FileConverterException`](api:SilverStripe\Assets\Conversion\FileConverterException) on failure.
 
 ```php
-namespace App\Extension;
+namespace App\Conversion;
 
+use Intervention\Image\Exception\ImageException;
+use SilverStripe\Assets\Conversion\FileConverter;
+use SilverStripe\Assets\Conversion\FileConverterException;
 use SilverStripe\Assets\Storage\AssetStore;
 use SilverStripe\Assets\Storage\DBFile;
-use SilverStripe\Core\Extension;
 
-class ImageFormatExtension extends Extension
+class ImageFileConverter implements FileConverter
 {
-    /**
-     * Create a variant of the image in a different format.
-     *
-     * @param string $newExtension The file extension of the formatted file, e.g. "webp"
-     */
-    public function format(string $newExtension): DBFile
+    public function supportsConversion(string $fromExtension, string $toExtension, array $options = []): bool
     {
-        $original = $this->getOwner();
-        return $original->manipulateExtension(
-            $newExtension,
-            function (AssetStore $store, string $filename, string $hash, string $variant) use ($original) {
-                $backend = $original->getImageBackend();
-                $config = ['conflict' => AssetStore::CONFLICT_USE_EXISTING];
-                $tuple = $backend->writeToStore($store, $filename, $hash, $variant, $config);
-                return [$tuple, $backend];
-            }
-        );
+        $supported = true;
+        /* some logic here to check if this conversion is supported */
+        return $supported;
+    }
+
+    public function convert(DBFile $from, string $toExtension, array $options = []): DBFile
+    {
+        $from = $this->getOwner();
+        try {
+            return $from->manipulateExtension(
+                $toExtension,
+                function (AssetStore $store, string $filename, string $hash, string $variant) use ($from) {
+                    $backend = $from->getImageBackend();
+                    $config = ['conflict' => AssetStore::CONFLICT_USE_EXISTING];
+                    $tuple = $backend->writeToStore($store, $filename, $hash, $variant, $config);
+                    return [$tuple, $backend];
+                }
+            );
+        } catch (ImageException $e) {
+            throw new FileConverterException('Failed to convert: ' . $e->getMessage(), $e->getCode(), $e);
+        }
     }
 }
 ```
 
-Let's look at what's actually happening here, piece by piece.
+And we need to register the converter in the [`FileConverterManager`](api:SilverStripe\Assets\Conversion\FileConverterManager).
+
+The `Before: '#assetsconversion'` part here is optional - it can be used to mark your converter as a higher priority than the one defined in the `assetsconversion` configuration in `silverstripe/assets`.
+
+```yml
+---
+Before: '#assetsconversion'
+---
+SilverStripe\Assets\Conversion\FileConverterManager:
+  converters:
+    - 'App\Conversion\MyImageFileConverter'
+```
+
+Let's look at what's actually happening in the `convert()` method, piece by piece.
 
 ```php
-return $original->manipulateExtension($newExtension /* ... */);
+return $from->manipulateExtension($toExtension /* ... */);
 ```
 
 We call the `manipulateExtension()` method and pass in the file extension we want to convert our image to. If that variant file already exists, it won't call the callback method - the asset store system won't generate the file again if it already exists.
@@ -214,8 +278,8 @@ We call the `manipulateExtension()` method and pass in the file extension we wan
 We'll be returning the result of this manipulation, which will be a `DBFile` containing all of the relevant information about our new variant.
 
 ```php
-function (AssetStore $store, string $filename, string $hash, string $variant) use ($original) {
-    $backend = $original->getImageBackend();
+function (AssetStore $store, string $filename, string $hash, string $variant) use ($from) {
+    $backend = $from->getImageBackend();
     // ...
 };
 ```
@@ -250,60 +314,80 @@ The value returned from `writeToStore()` is an associative array with informatio
 return [$tuple, $backend];
 ```
 
-Finally, our callback returns both the information about the variant file and the `Image_Backend` object we used to generate it. Returning the `Image_Backend` here is important, because it will be used to perform any image-related manipulations we want to perform afterwards.
+Our callback returns both the information about the variant file and the `Image_Backend` object we used to generate it. Returning the `Image_Backend` here is important, because it will be used to perform any image-related manipulations we want to perform afterwards.
 
-Now we just need to apply the extension to both the `Image` and `DBFile` classes.
-
-```yml
-SilverStripe\Assets\Image:
-  extensions:
-    - App\Extension\ImageFormatExtension
-SilverStripe\Assets\Storage\DBFile:
-  extensions:
-    - App\Extension\ImageFormatExtension
+```php
+try {
+    // ...
+} catch (ImageException $e) {
+    throw new FileConverterException('Failed to convert: ' . $e->getMessage(), $e->getCode(), $e);
+}
 ```
 
-You can use this method in PHP code or in templates on any instance of `Image` or `DBFile`. It will create a [variant](./file_storage/#variant-file-paths) with the new file extension.
+Finally, if Intervention Image failed to perform the conversion for any reason, we catch its exception and wrap it in the expected `FileConverterException`.
+
+As described in [the high-level API](#file-conversion-highlevel) above, you can use the `Convert()` method in PHP code or in templates on any instance of `File` or `DBFile`, and this converter will be used to perform the conversion.
 
 For example, if your page has a relation called `MyImage` to an `Image` record:
 
 ```ss
-$MyImage.format('webp').ScaleWidth(150)
+$MyImage.Convert('webp').ScaleWidth(150)
 ```
 
 See [images](./images/) for more information about image-specific manipulation methods.
 
-### Converting between other formats
+#### Converting between other formats
 
-Converting between other formats (including a non-image to an image) is a little bit more involved, because we have to find another library that will do the conversion for us and then store the new content.
+Converting between other formats (including a non-image to an image) is a little bit more involved, because we have to find a third-party library that will do the conversion for us and then store the new content.
 
-Below are two examples for these conversions - one where the file is converted to an image, and another where the file is converted to a PDF.
+Below are two examples for these conversions - one where a file is converted to an image, and another where a file is converted to a PDF.
 
 These examples won't include performing the actual conversion from one format to another, because that would need to be handled by some third-party library. Instead, they demonstrate how to use the `manipulateExtension()` API to store the converted files as variants.
 
 ```php
-namespace App\Extension;
+namespace App\Conversion;
 
+use SilverStripe\Assets\Conversion\FileConverter;
+use SilverStripe\Assets\Conversion\FileConverterException;
 use SilverStripe\Assets\Image_Backend;
 use SilverStripe\Assets\Storage\AssetStore;
 use SilverStripe\Assets\Storage\DBFile;
-use SilverStripe\Core\Extension;
 use SilverStripe\Core\Injector\Injector;
 
-class FileConversionExtension extends Extension
+class MyFileConverter implements FileConverter
 {
-    /**
-     * Create a variant of the file as an image.
-     *
-     * @param string $newExtension The file extension of the image to create, e.g. "webp"
-     */
-    public function toImage(string $newExtension): DBFile
+    public function supportsConversion(string $fromExtension, string $toExtension, array $options = []): bool
     {
-        /** Add some logic here to validate the conversion is supported */
+        $supported = true;
+        /* some validation here to check if this conversion is supported */
+        return $supported;
+    }
 
-        $original = $this->getOwner();
-        return $original->manipulateExtension(
-            $newExtension,
+    public function convert(DBFile $from, string $toExtension, array $options = []): DBFile
+    {
+        $fromExtension = $from->getExtension();
+        if (!$this->supportsConversion($fromExtension, $toExtension, $options)) {
+            throw new FileConverterException(
+                "Conversion from '$fromExtension' to '$toExtension with those options is not supported."
+            );
+        }
+
+        // Handle conversion to PDF
+        if (strtolower($toExtension) === 'pdf') {
+            return $file->manipulateExtension(
+                $toExtension,
+                function (AssetStore $store, string $filename, string $hash, string $variant) {
+                    $tmpFilePath = /* some conversion logic goes here */;
+                    $config = ['conflict' => AssetStore::CONFLICT_USE_EXISTING];
+                    $tuple = $store->setFromLocalFile($tmpFilePath, $filename, $hash, $variant, $config);
+                    return [$tuple, null];
+                }
+            );
+        }
+
+        // Handle conversion to image
+        return $from->manipulateExtension(
+            $toExtension,
             function (AssetStore $store, string $filename, string $hash, string $variant) {
                 $tmpFilePath = /* some conversion logic goes here */;
                 $backend = Injector::inst()->create(Image_Backend::class);
@@ -314,44 +398,22 @@ class FileConversionExtension extends Extension
             }
         );
     }
-
-    /**
-     * Create a variant of the file as a pdf.
-     */
-    public function toPdf(): DBFile
-    {
-        /** Add some logic here to validate the conversion is supported */
-
-        $original = $this->getOwner();
-        return $file->manipulateExtension(
-            'pdf',
-            function (AssetStore $store, string $filename, string $hash, string $variant) {
-                $tmpFilePath = /* some conversion logic goes here */;
-                $config = ['conflict' => AssetStore::CONFLICT_USE_EXISTING];
-                $tuple = $store->setFromLocalFile($tmpFilePath, $filename, $hash, $variant, $config);
-                return [$tuple, null];
-            }
-        );
-    }
 }
 ```
 
-After applying the extension to both the `File` and `DBFile` classes, you can use these methods in PHP or in templates.
+After registering the converter with `FileConverterManager`, it will be available via the `Convert()` method on any file record.
 
 ```yml
-SilverStripe\Assets\File:
-  extensions:
-    - App\Extension\ImageFormatExtension
-SilverStripe\Assets\Storage\DBFile:
-  extensions:
-    - App\Extension\ImageFormatExtension
+SilverStripe\Assets\Conversion\FileConverterManager:
+  converters:
+    - 'App\Conversion\MyFileConverter'
 ```
 
-Okay, now lets step through those and take a look at what's going on. We'll only look at the parts that are different from the image-to-image conversion [we looked at earlier](#converting-between-image-formats).
+Okay, now lets step through those conversions and take a look at what's going on. We'll only look at the parts that are different from the image-to-image conversion [we looked at earlier](#making-our-own-fileconverter).
 
-#### Converting something to an image
+##### Converting something to an image
 
-The main difference between converting between images, and converting a non-image to an image, is that you have to get a third-party to perform the conversion for you.
+The main difference between converting from one image to another compared with converting a non-image to an image, is that you have to get a third-party to perform the conversion for you.
 
 ```php
 $tmpFilePath = /* some conversion logic goes here */;
@@ -363,7 +425,7 @@ After the actual file conversion has happened, and you have the new file content
 
 The rest is the same as when we were converting from an image - we still get Intervention Image to store the variant file for us, and we make sure to include the `Image_Backend` object in our returned value.
 
-#### Converting something to something else
+##### Converting something to something else
 
 When the format we're converting to is *not* an image, things are a little simpler. Again, we have to perform the conversion ourselves.
 
