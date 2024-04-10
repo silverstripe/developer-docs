@@ -24,6 +24,11 @@ There's a bit more to it than that, and if you want to learn more about GraphQL,
 the [full documentation](https://graphql.org/learn/), but for now, these three concepts will
 serve almost all of your needs to get started.
 
+> [!TIP]
+> It is strongly recommended that you install the [GraphQL devtools](https://github.com/silverstripe/silverstripe-graphql-devtools) module to help with testing your API.
+>
+> Included in that module is a `GraphQLSchemaInitTask` task to initialise a basic GraphQL schema to get you started. Instructions for using the task are included in the module's README.md.
+
 ### Initial setup
 
 To start your first schema, open a new configuration file. Let's call it `graphql.yml`.
