@@ -86,7 +86,7 @@ use SilverStripe\ORM\Search\BasicSearchContext;
 $searchContext = BasicSearchContext::create(null);
 $searchFields = [
     HiddenField::create(BasicSearchContext::config()->get('general_search_field_name')),
-    TextField::create('FeldName', 'Search Field Label'),
+    TextField::create('FieldName', 'Search Field Label'),
 ];
 // Pass the BasicSearchContext into the GridFieldFilterHeader component
 $searchContext->setFields(FieldList::create($searchFields));
@@ -127,7 +127,7 @@ use SilverStripe\Forms\TextField;
 $detailForm = GridFieldDetailForm::create();
 $detailForm->setFields(FieldList::create([
     HiddenField::create('ID'),
-    TextField::create('FeldName', 'View Field Label'),
+    TextField::create('FieldName', 'View Field Label'),
 ]));
 $gridField->getConfig()->addComponents([
     GridFieldViewButton::create(),
@@ -295,7 +295,7 @@ class DataRepresentation extends ViewableData
     {
         return FieldList::create([
             HiddenField::create('ID'),
-            TextField::create('FeldName', 'View Field Label'),
+            TextField::create('FieldName', 'View Field Label'),
         ]);
     }
 
