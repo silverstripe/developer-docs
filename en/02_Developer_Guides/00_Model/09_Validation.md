@@ -35,9 +35,7 @@ Validation using constraints that rely on `symfony/doctrine` is explicitly not s
 
 ## Model validation
 
-Traditionally, validation in Silverstripe CMS has been mostly handled through [form validation](../forms).
-
-While this is a useful approach, it can lead to data inconsistencies if the record is modified outside of the form context.
+Traditionally, validation in Silverstripe CMS has been mostly handled through [form validation](../forms/validation). While this is a useful approach, it can lead to data inconsistencies if the record is modified outside of the form context.
 
 Most validation constraints are actually data constraints which belong on the model. Silverstripe CMS provides the
 [`DataObject::validate()`](api:SilverStripe\ORM\DataObject::validate()) method for this purpose. The `validate()` method is
@@ -69,7 +67,13 @@ class MyObject extends DataObject
     {
         $result = parent::validate();
 
-        if ($this->Country == 'DE' && $this->Postcode && strlen($this->Postcode) != 5) {
+        // This will add a field specific error to the ValidationResult
+        if (strlen($this->Postcode) > 10) {
+            $result->addFieldError('Postcode', 'Postcode is too long');
+        }
+
+        // This will add a general error to the ValidationResult
+        if ($this->Country == 'DE' && $this->Postcode && strlen($this->Postcode) !== 5) {
             $result->addError('Need five digits for German postcodes');
         }
 
