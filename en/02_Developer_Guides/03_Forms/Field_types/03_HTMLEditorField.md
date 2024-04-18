@@ -142,6 +142,8 @@ TinyMCEConfig::get('cms')->removeButtons('tablecontrols', 'blockquote', 'hr');
 TinyMCE behaviour can be affected through its [configuration options](https://www.tiny.cloud/docs/tinymce/6/basic-setup).
 These options will be passed straight to the editor.
 
+A default set of options has been defined in the [`TinyMCEConfig.default_options`](api:SilverStripe\Forms\HTMLEditor\TinyMCEConfig->default_options) configuration property.
+
 One example of the usage of this capability is to redefine the TinyMCE's [whitelist of HTML
 tags](https://www.tiny.cloud/docs/tinymce/6/content-filtering/#extended_valid_elements) - the tags that will not be stripped
 from the HTML source by the editor.
