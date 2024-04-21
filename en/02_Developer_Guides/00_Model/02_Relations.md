@@ -899,6 +899,9 @@ Eager loading supports all relationship types.
 
 ### Manipulating eager loading queries
 
+> [!INFO]
+> The filtering functionality in the Eager loading API is available from version 5.2.
+
 There are some limitations to manipulating an `EagerLoadedList` (i.e. after the query has been executed).
 
 The main limitation is that filtering or sorting an `EagerLoadedList` will be done in PHP rather than as part of the database query, since we have already loaded all its relevant data into memory.

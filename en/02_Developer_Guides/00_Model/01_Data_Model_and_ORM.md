@@ -624,6 +624,9 @@ public function countDuplicates($model, $fieldToCheck)
 
 ### Common table expressions (CTE aka the `WITH` clause) {#cte}
 
+> [!INFO]
+> Common Table Expressions are available from version 5.2.
+
 Common Table Expressions are a powerful tool both for optimising complex queries, and for creating recursive queries. You can use these by calling the [`DataQuery::with()`](api:SilverStripe\ORM\DataQuery::with()) method.
 
 Note that there is no direct abstraction for this on `DataList`, so you'll need to [modify the underlying `DataQuery`](#modifying-the-underlying-query) to apply a CTE to a `DataList`.

@@ -36,6 +36,9 @@ Backtrace::backtrace();
 
 ## Debugging database queries
 
+> [!INFO]
+> This functionality is available from version 5.2.
+
 You can opt in to including a comment on all ORM queries indicating where the query was executed by setting the [DBQueryBuilder.trace_query_origin](api:SilverStripe\ORM\Connect\DBQueryBuilder->trace_query_origin) configuration property or the `SS_TRACE_DB_QUERY_ORIGIN` environment variable to `true`.
 
 Note that the environment variable, if set, will take precedence over the configuration property value.

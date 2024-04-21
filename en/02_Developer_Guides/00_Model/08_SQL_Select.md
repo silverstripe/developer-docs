@@ -413,6 +413,9 @@ foreach ($columns as $alias => $ansiQuotedColumn) {
 
 ### Common table expressions (CTE aka the `WITH` clause) {#cte}
 
+> [!INFO]
+> Common Table Expressions are available from version 5.2.
+
 Common Table Expressions are a powerful tool both for optimising complex queries, and for creating recursive queries. You can use these by calling the [`SQLSelect::addWith()`](api:SilverStripe\ORM\Queries\SQLSelect::addWith()) method.
 
 Older database servers don't support this functionality, and the core implementation is only valid for MySQL (though community modules may add support for other database connectors). If you are using this functionality in an open source module or a project that you can't guarantee the type and version of database being used, you should wrap the query in a condition checking if CTEs are supported. You can do that by calling [`DB::get_conn()->supportsCteQueries()`](api:SilverStripe\ORM\Connect\Database::supportsCteQueries()).
