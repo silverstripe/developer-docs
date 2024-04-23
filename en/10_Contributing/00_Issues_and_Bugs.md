@@ -105,6 +105,7 @@ The current GitHub labels are grouped into five sections:
 | type/ux | Impact on the CMS user interface |
 | type/docs | A docs change |
 | type/userhelp | A userhelp documentation change |
+| type/i18n | Relates to localisation/translations |
 | type/other | Any issue that does not is not covered by another type label e.g. general maintainence |
 | affects/* | Issue has been observed on a specific CMS release line |
 | rfc/draft | [RFC](/project_governance/request_for_comment) under discussion |
