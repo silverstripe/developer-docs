@@ -6,7 +6,7 @@ icon: check-square
 
 # Form validation
 
-> [!HINT]
+> [!TIP]
 > Before you start implementing custom validation logic, check out [validation using `symfony/validator` constraints](/developer_guides/model/validation/#validation-and-constraints)
 > and see if there's an existing constraint that can do the heavy lifting for you.
 
