@@ -530,8 +530,18 @@ class TeamSupporter extends DataObject
 You can filter on the relation by the extra fields automatically, assuming they don't conflict with names of fields on other tables in the query.
 
 ```php
-$team = Team::get()->byId(1);
+$team = Team::get()->byID(1);
 $supporters = $team->Supporters()->filter(['Ranking' => 1]);
+```
+
+If the field names conflict, you can explicitly query the field from the join record using raw SQL. There are potential security concerns to consider with this approach. See [raw SQL](/developer_guides/model/data_model_and_orm/#raw-sql) for more information.
+
+```php
+use SilverStripe\ORM\DataObject;
+
+$rankingColumn = DataObject::getSchema()->sqlColumnForField(TeamSupporter::class, 'Ranking');
+$team = Team::get()->byID(1);
+$supporters = $team->Supporters()->where([$rankingColumn => 1]);
 ```
 
 > [!TIP]
