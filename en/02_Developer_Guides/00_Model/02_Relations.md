@@ -498,12 +498,15 @@ class TeamSupporter extends DataObject
 }
 ```
 
-In order to filter on the join table during queries, you can use the class name of the joining table
+In order to filter on the join table during queries, you can use the table name of the joining table
 for any sql conditions.
 
 ```php
-$team = Team::get()->byId(1);
-$supporters = $team->Supporters()->where(['"TeamSupporter"."Ranking"' => 1]);
+use SilverStripe\ORM\DataObject;
+
+$rankingColumn = DataObject::getSchema()->sqlColumnForField(TeamSupporter::class, 'Ranking');
+$team = Team::get()->byID(1);
+$supporters = $team->Supporters()->where([$rankingColumn => 1]);
 ```
 
 Note: ->filter() currently does not support joined fields natively due to the fact that the
