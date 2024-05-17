@@ -8,6 +8,9 @@ icon: check-square
 
 ## Validation using `symfony/validator` constraints {#symfony-validator}
 
+> [!INFO]
+> The `symfony/validator` integration is available from version 5.2.
+
 The [`ConstraintValidator`](api:SilverStripe\Core\Validation\ConstraintValidator) class provides an abstraction around [`symfony/validator`](https://symfony.com/doc/current/components/validator.html), so you can easily validate values against symfony's validation constraints and get a [`ValidationResult`](api:SilverStripe\ORM\ValidationResult) object with the result.
 
 ```php

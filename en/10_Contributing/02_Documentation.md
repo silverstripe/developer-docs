@@ -117,6 +117,7 @@ documenting, there shouldn't be any "frequently asked questions" left.
 - When referencing directories, always add a trailing slash to avoid confusions with regular files.
 - "Silverstripe CMS" is used to refer to the Silverstripe CMS open source project as a whole.
 - "Silverstripe" is used to refer to the company, where appropriate.
+- When writing about a change introduced in a minor/patch release, include an Info box that declares the version it is relevant from, e.g. "This feature is available from version 5.2."
 
 ## Extended markdown syntax
 

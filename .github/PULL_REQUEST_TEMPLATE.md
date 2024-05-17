@@ -28,5 +28,6 @@
 - [ ] The commit messages follow our [commit message guidelines](https://docs.silverstripe.org/en/contributing/code/#commit-messages)
 - [ ] The PR follows our [contribution guidelines](https://docs.silverstripe.org/en/contributing/documentation/)
 - [ ] The changes follow our [writing style guide](https://docs.silverstripe.org/en/contributing/documentation/#writing-style)
+- [ ] Changes that are only effective from a certain minor version have an Info box flagging as such
 - [ ] Code examples follow our [coding conventions](https://docs.silverstripe.org/en/contributing/coding_conventions/)
 - [ ] CI is green

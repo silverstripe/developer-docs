@@ -157,6 +157,9 @@ if ($file) {
 
 ## Convert a file to a different format {#file-conversion}
 
+> [!INFO]
+> The conversion APIs are available from version 5.2.
+
 ### The high-level API {#file-conversion-highlevel}
 
 The [`File`](api:SilverStripe\Assets\File) and [`DBFile`](api:SilverStripe\Assets\Storege\DBFile) classes share a trait which implements a [`Convert()`](api:SilverStripe\Assets\ImageManipulation::Convert()) method.
