@@ -293,6 +293,18 @@ page.
 > This demonstrates the concept of scope ([see scope below](#scope)). When inside a `<% loop %>` the scope of the template has changed to the
 > object that is being looped over.
 
+You can also use `<% loop %>` without explicitly saying what to loop over. This will result in looping over whatever is currently in scope.
+
+This can be particularly useful when you have collections within collections.
+
+```ss
+<% loop $MyLists %>
+  <% loop %>
+      This is looping over each of the collections that are contained inside the \$MyLists collection.
+  <% end_loop %>
+<% end_loop %>
+```
+
 ### Altering the list
 
 `<% loop %>` statements often iterate over [`SS_List`](api:SilverStripe\ORM\SS_List) instances. As the template has access to the list object,
