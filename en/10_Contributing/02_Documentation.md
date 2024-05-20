@@ -93,30 +93,53 @@ yarn lint --fix
 
 ## Writing style
 
-- Write in second person form, addressing the reader. For example "First you'll install a webserver" is good style.
-- If referring to maintainers of Silverstripe CMS, either explicitly say "the maintainers", or write in second person plural form (use "we" instead of "I").
-- Use gender neutral language throughout the document, unless referencing a specific person. Use them, they, their, instead of he and she, his or her.
-- Use simple language and words. Avoid uncommon jargon and overly long words. Remember that not everyone speaks English as their primary language.
-- Use UK English, not US English. Silverstripe CMS is proudly a New Zealand open source project we use the UK spelling and forms of English. The most common of these differences are -ize vs -ise, or -or vs our (eg color vs colour).
-- Write in an active and direct voice.
+### Voice and tone
+
+- Use an active voice.
+- Use plain language for easier comprehension. Avoid uncommon jargon and overly long words. Remember that not everyone speaks English as their primary language.
+- Keep sentences clear and concise.
+
+### Content structure
+
+- Structure content around a single topic.
+- Use appropriate markdown. The use of code blocks, lists, tables and callout blocks make technical writing easier to scan.
+- Use descriptive headings and subheadings organised in a hierarchy.
+- Avoid FAQs as they are not a replacement for coherent, well explained documentation.
+
+### Language and grammar
+
+- Use UK English. The most common differences are -ize vs -ise, and -or vs -our (eg color vs colour).
+- Spell out acronyms the first time, with the abbreviation in brackets.
+  - If an acronym is well established, such as "API", you don't need to spell it out.
+- Use gender-neutral language and singular "they" instead of "he/she/his/her".
 - Avoid saying words like "obviously" or "of course". Things that are obvious to you as the writer may not be so obvious to the person reading the documentation.
-- Avoid FAQs. FAQs are not a replacement for coherent, well explained documentation. If you've done a good job
-documenting, there shouldn't be any "frequently asked questions" left.
+- Use meaningful link text, i.e. avoid the use of "click here" link text.
+- Use i.e. and e.g. with dots.
 - We use sentence case for titles. Only capitalise the first letter of the first word of a title. The only exceptions to this are when using brand names (e.g. GitHub), acronyms (e.g. PHP) and class names (e.g. `ModelAdmin`).
-- Use `example.com` as the domain of sample URLs and `example.org` and `example.net` when additional domains are required. All of these domains are [reserved by the IANA](https://tools.ietf.org/html/rfc2606#section-3).
-- Use appropriate markdown. The use of code blocks, emphasis, lists, and tables make technical writing easier to scan.
-- Never leave spaces at the end of a line.
-- Use an empty line to separate paragraphs.
-- Sentence case your bullet points. If a bullet point is a full sentence then end with a full stop. If it is a sentence fragment or a comma separated list, full stops are not required.
-- All code blocks must have an appropriate syntax highlighting hint. For plain text, use "text".
+
+### Code blocks
+
+- All code fences must have an appropriate syntax highlighting hint. Use `text` for plain text.
+- Do not put a `$` in front of lines of bash code examples.
+- Code examples must follow [coding conventions](/contributing/coding_conventions/) for that language.
+- Use `App` when the code requires a vendor name (e.g. as the root for namespaces).
 - If it's useful to include the filename that a code block relates to, do so in a comment in the first line of the code block.
   - Don't place a blank line after this comment, unless the next line is also a comment.
-- Code examples should follow our [coding conventions](./coding_conventions).
-- Use `App` when the code requires a vendor name (e.g. as the root for namespaces).
-- Do not put a `$` in front of lines of bash code examples.
-- When referencing directories, always add a trailing slash to avoid confusions with regular files.
-- "Silverstripe CMS" is used to refer to the Silverstripe CMS open source project as a whole.
-- "Silverstripe" is used to refer to the company, where appropriate.
+
+### References to various things
+
+- Add a trailing slash to directory references to distinguish from regular files.
+- [Link to Silverstripe API docs](#links-to-api-documentation) for the first reference to a Silverstripe PHP class on a page. For subsequent references, use just the class name surrounded with backticks.
+- Use `example.com` as the domain of sample URLs and `example.org` and `example.net` when additional domains are required. All of these domains are [reserved by the IANA](https://tools.ietf.org/html/rfc2606#section-3).
+- Spell "Silverstripe" with an uppercase 'S' at the beginning and a lowercase 's' in the middle.
+- Refer to the company as "Silverstripe."
+- Use "Silverstripe CMS" to refer to the Silverstripe CMS open source project as a whole
+- If referring to maintainers of Silverstripe CMS, either explicitly say "the maintainers", or write in second person plural form (use "we" instead of "I").
+
+### Markdown linting
+
+- Documentation will be automatically linted in CI.
+- Many of the linting rules are not mentioned in this writing style guide, though all linting rules will need to be adherred to in order for your documentation pull-request to be merged. The failed linting CI build will clearly highlight what needs to be fixed.
 
 ## Extended markdown syntax
 
