@@ -74,7 +74,7 @@ class Dog extends DataObject
 > {
 >     // ...
 >
->     public function onBeforeWrite()
+>     protected function onBeforeWrite()
 >     {
 >         // Only do this if the record hasn't been written to the database yet (optional)
 >         if (!$this->isInDb()) {

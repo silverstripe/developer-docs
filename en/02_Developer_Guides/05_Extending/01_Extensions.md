@@ -256,7 +256,7 @@ use SilverStripe\ORM\DataExtension;
 
 class MyMemberExtension extends DataExtension
 {
-    public function updateValidator($validator)
+    protected function updateValidator($validator)
     {
         // we want to make date of birth required for each member
         $validator->addRequiredField('DateOfBirth');
@@ -288,7 +288,7 @@ class MyMemberExtension extends DataExtension
         'Image' => 'Image',
     ];
 
-    public function updateCMSFields(FieldList $fields)
+    protected function updateCMSFields(FieldList $fields)
     {
         $fields->push(TextField::create('Position'));
         $fields->push($upload = UploadField::create('Image', 'Profile Image'));

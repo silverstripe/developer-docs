@@ -43,12 +43,12 @@ class MyMemberExtension extends DataExtension
     /**
      * This extension hook is called when a member's session is restored from "remember me" cookies
      */
-    public function memberAutoLoggedIn()
+    protected function memberAutoLoggedIn()
     {
         $this->logVisit();
     }
 
-    public function updateCMSFields(FieldList $fields)
+    protected function updateCMSFields(FieldList $fields)
     {
         $fields->addFieldsToTab('Root.Main', [
             ReadonlyField::create('LastVisited', 'Last visited'),

@@ -473,7 +473,7 @@ use SilverStripe\Forms\GridField\GridFieldFilterHeader;
  */
 class ModelAdminExtension extends Extension
 {
-    public function updateGridFieldConfig(GridFieldConfig &$config)
+    protected function updateGridFieldConfig(GridFieldConfig &$config)
     {
         $config->addComponent(GridFieldFilterHeader::create());
     }

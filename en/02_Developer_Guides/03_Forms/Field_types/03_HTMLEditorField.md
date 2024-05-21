@@ -387,7 +387,7 @@ use SilverStripe\Forms\Form;
 
 class RemoteFileFormFactoryExtension extends Extension
 {
-    public function updateForm(Form $form)
+    protected function updateForm(Form $form)
     {
         $form->Fields()->removeByName('CaptionText');
     }

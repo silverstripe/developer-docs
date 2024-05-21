@@ -64,7 +64,7 @@ use SilverStripe\Core\Extension;
 
 class NewsPageHolderCMSMainExtension extends Extension
 {
-    public function updateListView($listView)
+    protected function updateListView($listView)
     {
         $parentId = $listView->getController()->getRequest()->requestVar('ParentID');
         $parent = ($parentId) ? Page::get()->byId($parentId) : Page::create();
