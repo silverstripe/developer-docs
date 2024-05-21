@@ -177,7 +177,7 @@ use SilverStripe\Forms\TextareaField;
 
 class MyFormFactoryExtension extends Extension
 {
-    public function updateFormFields(FieldList $fields)
+    protected function updateFormFields(FieldList $fields)
     {
         $fields->insertAfter(
             'Title',

@@ -381,7 +381,7 @@ class AssetStoreExtension extends Extension
      *   to say if we are serving a public or protected file. It may contain a
      *   `parsedFileID` detailing how FlysystemAssetStore has resolved $asset.
      */
-    public function updateResponse(
+    protected function updateResponse(
         HTTPResponse $response,
         string $asset,
         array $context

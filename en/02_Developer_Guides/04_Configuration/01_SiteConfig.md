@@ -51,7 +51,7 @@ class CustomSiteConfig extends Extension
         'FooterContent' => 'HTMLText',
     ];
 
-    public function updateCMSFields(FieldList $fields)
+    protected function updateCMSFields(FieldList $fields)
     {
         $fields->addFieldToTab('Root.Main', HTMLEditorField::create('FooterContent', 'Footer Content'));
     }

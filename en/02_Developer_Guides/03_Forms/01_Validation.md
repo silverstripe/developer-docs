@@ -87,7 +87,7 @@ use SilverStripe\Forms\Validator;
 
 class FormFieldValidationExtension extends Extension
 {
-    public function updateValidationResult(bool &$result, Validator $validator)
+    protected function updateValidationResult(bool &$result, Validator $validator)
     {
         if (str_ends_with($this->owner->Value(), '@example.com')) {
             $validator->validationError($this->owner->Name(), 'Please provide a valid email address');

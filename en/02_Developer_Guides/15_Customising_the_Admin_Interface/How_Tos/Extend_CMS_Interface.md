@@ -105,7 +105,7 @@ class BookmarkedPageExtension extends DataExtension
         'IsBookmarked' => 'Boolean',
     ];
 
-    public function updateCMSFields(FieldList $fields)
+    protected function updateCMSFields(FieldList $fields)
     {
         $fields->addFieldToTab(
             'Root.Main',
