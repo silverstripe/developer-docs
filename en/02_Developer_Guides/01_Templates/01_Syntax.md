@@ -271,7 +271,7 @@ include.
 
 ## Looping over lists
 
-The `<% loop %>` tag is used to iterate or loop over a collection of items such as [DataList](api:SilverStripe\ORM\DataList) or an [ArrayList](api:SilverStripe\ORM\ArrayList)
+The `<% loop %>` tag is used to iterate or loop over a collection of items such as a native PHP array, a [DataList](api:SilverStripe\ORM\DataList), or an [ArrayList](api:SilverStripe\ORM\ArrayList)
 collection.
 
 ```ss
@@ -589,16 +589,20 @@ $Pages->First
 ```
 
 You can also use the `$Me` variable, which outputs the current object in scope by calling `forTemplate()` on the object.
-
-```ss
-<%-- app/templates/App/PageType/Layout/HomePage.ss --%>
-
-<%-- calls forTemplate() on the current object in scope and prints Page: Home --%>
-$Me
-```
+This is especially helpful when you want to directly render items in a list you're looping over.
 
 > [!WARNING]
 > If the object does not have a `forTemplate()` method implemented, this will throw an error.
+
+```ss
+<% loop $Pages %>
+    <%-- calls forTemplate() on the current object in scope and prints Page: Home --%>
+    $Me
+<% end_loop %>
+```
+
+> [!NOTE]
+> If you use `$Me` in a control block such as `<% if $Me %>` or `<% loop $Me %>` it references the item directly rather than calling `forTemplate()` on it.
 
 ## Comments
 
