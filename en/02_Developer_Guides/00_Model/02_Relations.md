@@ -1019,7 +1019,7 @@ class Team extends DataObject
     ];
 
     // Unlink the relationship when the parent object is deleted
-    private static array $cascade_duplicates = [
+    private static array $cascade_deletes = [
         'SupportersRelation',
     ];
 
