@@ -989,11 +989,13 @@ class ParentObject extends DataObject
 }
 ```
 
-In this example, when the parent object is deleted, the child specified by the `has_one` relation will also be deleted. The relation types `has_many`, `belongs_to`, and `has_one` are supported, as are methods that return lists of objects but do not correspond to a physical database relation.
+In this example, when the parent object is deleted, the child specified by the `has_one` relation will also be deleted.
+
+All relation types (`has_many`, `many_many`, `belongs_many_many`, `belongs_to`, and `has_one`) are supported, as are methods that return lists of objects but do not correspond to a physical database relation. In all cases the child defined in `cascade_deletes` will be deleted, never unlinked.
 
 ### Cascading deletions for `many_many` relations
 
-When the parent object is deleted, the end child specified by the `cascade_deletes` will also be removed, not unlinked. To remove the link between the two objects, use `has_many` on the relation object directly to create an alternate view of the relationship which can be unlinked.
+When the parent object is deleted, the end child specified by the `cascade_deletes` will also be removed, not unlinked. To remove just the link between the two objects, use `has_many` on the relation object directly to create an alternate view of the relationship which can be unlinked.
 
 For example:
 
@@ -1026,6 +1028,8 @@ class Team extends DataObject
     // ...
 }
 ```
+
+This will avoid the situation where related children used by many data objects are removed from all parents because a single parent was deleted.
 
 ### Cascading deletions with versions
 
