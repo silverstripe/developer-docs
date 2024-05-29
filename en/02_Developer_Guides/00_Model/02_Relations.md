@@ -997,6 +997,8 @@ All relation types (`has_many`, `many_many`, `belongs_many_many`, `belongs_to`, 
 
 When the parent object is deleted, the end child specified by the `cascade_deletes` will also be removed, not unlinked. To remove just the link between the two objects, use `has_many` on the relation object directly to create an alternate view of the relationship which can be unlinked.
 
+Note that this requires using the [`many_many` through](#many-many-through) style relation. A regular `many_many` relation cannot be used this way.
+
 For example:
 
 ```php
