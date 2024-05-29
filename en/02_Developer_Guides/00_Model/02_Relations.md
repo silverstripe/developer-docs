@@ -991,7 +991,7 @@ class ParentObject extends DataObject
 
 In this example, when the parent object is deleted, the child specified by the `has_one` relation will also be deleted. The relation types `has_many`, `belongs_to`, and `has_one` are supported, as are methods that return lists of objects but do not correspond to a physical database relation.
 
-### Cascading deletions with `has_many`
+### Cascading deletions for `many_many` relations
 
 When the parent object is deleted, the end child specified by the `cascade_deletes` will also be removed, not unlinked. To remove the link between the two objects, use `has_many` on the relation object directly to create an alternate view of the relationship which can be unlinked.
 
