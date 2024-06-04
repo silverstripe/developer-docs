@@ -222,6 +222,7 @@ namespace App\Conversion;
 use Intervention\Image\Exception\ImageException;
 use SilverStripe\Assets\Conversion\FileConverter;
 use SilverStripe\Assets\Conversion\FileConverterException;
+use SilverStripe\Assets\File;
 use SilverStripe\Assets\Storage\AssetStore;
 use SilverStripe\Assets\Storage\DBFile;
 
@@ -234,7 +235,7 @@ class ImageFileConverter implements FileConverter
         return $supported;
     }
 
-    public function convert(DBFile $from, string $toExtension, array $options = []): DBFile
+    public function convert(DBFile|File $from, string $toExtension, array $options = []): DBFile
     {
         $from = $this->getOwner();
         try {
@@ -349,6 +350,7 @@ namespace App\Conversion;
 
 use SilverStripe\Assets\Conversion\FileConverter;
 use SilverStripe\Assets\Conversion\FileConverterException;
+use SilverStripe\Assets\File;
 use SilverStripe\Assets\Image_Backend;
 use SilverStripe\Assets\Storage\AssetStore;
 use SilverStripe\Assets\Storage\DBFile;
@@ -363,7 +365,7 @@ class MyFileConverter implements FileConverter
         return $supported;
     }
 
-    public function convert(DBFile $from, string $toExtension, array $options = []): DBFile
+    public function convert(DBFile|File $from, string $toExtension, array $options = []): DBFile
     {
         $fromExtension = $from->getExtension();
         if (!$this->supportsConversion($fromExtension, $toExtension, $options)) {
@@ -374,7 +376,7 @@ class MyFileConverter implements FileConverter
 
         // Handle conversion to PDF
         if (strtolower($toExtension) === 'pdf') {
-            return $file->manipulateExtension(
+            return $from->manipulateExtension(
                 $toExtension,
                 function (AssetStore $store, string $filename, string $hash, string $variant) {
                     $tmpFilePath = /* some conversion logic goes here */;
