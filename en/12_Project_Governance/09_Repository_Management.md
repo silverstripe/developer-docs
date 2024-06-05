@@ -39,9 +39,23 @@ Some actions are restricted to avoid bad actors or accidental mistakes from caus
 
 If any exceptions to these rules need to be made for any reason, each exception must be approved in writing by the Silverstripe CMS Product Owner and only apply for a specified amount of time.
 
-#### Deleting branches
+#### Branch protection rules
+
+##### Updating branch and tag protection rulesets
+
+Use the `rulesets` command in [silverstripe/module-standardiser](https://github.com/silverstripe/module-standardiser) to add and update the branch and tag protection rulesets for all support modules via the GitHub API.
+
+These rulesets restrict non-admins from various activities such as merging pull-requests without a review, creating branches, and pushing tags.
+
+##### Updating branch protection rule
 
 A branch protection rule to protect against deleting branches is added by going to `https://github.com/silverstripe/<repository>/settings/branches`, clicking "Add rule", inputting `[0-9]*` as the branch name pattern, and clicking create (without checking any of the checkboxes).
+
+There is no REST API endpoint available to add this rule with a pattern, so it must be done manually.
+
+The rule is used in additional to the branch ruleset to remove the ability for admins to bypass deleting protected branches.
+
+#### Deleting branches
 
 Any branches following the documented naming convention cannot be deleted by anyone.
 

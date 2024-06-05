@@ -989,9 +989,51 @@ class ParentObject extends DataObject
 }
 ```
 
-In this example, when the parent object is deleted, the child specified by the `has_one` relation will also
-be deleted. Note that all relation types (`has_many`, `many_many`, `belongs_many_many`, `belongs_to`, and `has_one`)
-are supported, as are methods that return lists of objects but do not correspond to a physical database relation.
+In this example, when the parent object is deleted, the child specified by the `has_one` relation will also be deleted.
+
+All relation types (`has_many`, `many_many`, `belongs_many_many`, `belongs_to`, and `has_one`) are supported, as are methods that return lists of objects but do not correspond to a physical database relation. In all cases the child defined in `cascade_deletes` will be deleted.
+
+### Cascading deletions for `many_many` relations
+
+When the parent object is deleted, the end child specified by the `cascade_deletes` will also be removed, not unlinked. To remove just the link between the two objects, use `has_many` on the relation object directly to create an alternate view of the relationship which can be unlinked.
+
+Note that this requires using the [`many_many` through](#many-many-through) style relation. A regular `many_many` relation cannot be used this way.
+
+For example:
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+
+class Team extends DataObject
+{
+    // Define the many-to-many relationship using a custom relation table
+    private static array $many_many = [
+        'Supporters' => [
+            'through' => TeamSupporter::class,
+            'from' => 'Team',
+            'to' => 'Supporter',
+        ],
+    ];
+
+    // Add a different perspective of the relationship data
+    private static array $has_many = [
+        'SupportersRelation' => TeamSupporter::class . '.Team',
+    ];
+
+    // Unlink the relationship when the parent object is deleted
+    private static array $cascade_deletes = [
+        'SupportersRelation',
+    ];
+
+    // ...
+}
+```
+
+This will avoid the situation where related children used by many data objects are removed from all parents because a single parent was deleted.
+
+### Cascading deletions with versions
 
 If your object is versioned, `cascade_deletes` will also act as "cascade unpublish", such that any unpublish
 on a parent object will trigger unpublish on the child, similarly to how `owns` causes triggered publishing.
