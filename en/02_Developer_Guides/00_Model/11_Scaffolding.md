@@ -15,6 +15,8 @@ customise those fields as required.
 
 An example is `DataObject`, Silverstripe CMS will automatically create your CMS interface so you can modify what you need, without having to define all of your form fields from scratch.
 
+Note that the [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) edit form does not use scaffolded fields.
+
 ```php
 namespace App\Model;
 
@@ -82,6 +84,91 @@ You can also alter the fields of built-in and module `DataObject` classes by imp
 
 > [!NOTE]
 > `FormField` scaffolding takes [`$field_labels` config](#field-labels) into account as well.
+
+## Scaffolding for relations
+
+Form fields are also automatically scaffolded for `has_one`, `has_many`, and `many_many` relations. These have sensible default implementations, and you can also customise what form field will be used for any given `DataObject` model.
+
+> [!NOTE]
+> Polymorphic `has_one` relations do not have scaffolded form fields. Usually these are managed via a `has_many` relation which points at the `has_one` relation.
+
+With the below example, the following form fields will be scaffolded:
+
+|relation|form field|
+|---|---|
+|`Child`|`MyCustomField`|
+|`HasManyChildren`|`SearchableMultiDropdownField`|
+|`ManyManyChildren`|`GridField`|
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+
+class MyDataObject extends DataObject
+{
+    // ...
+    private static array $has_one = [
+        'Child' => MyChild::class,
+    ];
+
+    private static array $has_many = [
+        'HasManyChildren' => MyChild::class . '.Parent',
+    ];
+
+    private static array $many_many = [
+        'ManyManyChildren' => MyChild::class,
+    ];
+}
+```
+
+```php
+namespace App\Model;
+
+use App\Form\MyCustomField;
+use SilverStripe\Forms\FormField;
+use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
+use SilverStripe\Forms\SearchableMultiDropdownField;
+use SilverStripe\ORM\DataObject;
+
+class MyChild extends DataObject
+{
+    // ...
+    public function scaffoldFormFieldForHasOne(
+        string $fieldName,
+        ?string $fieldTitle,
+        string $relationName,
+        DataObject $ownerRecord
+    ): FormField {
+        // Return a form field that should be used for selecting this model type for has_one relations.
+        return MyCustomField::create($fieldName, $fieldTitle);
+    }
+
+    public function scaffoldFormFieldForHasMany(
+        string $relationName,
+        ?string $fieldTitle,
+        DataObject $ownerRecord,
+        bool &$includeInOwnTab
+    ): FormField {
+        // If this should be in its own tab, set $includeInOwnTab to true, otherwise set it to false.
+        $includeInOwnTab = false;
+        // Return a form field that should be used for selecting this model type for has_many relations.
+        return SearchableMultiDropdownField::create($relationName, $fieldTitle, static::get());
+    }
+
+    public function scaffoldFormFieldForManyMany(
+        string $relationName,
+        ?string $fieldTitle,
+        DataObject $ownerRecord,
+        bool &$includeInOwnTab
+    ): FormField {
+        // The default implementation for this method returns a GridField, which we can modify.
+        $gridField = parent::scaffoldFormFieldForManyMany($relationName, $fieldTitle, $ownerRecord, $includeInOwnTab);
+        $gridField->getConfig()->removeComponentsByType(GridFieldAddExistingAutocompleter::class);
+        return $gridField;
+    }
+}
+```
 
 ## Searchable fields
 

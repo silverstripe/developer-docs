@@ -345,6 +345,8 @@ class Company extends DataObject
 }
 ```
 
+For more information see [scaffolding for relations](/developer_guides/model/scaffolding/#scaffolding-for-relations).
+
 ## Dot notation {#dot-notation}
 
 To specify multiple `has_many`, `many_many`, `belongs_to`, or `belongs_many_many` relationships to the same model class (and as a general best practice) you can use dot notation to distinguish them like below:
