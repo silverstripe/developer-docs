@@ -172,3 +172,6 @@ PHPDocs are not only useful when looking at the source code, but are also used i
 - Prefer the identical `===` operator over the equality `==` operator for comparisons.
 - If you directly reference a third-party dependency in code, then ensure the dependency is required in the module's `composer.json` file.
 - Avoid hardcoding values when there is a method available to dynamically get a value, for example use [`DataObjectSchema::tableName()`](api:SilverStripe\ORM\DataObjectSchema::tableName()) to get the table name for a `DataObject` model rather than hard coding it.
+- Do not use the `self` keyword, e.g. `self::myMethod()` instead use the short-name of the current class e.g. `MyClass::myMethod()` which is functionally equivalent. This avoids a specific class of bug that is introduced when using late static binding downstream from `self`.
+  - The one exception to this rule is traits as there is no way to know the class the trait is applied to. In that case, it's fine to use for getting the class name (e.g. `self::class`) but should only be used for calling static methods (i.e. `self::class::myMethod()`) if you can't refactor the code to avoid needing to use `self`.
+  - The use of `static` keyword is perfectly OK and is often appropriate.
