@@ -30,14 +30,21 @@ How to do it
 
 ## How to review pull requests
 
+If you are a maintainer, you will have access to the [community contributions project on GitHub](https://github.com/orgs/silverstripe/projects/4). Use this to identify which pull requests need to be reviewed, and to track the state of pull requests that have started to be reviewed.
+
 Reviewing and merging PRs is one of the most critical responsibilities, which often requires a lot of effort and scrutiny.
 
 Bad PRs may contain technical debt, provide problems in the future and require extra attention and time from the maintainers. It is usually better not to merge at all, rather than merge half-ready or poorly written code. Especially if a PR comes from a non-maintainer who’s not responsible for taking care of the feature later on. On the other hand, the nature of Open Source implies access to resources of the community, so it’s important to make sure we don’t close the doors for people willing to spend their time and brain energy.
 
 How to do it
 
-- Follow the [merge checklist](#merge-checklist). You may even post it straight on GitHub so the contributor sees the PR progress
-- If the author doesn't respond for several weeks you may choose take the PR over and push it forward yourself by adding your own commits to their branch - in that case, you become the developer and someone else will need to review the pull request when you are done. Otherwise, it’s fine to close the PR if there has been no response and you don't want to take it over yourself.
+1. Assign yourself to a pull request and move it to the "in review" column
+1. Follow the [merge checklist](#merge-checklist). You may even post it straight on GitHub so the contributor sees the PR progress
+1. If changes are required or you need some additional context, ask specific questions and for specific changes. Then move the PR to the "awaiting response" column. Keep it assigned to you.
+1. If the author doesn't respond for several weeks you may choose take the PR over and push it forward yourself by adding your own commits to their branch - in that case, you become the developer and someone else will need to review the pull request when you are done. Otherwise, it’s fine to close the PR if there has been no response and you don't want to take it over yourself.
+1. Once you are happy with the pull request, approve it. If you need a second approval, move it to the "needs second approval" column and unassign yourself.
+
+Pull requests in the "needs second approval" column should be reviewed following the same steps as above - but after approving the pull request (as the second approver) you can merge it.
 
 ### Merge checklist
 
