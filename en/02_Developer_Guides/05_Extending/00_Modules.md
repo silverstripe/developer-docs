@@ -11,8 +11,11 @@ framework.
 
 A module is a collection of classes, templates, and other resources that is loaded into a directory.
 Modules are [Composer packages](https://getcomposer.org/), and are placed in the `vendor/` folder.
-These packages need to contain either a toplevel `_config` directory or `_config.php` file,
-as well as a special `type` in their `composer.json` file ([example](https://github.com/silverstripe/silverstripe-module/blob/5/composer.json)).
+These packages need to contain one of the following in its root directory to be recognised as a module by Silverstripe CMS:
+
+- a `_config` directory
+- a `_config.php` file
+- a `composer.json` file with a `type` of either `silverstripe-vendormodule` or `silverstripe-theme`([example](https://github.com/silverstripe/silverstripe-module/blob/5/composer.json)).
 
 Like with any Composer package, we recommend declaring your PHP classes through
 [PSR-4 autoloading](https://getcomposer.org/doc/01-basic-usage.md#autoloading).
