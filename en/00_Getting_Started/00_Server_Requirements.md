@@ -26,9 +26,9 @@ You also need to install [Composer 2](https://getcomposer.org/).
 
 ## Database
 
-We officially support and regression test against the LTS releases of MySQL and MariaDB, though we may choose to support additional versions on a case-by-case basis.
+We officially support and regression test against the latest LTS releases of MySQL and MariaDB, though we may choose to support additional versions on a case-by-case basis.
 
-- MySQL >=5.6 (built-in, [commercially supported](/project_governance/supported_modules/))
+- MySQL >=5.6 and MariaDB (built-in, [commercially supported](/project_governance/supported_modules/))
 - PostgreSQL ([third party module](https://github.com/silverstripe/silverstripe-postgresql), community
   supported)
 - SQL Server ([third party module](https://github.com/silverstripe/silverstripe-mssql), community supported)
