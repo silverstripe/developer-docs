@@ -466,7 +466,7 @@ use SilverStripe\Core\Injector\Factory;
 
 class MyFactory implements Factory
 {
-    public function create($service, array $params = [])
+    public function create(string $service, array $params = []): object
     {
         return new MyServiceImplementation(...$params);
     }

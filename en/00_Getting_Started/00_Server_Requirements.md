@@ -231,8 +231,9 @@ See [silverstripe/vendor-plugin](https://github.com/silverstripe/vendor-plugin) 
 
 Silverstripe CMS relies on various [caches](/developer_guides/performance/caching/)
 to achieve performant responses. By default, those caches are stored in a temporary filesystem folder, and are not
-shared between multiple server instances. Alternative cache backends such as Redis can be
-[configured](/developer_guides/performance/caching/).
+shared between multiple server instances.
+
+No in-memory cache is used by default. To improve performance, we recommend [configuring an in-memory cache](/developer_guides/performance/caching/#adapters) such as Redis or Memcached.
 
 While cache objects can expire, when using filesystem caching the files are not actively pruned. For long-lived server
 instances, this can become a capacity issue over time - see
