@@ -8,7 +8,7 @@ icon: users
 
 Triage and peer review are important processes for getting changes made and merged.
 
-If you are involved with triage of Silverstripe CMS core and supported modules, regularly check the repository for new issues or use the ["Untriaged" filter](https://silverstripe-github-issues.now.sh/?mode=untriaged) in our cross-repository issue tracker.
+If you are involved with triage of Silverstripe CMS core and supported modules, regularly check the repository for new issues or use the ["Untriaged" filter](https://elvis.silverstripe.org/?mode=untriaged) in our cross-repository issue tracker.
 
 You can also optionally subscribe to the repository via [GitHub watch functionality](https://docs.github.com/en/account-and-profile/managing-subscriptions-and-notifications-on-github/setting-up-notifications/configuring-notifications#configuring-your-watch-settings-for-an-individual-repository).
 
