@@ -25,8 +25,8 @@ and log in.
 
 - Ask for assistance in our [community channels](https://www.silverstripe.org/community) if you're unsure if it's really a bug.
 - Search for similar, existing issues.
-   You can [list all issues across modules](https://www.silverstripe.org/community/contributing-to-silverstripe/github-all-core-issues),
-   then add your search phrase at the start of the existing search filters (for example [all issues with label "type/ux"](https://www.silverstripe.org/community/contributing-to-silverstripe/github-all-open-ux-issues))
+   You can [list all issues across modules](https://elvis.silverstripe.org/),
+   then add your search phrase at the start of the existing search filters.
 - Is this a security issue? Please follow our [security reporting guidelines](#reporting-security-issues) below.
 - Try to reproduce your issue on a [clean installation](/getting_started/composer#create-a-new-site) to rule out bugs in your own code.
 
