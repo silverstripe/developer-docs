@@ -56,7 +56,7 @@ SilverStripe\Core\Injector\Injector:
 > Please read the [versioned cache segmentation](#versioned-cache-segmentation) section for more information.
 
 Cache objects are instantiated through a [CacheFactory](api:SilverStripe\Core\Cache\CacheFactory),
-which determines which cache adapter is used (see "Adapters" below for details).
+which determines which cache adapter is used (see [adapters](#adapters) below for details).
 This factory allows us you to globally define an adapter for all cache instances.
 
 ```php
@@ -180,44 +180,74 @@ interface. Use this interface to trigger `clear()` on your caches.
 
 ## Adapters
 
-Silverstripe CMS tries to identify the most performant cache available on your system
-through the [DefaultCacheFactory](api:SilverStripe\Core\Cache\DefaultCacheFactory) implementation:
+We use the `smyfony/cache` library which supports various [cache adapters](https://github.com/symfony/cache/tree/6.1/Adapter).
+
+Silverstripe CMS tries to provide a sensible default cache implementation for your system
+through the [`DefaultCacheFactory`](api:SilverStripe\Core\Cache\DefaultCacheFactory) implementation.
 
 - `PhpFilesAdapter` (PHP with [opcache](https://php.net/manual/en/book.opcache.php) enabled).
     This cache has relatively low [memory defaults](https://php.net/manual/en/opcache.configuration.php#ini.opcache.memory-consumption).
     We recommend increasing it for large applications, or enabling the
-    [file_cache fallback](https://php.net/manual/en/opcache.configuration.php#ini.opcache.file-cache)
-- `ApcuAdapter` (requires APC) with a `FilesystemAdapter` fallback (for larger cache volumes)
-- `FilesystemAdapter` if none of the above is available
+    [`file_cache` fallback](https://php.net/manual/en/opcache.configuration.php#ini.opcache.file-cache).
+    You must have [`opcache.enable_cli`](https://www.php.net/manual/en/opcache.configuration.php#ini.opcache.enable-cli) set to `true`
+    to use this cache adapter. This is so that your cache is shared between CLI and the webserver.
+- `FilesystemAdapter` if the above isn't available
 
-The library supports various [cache adapters](https://github.com/symfony/cache/tree/6.1/Adapter)
-which can provide better performance, particularly in multi-server environments with shared caches like Memcached.
+### Adding an in-memory cache adapter
 
-Since we're using dependency injection to create caches,
-you need to define a factory for a particular adapter,
-following the `SilverStripe\Core\Cache\CacheFactory` interface.
-Different adapters will require different constructor arguments.
-We've written factories for the most common cache scenarios:
-`FilesystemCacheFactory`, `MemcachedCacheFactory` and `ApcuCacheFactory`.
+The cache adapter needs to be available before configuration has been loaded, so we use an environment variable to determine which class will be used to instantiate the in-memory cache adapter. The class must be referenced using its Fully Qualified Class Name (including namespace), and must be an instance of [`InMemoryCacheFactory`](api:SilverStripe\Core\Cache\InMemoryCacheFactory).
 
-Example: Configure core caches to use [memcached](https://www.danga.com/memcached/),
-which requires the [memcached PHP extension](https://php.net/memcached),
-and takes a `MemcachedClient` instance as a constructor argument.
+```bash
+SS_IN_MEMORY_CACHE_FACTORY="SilverStripe\Core\Cache\MemcachedCacheFactory"
+```
 
-```yml
----
-After: '#versionedcache'
----
-SilverStripe\Core\Injector\Injector:
-  MemcachedClient:
-    class: 'Memcached'
-    calls:
-      - [ addServer, [ 'localhost', 11211 ] ]
-  MemcachedCacheFactory:
-    class: 'SilverStripe\Core\Cache\MemcachedCacheFactory'
-    constructor:
-      client: '%$MemcachedClient'
-  SilverStripe\Core\Cache\CacheFactory: '%$MemcachedCacheFactory'
+Silverstripe CMS comes with three in-memory cache factories you can choose from, each with their own requirements. You can of course add your own, as well.
+
+#### Memcached cache
+
+[Memcached](https://www.danga.com/memcached/) is a "high-performance, distributed memory object caching system". To use this cache, you must install the [memcached PHP extension](https://php.net/memcached).
+
+You can tell the cache adapter which Memcached server(s) to connect to by defining a DSN in the `SS_MEMCACHED_DSN` environment variable.
+
+> [!TIP]
+> The format for the DSN is exactly as defined in [the Symfony documentation](https://symfony.com/doc/current/components/cache/adapters/memcached_adapter.html#configure-the-connection).
+
+```bash
+SS_IN_MEMORY_CACHE_FACTORY="SilverStripe\Core\Cache\MemcachedCacheFactory"
+SS_MEMCACHED_DSN="memcached://localhost:11211"
+```
+
+#### Redis cache
+
+[Redis](https://redis.io/) is an "in-memory database for caching and streaming" with built-in replication and a lot of deployment options. To use this cache, you must install one of:
+
+- [predis/predis](https://github.com/predis/predis/)
+- [cachewerk/relay](https://github.com/cachewerk/relay)
+- [the Redis PHP extension](https://github.com/phpredis/phpredis)
+
+You can tell the cache adapter which Redis server(s) to connect to by defining a DSN in the `SS_REDIS_DSN` environment variable.
+
+> [!TIP]
+> The format for the DSN is exactly as defined in [the Symfony documentation](https://symfony.com/doc/current/components/cache/adapters/redis_adapter.html#configure-the-connection).
+
+```bash
+SS_IN_MEMORY_CACHE_FACTORY="SilverStripe\Core\Cache\RedisCacheFactory"
+SS_REDIS_DSN="redis://verysecurepassword@localhost:6379"
+```
+
+#### APCu cache
+
+APCu is "an in-memory key-value store for PHP". This runs locally on the same computer as your webserver, and is only available for the webserver itself. To use this cache, you must install the [APCu PHP extension](https://www.php.net/apcu).
+
+> [!WARNING]
+> APCu cache cannot be shared with your CLI, which means flushing cache from the terminal will not flush the cache your webserver uses.
+>
+> The filesystem cache will still be used as a backup, which *is* shared with CLI, so flushing the cache with a web request will always flush the cache CLI uses.
+
+We include this option because it requires very little effort to set up, so it may be appropriate for smaller projects. Just remember to always flush the cache with an HTTP request using `?flush=1`.
+
+```bash
+SS_IN_MEMORY_CACHE_FACTORY="SilverStripe\Core\Cache\ApcuCacheFactory"
 ```
 
 ## Versioned cache segmentation
