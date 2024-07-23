@@ -103,6 +103,61 @@ Please refer to the [`ImageManipulation`](api:SilverStripe\Assets\ImageManipulat
 
 See [file manipulation](./file_manipulation/) for more general ways that all files can be manipulated.
 
+### Animated images
+
+Manipulating animated images takes longer, and results in a larger filesize.
+
+Because of this, the [`ThumbnailGenerator`](api:SilverStripe\AssetAdmin\Model\ThumbnailGenerator) will provide still images as thumbnails for animated gifs by default. You can change that for a given instance of `ThumbnailGenerator` by passing `true` to the [`setAllowsAnimation()`](api:SilverStripe\AssetAdmin\Model\ThumbnailGenerator::setAllowsAnimation()) method. For example, to allow animated thumbnails for `UploadField`:
+
+```yml
+---
+After: '#assetadminthumbnails'
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\AssetAdmin\Model\ThumbnailGenerator.assetadmin:
+    properties:
+      AllowsAnimation: true
+```
+
+The [`Image::PreviewLink()`](api:SilverStripe\Assets\Image::PreviewLink()) method also doesn't allow an animated result by default. This is used in the "Files" admin section, and anywhere you can choose an existing image such as `UploadField` and the WYSIWYG file modals.
+
+You can allow animated previews by setting [`Image.allow_animated_preview`](api:SilverStripe\Assets\Image->allow_animated_preview) configuration property to `true`:
+
+```yml
+SilverStripe\Assets\Image:
+  allow_animated_preview: true
+```
+
+You can disable the ability to create animated variants globally by setting `decodeAnimation` to `false` in the `Intervention\Image\ImageManager`'s constructor:
+
+```yml
+SilverStripe\Core\Injector\Injector:
+  Intervention\Image\ImageManager:
+    constructor:
+      decodeAnimation: false
+```
+
+This affects *all* scenarios where variants are created, both on the front-end and in the backend.
+
+> [!TIP]
+> Disabling animation globally is more performant than using `RemoveAnimation()` as described below, because it tells `intervention/image` to always only look at the first frame of any animated image - it doesn't even decode the remaining frames.
+
+When manipulating images yourself in templates, you can use the new [`RemoveAnimation()`](api:SilverStripe\Assets\ImageManipulation::RemoveAnimation()) method before your resizing methods:
+
+```ss
+$MyImage.RemoveAnimation.FitMax(300, 200)
+```
+
+`RemoveAnimation()` takes an optional parameter which you can use to determine which frame of animation is used as the still image. You can either pass in an exact frame number (0-indexed), or a percentage as a string (e.g. `$MyImage.RemoveAnimation('50%')` will use a frame halfway through the animation).
+
+If the image isn't animated `RemoveAnimation()` will just return the original image without generating a variant, so it's safe to use without first checking if the image is animated.
+
+You can also use the [`setAllowsAnimationInManipulations()`](api:SilverStripe\Assets\Image_Backend::setAllowsAnimationInManipulations()) method to toggle the `decodeAnimation` configuration setting for a given image. This is useful if you intend to make many manipulations to an image, and you want some to include animation and others to not include animation - you can simply toggle animation usage on and off using this method.
+
+```php
+$myImage->getImageBackend()->setAllowsAnimationInManipulations(false);
+```
+
 ### Creating custom image functions
 
 You can also create your own functions by decorating the `Image` class.
@@ -318,17 +373,31 @@ SilverStripe\Assets\Image:
   lazy_loading_enabled: false
 ```
 
-## Changing the manipulation driver to imagick
+## Changing the manipulation driver {#intervention-image-driver}
 
-If you want to change the image manipulation driver to use Imagick instead of GD, you'll need to change your config so
-that the `Intervention\Image\ImageManager` is instantiated with the `imagick` driver instead of GD:
+If you have the [imagick PHP extension](https://www.php.net/manual/en/book.imagick.php) installed, it will be used as the driver for `intervention/image` by default. If you don't, the assumption is that you have the [GD PHP extension](https://www.php.net/manual/en/book.image.php) installed, and it will be used instead.
+
+If you want to change the image manipulation driver to something else (either a third-party driver, or else use GD even when imagick is installed), you need to configure that via the injector:
+
+```yml
+---
+After: '#assetsimage-imagick'
+---
+SilverStripe\Core\Injector\Injector:
+  InterventionImageDriver:
+    class: 'Intervention\Image\Drivers\Gd\Driver'
+```
+
+You can also set various configuration options for the driver to use by setting them in the constructor for `Intervention\Image\ImageManager`, for example:
 
 ```yml
 SilverStripe\Core\Injector\Injector:
   Intervention\Image\ImageManager:
     constructor:
-      - { driver: imagick }
+      decodeAnimation: false
 ```
+
+The options available are detailed in the [intervention/image documentation](https://image.intervention.io/v3/basics/image-manager#configuration-options).
 
 ## Storage
 
