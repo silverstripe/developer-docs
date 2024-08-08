@@ -55,6 +55,17 @@ $fields->addFieldsToTab('Root.Content', [
 ]);
 ```
 
+## Change the order of tabs
+
+If you need to change the order of tabs, for example if the tabs were scaffolded through [`FormScaffolder`](api:SilverStripe\Forms\FormScaffolder),
+you can do so by passing the correct order of the tabs into [`TabSet::changeTabOrder()`](api:SilverStripe\Forms\TabSet::changeTabOrder()).
+
+If there are more tabs in the tab set than you include in the tab order, they will be added after the tabs you explicitly included.
+
+```php
+$fields->fieldByName('Root')->changeTabOrder(['FirstTab', 'SecondTab']);
+```
+
 ## API documentation
 
 - [FormScaffolder](api:SilverStripe\Forms\FormScaffolder)
