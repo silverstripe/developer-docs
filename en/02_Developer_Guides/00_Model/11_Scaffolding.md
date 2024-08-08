@@ -44,46 +44,85 @@ class MyDataObject extends DataObject
 > [!TIP]
 > It is typically considered a good practice to wrap your modifications in a call to [`beforeUpdateCMSFields()`](api:SilverStripe\ORM\DataObject::beforeUpdateCMSFields()) - the `updateCMSFields()` extension hook is already triggered by `parent::getCMSFields()`, so this is how you ensure any new fields are added before extensions update your fieldlist.
 
-To fully customise your form fields, start with an empty FieldList.
+To define the form fields yourself without using scaffolding, use the `mainTabOnly` option in [`DataObject.scaffold_cms_fields_settings`](api:SilverStripe\ORM\DataObject->scaffold_cms_fields_settings). See [scaffolding options](#scaffolding-options) for details.
 
 ```php
 namespace App\Model;
 
+use SilverStripe\Forms\CheckboxSetField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\TextareaField;
 use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
     // ...
 
+    private static array $scaffold_cms_fields_settings = [
+        'mainTabOnly' => true,
+    ];
+
     public function getCMSFields()
     {
-        $fields = FieldList::create(
-            TabSet::create(
-                'Root',
-                Tab::create(
-                    'Main',
-                    CheckboxSetField::create('IsActive', 'Is active?'),
-                    TextField::create('Title'),
-                    TextareaField::create('Content')
-                        ->setRows(5)
-                )
-            )
-        );
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->addFieldsToTab('Root.Main', [
+                CheckboxSetField::create('IsActive', 'Is active?'),
+                TextField::create('Title'),
+                TextareaField::create('Content')->setRows(5),
+            ]);
+        });
 
-        $this->extend('updateCMSFields', $fields);
-
-        return $fields;
+        return parent::getCMSFields();
     }
 }
 ```
-
-> [!TIP]
-> It is good practice to invoke the `updateCMSFields()` extension hook afterward, so that extensions in modules can apply their functionality to your field list.
 
 You can also alter the fields of built-in and module `DataObject` classes by implementing `updateCMSFields()` in [your own Extension](/developer_guides/extending/extensions).
 
 > [!NOTE]
 > `FormField` scaffolding takes [`$field_labels` config](#field-labels) into account as well.
+
+## Scaffolding options
+
+`FormScaffolder` has several options that modify the way it scaffolds form fields.
+
+|option|description|
+|---|---|
+|`tabbed`|Use tabs for the scaffolded fields. All database fields and `has_one` fields will be in a "Root.Main" tab. Fields representing `has_many` and `many_many` relations will either be in "Root.Main" or in "Root.`<relationname>`" tabs.|
+|`mainTabOnly`|Only set up the "Root.Main" tab, but skip scaffolding actual form fields or relation tabs. If `tabbed` is false, the `FieldList` will be empty.|
+|`restrictFields`|Allow list of field names. If populated, any database fields and fields representing `has_one` relations not in this array won't be scaffolded.|
+|`ignoreFields`|Deny list of field names. If populated, database fields and fields representing `has_one` relations which *are* in this array won't be scaffolded.|
+|`fieldClasses`|Optional mapping of field names to subclasses of `FormField`.|
+|`includeRelations`|Whether to include `has_many` and `many_many` relations.|
+|`restrictRelations`|Allow list of field names. If populated, form fields representing `has_many` and `many_many` relations not in this array won't be scaffolded.|
+|`ignoreRelations`|Deny list of field names. If populated, form fields representing `has_many` and `many_many` relations which *are* in this array won't be scaffolded.|
+
+You can set these options for the scaffolding of the fields in your model's `getCMSFields()` field list by setting the [`DataObject.scaffold_cms_fields_settings`](api:SilverStripe\ORM\DataObject->scaffold_cms_fields_settings) configuration property.
+
+```php
+namespace App\Model;
+
+use SilverStripe\Forms\HiddenField;
+use SilverStripe\ORM\DataObject;
+
+class MyDataObject extends DataObject
+{
+    // ...
+
+    private static array $scaffold_cms_fields_settings = [
+        'includeRelations' => false,
+        'ignoreFields' => [
+            'MyDataOnlyField',
+        ],
+        'fieldClasses' => [
+            'MyHiddenField' => HiddenField::class,
+        ],
+    ];
+}
+```
+
+You can also set this configuration in [extensions](/developer_guides/extending/extensions), for example if your extension is adding new database fields that you don't want to be edited via form fields in the CMS.
 
 ## Scaffolding for relations
 
