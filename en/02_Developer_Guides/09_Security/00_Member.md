@@ -64,11 +64,12 @@ Note that if you want to look this class-name up, you can call `Injector::inst()
 
 If you override the built-in public function getCMSFields(), then you can change the form that is used to view & edit member
 details in the newsletter system.  This function returns a [FieldList](api:SilverStripe\Forms\FieldList) object.  You should generally start by calling
-parent::getCMSFields() and manipulate the [FieldList](api:SilverStripe\Forms\FieldList) from there.
+`$this->beforeUpdateCMSFields()` and manipulate the [FieldList](api:SilverStripe\Forms\FieldList) from there.
 
 ```php
 namespace App\Security;
 
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Security\Member;
 
@@ -78,11 +79,12 @@ class MyMember extends Member
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
-        $fields->insertBefore('HTMLEmail', TextField::create('Age'));
-        $fields->removeByName('JobTitle');
-        $fields->removeByName('Organisation');
-        return $fields;
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->insertBefore('HTMLEmail', TextField::create('Age'));
+            $fields->removeByName('JobTitle');
+            $fields->removeByName('Organisation');
+        });
+        return parent::getCMSFields();
     }
 }
 ```

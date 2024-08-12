@@ -555,6 +555,7 @@ This can also be manually enabled for a single `GridField` by passing the `Versi
 namespace {
 
     use SilverStripe\CMS\Model\SiteTree;
+    use SilverStripe\Forms\FieldList;
     use SilverStripe\Forms\GridField\GridField;
     use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
     use SilverStripe\Forms\GridField\GridFieldDetailForm;
@@ -564,16 +565,15 @@ namespace {
     {
         public function getCMSFields()
         {
-            $fields = parent::getCMSFields();
-
-            $config = GridFieldConfig_RelationEditor::create();
-            $config
-                ->getComponentByType(GridFieldDetailForm::class)
-                ->setItemRequestClass(VersionedGridFieldItemRequest::class);
-            $gridField = GridField::create('Items', 'Items', $this->Items(), $config);
-            $fields->addFieldToTab('Root.Items', $gridField);
-
-            return $fields;
+            $this->beforeUpdateCMSFields(function (FieldList $fields) {
+                $config = GridFieldConfig_RelationEditor::create();
+                $config
+                    ->getComponentByType(GridFieldDetailForm::class)
+                    ->setItemRequestClass(VersionedGridFieldItemRequest::class);
+                $gridField = GridField::create('Items', 'Items', $this->Items(), $config);
+                $fields->addFieldToTab('Root.Items', $gridField);
+            });
+            return parent::getCMSFields();
         }
     }
 }
@@ -1404,13 +1404,15 @@ Then you can add the [HistoryViewerField](api:SilverStripe\VersionedAdmin\Forms\
 fields in the same way as any other form field:
 
 ```php
+use SilverStripe\Forms\FieldList;
 use SilverStripe\VersionedAdmin\Forms\HistoryViewerField;
 
 public function getCMSFields()
 {
-    $fields = parent::getCMSFields();
-    $fields->addFieldToTab('Root.History', HistoryViewerField::create('MyObjectHistory'));
-    return $fields;
+    $this->beforeUpdateCMSFields(function (FieldList $fields) {
+        $fields->addFieldToTab('Root.History', HistoryViewerField::create('MyObjectHistory'));
+    });
+    return parent::getCMSFields();
 }
 ```
 

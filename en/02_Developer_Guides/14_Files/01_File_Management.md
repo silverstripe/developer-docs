@@ -31,6 +31,7 @@ namespace App\PageType;
 use Page;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\Image;
+use SilverStripe\Forms\FieldList;
 
 class LandingPage extends Page
 {
@@ -40,9 +41,10 @@ class LandingPage extends Page
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
-        $fields->addFieldToTab('Root.Main', UploadField::create('Banner', 'Page Banner'), 'Content');
-        return $fields;
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->addFieldToTab('Root.Main', UploadField::create('Banner', 'Page Banner'), 'Content');
+        });
+        return parent::getCMSFields();
     }
 }
 ```

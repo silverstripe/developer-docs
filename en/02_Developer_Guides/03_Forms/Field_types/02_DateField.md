@@ -20,6 +20,7 @@ namespace App\PageType;
 
 use Page;
 use SilverStripe\Forms\DateField;
+use SilverStripe\Forms\FieldList;
 
 class MyPage extends Page
 {
@@ -29,14 +30,13 @@ class MyPage extends Page
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
-
-        $fields->addFieldToTab(
-            'Root.Main',
-            DateField::create('MyDate', 'Enter a date')
-        );
-
-        return $fields;
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->addFieldToTab(
+                'Root.Main',
+                DateField::create('MyDate', 'Enter a date')
+            );
+        });
+        return parent::getCMSFields();
     }
 }
 ```

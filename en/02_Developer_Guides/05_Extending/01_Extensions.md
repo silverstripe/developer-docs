@@ -388,6 +388,7 @@ Example 2: User code can intervene in the process of extending CMS fields.
 ```php
 namespace App\Model;
 
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 
@@ -397,7 +398,7 @@ class MyModel extends DataObject
 
     public function getCMSFields()
     {
-        $this->beforeUpdateCMSFields(function ($fields) {
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
             // Include field which must be present when updateCMSFields is called on extensions
             $fields->addFieldToTab('Root.Main', TextField::create('Detail', 'Details', null, 255));
         });

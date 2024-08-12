@@ -32,9 +32,12 @@ class MyObject extends DataObject
 
     public function getCMSFields()
     {
-        return FieldList::create(
-            HTMLEditorField::create('Content')
-        );
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            // Note that this field would be scaffolded automatically,
+            // we're only adding it here for demonstration purposes.
+            $fields->addFieldToTab('Root.Main', HTMLEditorField::create('Content'));
+        });
+        return parent::getCMSFields();
     }
 }
 ```
@@ -64,12 +67,22 @@ class MyObject extends DataObject
         'OtherContent' => 'HTMLText',
     ];
 
+    private static array $scaffold_cms_fields_settings = [
+        'ignoreFields' => [
+            'OtherContent',
+        ],
+    ];
+
     public function getCMSFields()
     {
-        return FieldList::create([
-            HTMLEditorField::create('Content'),
-            HTMLEditorField::create('OtherContent', 'Other content', $this->OtherContent, 'myConfig'),
-        ]);
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->addFieldToTab(
+                'Root.Main',
+                HTMLEditorField::create('OtherContent', 'Other content', $this->OtherContent, 'myConfig'),
+                'Content'
+            );
+        });
+        return parent::getCMSFields();
     }
 }
 ```

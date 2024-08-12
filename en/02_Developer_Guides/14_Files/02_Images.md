@@ -307,6 +307,7 @@ use Page;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\Image;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldList;
 
 class HomePage extends Page
 {
@@ -324,22 +325,22 @@ class HomePage extends Page
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $loadingSource = [
+                true => 'Lazy (Default)',
+                false => 'Eager',
+            ];
 
-        $loadingSource = [
-            true => 'Lazy (Default)',
-            false => 'Eager',
-        ];
+            $fields->addFieldsToTab(
+                'Root.Main',
+                [
+                    UploadField::create('Logo'),
+                    DropdownField::create('LogoLoading', 'Loading', $loadingSource),
+                ]
+            );
+        });
 
-        $fields->addFieldsToTab(
-            'Root.Main',
-            [
-                UploadField::create('Logo'),
-                DropdownField::create('LogoLoading', 'Loading', $loadingSource),
-            ]
-        );
-
-        return $fields;
+        return parent::getCMSFields();
     }
 }
 ```
