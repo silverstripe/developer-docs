@@ -42,9 +42,8 @@ How to do it
 1. Follow the [merge checklist](#merge-checklist). You may even post it straight on GitHub so the contributor sees the PR progress
 1. If changes are required or you need some additional context, ask specific questions and for specific changes. Then move the PR to the "awaiting response" column. Keep it assigned to you.
 1. If the author doesn't respond for several weeks you may choose take the PR over and push it forward yourself by adding your own commits to their branch - in that case, you become the developer and someone else will need to review the pull request when you are done. Otherwise, it’s fine to close the PR if there has been no response and you don't want to take it over yourself.
-1. Once you are happy with the pull request, approve it. If you need a second approval, move it to the "needs second approval" column and unassign yourself.
-
-Pull requests in the "needs second approval" column should be reviewed following the same steps as above - but after approving the pull request (as the second approver) you can merge it.
+1. Approve the pull request once you are happy with it, then move it to the "ready to merge" column and unassign yourself.
+1. Ping `@silverstripe/core-team` and `@silverstripe/contributing-committers` so the Core Committers and CMS Squad know it's ready to merge.
 
 ### Merge checklist
 
