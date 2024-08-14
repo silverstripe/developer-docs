@@ -29,9 +29,8 @@ The following table outlines the general responsibilities and privileges attribu
 |Responsibilities/privileges|Contribution Refiners|Peer Reviewers|CMS Squad Members|Core Committers|
 |---|---|---|---|---|
 |Triage issues|x|x|x|x|
-|Review pull requests|x|x|x|x|
-|Approve pull requests| |x|x|x|
-|Merge PRs without requiring additional maintainer approval| | |x|x|
+|Review pull requests| |x|x|x|
+|Merge pull requests| | |x|x|
 |Administer repositories| | | |x|
 
 ### Core committers
@@ -66,13 +65,11 @@ While anyone in the community can review a pull request, only reviews from maint
   - If another reviewer feels confident, they can offer to review it instead
 - Escalate pull requests to Core Committers if the contributor is rude/argumentative/hard to deal with
   - If you feel confident doing so, politely request the contributor behave in accordance with our [code of conduct](./code_of_conduct), and close the pull request if they refuse to do so
-- After two maintainers have approved the pull request, merge it
-  - The person who merges the PR can be one of the two approving reviewers
-  - The person who merges the PR must also understand and approve the changes
-  - The person who contributed the PR must not be included as one of the two approving reviewers
-- If you don't feel confident clicking merge, ask for a second opinion. Don’t approve the pull request if you wouldn’t feel confident merging it - instead, say where you got to with it (e.g. tested, worked well locally, couldn’t find any problems but want another opinion) and get another reviewer to check it
+- Make sure Core Committers and CMS Squad are aware when a pull request has been approved and is ready to be merged
+- Don’t approve the pull request if you wouldn’t feel confident merging it - instead, say where you got to with it (e.g. tested, worked well locally, couldn’t find any problems but want another opinion) and get another reviewer to check it
   - If no other reviewer feels confident about it, but it seems like it’s probably a good change in general, escalate to Core Committers
 - If at any point there is a disagreement between reviewers that seems unresolvable, escalate the discussion to Core Committers.
+- If any pull requests seem to be fixing a security issue, immediately notify the CMS Squad and Core Committers
 
 If a reviewer doesn’t review any pull requests in a 12 month period, a member of the Core Committers or the Silverstripe CMS Product Owner will reach out and ask if they want to continue being a reviewer. If they don’t respond within a month (or they respond saying they don’t want to be a reviewer anymore), their permissions will be revoked and they will be removed from the team.
 
@@ -181,12 +178,12 @@ First and foremost rule of a maintainer is to collaborate with other maintainers
 - Treat issues according to our [issue guidelines](/contributing/issues_and_bugs/), and use the [triage resources](/contributing/triage_resources/)
 - Don't commit directly to existing branches, raise pull requests instead
 - Use forks to create feature branches for pull requests
-- Only merge code you have tested and fully understand. If in doubt, ask for a second opinion.
+- Only approve and merge code you have tested and fully understand. If in doubt, ask for a second opinion.
 - Follow the [Supported Modules Standard](https://www.silverstripe.org/software/addons/supported-modules-definition/)
 - Ensure contributions have appropriate [test coverage](/developer_guides/testing/), are documented, and adhere to our [coding conventions](/getting_started/coding_conventions/)
   - If the contributor has trouble adding tests or documentation, you can raise your own pull requests that adds tests or documentation for the change and then merge their change
 - Keep the codebase stable at all times (check our [release process](/contributing/release_process/))
-  - If there are CI failures which are unrelated to the changes a given pull request, you can merge the pull request if all relevant tests are being run and passing
+  - If there are CI failures which are unrelated to the changes a given pull request, you can approve and merge the pull request if all relevant tests are being run and passing
 - Changes must be merged into the appropriate branches and follow semantic versioning (see [picking the right version](/contributing/code/#picking-the-right-version))
 - Be inclusive. Ensure a wide range of Silverstripe CMS developers can obtain an understanding of your code and docs, and you're not the only one who can maintain it.
 - Avoid `git push --force`, and be careful with your git remotes (no accidental pushes)
