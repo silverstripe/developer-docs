@@ -240,9 +240,10 @@ Versioned DataObjects get additional permission check methods to verify what ope
 
 - [`canPublish()`](api:SilverStripe\Versioned\Versioned::canPublish()): Determines if a given `Member` is allowed to publish the record
 - [`canUnpublish()`](api:SilverStripe\Versioned\Versioned::canUnpublish()) Determines if a given `Member` is allowed to unpublish the record
-- [`canArchive()`](api:SilverStripe\Versioned\Versioned::canArchive()) Determines if a given `Member` is allowed to archive the record
 - [`canViewStage()`](api:SilverStripe\Versioned\Versioned::canViewStage()) Determines if a given `Member` can view the latest version of this record on a specific stage. Beware that this is *not* invoked when calling `canView()`. If you want to affect the result of regular `canView()` checks, implement `canViewVersioned()` instead.
 - [`canViewVersioned()`](api:SilverStripe\Versioned\Versioned::canViewVersioned()) Provides additional can view checks for versioned records. This is called by `canView()` and should not be called directly.
+
+The existing [`canDelete()`](api:SilverStripe\Versioned\Versioned::canDelete()) method is used to check if a given `Member` is allowed to archive the record. The `Versioned` extension enhances this permission check for published content to ensure members that cannot unpublish content also cannot archive it.
 
 These methods accept an optional `Member` argument. If not provided, they will assume you want to check the permission against the current `Member`. When performing a version operation on behalf of a `Member`, you'll probably want to use these methods to confirm they are authorised.
 
