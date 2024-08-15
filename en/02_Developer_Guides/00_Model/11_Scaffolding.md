@@ -20,6 +20,7 @@ Note that the [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) edit form does n
 ```php
 namespace App\Model;
 
+use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
@@ -32,17 +33,18 @@ class MyDataObject extends DataObject
 
     public function getCMSFields()
     {
-        // parent::getCMSFields() does all the hard work and creates the fields for Title, IsActive and Content.
-        $fields = parent::getCMSFields();
-        $fields->dataFieldByName('IsActive')->setTitle('Is active?');
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->dataFieldByName('IsActive')->setTitle('Is active?');
+        });
 
-        return $fields;
+        // parent::getCMSFields() does all the hard work and creates the fields for Title, IsActive and Content.
+        return parent::getCMSFields();
     }
 }
 ```
 
 > [!TIP]
-> It is typically considered a good practice to wrap your modifications in a call to [`beforeUpdateCMSFields()`](api:SilverStripe\ORM\DataObject::beforeUpdateCMSFields()) - the `updateCMSFields()` extension hook is already triggered by `parent::getCMSFields()`, so this is how you ensure any new fields are added before extensions update your fieldlist.
+> It is typically considered a good practice to wrap your modifications in a call to [`beforeUpdateCMSFields()`](api:SilverStripe\ORM\DataObject::beforeUpdateCMSFields()) - the `updateCMSFields()` extension hook is triggered by `parent::getCMSFields()`, so this is how you ensure any new fields are added before extensions update your fieldlist.
 
 To define the form fields yourself without using scaffolding, use the `mainTabOnly` option in [`DataObject.scaffold_cms_fields_settings`](api:SilverStripe\ORM\DataObject->scaffold_cms_fields_settings). See [scaffolding options](#scaffolding-options) for details.
 

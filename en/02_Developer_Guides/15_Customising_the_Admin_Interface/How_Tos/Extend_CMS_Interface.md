@@ -95,22 +95,37 @@ and insert the following code.
 ```php
 namespace App\Extension;
 
-use SilverStripe\Forms\CheckboxField;
+use SilverStripe\ORM\DataExtension;
+
+class BookmarkedPageExtension extends DataExtension
+{
+    private static array $db = [
+        'IsBookmarked' => 'Boolean',
+    ];
+
+    private static array $field_labels = [
+        'IsBookmarked' => 'Show in CMS bookmarks?',
+    ];
+}
+```
+
+By default, form fields in extension classes are automatically scaffolded in CMS edit forms. See [scaffolding](/developer_guides/model/scaffolding/) for more details about how that works.
+
+If you need to update those form fields, you can implement the `updateCMSFields()` extension hook method.
+
+```php
+namespace App\Extension;
+
 use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataExtension;
 
 class BookmarkedPageExtension extends DataExtension
 {
-    private static $db = [
-        'IsBookmarked' => 'Boolean',
-    ];
+    // ...
 
     protected function updateCMSFields(FieldList $fields)
     {
-        $fields->addFieldToTab(
-            'Root.Main',
-            new CheckboxField('IsBookmarked', 'Show in CMS bookmarks?')
-        );
+        $fields->dataFieldByName('IsBookmarked')?->addExtraClass('special-css-class');
     }
 }
 ```

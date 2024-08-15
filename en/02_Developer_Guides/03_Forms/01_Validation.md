@@ -360,6 +360,7 @@ namespace App\PageType;
 
 use Page;
 use SilverStripe\Forms\CompositeValidator;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\TextField;
 
@@ -371,12 +372,13 @@ class MyPage extends Page
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
-
-        $fields->addFieldToTab(
-            'Root.Main',
-            TextField::create('MyRequiredField')->setCustomValidationMessage('You missed me.')
-        );
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->addFieldToTab(
+                'Root.Main',
+                TextField::create('MyRequiredField')->setCustomValidationMessage('You missed me.')
+            );
+        });
+        return parent::getCMSFields();
     }
 
     public function getCMSCompositeValidator(): CompositeValidator
