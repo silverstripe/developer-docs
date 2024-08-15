@@ -12,6 +12,8 @@ of some other record or directly [in a ModelAdmin](../customising_the_admin_inte
 
 ## Getting an edit link
 
+The [`DataObject::getCMSEditLink()`](api:SilverStripe\ORM\DataObject::getCMSEditLink()) method will give you the edit link if there is one, but by default it just returns `null`.
+
 There is a [CMSEditLinkExtension](api:SilverStripe\Admin\CMSEditLinkExtension) specifically
 for the purpose of generating links to the edit forms of records. It operates on the assumption that your record is being edited in
 a [GridFieldDetailForm](../forms/field_types/gridfield#gridfielddetailform) in some `GridField` (be it on another record or in a
@@ -73,11 +75,11 @@ class MyParentModel extends DataObject
 > If the `cms_edit_owner` is in some vendor dependency that you don't control, you can always apply `CMSEditLinkExtension`
 > and the `cms_edit_owner` via YAML.
 
-With the above code examples, you can call `CMSEditLink()` on any instance of `MyModel` or `MyParentModel` and it will produce
+With the above code examples, you can call `getCMSEditLink()` on any instance of `MyModel` or `MyParentModel` and it will produce
 an appropriate edit link for that record (assuming the relations are set up). This can be used, for example, in email reminders
 to update content, or as a link (available to admins) on the front-end to go straight to the edit form for the record.
 
-It is also useful when [making a previewable `DataObject`](../customising_the_admin_interface/preview/), as `CMSEditLink()` is
+It is also useful when [making a previewable `DataObject`](../customising_the_admin_interface/preview/), as `getCMSEditLink()` is
 one of the methods in the [CMSPreviewable](api:SilverStripe\ORM\CMSPreviewable) interface.
 
 > [!NOTE]

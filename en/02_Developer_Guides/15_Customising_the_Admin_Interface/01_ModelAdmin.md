@@ -167,7 +167,7 @@ $tabLink = $admin->getLinkForModelTab('product-category');
 > [getModelTabForModelClass()](api:SilverStripe\Admin\ModelAdmin::getModelTabForModelClass()) method
 > for your `ModelAdmin` subclass.
 
-You can also use the new [CMSEditLinkExtension](api:SilverStripe\Admin\CMSEditLinkExtension) to provide a `CMSEditLink()` method on the record - see [Managing Records](../model/managing_records#getting-an-edit-link).
+You can also use the new [CMSEditLinkExtension](api:SilverStripe\Admin\CMSEditLinkExtension) to update the value of the `getCMSEditLink()` method on the record - see [Managing Records](../model/managing_records#getting-an-edit-link).
 
 ## Permissions
 
