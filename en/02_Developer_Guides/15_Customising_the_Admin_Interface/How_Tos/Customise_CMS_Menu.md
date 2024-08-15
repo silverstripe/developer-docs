@@ -86,7 +86,7 @@ class CustomLeftAndMain extends LeftAndMainExtension
 {
     // ...
 
-    public function init()
+    protected function onInit()
     {
         // unique identifier for this item. Will have an ID of Menu-$ID
         $id = 'LinkToExample';

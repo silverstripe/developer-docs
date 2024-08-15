@@ -15,7 +15,7 @@ use SilverStripe\Core\Extension;
 
 class MyAdminExtension extends Extension
 {
-    public function updateEditForm($form)
+    protected function updateEditForm($form)
     {
         $form->Fields()->push(/* ... */)
     }
