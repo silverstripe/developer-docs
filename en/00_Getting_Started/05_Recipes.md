@@ -23,11 +23,10 @@ Silverstripe CMS is powered by a system of components in the form of Composer pa
 
 By design, modules tend to be small and serve a specific function. You may need to combine many modules to achieve a wider goal.
 
-For example, the [`silverstripe/blog`](https://github.com/silverstripe/silverstripe-blog) module by itself simply allows you to create blog posts. It does not include all the features you could want in a blog, like a comment system or widgets to display related content.
+For example, the [`silverstripe/blog`](https://github.com/silverstripe/silverstripe-blog) module by itself simply allows you to create blog posts. It does not include all the features you could want in a blog, like a comment system to display related content.
 
 The [`silverstripe/recipe-blog`](https://github.com/silverstripe/recipe-blog) recipe installs `silverstripe/blog` module, but also:
 
-- [`silverstripe/widgets`](https://github.com/silverstripe/silverstripe-widgets) and [`silverstripe/content-widget`](https://github.com/silverstripe/silverstripe-content-widget) to display widgets
 - [`silverstripe/comments`](https://github.com/silverstripe/silverstripe-comments) and [`silverstripe/comment-notifications`](https://github.com/silverstripe/comment-notifications) to allow the management of comments on blog post
 - [`silverstripe/spamprotection`](https://github.com/silverstripe/silverstripe-spamprotection) to provide basic SPAM protection on comments.
 
