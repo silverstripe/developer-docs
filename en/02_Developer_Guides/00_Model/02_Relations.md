@@ -1253,11 +1253,6 @@ This defaults to `false` for most `DataObject`'s.
 
 It is also possible to control the visibility of the `File Tracking` tab by setting the `show_file_link_tracking` config.
 
-## Related lessons
-
-- [Working with data relationships -- has_many](https://www.silverstripe.org/learn/lessons/v4/working-with-data-relationships-has-many-1)
-- [Working with data relationships -- many_many](https://www.silverstripe.org/learn/lessons/v4/working-with-data-relationships-many-many-1)
-
 ## Related documentation
 
 - [Introduction to the Data Model and ORM](data_model_and_orm)

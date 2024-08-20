@@ -857,11 +857,6 @@ The way the ORM stores the data is this:
 
 To retrieve a `Computer` record, Silverstripe CMS joins the `Product` and `Product_Digital_Computer` tables by their `ID` columns.
 
-## Related lessons
-
-- [Introduction to the ORM](https://www.silverstripe.org/learn/lessons/v4/introduction-to-the-orm-1)
-- [Adding custom fields to a page](https://www.silverstripe.org/learn/lessons/v4/adding-custom-fields-to-a-page-1)
-
 ## Related documentation
 
 - [Data Types and Casting](/developer_guides/model/data_types_and_casting)

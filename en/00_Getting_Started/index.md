@@ -56,12 +56,6 @@ Your website should be available on your domain now (e.g. `https://www.example.c
 For more information on how to maintain your installation or install projects, check
 out [Using Silverstripe with Composer](composer).
 
-## Guided installation
-
-If you are unsure on how this all works, please jump on our [lessons](https://www.silverstripe.org/learn/lessons/v4/).
-Webserver setup is covered in
-[Lesson 4: Setting up a local dev environment](https://www.silverstripe.org/learn/lessons/v4/up-and-running-setting-up-a-local-silverstripe-dev-environment-1).
-
 ## Keep learning
 
 [CHILDREN]

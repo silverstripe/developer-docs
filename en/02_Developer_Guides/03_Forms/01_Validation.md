@@ -396,10 +396,6 @@ class MyPage extends Page
 > You can also update the `CompositeValidator` by creating an `Extension` and implementing the
 > `updateCMSCompositeValidator()` method.
 
-## Related lessons
-
-- [Introduction to frontend forms](https://www.silverstripe.org/learn/lessons/v4/introduction-to-frontend-forms-1)
-
 ## API documentation
 
 - [RequiredFields](api:SilverStripe\Forms\RequiredFields)

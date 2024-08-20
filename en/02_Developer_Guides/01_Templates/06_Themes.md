@@ -111,8 +111,3 @@ The final step is to [submit your theme to Packagist](https://packagist.org/abou
 ## Links
 
 - [Silverstripe CMS themes on Packagist](https://packagist.org/search/?type=silverstripe-theme)
-
-## Related lessons
-
-- [Creating your first project](https://www.silverstripe.org/learn/lessons/v4/creating-your-first-project)
-- [Migrating static templates into your theme](https://www.silverstripe.org/learn/lessons/v4/migrating-static-templates-into-your-theme-1)

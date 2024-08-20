@@ -418,10 +418,6 @@ Silverstripe CMS log-in form. If you are on such a page (and the form is impleme
 the `$Form` variable will contain the HTML content of the form.
 Placing it just below `$Content` is a good default.
 
-## Related lessons
-
-- [Adding dynamic content](https://www.silverstripe.org/learn/lessons/v4/adding-dynamic-content-1)
-
 ## Related documentation
 
 - [Casting and Formatting Variables](casting)

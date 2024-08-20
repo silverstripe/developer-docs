@@ -131,8 +131,6 @@ Note that this is not an exhaustive list, as any public method on `PaginatedList
 | `$LastPage` | Returns true if you're currently on the last page |
 | `$CurrentBool` | Returns true if you're currently on that page |
 
-## Related lessons
-
 ## API documentation
 
 - [`PaginatedList`](api:SilverStripe\ORM\PaginatedList)

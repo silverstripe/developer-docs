@@ -51,7 +51,7 @@ that is used to manage the object.
 
 This method exists so that when a user clicks on a link in the preview panel, the CMS
 edit form for the page the link leads to can be loaded. Unless your `DataObject` is
-[acting like a page](https://www.silverstripe.org/learn/lessons/v4/controller-actions-dataobjects-as-pages-1)
+acting like a page
 this will likely not apply, but as this method is mandatory and public we may as well
 set it up correctly.
 
@@ -208,7 +208,7 @@ We will need to add a new action to the `ModelAdmin` to provide the actual previ
 For now, assume that action will be called `cmsPreview`. We can very easily craft a valid
 URL using the `Link` method on the `MyAdmin` class.
 
-Note that if you had set up this model to [act like a page](https://www.silverstripe.org/learn/lessons/v4/controller-actions-dataobjects-as-pages-1),
+Note that if you had set up this model to act like a page,
 you could simply `return $this->Link($action)`. In that case the new action would not need
 to be added to your `ModelAdmin`.
 

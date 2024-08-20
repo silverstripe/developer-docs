@@ -135,10 +135,6 @@ $list->push($sig);
 $numItems = $list->Count();
 ```
 
-## Related lessons
-
-- [Lists and pagination](https://www.silverstripe.org/learn/lessons/v4/lists-and-pagination-1)
-
 ## API documentation
 
 - [SS_List](api:SilverStripe\ORM\SS_List)

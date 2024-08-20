@@ -126,11 +126,6 @@ $players = Player::get()->filter([
 > ]);
 > ```
 
-## Related lessons
-
-- [Introduction to ModelAdmin](https://www.silverstripe.org/learn/lessons/v4/introduction-to-modeladmin-1)
-- [Building a search form](https://www.silverstripe.org/learn/lessons/v4/building-a-search-form-1)
-
 ## API documentation
 
 - [SearchFilter](api:SilverStripe\ORM\Filters\SearchFilter)

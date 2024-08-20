@@ -490,11 +490,6 @@ That URL ends up passing the request through a series of nested request handlers
 1. `tree` matches `tree` in `TreeDropdownField.allowed_actions`, so `TreeDropdownField::tree()` is called
 1. `TreeDropdownField::tree()` returns an `HTTPResponse` with its body containing JSON
 
-## Related lessons
-
-- [Creating filtered views](https://www.silverstripe.org/learn/lessons/v4/creating-filtered-views-1)
-- [Controller actions / DataObjects as pages](https://www.silverstripe.org/learn/lessons/v4/controller-actions-dataobjects-as-pages-1)
-
 ## Links
 
 - [Controller](api:SilverStripe\Control\Controller) API documentation

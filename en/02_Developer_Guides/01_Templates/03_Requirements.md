@@ -472,11 +472,6 @@ $themeFilePath = ThemeResourceLoader::inst()->findThemedResource('images/spinner
 
 You can also get file paths specifically for JavaScript and CSS files using the [`findThemedJavascript()`](api:SilverStripe\Core\Manifest\ModuleResourceLoader::findThemedJavascript()) and [`findThemedCss()`](api:SilverStripe\Core\Manifest\ModuleResourceLoader::findThemedCss()) methods.
 
-## Related lessons
-
-- [Creating your first theme](https://www.silverstripe.org/learn/lessons/v4/creating-your-first-theme-1)
-- [AJAX behaviour and ViewableData](https://www.silverstripe.org/learn/lessons/v4/ajax-behaviour-and-viewabledata-1)
-
 ## API documentation
 
 - [Requirements](api:SilverStripe\View\Requirements)

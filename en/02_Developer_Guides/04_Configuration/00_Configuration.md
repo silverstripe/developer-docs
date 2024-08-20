@@ -441,7 +441,3 @@ class MyServiceTest extends SapphireTest
 ## API documentation
 
 - [Config](api:SilverStripe\Core\Config\Config)
-
-## Related lessons
-
-- [DataExtensions and SiteConfig](https://www.silverstripe.org/learn/lessons/v4/data-extensions-and-siteconfig-1)

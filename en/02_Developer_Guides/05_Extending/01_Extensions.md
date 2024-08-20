@@ -444,10 +444,6 @@ class CustomisedSomeExtension extends SomeExtension
 > manifest has been loaded, which may not work consistently due to the "extra methods" cache having already been
 > populated.
 
-## Related lessons
-
-- [DataExtensions and SiteConfig](https://www.silverstripe.org/learn/lessons/v4/data-extensions-and-siteconfig-1)
-
 ## Related documentation
 
 - [Injector](injector/)
