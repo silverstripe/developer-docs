@@ -575,7 +575,7 @@ use Page;
 
 class HomePage extends Page
 {
-    public function forTemplate()
+    public function forTemplate(): string
     {
         // We can also render a template here using $this->renderWith()
         return 'Page: ' . $this->Title;
