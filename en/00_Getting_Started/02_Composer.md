@@ -183,7 +183,7 @@ file. It will appear in your project root, and by default, it will look somethin
     "type": "silverstripe-recipe",
     "description": "The SilverStripe Framework Installer",
     "require": {
-        "php": "^8.1",
+        "php": "^8.3",
         "silverstripe/recipe-plugin": "^2",
         "silverstripe/vendor-plugin": "^2",
         "silverstripe/recipe-cms": "~5.0.0@stable",
@@ -340,7 +340,7 @@ Open `composer.json`, and find the module's `require`. Then put `as (core versio
 ```json
 {
     "require": {
-        "php": "^8.1",
+        "php": "^8.3",
         "silverstripe/recipe-cms": "~5.0.0@stable",
         "silverstripe/framework": "dev-myproj as 5.0.0",
         "silverstripe-themes/simple": "~3.2.0"
