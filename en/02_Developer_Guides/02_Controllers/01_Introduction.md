@@ -304,11 +304,6 @@ You'd now be able to access methods of the controller in the page's template
 <p>{$getExample}</p>
 ```
 
-## Related lessons
-
-- [Controller actions/DataObjects as pages](https://www.silverstripe.org/learn/lessons/v4/controller-actions-dataobjects-as-pages-1)
-- [Creating filtered views](https://www.silverstripe.org/learn/lessons/v4/creating-filtered-views-1)
-
 ## Related documentation
 
 - [Execution Pipeline](../execution_pipeline)

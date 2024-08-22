@@ -77,7 +77,3 @@ provide the users a place to configure site-wide settings then the `SiteConfig` 
 ## API documentation
 
 - [SiteConfig](api:SilverStripe\SiteConfig\SiteConfig)
-
-## Related lessons
-
-- [DataExtensions and SiteConfig](https://www.silverstripe.org/learn/lessons/v4/data-extensions-and-siteconfig-1)

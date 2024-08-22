@@ -182,7 +182,3 @@ Module names are derived from their local `composer.json` files using the follow
 - The value of the `name` attribute in `composer.json`
 - The value of `extras.installer-name` in `composer.json`
 - The basename of the directory that contains the module
-
-## Related lessons
-
-- [Working with multiple templates](https://www.silverstripe.org/learn/lessons/v4/working-with-multiple-templates-1)

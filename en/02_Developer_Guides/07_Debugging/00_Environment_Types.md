@@ -86,7 +86,3 @@ if (Director::isLive()) {
     // is in dev mode
 }
 ```
-
-## Related lessons
-
-- [Advanced environment configuration](https://www.silverstripe.org/learn/lessons/v4/advanced-environment-configuration-1)

@@ -619,10 +619,6 @@ for adding notes for other developers but for things you don't want published in
 $EditForm <%-- Some hidden comment about the form --%>
 ```
 
-## Related lessons
-
-- [Creating your first theme](https://www.silverstripe.org/learn/lessons/v4/creating-your-first-theme-1)
-
 ## Related documentation
 
 [CHILDREN Exclude="How_Tos"]

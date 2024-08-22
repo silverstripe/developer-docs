@@ -166,7 +166,3 @@ Text / HTMLText methods:
   version of emails.
 - [`LimitSentences(<num>)`](api:SilverStripe\ORM\FieldType\DBText::LimitSentences()) - limits output to the first `<num>` sentences in the content. This method internally calls `Plain()`,
   converting HTML content into plain text.
-
-## Related lessons
-
-- [Dealing with arbitrary template data](https://www.silverstripe.org/learn/lessons/v4/dealing-with-arbitrary-template-data-1)

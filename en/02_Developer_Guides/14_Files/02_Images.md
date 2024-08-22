@@ -423,7 +423,3 @@ Look at [Template inheritance](../templates/Template_Inheritance) for more infor
 - [Image](api:SilverStripe\Assets\Image)
 - [DBFile](api:SilverStripe\Assets\Storage\DBFile)
 - [ImageManipulation](api:SilverStripe\Assets\ImageManipulation)
-
-## Related lessons
-
-- [Working with files and images](https://www.silverstripe.org/learn/lessons/v4/working-with-files-and-images-1)
