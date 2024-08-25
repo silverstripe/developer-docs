@@ -59,8 +59,8 @@ class UsedOnTableExtension extends Extension
     // DataObject the File is used on.  This is useful for two reasons:
     // - It gives context more context, for instance if File is used on a Content block, it can be used to show the
     //   Page that Content Block is used on
-    // - The DataObject may not have a `CMSEditLink()` implementation, though the ancestor DataObject does.
-    //   The CMS frontend will fallback to using the Ancestor `CMSEditLink()` for when a user clicks on a row on
+    // - The DataObject may not return a value from the `getCMSEditLink()` method, though the ancestor DataObject does.
+    //   The CMS frontend will fallback to using the Ancestor `getCMSEditLink()` for when a user clicks on a row on
     //   the used on table
     protected function updateUsageAncestorDataObjects(array &$ancestorDataObjects, DataObject $dataObject)
     {

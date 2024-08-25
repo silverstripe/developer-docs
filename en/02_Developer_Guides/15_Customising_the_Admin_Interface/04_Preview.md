@@ -36,7 +36,7 @@ For a DataObject to be previewed using the preview panel there are a few prerequ
 
 ### `CMSPreviewable`
 
-The `CMSPreviewable` interface has three methods: `PreviewLink`, `CMSEditLink`, and
+The `CMSPreviewable` interface has three methods: `PreviewLink`, `getCMSEditLink`, and
 `getMimeType`.
 
 #### `PreviewLink`
@@ -47,13 +47,13 @@ item in the context of where it sits on the page using an anchor. You can also p
 some route specific for previewing this object, for example an action on the ModelAdmin
 that is used to manage the object.
 
-#### `CMSEditLink`
+#### `getCMSEditLink`
 
 This method exists so that when a user clicks on a link in the preview panel, the CMS
 edit form for the page the link leads to can be loaded. Unless your `DataObject` is
-acting like a page
-this will likely not apply, but as this method is mandatory and public we may as well
-set it up correctly.
+acting like a page this will likely not apply.
+
+You can leave the default implementation from `DataObject` which returns `null` if you want.
 
 If your object belongs to [a custom ModelAdmin](./modeladmin), the edit URL for the
 object is predictable enough to construct and return from this method as you'll see below.
@@ -63,9 +63,10 @@ nesting `GridField`s. For the below examples it is assumed you aren't using nest
 will handle those situations for you if you use it.
 
 > [!TIP]
-> The easiest way to implement `CMSEditLink()` is by
+> The easiest way to get a correct return value for `getCMSEditLink()` is by
 > [using CMSEditLinkExtension](/developer_guides/model/managing_records#getting-an-edit-link).
-> But for completeness, the other examples below show alternative implementations.
+> That extension implements `updateCMSLink()` so you don't have to touch the `getCMSEditLink()`
+> method directly at all.
 >
 > ```php
 > namespace App\Model;
@@ -83,15 +84,11 @@ will handle those situations for you if you use it.
 >         CMSEditLinkExtension::class,
 >     ];
 >
->     public function CMSEditLink()
->     {
->         // Get the value returned by the extension
->         return $this->extend('CMSEditLink')[0];
->     }
->
 >     // ...
 > }
 > ```
+>
+> For completeness, the other examples below show alternative implementations.
 
 #### `GetMimeType`
 
@@ -192,11 +189,6 @@ class Product extends DataObject implements CMSPreviewable
         return $link;
     }
 
-    public function CMSEditLink()
-    {
-        return null;
-    }
-
     public function getMimeType()
     {
         return 'text/html';
@@ -246,7 +238,7 @@ class Product extends DataObject implements CMSPreviewable
 }
 ```
 
-The `CMSEditLink()` method is also very easy to implement, because the edit link used by
+The `getCMSEditLink()` method is also very easy to implement, because the edit link used by
 `ModelAdmin` is predictable.
 
 If you aren't using [CMSEditLinkExtension](/developer_guides/model/managing_records#getting-an-edit-link),
@@ -263,7 +255,7 @@ class Product extends DataObject implements CMSPreviewable
 {
     // ...
 
-    public function CMSEditLink()
+    public function getCMSEditLink(): ?string
     {
         $admin = MyAdmin::singleton();
         return $admin->getCMSEditLinkForManagedDataObject($this);
@@ -430,7 +422,7 @@ it in the context of the page it belongs to.
 
 For this example we will assume the `Product` class is `Versioned`.
 
-As discussed above, the `CMSEditLink` method is used to load the correct edit form
+As discussed above, the `getCMSEditLink` method is used to load the correct edit form
 in the CMS when you click on a link within the preview panel. This uses the
 `x-page-id` and `x-cms-edit-link` meta tags in the head of the page (assuming your
 page template calls `$MetaTags` in the `<head>` element). When a page loads,
@@ -523,11 +515,6 @@ class Product extends DataObject implements CMSPreviewable
         return $link;
     }
 
-    public function CMSEditLink()
-    {
-        return null;
-    }
-
     public function getMimeType()
     {
         return 'text/html';
@@ -592,10 +579,8 @@ class Product extends DataObject implements CMSPreviewable
 }
 ```
 
-The CMSEditLink doesn't matter so much for this implementation. It is required
-by the `CMSPreviewable` interface so some implementation must be provided, but
-you can safely return `null` or an empty string with no repercussions in this
-situation.
+The `getCMSEditLink()` method doesn't matter so much for this implementation, so you can let
+it return the default value of `null`.
 
 #### The page template
 
