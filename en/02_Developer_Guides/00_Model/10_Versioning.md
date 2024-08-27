@@ -332,7 +332,7 @@ use SilverStripe\Security\Permission;
 
 class MyObjectExtension extends DataExtension
 {
-    public function canViewNonLive($member = null)
+    protected function canViewNonLive($member = null)
     {
         if (!Permission::check($member, 'DRAFT_STATUS')) {
             return false;

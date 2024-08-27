@@ -35,7 +35,7 @@ class MyMemberExtension extends DataExtension
     /**
      * This extension hook is called every time a member is logged in
      */
-    public function afterMemberLoggedIn()
+    protected function onAfterMemberLoggedIn()
     {
         $this->logVisit();
     }

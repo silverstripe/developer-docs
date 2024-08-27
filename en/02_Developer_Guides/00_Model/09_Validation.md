@@ -42,7 +42,7 @@ Most validation constraints are actually data constraints which belong on the mo
 called any time the `write()` method is called, before the `onBeforeWrite()` extension hook.
 
 By default, there is no validation - objects are always valid! However, you can override this method in your `DataObject`
-sub-classes to specify custom validation, or use the `validate()` extension hook through an [Extension](api:SilverStripe\Core\Extension).
+sub-classes to specify custom validation, or use the `updateValidate()` extension hook through an [Extension](api:SilverStripe\Core\Extension).
 
 Invalid objects won't be able to be written - a [`ValidationException`](api:SilverStripe\ORM\ValidationException) will be thrown and no write will occur.
 

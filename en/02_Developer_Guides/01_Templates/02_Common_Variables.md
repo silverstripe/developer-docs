@@ -159,7 +159,7 @@ SilverStripe\CMS\Model\SiteTree:
 
 ### Modifying meta tags
 
-You can override the `MetaComponents()` method on your `SiteTree` sub-classes or make use of the `MetaComponents` extension point to manipulate the underlying data that is rendered by `$MetaTags`. Example (for `Page` class):
+You can override the `MetaComponents()` method on your `SiteTree` sub-classes or make use of the `updateMetaComponents` extension point to manipulate the underlying data that is rendered by `$MetaTags`. Example (for `Page` class):
 
 ```php
 namespace App\PageType;

@@ -91,7 +91,7 @@ class LoginSessionExtension extends DataExtension
     /**
      * @param Member $member
      */
-    public function canView($member)
+    protected function canView($member)
     {
         if ($this->getOwner()->Member()->canView($member)) {
             // If you can view a Member, you can also view their sessions.
@@ -103,7 +103,7 @@ class LoginSessionExtension extends DataExtension
     /**
      * @param Member $member
      */
-    public function canDelete($member)
+    protected function canDelete($member)
     {
         if ($this->getOwner()->Member()->canEdit($member)) {
             // If you can edit a Member, you can also log them out of a session.
