@@ -284,7 +284,7 @@ class Product extends DataObject implements CMSPreviewable
 {
     // ...
 
-    public function forTemplate()
+    public function forTemplate(): string
     {
         // If the template for this DataObject is not an "Include" template, use the appropriate type here
         // e.g. "Layout".
