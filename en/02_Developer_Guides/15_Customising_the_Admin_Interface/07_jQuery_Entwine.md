@@ -8,7 +8,7 @@ iconBrand: js
 > [!WARNING]
 > The following documentation regarding jQuery and Entwine does not apply to React components or sections powered by React.
 > If you're developing new functionality in React powered sections please refer to
-> [React, Redux, and GraphQL](/developer_guides/customising_the_admin_interface/reactjs_redux_and_graphql/).
+> [React and Redux](/developer_guides/customising_the_admin_interface/reactjs_and_redux/).
 
 jQuery Entwine was originally written by [Hamish Friedlander](https://github.com/hafriedlander/jquery.entwine).
 

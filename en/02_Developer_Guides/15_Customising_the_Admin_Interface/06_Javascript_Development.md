@@ -24,7 +24,7 @@ There are many ways to solve the problem of transpiling. The toolchain we use in
 > [!WARNING]
 > The following documentation regarding jQuery, jQueryUI and Entwine does not apply to React components or sections powered by React.
 > If you're developing new functionality in React powered sections please refer to
-> [ReactJS, Redux, and GraphQL](./reactjs_redux_and_graphql).
+> [ReactJS and Redux](./reactjs_and_redux).
 
 We predominantly use [jQuery](https://jquery.com) as our abstraction library for DOM related programming, within the
 Silverstripe CMS and certain framework aspects.
