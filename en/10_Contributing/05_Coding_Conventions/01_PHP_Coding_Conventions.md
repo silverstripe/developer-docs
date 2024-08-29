@@ -101,7 +101,6 @@ Use an appropriate suffix or prefix for classnames when making a subclass or imp
 ## Extensions and traits
 
 - Use the [`Extension`](api:SilverStripe\Core\Extension) class for extending classes, including `DataObject` subclasses.
-- Do not use the `DataExtension` class, it will be deprecated in a future release.
 
 Use a trait instead of an [`Extension`](api:SilverStripe\Core\Extension) when the composable functionality:
 

@@ -39,7 +39,7 @@ Some cases where this is used in supported modules already are:
 - versions - an object in different version stages needs to have different unique keys for each stage
 - locales - an object in different locales needs to have different unique keys for each locale
 
-See [Extensions and DataExtensions](/developer_guides/extending/extensions) for more information about implementing and applying extensions.
+See [Extensions](/developer_guides/extending/extensions) for more information about implementing and applying extensions.
 
 ### Custom service
 

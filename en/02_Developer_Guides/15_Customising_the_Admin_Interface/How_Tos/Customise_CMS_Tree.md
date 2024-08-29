@@ -56,7 +56,7 @@ Each flag has a unique identifier, which is also used as a CSS class for easier 
 
 Developers can easily add a new flag, delete or alter an existing flag on how it is looked
 or changing the flag label. The customization of these lozenges could be done either through
-inherited subclass or [DataExtension](api:SilverStripe\ORM\DataExtension). It is just really about how we change the return
+inherited subclass or [Extension](api:SilverStripe\Core\Extension). It is just really about how we change the return
 value of function `SiteTree->getTreeTitle()` by two easily extendable methods
 `SiteTree->getStatusClass()` and `SiteTree->getStatusFlags()`.
 

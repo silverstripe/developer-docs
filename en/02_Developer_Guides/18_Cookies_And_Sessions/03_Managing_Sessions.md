@@ -77,16 +77,16 @@ will need to log back in to perform further actions.
 
 #### Creating an extension for `LoginSession`
 
-The first step is to create a [`DataExtension`](api:SilverStripe\ORM\DataExtension) that grant some users the ability to hooks into [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession)'s `canView()` and `canDelete()` methods. This example aligns the permissions on the [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession) to the permission on the Member who owns the [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession).
+The first step is to create an [`Extension`](api:SilverStripe\Core\Extension) that grant some users the ability to hooks into [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession)'s `canView()` and `canDelete()` methods. This example aligns the permissions on the [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession) to the permission on the Member who owns the [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession).
 
 Alternatively, you could call [`Permission::check()`](api:SilverStripe\Security\Permission::check()) to validate if the member has a predefined CMS permission. If you need even more granular permissions, you can implement a [`PermissionProvider`](/developer_guides/security/permissions/#permissionprovider) to define your own custom permissions.
 
 ```php
 namespace My\App;
 
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class LoginSessionExtension extends DataExtension
+class LoginSessionExtension extends Extension
 {
     /**
      * @param Member $member

@@ -1,17 +1,17 @@
 ---
 title: Extensions
-summary: Extensions and DataExtensions let you modify and augment objects transparently.
+summary: Extensions let you modify and augment objects transparently.
 icon: code
 ---
 
-# `Extension` and `DataExtension`
+# `Extension`
 
 An [Extension](api:SilverStripe\Core\Extension) allows for adding additional functionality to a class or modifying existing functionality
 without the hassle of creating a subclass. Developers can add Extensions to any PHP class that has the [Extensible](api:SilverStripe\Core\Extensible)
 trait applied within core, modules or even their own code to make it more reusable.
 
 Extensions are defined as subclasses of the [`Extension`](api:SilverStripe\Core\Extension) class.
-Typically, subclasses of the [`DataExtension`](api:SilverStripe\ORM\DataExtension) class are used for extending a [`DataObject`](api:SilverStripe\ORM\DataObject) subclass.
+Typically, subclasses of the [`Extension`](api:SilverStripe\Core\Extension) class are used for extending a [`DataObject`](api:SilverStripe\ORM\DataObject) subclass.
 
 > [!NOTE]
 > For performance reasons a few classes are excluded from receiving extensions, including `ViewableData`
@@ -21,9 +21,9 @@ Typically, subclasses of the [`DataExtension`](api:SilverStripe\ORM\DataExtensio
 // app/src/Extension/MyMemberExtension.php
 namespace App\Extension;
 
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class MyMemberExtension extends DataExtension
+class MyMemberExtension extends Extension
 {
     private static $db = [
         'DateOfBirth' => 'DBDatetime',
@@ -78,9 +78,9 @@ In your [`Extension`](api:SilverStripe\Core\Extension) class you can only refer 
 // app/src/Extension/MyMemberExtension.php
 namespace App\Extension;
 
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class MyMemberExtension extends DataExtension
+class MyMemberExtension extends Extension
 {
     public function updateFoo($foo)
     {
@@ -174,9 +174,9 @@ Because `$db`, `$has_one`, etc are ultimately just configuration properties, the
 namespace App\Extension;
 
 use SilverStripe\Assets\Image;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class MyMemberExtension extends DataExtension
+class MyMemberExtension extends Extension
 {
     private static $db = [
         'Position' => 'Varchar',
@@ -252,9 +252,9 @@ validator by defining the `updateValidator` method.
 // app/src/Extension/MyMemberExtension.php
 namespace App\Extension;
 
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class MyMemberExtension extends DataExtension
+class MyMemberExtension extends Extension
 {
     protected function updateValidator($validator)
     {
@@ -274,11 +274,11 @@ extension. The `CMS` provides a `updateCMSFields` Extension Hook to tie into.
 namespace App\Extension;
 
 use SilverStripe\AssetAdmin\Forms\UploadField;
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
-use SilverStripe\ORM\DataExtension;
 
-class MyMemberExtension extends DataExtension
+class MyMemberExtension extends Extension
 {
     private static $db = [
         'Position' => 'Varchar',
@@ -451,4 +451,3 @@ class CustomisedSomeExtension extends SomeExtension
 ## API documentation
 
 - [Extension](api:SilverStripe\Core\Extension)
-- [DataExtension](api:SilverStripe\ORM\DataExtension)

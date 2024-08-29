@@ -17,15 +17,15 @@ explicitly logging in or by invoking the "remember me" functionality.
 ```php
 namespace App\Extension;
 
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\ORM\DB;
-use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
 
-class MyMemberExtension extends DataExtension
+class MyMemberExtension extends Extension
 {
     private static $db = [
         'LastVisited' => 'Datetime',
