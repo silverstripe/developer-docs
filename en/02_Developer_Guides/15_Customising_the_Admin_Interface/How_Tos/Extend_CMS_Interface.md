@@ -88,16 +88,16 @@ Then run `composer vendor-expose`. This command will publish all the `css` files
 ## Create a "bookmark" flag on pages
 
 Now we'll define which pages are actually bookmarked, a flag that is stored in
-the database. For this we need to decorate the page record with a
-`DataExtension`. Create a new file called `app/src/BookmarkedPageExtension.php`
+the database. For this we need to decorate the page record with an
+`Extension`. Create a new file called `app/src/BookmarkedPageExtension.php`
 and insert the following code.
 
 ```php
 namespace App\Extension;
 
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class BookmarkedPageExtension extends DataExtension
+class BookmarkedPageExtension extends Extension
 {
     private static array $db = [
         'IsBookmarked' => 'Boolean',
@@ -116,10 +116,10 @@ If you need to update those form fields, you can implement the `updateCMSFields(
 ```php
 namespace App\Extension;
 
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\ORM\DataExtension;
 
-class BookmarkedPageExtension extends DataExtension
+class BookmarkedPageExtension extends Extension
 {
     // ...
 
@@ -153,9 +153,9 @@ Add the following code to a new file `app/src/BookmarkedLeftAndMainExtension.php
 ```php
 namespace App\Extension;
 
-use SilverStripe\Admin\LeftAndMainExtension;
+use SilverStripe\Core\Extension;
 
-class BookmarkedPagesLeftAndMainExtension extends LeftAndMainExtension
+class BookmarkedPagesLeftAndMainExtension extends Extension
 {
     public function getBookmarkedPages()
     {
@@ -264,9 +264,9 @@ applicable controller actions to it:
 ```php
 namespace App\Extension;
 
-use SilverStripe\Admin\LeftAndMainExtension;
+use SilverStripe\Core\Extension;
 
-class CustomActionsExtension extends LeftAndMainExtension
+class CustomActionsExtension extends Extension
 {
     private static $allowed_actions = [
         'sampleAction',

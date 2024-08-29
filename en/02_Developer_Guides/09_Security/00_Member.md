@@ -30,7 +30,7 @@ if ($member) {
 ## Subclassing
 
 > [!WARNING]
-> This is the least desirable way of extending the [Member](api:SilverStripe\Security\Member) class. It's better to use [DataExtension](api:SilverStripe\ORM\DataExtension)
+> This is the least desirable way of extending the [Member](api:SilverStripe\Security\Member) class. It's better to use [Extension](api:SilverStripe\Core\Extension)
 > (see below).
 
 You can define subclasses of [Member](api:SilverStripe\Security\Member) to add extra fields or functionality to the built-in membership system.
@@ -109,18 +109,18 @@ SilverStripe\Security\Member:
     - App\Extension\MyMemberExtension
 ```
 
-A role extension is simply a subclass of [`DataExtension`](api:SilverStripe\ORM\DataExtension) that is designed to be used to add behaviour to [`Member`](api:SilverStripe\Security\Member).
+A role extension is simply a subclass of [`Extension`](api:SilverStripe\Core\Extension) that is designed to be used to add behaviour to [`Member`](api:SilverStripe\Security\Member).
 The roles affect the entire class - all members will get the additional behaviour.  However, if you want to restrict
 things, you should add appropriate [`Permission::checkMember()`](api:SilverStripe\Security\Permission::checkMember()) calls to the role's methods.
 
 ```php
 namespace App\Extension;
 
+use SilverStripe\Core\Extension;
 use SilverStripe\Form\FieldList;
-use SilverStripe\ORM\DataExtension;
 use SilverStripe\Security\Permission;
 
-class MyMemberExtension extends DataExtension
+class MyMemberExtension extends Extension
 {
     // define additional properties
     private static $db = [

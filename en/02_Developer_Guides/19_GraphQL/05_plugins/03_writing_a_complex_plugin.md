@@ -10,7 +10,7 @@ summary: In this tutorial, we'll create a plugin that affects models, queries, a
 ## Writing a complex plugin
 
 For this example, we'll imagine that a lot of our DataObjects are geocoded, and this is ostensibly some kind of
-`DataExtension` that adds lat/lon information to the `DataObject`, and maybe allows you to ask how close it is to
+`Extension` that adds lat/lon information to the `DataObject`, and maybe allows you to ask how close it is to
 a given lat/lon pair.
 
 We want any queries using these DataObjects to be able to search within a radius of a given lat/lon.

@@ -8,7 +8,7 @@ summary: Add versioning to your database content through the Versioned extension
 Database content in Silverstripe CMS can be "staged" before its publication, as well as track all changes through the
 lifetime of a database record.
 
-Versioning in Silverstripe CMS is handled through the [`Versioned`](api:SilverStripe\Versioned\Versioned) extension class. As an [`DataExtension`](api:SilverStripe/ORM/DataExtension) it is possible to be applied to any [`DataObject`](api:SilverStripe\ORM\DataObject) subclass. The extension class will automatically update read and write operations performed via the ORM because it implements the [`augmentSQL()`](api:SilverStripe/ORM/DataExtension::augmentSql()) extension hook method.
+Versioning in Silverstripe CMS is handled through the [`Versioned`](api:SilverStripe\Versioned\Versioned) extension class. As an [`Extension`](api:SilverStripe\Core\Extension) it is possible to be applied to any [`DataObject`](api:SilverStripe\ORM\DataObject) subclass. The extension class will automatically update read and write operations performed via the ORM because it implements the `augmentSQL` extension hooks defined in [`DataQuery::getFinalisedQuery()`](api:SilverStripe\ORM\DataQuery::getFinalisedQuery()).
 
 The `Versioned` extension is applied to pages in the CMS (the [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) class) - along with some other core `DataObject` models such as files - by default. Draft content edited in the CMS can be different
 from published content shown to your website visitors.
@@ -327,10 +327,10 @@ E.g.
 ```php
 namespace App\Extension;
 
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 use SilverStripe\Security\Permission;
 
-class MyObjectExtension extends DataExtension
+class MyObjectExtension extends Extension
 {
     protected function canViewNonLive($member = null)
     {

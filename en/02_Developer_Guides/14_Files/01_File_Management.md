@@ -159,9 +159,9 @@ SilverStripe\AssetAdmin\Forms\FileFormFactory:
 // app/src/Extension/MyFileExtension.php
 namespace App\Extension;
 
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class MyFileExtension extends DataExtension
+class MyFileExtension extends Extension
 {
     private static $db = [
         'Description' => 'Text',
