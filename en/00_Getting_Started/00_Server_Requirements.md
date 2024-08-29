@@ -28,7 +28,7 @@ You also need to install [Composer 2](https://getcomposer.org/).
 
 We officially support and regression test against the latest LTS releases of MySQL and MariaDB, though we may choose to support additional versions on a case-by-case basis.
 
-- MySQL >=5.6 and MariaDB (built-in, [commercially supported](/project_governance/supported_modules/))
+- MySQL >=8.0 and MariaDB (built-in, [commercially supported](/project_governance/supported_modules/))
 - PostgreSQL ([third party module](https://github.com/silverstripe/silverstripe-postgresql), community
   supported)
 - SQL Server ([third party module](https://github.com/silverstripe/silverstripe-mssql), community supported)
@@ -37,23 +37,13 @@ We officially support and regression test against the latest LTS releases of MyS
 ### Default MySQL collation
 
 New projects default to the `utf8mb4_unicode_ci` collation when running
-against MySQL, which offers better support for multi-byte characters such as emoji. However, this may cause issues
-related to Varchar fields exceeding the maximum indexable size:
+against MySQL, which offers better support for multi-byte characters such as emoji.
 
-- MySQL 5.6 supports larger indexes (3072 bytes) if the `innodb_large_prefix` setting is enabled (but not by default)
-- MySQL 5.7 and newer have `innodb_large_prefix` enabled by default
-- MariaDB ~10.1 matches MySQL 5.6's behaviour, >10.2 matches 5.7's.
+### Connection mode (sql_mode) when using MySQL server >=8.0.0
 
-You can rectify this issue by upgrading MySQL, enabling the `innodb_large_prefix` setting if available, or reducing the
-size of affected fields. If none of these solutions are currently suitable, you can remove the collation
-configuration from `app/_config/mysite.yml` to default back to the legacy default collation.
-
-### Connection mode (sql_mode) when using MySQL server >=5.7.5
-
-In MySQL versions >=5.7.5, the `ANSI` sql_mode setting behaves differently and includes the `ONLY_FULL_GROUP_BY`
-setting. It is generally recommended to leave this setting as-is because it results in deterministic SQL. However, for
-some advanced cases, the sql_mode can be configured on the database connection via the configuration API (
-see `MySQLDatabase::$sql_mode` for more details.)
+In MySQL versions >=8.0.0, the `ANSI` sql_mode setting includes the `ONLY_FULL_GROUP_BY`
+setting. It is generally recommended to leave this setting as-is because it results in deterministic SQL.
+However, for some advanced cases, the sql_mode can be configured on the database connection via the configuration API (see `MySQLDatabase::$sql_mode` for more details.)
 
 ### MySQL/MariaDB int width in schema
 

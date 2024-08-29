@@ -897,6 +897,6 @@ for details on how to apply caching safely, and read Google's
 ## Related
 
 - [Silverstripe CMS security vulnerability advisories](https://silverstripe.org/security-releases/)
-- [MySQL security documentation](https://dev.mysql.com/doc/refman/8.0/en/security.html)
+- [MySQL security documentation](https://dev.mysql.com/doc/refman/8.4/en/security.html)
 - [OWASP Top Ten](https://owasp.org/www-project-top-ten/)
 - [OWASP List of Attacks](https://owasp.org/www-community/attacks/)
