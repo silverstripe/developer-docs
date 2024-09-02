@@ -236,7 +236,7 @@ correctly configured form.
 > [!WARNING]
 > The following documentation regarding Entwine does not apply to React components or sections powered by React.
 > If you're developing new functionality in React powered sections please refer to
-> [React, Redux, and GraphQL](/developer_guides/customising_the_admin_interface/reactjs_redux_and_graphql/).
+> [React and Redux](/developer_guides/customising_the_admin_interface/reactjs_and_redux/).
 
 jQuery.entwine is a library
 which allows us to attach behaviour to DOM elements in a flexible and structured manner.

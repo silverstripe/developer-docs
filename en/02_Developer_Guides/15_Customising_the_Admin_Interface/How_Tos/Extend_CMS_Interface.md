@@ -251,8 +251,8 @@ how-to.
 
 ## React-rendered UI
 
-For sections of the admin that are rendered with React, Redux, and GraphQL, please refer
-to [the introduction on those concepts](../reactjs_redux_and_graphql/),
+For sections of the admin that are rendered with React and Redux, please refer
+to [the introduction on those concepts](../reactjs_and_redux/),
 as well as their respective How-To's in this section.
 
 ### Implementing handlers
