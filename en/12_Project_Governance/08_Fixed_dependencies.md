@@ -21,12 +21,12 @@ Dependency | Fixed major release line
 [`league/flysystem`](https://packagist.org/packages/league/flysystem) | 3
 [`monolog/monolog`](https://packagist.org/packages/monolog/monolog) | 3
 [`phpunit/phpunit`](https://packagist.org/packages/phpunit/phpunit) | 9
-[`symfony/*`](https://packagist.org/packages/symfony/) | 6
+[`symfony/*`](https://packagist.org/packages/symfony/) | 7
 [`webonyx/graphql-php`](https://packagist.org/packages/webonyx/graphql-php) | 15
 
 ## Symfony dependencies
 
-Silverstripe CMS relies on many Symfony packages. Silverstripe CMS 5 tracks the Symfony 6 release. If your Silverstripe CMS project uses Symfony packages, install packages version compatible with Symfony 6 or you may encounter dependency conflicts.
+Silverstripe CMS relies on many Symfony packages. Silverstripe CMS 6 tracks the Symfony 7 release. If your Silverstripe CMS project uses Symfony packages, install packages version compatible with Symfony 6 or you may encounter dependency conflicts.
 
 ## Related information
 
