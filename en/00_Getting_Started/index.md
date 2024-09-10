@@ -48,13 +48,15 @@ SS_ENVIRONMENT_TYPE="<dev|test|live>"
 Now you should be able to build your database by running this command:
 
 ```bash
-vendor/bin/sake dev/build
+vendor/bin/sake db:build
 ```
+
+> [!TIP]
+> Check out [Sake](/developer_guides/cli/sake) for more details about using Sake on the command line
 
 Your website should be available on your domain now (e.g. `https://www.example.com`). The CMS login can be accessed at `/admin` (e.g. `http://www.example.com/admin`).
 
-For more information on how to maintain your installation or install projects, check
-out [Using Silverstripe with Composer](composer).
+For more information on how to maintain your installation or install projects, check out [Using Silverstripe with Composer](composer).
 
 ## Keep learning
 

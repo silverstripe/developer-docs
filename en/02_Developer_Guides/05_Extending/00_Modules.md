@@ -52,7 +52,7 @@ To lock down to a specific version, branch or commit, read up on
 ["lock" files](https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control).
 
 > [!WARNING]
-> After you add or remove modules, make sure you rebuild the database, class and configuration manifests by going to `https://www.example.com/dev/build?flush=1`
+> After you add or remove modules, make sure you rebuild the database and flush the cache by running `sake db:build --flush`
 
 ## Creating a module {#create}
 

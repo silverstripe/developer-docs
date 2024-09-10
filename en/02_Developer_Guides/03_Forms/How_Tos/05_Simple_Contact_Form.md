@@ -85,7 +85,7 @@ To show the form on the page, we need to render it in our template. We do this b
 
 The reason it's standard practice to name the form function 'Form' is so that we don't have to create a separate template for each page with a form. By adding $Form to the generic Page.ss template, all pages with a form named 'Form' will have their forms shown.
 
-If you now create a ContactPage in the CMS (making sure you have rebuilt the database and flushed the templates /dev/build?flush=all) and visit the page, you will now see a contact form.
+If you now create a ContactPage in the CMS (making sure you have rebuilt the database and flushed the templates e.g. `sake db:build --flush`) and visit the page, you will now see a contact form.
 
 ![a form with three text fields ("name", "email", and "message") and a submit button](../../../_images/howto_contactForm.jpg)
 
