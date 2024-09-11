@@ -49,3 +49,26 @@ SilverStripe\ORM\Connect\DBSchemaManager:
 ```
 
 You can always manually trigger a check and repair (e.g. in a [`BuildTask`](api:SilverStripe/Dev/BuildTask)) by calling [`DB::check_and_repair_table()`](api:SilverStripe\ORM\DB::check_and_repair_table()). This ignores the above configuration.
+
+## Changing `ClassName` column from enum to varchar {#classname-varchar}
+
+On websites with very large database tables it can take a long time to run `dev/build`, which can be a problem when deploying changes to production. This is because the `ClassName` column is an `enum` type which requires an a `ALTER TABLE` query to be run affecting every row whenever there is a new valid value for the column.
+
+For a very rough benchmark, running an `ALTER TABLE` query on a database table of 10 million records took 28.52 seconds on a mid-range 2023 laptop, though this time will vary depending on the database and hardware being used.
+
+You may wish to change the `ClassName` column to a `varchar` type which remove the need to run `ALTER TABLE` whenever there is a new valid value. Enabling this will result in a trade-off where the size of the database will increase by approximately 7 MB per 100,000 rows.
+
+> [!WARNING]
+> There will also be a very slow initial `dev/build` as all of the `ClassName` columns are switched to `varchar`.
+
+To enable this, add the following configuration:
+
+```yml
+SilverStripe\ORM\DataObject:
+  fixed_fields:
+    ClassName: DBClassNameVarchar
+
+SilverStripe\ORM\FieldType\DBPolymorphicForeignKey:
+  composite_db:
+    Class: "DBClassNameVarchar('SilverStripe\\ORM\\DataObject', ['index' => false])"
+```
