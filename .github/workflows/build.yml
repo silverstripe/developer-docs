@@ -5,7 +5,7 @@ on:
     branches:
       - '3'
       - '4.13'
-      - '5.2'
+      - '5.3'
 jobs:
   build:
     name: build-docs
