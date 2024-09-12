@@ -5,8 +5,8 @@ summary: Break up the result of a database query into multiple pages
 
 # How to create a paginated list
 
-In order to create a paginated list, create a method on your controller that first creates a [`SS_List`](api:SilverStripe\ORM\SS_List) that contains
-all your records (e.g. [via the ORM](/developer_guides/model/data_model_and_orm/#querying-data)), then wraps it in a [`PaginatedList`](api:SilverStripe\ORM\PaginatedList) object. The `PaginatedList` constructor should also be passed the
+In order to create a paginated list, create a method on your controller that first creates a [`SS_List`](api:SilverStripe\Model\List\SS_List) that contains
+all your records (e.g. [via the ORM](/developer_guides/model/data_model_and_orm/#querying-data)), then wraps it in a [`PaginatedList`](api:SilverStripe\Model\List\PaginatedList) object. The `PaginatedList` constructor should also be passed the
 [`HTTPRequest`](api:SilverStripe\Control\HTTPRequest) object so it can read the current page information from the `?start=` GET var.
 
 The `PaginatedList` will automatically set up query limits and read the request for information.
@@ -17,7 +17,7 @@ namespace App\PageType;
 
 use Page;
 use PageController;
-use SilverStripe\ORM\PaginatedList;
+use SilverStripe\Model\List\PaginatedList;
 
 class MyPageController extends PageController
 {
@@ -39,8 +39,8 @@ class MyPageController extends PageController
 > Note that the concept of "pages" used in pagination does not necessarily mean that we're dealing with `Page` classes,
 > it's just a term to describe a sub-collection of the list.
 
-There are two ways to generate pagination controls: [PaginatedList::Pages()](api:SilverStripe\ORM\PaginatedList::Pages()) and
-[PaginatedList::PaginationSummary()](api:SilverStripe\ORM\PaginatedList::PaginationSummary()). In this example we will use `PaginationSummary()`.
+There are two ways to generate pagination controls: [PaginatedList::Pages()](api:SilverStripe\Model\List\PaginatedList::Pages()) and
+[PaginatedList::PaginationSummary()](api:SilverStripe\Model\List\PaginatedList::PaginationSummary()). In this example we will use `PaginationSummary()`.
 
 The first step is to simply list the objects in the template:
 
@@ -85,12 +85,12 @@ If there is more than one page, this block will render a set of pagination contr
 ## Paginating custom lists
 
 In some situations where you are generating the list yourself, the underlying list will already contain only the items
-that you wish to display on the current page. In this situation the automatic limiting done by [PaginatedList](api:SilverStripe\ORM\PaginatedList)
-will break the pagination. You can disable automatic limiting using the [PaginatedList::setLimitItems()](api:SilverStripe\ORM\PaginatedList::setLimitItems()) method
+that you wish to display on the current page. In this situation the automatic limiting done by [PaginatedList](api:SilverStripe\Model\List\PaginatedList)
+will break the pagination. You can disable automatic limiting using the [PaginatedList::setLimitItems()](api:SilverStripe\Model\List\PaginatedList::setLimitItems()) method
 when using custom lists.
 
 ```php
-use SilverStripe\ORM\PaginatedList;
+use SilverStripe\Model\List\PaginatedList;
 
 $myPreLimitedList = Page::get()->limit(10, $somePageOffset);
 
@@ -100,7 +100,7 @@ $pages->setLimitItems(false);
 
 ## Setting the number of items per page
 
-By default, the `PaginatedList` includes 10 items per page. You can change this by calling [`setPageLength()`](api:SilverStripe\ORM\PaginatedList::setPageLength()).
+By default, the `PaginatedList` includes 10 items per page. You can change this by calling [`setPageLength()`](api:SilverStripe\Model\List\PaginatedList::setPageLength()).
 
 ```php
 $pages = new PaginatedList(Page::get(), $this->getRequest());
@@ -133,4 +133,4 @@ Note that this is not an exhaustive list, as any public method on `PaginatedList
 
 ## API documentation
 
-- [`PaginatedList`](api:SilverStripe\ORM\PaginatedList)
+- [`PaginatedList`](api:SilverStripe\Model\List\PaginatedList)

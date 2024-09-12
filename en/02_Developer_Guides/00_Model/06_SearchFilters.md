@@ -6,7 +6,7 @@ icon: search
 
 # `SearchFilter` modifiers
 
-The `filter()`, `exclude()`, and other related methods on [`DataList`](api:SilverStripe\ORM\DataList), [`ArrayList`](api:SilverStripe\ORM\ArrayList), and [`EagerLoadedList`](api:SilverStripe\ORM\EagerLoadedList) specify exact matches by default. However, when calling these methods, there are a number of suffixes that
+The `filter()`, `exclude()`, and other related methods on [`DataList`](api:SilverStripe\ORM\DataList), [`ArrayList`](api:SilverStripe\Model\List\ArrayList), and [`EagerLoadedList`](api:SilverStripe\ORM\EagerLoadedList) specify exact matches by default. However, when calling these methods, there are a number of suffixes that
 you can put on field names to change this behavior. These are represented as `SearchFilter` subclasses and include:
 
 - [`ExactMatchFilter`](api:SilverStripe\ORM\Filters\ExactMatchFilter)
@@ -58,7 +58,7 @@ Developers can define their own [SearchFilter](api:SilverStripe\ORM\Filters\Sear
 > Though note that for backwards compatibility reasons, `ArrayList` is explicitly case sensitive by default. To change that, you must set `ArrayList.default_case_sensitive` to false.
 >
 > ```yml
-> SilverStripe\ORM\ArrayList:
+> SilverStripe\Model\List\ArrayList:
 >   default_case_sensitive: false
 > ```
 

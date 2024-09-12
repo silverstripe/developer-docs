@@ -6,7 +6,7 @@ icon: code
 
 # Rendering data to a template
 
-Templates do nothing on their own. Rather, they are used to generate markup - most typically they are used to generate HTML markup, using variables from some `ViewableData` object.
+Templates do nothing on their own. Rather, they are used to generate markup - most typically they are used to generate HTML markup, using variables from some `ModelData` object.
 All of the `<% if %>`, `<% loop %>` and other variables are methods or parameters that are called on the current object in
 scope (see [scope](syntax#scope) in the syntax section).
 
@@ -17,13 +17,13 @@ The following will render the given data into a template. Given the template:
 <strong>$Name</strong> is the $Role on our team.
 ```
 
-Our application code can render into that view using the [`renderWith()`](api:SilverStripe\View\ViewableData) method provided by `ViewableData`. Call this method on any instance of `ViewableData` or its subclasses, passing in a template name or an array of templates to render.
+Our application code can render into that view using the [`renderWith()`](api:SilverStripe\Model\ModelData) method provided by `ModelData`. Call this method on any instance of `ModelData` or its subclasses, passing in a template name or an array of templates to render.
 
 ```php
 namespace App\Model;
 
+use SilverStripe\Model\ArrayData;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\View\ArrayData;
 
 class MyModel extends DataObject
 {
@@ -96,7 +96,7 @@ This will look for a global `templates/Coach_Message.ss` template, and if it doe
 See [template types and locations](template_inheritance/#template-types-and-locations) for more information.
 
 > [!NOTE]
-> Most classes in Silverstripe CMS you want in your template extend `ViewableData` and allow you to call `renderWith`. This
+> Most classes in Silverstripe CMS you want in your template extend `ModelData` and allow you to call `renderWith`. This
 > includes [Controller](api:SilverStripe\Control\Controller), [FormField](api:SilverStripe\Forms\FormField) and [DataObject](api:SilverStripe\ORM\DataObject) instances.
 >
 > ```php
@@ -157,7 +157,7 @@ class MyPageController extends PageController
 
 ## Rendering arbitrary data in templates
 
-Any data you want to render into the template that does not extend `ViewableData` should be wrapped in an object that
+Any data you want to render into the template that does not extend `ModelData` should be wrapped in an object that
 does, such as `ArrayData` or `ArrayList`.
 
 ```php
@@ -165,8 +165,8 @@ namespace App\PageType;
 
 use PageController;
 use SilverStripe\Control\Director;
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\View\ArrayData;
+use SilverStripe\Model\ArrayData;
+use SilverStripe\Model\List\ArrayList;
 
 class MyPageController extends PageController
 {
@@ -195,4 +195,4 @@ class MyPageController extends PageController
 ```
 
 > [!WARNING]
-> A common mistake is trying to loop over an array directly in a template - this won't work. You'll need to wrap the array in some `ViewableData` instance as mentioned above.
+> A common mistake is trying to loop over an array directly in a template - this won't work. You'll need to wrap the array in some `ModelData` instance as mentioned above.

@@ -6,7 +6,7 @@ icon: code
 
 # Formatting, casting, and escaping variable content
 
-All objects that are being rendered in a template should be a [ViewableData](api:SilverStripe\View\ViewableData) instance such as `DataObject`,
+All objects that are being rendered in a template should be a [ModelData](api:SilverStripe\Model\ModelData) instance such as `DataObject`,
 `DBField` or `Controller`. From these objects, the template can include any method from the object in [scope](syntax#scope).
 
 ## Casting
@@ -25,9 +25,9 @@ that class, and ensures and values are safely escaped.
 ```php
 namespace App\Data;
 
-use SilverStripe\View\ViewableData;
+use SilverStripe\Model\ModelData;
 
-class MyTemplatedObject extends ViewableData
+class MyTemplatedObject extends ModelData
 {
     private static $casting = [
         'Header' => 'HTMLText',
@@ -48,7 +48,7 @@ For every field used in templates, a casting helper will be applied. This will f
 in case none are specified.
 
 > [!NOTE]
-> By default, all content without a type explicitly defined in a `$casting` array will use the `ViewableData.default_cast` configuration. By default,
+> By default, all content without a type explicitly defined in a `$casting` array will use the `ModelData.default_cast` configuration. By default,
 > that configuration is set to `Text`, so HTML characters are escaped.
 
 ### Common casting types
@@ -86,7 +86,7 @@ $LastEdited.Format("d/m/Y")
 ```
 
 Any public method from the object in scope can be called within the template. If that method returns another
-`ViewableData` instance, you can chain the method calls.
+`ModelData` instance, you can chain the method calls.
 
 ```ss
 <%-- prints the first paragraph of content for the first item in the list --%>
@@ -127,7 +127,7 @@ All `DBField` instances share the following useful methods for formatting their 
 The concept of escaping values in templates is ultimately just a combination of formatting and casting.
 
 Values are typically escaped (i.e. the special HTML characters are encoded) in templates by either not
-declaring a casting type, or by defaulting to the `Text` casting type defined on `ViewableData`.
+declaring a casting type, or by defaulting to the `Text` casting type defined on `ModelData`.
 
 See the [casting](#casting) section above for
 instructions on configuring your model to declare casting types for fields, and how some of the more common

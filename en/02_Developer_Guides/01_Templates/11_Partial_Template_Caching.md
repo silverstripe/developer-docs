@@ -1,6 +1,6 @@
 ---
 title: Partial Template Caching
-summary: Cache a section of a template Reduce rendering time with cached templates and understand the limitations of the ViewableData object caching.
+summary: Cache a section of a template Reduce rendering time with cached templates and understand the limitations of the ModelData object caching.
 icon: tags
 ---
 

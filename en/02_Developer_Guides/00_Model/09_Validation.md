@@ -8,14 +8,14 @@ icon: check-square
 
 ## Validation using `symfony/validator` constraints {#symfony-validator}
 
-The [`ConstraintValidator`](api:SilverStripe\Core\Validation\ConstraintValidator) class provides an abstraction around [`symfony/validator`](https://symfony.com/doc/current/components/validator.html), so you can easily validate values against symfony's validation constraints and get a [`ValidationResult`](api:SilverStripe\ORM\ValidationResult) object with the result.
+The [`ConstraintValidator`](api:SilverStripe\Core\Validation\ConstraintValidator) class provides an abstraction around [`symfony/validator`](https://symfony.com/doc/current/components/validator.html), so you can easily validate values against symfony's validation constraints and get a [`ValidationResult`](api:SilverStripe\Core\Validation\ValidationResult) object with the result.
 
 ```php
 use SilverStripe\Core\Validation\ConstraintValidator;
 
 /**
  * @var \Symfony\Component\Validator\Constraint $constraint
- * @var \SilverStripe\ORM\ValidationResult $result
+ * @var \SilverStripe\Core\Validation\ValidationResult $result
  */
 $result = ConstraintValidator::validate($valueToValidate, $constraint);
 ```
@@ -44,12 +44,12 @@ called any time the `write()` method is called, before the `onBeforeWrite()` ext
 By default, there is no validation - objects are always valid! However, you can override this method in your `DataObject`
 sub-classes to specify custom validation, or use the `updateValidate()` extension hook through an [Extension](api:SilverStripe\Core\Extension).
 
-Invalid objects won't be able to be written - a [`ValidationException`](api:SilverStripe\ORM\ValidationException) will be thrown and no write will occur.
+Invalid objects won't be able to be written - a [`ValidationException`](api:SilverStripe\Core\Validation\ValidationException) will be thrown and no write will occur.
 
 Ideally you should call `validate()` in your own application to test that an object is valid before attempting a
 write, and respond appropriately if it isn't.
 
-The return value of `validate()` is a [`ValidationResult`](api:SilverStripe\ORM\ValidationResult) object.
+The return value of `validate()` is a [`ValidationResult`](api:SilverStripe\Core\Validation\ValidationResult) object.
 
 ```php
 namespace App\Model;
@@ -85,4 +85,4 @@ class MyObject extends DataObject
 ## API documentation
 
 - [DataObject](api:SilverStripe\ORM\DataObject)
-- [ValidationResult](api:SilverStripe\ORM\ValidationResult);
+- [ValidationResult](api:SilverStripe\Core\Validation\ValidationResult);

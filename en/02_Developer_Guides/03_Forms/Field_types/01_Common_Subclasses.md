@@ -57,7 +57,7 @@ doesn't necessarily have any visible styling.
 - [CheckboxSetField](api:SilverStripe\Forms\CheckboxSetField): Displays a set of checkboxes as a logical group.
 - [TreeDropdownField](api:SilverStripe\Forms\TreeDropdownField): Dropdown-like field that allows you to select an item from a hierarchical AJAX-expandable tree.
 - [TreeMultiselectField](api:SilverStripe\Forms\TreeMultiselectField): Represents many-many joins using a tree selector shown in a dropdown-like element.
-- [GridField](api:SilverStripe\Forms\GridField\GridField): Displays a [SS_List](api:SilverStripe\ORM\SS_List) in a tabular format. Versatile base class which can be configured to allow editing, sorting, etc.
+- [GridField](api:SilverStripe\Forms\GridField\GridField): Displays a [SS_List](api:SilverStripe\Model\List\SS_List) in a tabular format. Versatile base class which can be configured to allow editing, sorting, etc.
 - [ListboxField](api:SilverStripe\Forms\ListboxField): Multi-line listbox field, through `<select multiple>`.
 - [SearchableDropdownField](api:SilverStripe\Forms\SearchableDropdownField): Dropdown field with optional type to search and optional AJAX lazy loading.
 - [SearchableMutliDropdownField](api:SilverStripe\Forms\SearchableMutliDropdownField): Multi-select field with optional type to search and optional AJAX lazy loading.
