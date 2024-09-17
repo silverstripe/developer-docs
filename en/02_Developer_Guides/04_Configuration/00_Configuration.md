@@ -400,6 +400,7 @@ Note that the configuration change is active only within the callback function.
 namespace App\Test\Service;
 
 use App\Service\MyService;
+use PHPUnit\Framework\Attributes\DataProvider;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\SapphireTest;
@@ -407,10 +408,10 @@ use SilverStripe\Dev\SapphireTest;
 class MyServiceTest extends SapphireTest
 {
     /**
-     * @dataProvider testValuesProvider
      * @param string $value
      * @param string $expected
      */
+    #[DataProvider('provideConfigValues')]
     public function testConfigValues($value, $expected)
     {
         $result = Config::withConfig(function (MutableConfigCollectionInterface $config) use ($value) {
@@ -427,7 +428,7 @@ class MyServiceTest extends SapphireTest
         $this->assertEquals($expected, $result);
     }
 
-    public function testValuesProvider(): array
+    public function provideConfigValues(): array
     {
         return [
             ['test value 1', 'expected value 1'],

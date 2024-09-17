@@ -5,7 +5,7 @@ summary: Test models, database logic and your object methods.
 
 # Unit and integration testing
 
-A Unit Test is an automated piece of code that invokes a unit of work in the application and then checks the behavior
+A unit test is an automated piece of code that invokes a unit of work in the application and then checks the behavior
 to ensure that it works as it should. A simple example would be to test the result of a PHP method.
 
 ```php
@@ -207,6 +207,18 @@ class MyTest extends SapphireTest
     }
 }
 ```
+
+### Asserting errors, warnings and notices
+
+The `phpunit` no longer supports the ability to assert expected errors, warning and notices. Calling [`SapphireTest::enableErrorHandler()`](api:SilverStripe\Dev\SapphireTest::enableErrorHandler()) at beginning on your unit test, or in the `setUp()` method, will use a custom error handler to catch any errors, warning and notices and re-throw them as exceptions which can then be asserted by calling `$this->expectException(<exception-class>);`. The following error types are converted to the following exceptions:
+
+| Error types | Exception |
+| ----------- | --------- |
+| E_USER_ERROR, E_RECOVERABLE_ERROR | [`ExpectedErrorException`](api:SilverStripe\Dev\Exceptions\ExpectedErrorException) |
+| E_NOTICE, E_USER_NOTICE | [`ExpectedNoticeException`](api:SilverStripe\Dev\Exceptions\ExpectedNoticeException) |
+| E_WARNING, E_USER_WARNING | [`ExpectedWarningException`](api:SilverStripe\Dev\Exceptions\ExpectedWarningException) |
+
+All other error types are not converted to exceptions and are handled by the default PHP error handler.
 
 ## Related documentation
 
