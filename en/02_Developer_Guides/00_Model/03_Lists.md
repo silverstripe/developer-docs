@@ -6,7 +6,7 @@ icon: list
 
 # Managing lists
 
-Whenever using the ORM to fetch records or navigate relationships you will receive an [SS_List](api:SilverStripe\ORM\SS_List) instance commonly as
+Whenever using the ORM to fetch records or navigate relationships you will receive an [SS_List](api:SilverStripe\Model\List\SS_List) instance commonly as
 either [DataList](api:SilverStripe\ORM\DataList) or [RelationList](api:SilverStripe\ORM\RelationList). This object gives you the ability to iterate over each of the results or
 modify.
 
@@ -14,7 +14,7 @@ There's a lot more information about filtering and sorting lists in the [Introdu
 
 ## Iterating over the list
 
-[`SS_List`](api:SilverStripe\ORM\SS_List) extends the [`IteratorAggregate`](https://www.php.net/manual/en/class.iteratoraggregate.php) interface, allowing you to loop over the instance.
+[`SS_List`](api:SilverStripe\Model\List\SS_List) extends the [`IteratorAggregate`](https://www.php.net/manual/en/class.iteratoraggregate.php) interface, allowing you to loop over the instance.
 
 ```php
 use SilverStripe\Security\Member;
@@ -37,7 +37,7 @@ Or in the template engine:
 
 ## Finding an item by value
 
-You can use the [`find()`](api:SilverStripe\ORM\SS_List::find()) method to get a single item based on the value of one of its properties.
+You can use the [`find()`](api:SilverStripe\Model\List\SS_List::find()) method to get a single item based on the value of one of its properties.
 
 ```php
 $members = Member::get();
@@ -48,7 +48,7 @@ echo $members->find('ID', 4)->FirstName;
 
 ## Maps
 
-A map is like an array, where the indexes contain data as well as the values. You can build a map from any list by calling the [`map()](api:SilverStripe\ORM\SS_List::map()) method.
+A map is like an array, where the indexes contain data as well as the values. You can build a map from any list by calling the [`map()](api:SilverStripe\Model\List\SS_List::map()) method.
 
 ```php
 $members = Member::get()->map('ID', 'FirstName');
@@ -58,7 +58,7 @@ foreach ($members as $id => $firstName) {
 }
 ```
 
-This functionality is provided by the [`Map`](api:SilverStripe\ORM\Map) class, which can be used to build a map from any `SS_List`. You can instantiate a new `Map` object using the `new` keyword as well.
+This functionality is provided by the [`Map`](api:SilverStripe\Model\List\Map) class, which can be used to build a map from any `SS_List`. You can instantiate a new `Map` object using the `new` keyword as well.
 
 ```php
 $membersMap = new Map(Member::get(), 'ID', 'FirstName');
@@ -66,7 +66,7 @@ $membersMap = new Map(Member::get(), 'ID', 'FirstName');
 
 ## Column
 
-You can get all of the values for a single property by calling the [`column()`](api:SilverStripe\ORM\SS_List::column()) method.
+You can get all of the values for a single property by calling the [`column()`](api:SilverStripe\Model\List\SS_List::column()) method.
 
 ```php
 // returns [
@@ -121,7 +121,7 @@ There are some limitations:
 
 ## ArrayList
 
-[`ArrayList`](api:SilverStripe\ORM\ArrayList) exists to wrap a standard PHP array in the same API as a database backed list.
+[`ArrayList`](api:SilverStripe\Model\List\ArrayList) exists to wrap a standard PHP array in the same API as a database backed list.
 
 ```php
 $sam = Member::get()->byId(5);
@@ -137,8 +137,8 @@ $numItems = $list->Count();
 
 ## API documentation
 
-- [SS_List](api:SilverStripe\ORM\SS_List)
+- [SS_List](api:SilverStripe\Model\List\SS_List)
 - [RelationList](api:SilverStripe\ORM\RelationList)
 - [DataList](api:SilverStripe\ORM\DataList)
-- [ArrayList](api:SilverStripe\ORM\ArrayList)
-- [Map](api:SilverStripe\ORM\Map)
+- [ArrayList](api:SilverStripe\Model\List\ArrayList)
+- [Map](api:SilverStripe\Model\List\Map)

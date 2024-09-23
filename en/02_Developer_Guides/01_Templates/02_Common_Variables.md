@@ -427,5 +427,5 @@ Placing it just below `$Content` is a good default.
 
 - [ContentController](api:SilverStripe\CMS\Controllers\ContentController): The main controller responsible for handling pages.
 - [Controller](api:SilverStripe\Control\Controller): Generic controller (not specific to pages.)
-- [DataObject](api:SilverStripe\ORM\DataObject): Underlying model class for page objects.
-- [ViewableData](api:SilverStripe\View\ViewableData): Underlying object class for pretty much anything displayable.
+- [DataObject](api:SilverStripe\ORM\DataObject): Underlying model class for models which store their data in the database.
+- [ModelData](api:SilverStripe\Model\ModelData): Underlying object class for pretty much anything which contains data.

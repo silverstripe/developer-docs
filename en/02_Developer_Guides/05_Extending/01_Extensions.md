@@ -14,7 +14,7 @@ Extensions are defined as subclasses of the [`Extension`](api:SilverStripe\Core\
 Typically, subclasses of the [`Extension`](api:SilverStripe\Core\Extension) class are used for extending a [`DataObject`](api:SilverStripe\ORM\DataObject) subclass.
 
 > [!NOTE]
-> For performance reasons a few classes are excluded from receiving extensions, including `ViewableData`
+> For performance reasons a few classes are excluded from receiving extensions, including `ModelData`
 > and `RequestHandler`. You can still apply extensions to descendants of these classes.
 
 ```php
@@ -97,9 +97,9 @@ Extension classes can add to configuration properties for the classes they exten
 ```php
 namespace App\Data;
 
-use SilverStripe\View\ViewableData;
+use SilverStripe\Model\ModelData;
 
-class MyDataClass extends ViewableData
+class MyDataClass extends ModelData
 {
     private static array $my_configuration_property = [
         'key1' => 'value1',

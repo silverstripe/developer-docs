@@ -388,7 +388,7 @@ class MyAdmin extends ModelAdmin
 > namespace App\Admin;
 >
 > use SilverStripe\Admin\ModelAdmin;
-> use SilverStripe\View\ArrayData;
+> use SilverStripe\Model\ArrayData;
 > use SilverStripe\View\Requirements;
 > use SilverStripe\View\SSViewer;
 >

@@ -185,11 +185,11 @@ DBField::create_field('Date', '1982-01-01')->TimeDiff();
 
 ## Casting
 
-Most objects in Silverstripe CMS extend from [ViewableData](api:SilverStripe\View\ViewableData), which means they know how to present themselves in a view
+Most objects in Silverstripe CMS extend from [ModelData](api:SilverStripe\Model\ModelData), which means they know how to present themselves in a view
 context. Rather than manually returning objects from your custom functions. You can use the `$casting` configuration property. This casting only happens when you get the values in a template, so calling the method in your PHP code will always return the raw value.
 
 > [!TIP]
-> While these examples are using `DataObject` subclasses, you can use the `$casting` configuration property on *any* `ViewableData` subclass.
+> While these examples are using `DataObject` subclasses, you can use the `$casting` configuration property on *any* `ModelData` subclass.
 
 ```php
 namespace App\Model;
@@ -237,7 +237,7 @@ $name = $player->getName()->LimitCharacters(2);
 <% end_with %>
 ```
 
-You can get the casted `DBField` instance of these properties by calling the [`obj()`](api:SilverStripe\View\ViewableData::obj()) method:
+You can get the casted `DBField` instance of these properties by calling the [`obj()`](api:SilverStripe\Model\ModelData::obj()) method:
 
 ```php
 $player = Player::get()->byId(1);

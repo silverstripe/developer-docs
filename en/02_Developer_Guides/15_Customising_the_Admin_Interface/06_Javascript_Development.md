@@ -259,7 +259,7 @@ namespace App\Control;
 
 use Page;
 use SilverStripe\Control\HTTPResponse;
-use SilverStripe\View\ViewableData;
+use SilverStripe\Model\ModelData;
 
 class MyController
 {
@@ -279,7 +279,7 @@ class MyController
         ->addHeader('X-Status', 'Found ' . $results->Count() . ' elements');
 
         // render all results with a custom template
-        $vd = ViewableData::create();
+        $vd = ModelData::create();
         return $vd->customise([
             'Results' => $results,
         ])->renderWith('AutoComplete');

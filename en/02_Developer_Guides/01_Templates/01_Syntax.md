@@ -271,7 +271,7 @@ include.
 
 ## Looping over lists
 
-The `<% loop %>` tag is used to iterate or loop over a collection of items such as a native PHP array, a [DataList](api:SilverStripe\ORM\DataList), or an [ArrayList](api:SilverStripe\ORM\ArrayList)
+The `<% loop %>` tag is used to iterate or loop over a collection of items such as a native PHP array, a [DataList](api:SilverStripe\ORM\DataList), or an [ArrayList](api:SilverStripe\Model\List\ArrayList)
 collection.
 
 ```ss
@@ -307,7 +307,7 @@ This can be particularly useful when you have collections within collections.
 
 ### Altering the list
 
-`<% loop %>` statements often iterate over [`SS_List`](api:SilverStripe\ORM\SS_List) instances. As the template has access to the list object,
+`<% loop %>` statements often iterate over [`SS_List`](api:SilverStripe\Model\List\SS_List) instances. As the template has access to the list object,
 templates can call its methods.
 
 Sorting the list by a given field.
@@ -564,7 +564,7 @@ refer directly to properties and methods of the [`Member`](api:SilverStripe\Secu
 
 ### `fortemplate()` and `$Me` {#fortemplate}
 
-If you reference some `ViewableData` object directly in a template, the `forTemplate()` method on that object will be called.
+If you reference some `ModelData` object directly in a template, the `forTemplate()` method on that object will be called.
 This can be used to provide a default template for an object.
 
 ```php

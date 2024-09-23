@@ -262,7 +262,7 @@ if ($players->exists()) {
 > [!TIP]
 > While you could use `if ($players->Count() > 0)` for this condition, the `exists()` method uses an `EXISTS` SQL query, which is more performant.
 
-See the [Lists](lists) documentation for more information on dealing with [SS_List](api:SilverStripe\ORM\SS_List) instances.
+See the [Lists](lists) documentation for more information on dealing with [SS_List](api:SilverStripe\Model\List\SS_List) instances.
 
 ## Sorting
 

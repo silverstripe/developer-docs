@@ -148,7 +148,7 @@ namespace App\PageType;
 
 use App\Model\MyDataObject;
 use PageController;
-use SilverStripe\ORM\PaginatedList;
+use SilverStripe\Model\List\PaginatedList;
 // ...
 
 class SearchPageController extends PageController
