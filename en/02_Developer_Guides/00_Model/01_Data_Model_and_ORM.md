@@ -52,10 +52,10 @@ so on. After writing this class, we need to regenerate the database schema.
 
 After adding, modifying or removing `DataObject` subclasses, make sure to rebuild your Silverstripe CMS database. The
 database schema is generated automatically by visiting `/dev/build` (e.g. `https://www.example.com/dev/build`) in your browser
-while authenticated as an administrator, or by running `sake dev/build` on the command line (see [Command Line Interface](/developer_guides/cli/) to learn more about `sake`).
+while authenticated as an administrator, or by running `sake db:build` on the command line (see [Sake](/developer_guides/cli/sake/) to learn more about using Sake).
 
 > [!NOTE]
-> In "dev" mode, you do not need to be authenticated to run `/dev/build`. See [Environment Types](/developer_guides/debugging/environment_types) for more information.
+> In "dev" mode, you do not need to be authenticated to visit `/dev/build`. See [Environment Types](/developer_guides/debugging/environment_types) for more information.
 
 This script will analyze the existing schema, compare it to what's required by your data classes, and alter the schema
 as required.

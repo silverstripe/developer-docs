@@ -94,7 +94,7 @@ relevant i18n `lang` directories.
 
 Silverstripe CMS allows CMS authors to upload files into the `public/assets/` folder, which should be served by your
 webserver. **No PHP execution should be allowed in this folder**. This is configured for Apache by default
-via `public/assets/.htaccess`. The file is generated dynamically during the `dev/build` stage.
+via `public/assets/.htaccess`. The file is generated dynamically when building the database.
 
 Additionally, access is whitelisted by file extension through a dynamically generated whitelist based on
 the `File.allowed_extensions` setting

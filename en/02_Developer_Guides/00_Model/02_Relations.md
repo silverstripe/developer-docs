@@ -1191,7 +1191,7 @@ for displaying the objects contained in the relation.
 
 The [`RelationValidationService`](api:SilverStripe\Dev\Validation\RelationValidationService) can be used to check if your relations are set up according to best practices, and is very useful for debugging unexpected behaviour with relations. It is disabled by default.
 
-To enable this service, set the following YAML configuration, which will give you validation output every time you run `dev/build`.
+To enable this service, set the following YAML configuration, which will give you validation output every time you run `sake db:build`.
 
 ```yml
 SilverStripe\Dev\Validation\RelationValidationService:
@@ -1228,7 +1228,7 @@ SilverStripe\Dev\Validation\RelationValidationService:
     - 'App\Model\Player.Teams'
 ```
 
-### Validating relations outside dev/build
+### Validating relations any time
 
 If you want to, you can invoke the `RelationValidationService` at any time in PHP code.
 

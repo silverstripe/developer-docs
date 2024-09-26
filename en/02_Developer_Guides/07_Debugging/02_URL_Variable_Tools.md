@@ -70,7 +70,7 @@ Redirections](/developer_guides/controllers/redirection) for more information an
  | URL Variable  | Values | Description |
  | ------------  | ------ | ----------- |
  | quiet         | 1      | Don't show messages during build |
- | dont_populate | 1      | Don't run **requireDefaultRecords()** on the models when building. This will build the table but not insert any records |
+ | no-populate   | 1      | Don't run **requireDefaultRecords()** on the models when building. This will build the table but not insert any records |
 
 ## Config diagnostic URLs
 

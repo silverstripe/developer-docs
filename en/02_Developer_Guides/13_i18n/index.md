@@ -294,32 +294,23 @@ otherwise it won't pick up locale changes.
 
 ## Collecting text
 
-To collect all the text in code and template files we have just to visit: `https://www.example.com/dev/tasks/i18nTextCollectorTask`
+To collect all the text in code and template files we have just to visit `https://www.example.com/dev/tasks/i18nTextCollectorTask` or run `sake tasks:i18nTextCollectorTask` on the command line.
 
 Text collector will then read the files, build the string table for each module where it finds calls to the
 underscore function, and tell you about the created files and any possible entity redeclaration.
 
 If you want to run the text collector for just one module you can use the 'module' parameter:
-`https://www.example.com/dev/tasks/i18nTextCollectorTask/?module=silverstripe%2Fcms`
+`https://www.example.com/dev/tasks/i18nTextCollectorTask/?module=silverstripe%2Fcms` or `sake tasks:i18nTextCollectorTask --module=silverstripe/cms`
 
 You can also run the text collector against multiple specific modules by separating the module names with a comma:
-`https://www.example.com/dev/tasks/i18nTextCollectorTask/?module=silverstripe%2Fcms,silverstripe%2Fframework`
+`https://www.example.com/dev/tasks/i18nTextCollectorTask/?module=silverstripe%2Fcms,silverstripe%2Fframework` or `sake tasks:i18nTextCollectorTask --module=silverstripe/cms,silverstripe/framework`
 
 > [!NOTE]
 > The `%2F` in `silverstripe%2Fcms` is a `/` which has been encoded for use in a URL in a non-ambiguous way.
 
 The text collector also collects text for themes - if you want to run text collection on a specific theme, reference the theme
 with prefix `themes:`, e.g:
-`https://www.example.com/dev/tasks/i18nTextCollectorTask/?module=themes:my-theme`
-
-> [!TIP]
-> You can also run this task via the command line using sake, e.g:
->
-> ```bash
-> sake dev/tasks/i18nTextCollectorTask module=themes:my-theme,silverstripe/framework
-> ```
->
-> See [the sake documentation](/developer_guides/cli/) for details about using sake.
+`https://www.example.com/dev/tasks/i18nTextCollectorTask/?module=themes:my-theme` or `sake tasks:i18nTextCollectorTask --module="themes:my-theme"`
 
 ## Module priority
 

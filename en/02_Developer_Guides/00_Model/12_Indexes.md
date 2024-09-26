@@ -96,8 +96,8 @@ other columns. If this is indexed, smaller and reasonably unique it might be fas
 
 ## Index creation/destruction
 
-Indexes are generated and removed automatically during a `dev/build`. Caution if you're working with large tables and
-modify an index as the next `dev/build` will `DROP` the index, and then `ADD` it.
+Indexes are generated and removed automatically when building the database. Caution if you're working with large tables and
+modify an index as the next time the database is built it will `DROP` the index, and then `ADD` it.
 
 ## API documentation
 

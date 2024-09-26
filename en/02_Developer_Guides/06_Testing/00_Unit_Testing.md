@@ -72,7 +72,7 @@ application database. To provide seed data use a [Fixture](fixtures) file.
 
 > [!WARNING]
 > The test database is rebuilt every time one of the test methods is run and is removed afterwards. If the test is interrupted, the database will not be removed. Over time, you may have several hundred test
-> databases on your machine. To get rid of them, run `sake dev/tasks/CleanupTestDatabasesTask`.
+> databases on your machine. To get rid of them, run `sake tasks:CleanupTestDatabasesTask`.
 
 ## Custom PHPUnit configuration
 

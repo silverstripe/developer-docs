@@ -175,23 +175,24 @@ For example:
 namespace App\Task;
 
 use App\Model\DataRecord;
-use BadMethodCallException;
-use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
+use SilverStripe\PolyExecution\PolyOutput;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 
 class CleanRecordsTask extends BuildTask
 {
-    public function run($request)
+    private static bool $can_run_in_browser = false;
+
+    protected function execute(InputInterface $input, PolyOutput $output): int
     {
-        if (!Director::is_cli()) {
-            throw new BadMethodCallException('This task only runs on CLI');
-        }
         $admin = Security::findAnAdministrator();
         Member::actAs($admin, function () {
             DataRecord::get()->filter('Dirty', true)->removeAll();
         });
+        return Command::SUCCESS;
     }
 }
 ```

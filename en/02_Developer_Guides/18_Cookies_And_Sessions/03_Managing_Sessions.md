@@ -56,8 +56,8 @@ It does not use changes to this metadata to invalidate sessions.
 Logged in users have the ability to see their own active sessions across all devices
 and browsers where they have logged in, and can choose to log out any of those sessions.
 
-Administrators can revoke *all* active sessions for *all* users by triggering the `dev/tasks/InvalidateAllSessions`
-task either in the browser or via the CLI. Note that this will also revoke the session
+Administrators can revoke *all* active sessions for *all* users by visiting `/dev/tasks/InvalidateAllSessions`
+ or running `sake tasks:InvalidateAllSessions` via the CLI. Note that this will also revoke the session
 of the user activating the task, so if this is triggered via the browser, that user
 will need to log back in to perform further actions.
 
@@ -171,14 +171,14 @@ SilverStripe\SessionManager\Services\GarbageCollectionService:
 
 #### Via `symbiote/silverstripe-queuedjobs` (recommended)
 
-If you have the `symbiote/silverstripe-queuedjobs` module installed and configured, garbage collection will run automatically every 1 day via `GarbageCollectionJob`, and no further action is required.  This job will be automatically created if it does not exist on dev/build.
+If you have the `symbiote/silverstripe-queuedjobs` module installed and configured, garbage collection will run automatically every 1 day via `GarbageCollectionJob`, and no further action is required.  This job will be automatically created if it does not exist when building the database.
 
 #### Via `LoginSessionGarbageCollectionTask`
 
 Alternatively, you can create a system cron entry to run the `LoginSessionGarbageCollectionTask` directly on a regular cadence:
 
 ```text
-`*/5 * * * * /path/to/webroot/vendor/bin/sake dev/tasks/LoginSessionGarbageCollectionTask
+`*/5 * * * * /path/to/webroot/vendor/bin/sake tasks:LoginSessionGarbageCollectionTask
 ```
 
 ### Anonymize IP

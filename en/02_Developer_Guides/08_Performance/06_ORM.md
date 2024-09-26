@@ -25,12 +25,12 @@ SilverStripe\Forms\TreeDropdownField:
 
 See [SearchFilter Modifiers](/developer_guides/model/searchfilters/) for more information about search filters.
 
-## Skipping check and repair during dev/build {#skip-check-and-repair}
+## Skipping check and repair when the database is built {#skip-check-and-repair}
 
-When you run `dev/build`, there is a step that checks the integrity of the database tables (via `CHECK TABLE`) and repairs issues (via `REPAIR TABLE`) if possible.
+When you run `sake db:build`, there is a step that checks the integrity of the database tables (via `CHECK TABLE`) and repairs issues (via `REPAIR TABLE`) if possible.
 
 For tables with many records (tens/hundreds of thousands) this can be slow. If you identify that you have some specific `DataObject` models with lots of records
-which are slowing down your `dev/build`, you might want to explicitly skip checks for those:
+which are slowing down building the database, you might want to explicitly skip checks for those:
 
 ```yml
 SilverStripe\ORM\Connect\DBSchemaManager:

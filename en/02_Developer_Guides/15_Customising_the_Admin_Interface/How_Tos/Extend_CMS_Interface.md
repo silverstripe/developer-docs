@@ -138,7 +138,7 @@ SilverStripe\CMS\Model\SiteTree:
     - App\Extension\BookmarkedPageExtension
 ```
 
-In order to add the field to the database, run a `dev/build/?flush=all`.
+In order to add the field to the database, run `sake db:build --flush`.
 Refresh the CMS, open a page for editing and you should see the new checkbox.
 
 ## Retrieve the list of bookmarks from the database
