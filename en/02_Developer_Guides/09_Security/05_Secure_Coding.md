@@ -578,13 +578,29 @@ salt values generated with the strongest entropy generators available on the pla
 (see [RandomGenerator](api:SilverStripe\Security\RandomGenerator)). This prevents brute force attacks with
 [Rainbow tables](https://en.wikipedia.org/wiki/Rainbow_table).
 
-Strong passwords are a crucial part of any system security. So in addition to storing the password in a secure fashion,
-you can also enforce specific password policies by configuring a
-[PasswordValidator](api:SilverStripe\Security\PasswordValidator). This can be done through a `_config.php` file
-at runtime, or via YAML configuration.
+Strong passwords are a crucial part of any system security.
 
-The default password validation rules are configured in the framework's `passwords.yml`
-file. You will need to ensure that your config file is processed after it.
+The default password validator uses the [`PasswordStrength` constraint](https://symfony.com/doc/current/reference/constraints/PasswordStrength.html) in `symfony/validator`, which determines a password's strength based on its level of entropy.
+
+You can change the required strength of valid passwords by setting the [`EntropyPasswordValidator.password_strength`](api:SilverStripe\Security\Validation\EntropyPasswordValidator->password_strength) configuration property to one of the valid [minScore values](https://symfony.com/doc/current/reference/constraints/PasswordStrength.html#minscore):
+
+```yml
+SilverStripe\Security\Validation\EntropyPasswordValidator:
+  password_strength: 4
+```
+
+You can also enforce that passwords are not repeated by setting the [`PasswordValidator.historic_count`](api:SilverStripe\Security\Validation\PasswordValidator->historic_count) configuration property:
+
+```yml
+SilverStripe\Security\Validation\PasswordValidator:
+  historic_count: 6
+```
+
+The above example will check that the password wasn't used within the previous 6 passwords set for the member.
+
+### Rule-based password validation
+
+If you want more finegrained control over exactly how a "strong" password is determined, you can use the [`RulesPasswordValidator`](api:SilverStripe\Security\Validation\RulesPasswordValidator) which uses an array of regular expressions to validate a password. You can swap to using that validator and configure its options with YAML configuration:
 
 ```yml
 ---
@@ -592,33 +608,30 @@ Name: mypasswords
 After: '#corepasswords'
 ---
 SilverStripe\Core\Injector\Injector:
-  SilverStripe\Security\PasswordValidator:
-    properties:
-      MinLength: 7
-      HistoricCount: 6
-      MinTestScore: 3
+  SilverStripe\Security\Validation\PasswordValidator:
+    class: 'SilverStripe\Security\Validation\RulesPasswordValidator'
 
-# In the case someone uses `new PasswordValidator` instead of Injector, provide some safe defaults through config.
-SilverStripe\Security\PasswordValidator:
+SilverStripe\Security\Validation\RulesPasswordValidator:
   min_length: 7
-  historic_count: 6
   min_test_score: 3
 ```
 
-### Configuring custom password validator tests
+> [!NOTE]
+> The [`PasswordValidator.historic_count`](api:SilverStripe\Security\Validation\PasswordValidator->historic_count) configuration property also applies to the `RulesPasswordValidator`.
 
-The default password validation character strength tests can be seen in the `PasswordValidator.character_strength_tests`
-configuration property. You can add your own with YAML config, by providing a name for it and a regex pattern to match:
+You can also add additional regular expression tests to the validator:
 
 ```yml
-SilverStripe\Security\PasswordValidator:
+SilverStripe\Security\Validation\RulesPasswordValidator:
   character_strength_tests:
-    contains_secret_word: '/1337pw/'
+    at-least-three-special-chars: '/[\(\)\&\^\%\$\#\@\!]{3,}/'
 ```
 
-This will ensure that a password contains `1337pw` somewhere in the string before validation will succeed.
+The above example requires at least 3 of the characters `()&^%$#@!` to be included in the password.
 
-### Other options
+Note that the [`RulesPasswordValidator.min_test_score`](api:SilverStripe\Security\Validation\RulesPasswordValidator->min_test_score) configuration property determines how many of the regular expression tests must pass for a password to be valid. If the test score is lower than the number of tests you have, the password *doesn't* have to match all of them to be valid.
+
+### More password security options
 
 In addition, you can tighten password security with the following configuration settings:
 
