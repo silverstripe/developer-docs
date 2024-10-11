@@ -96,6 +96,8 @@ $loader->loadFile($env);
 
 Silverstripe core environment variables are listed here, though you're free to define any you need for your application.
 
+If you want to configure environment variables for read-only replica databases, then view the [Read-only database replicas](/developer_guides/performance/db_read_only_replicas) documentation.
+
 | Name  | Description |
 | ----  | ----------- |
 | `SS_DATABASE_CLASS` | The database class to use. Only `MySQLDatabase` is included by default, but other values are available in optional modules such as [`PostgreSQLDatabase`](https://github.com/silverstripe/silverstripe-postgresql). Defaults to `MySQLDatabase`.|
