@@ -57,7 +57,7 @@ The Silverstripe CMS pattern library is built using the [StoryBook JS library](h
 
 ## The admin URL
 
-The CMS interface can be accessed by default through the `admin/` URL. You can change this by setting the `$url_base` config for the [AdminRootController](api:SilverStripe\Admin\AdminRootController), creating your own [Director](api:SilverStripe\Control\Director) routing rule and clearing the old rule as per the example below:
+The CMS interface can be accessed by default through the `/admin` URL. You can change this by setting the `$url_base` configuration property for the [`AdminRootController`](api:SilverStripe\Admin\AdminRootController), creating your own [`Director`](api:SilverStripe\Control\Director) routing rule and clearing the old rule as per the example below:
 
 ```yml
 ---
@@ -117,18 +117,20 @@ joinUrlPaths(ss.config.adminUrl, 'more/path/here');
 
 ### Multiple admin URL and overrides
 
-You can also create your own classes that extend the [AdminRootController](api:SilverStripe\Admin\AdminRootController) to create multiple or custom admin areas, with a `Director.rules` for each one.
+You can also create your own classes that extend the [`AdminRootController`](api:SilverStripe\Admin\AdminRootController) to create multiple or custom admin areas, with a `Director.rules` for each one.
 
 ## Templates and controllers
 
-The CMS backend is handled through the [LeftAndMain](api:SilverStripe\Admin\LeftAndMain) controller class,
+The base controller for the CMS is [`AdminController`](api:SilverStripe\Admin\AdminController). This is a simple controller that checks users have the relevant permissions before initialising. `AdminRootController` provides an appropriate routing rule for all non-abstract subclasses of `AdminController`.
+
+The CMS backend UI is primarily handled through the [`LeftAndMain`](api:SilverStripe\Admin\LeftAndMain) controller class,
 which contains base functionality like displaying and saving a record.
-This is extended through various subclasses, e.g. to add a group hierarchy ([SecurityAdmin](api:SilverStripe\Admin\SecurityAdmin)),
-a search interface ([ModelAdmin](api:SilverStripe\Admin\ModelAdmin)) or an "Add Page" form ([CMSPageAddController](api:SilverStripe\CMS\Controllers\CMSPageAddController)).
+This is extended through various subclasses, e.g. to add a group hierarchy ([`SecurityAdmin`](api:SilverStripe\Admin\SecurityAdmin)),
+a search interface ([`ModelAdmin`](api:SilverStripe\Admin\ModelAdmin)) or an "Add Page" form ([`CMSPageAddController`](api:SilverStripe\CMS\Controllers\CMSPageAddController)).
 
 The controller structure is too complex to document here, a good starting point
-for following the execution path in code are [LeftAndMain::getRecord()](api:SilverStripe\Admin\LeftAndMain::getRecord()) and [LeftAndMain::getEditForm()](api:SilverStripe\Admin\LeftAndMain::getEditForm()).
-If you have the `cms` module installed, have a look at [CMSMain::getEditForm()](api:SilverStripe\CMS\Controllers\CMSMain::getEditForm()) for a good
+for following the execution path in code are [`LeftAndMain::getRecord()`](api:SilverStripe\Admin\LeftAndMain::getRecord()) and [`LeftAndMain::getEditForm()`](api:SilverStripe\Admin\LeftAndMain::getEditForm()).
+If you have the `cms` module installed, have a look at [`CMSMain::getEditForm()`](api:SilverStripe\CMS\Controllers\CMSMain::getEditForm()) for a good
 example on how to extend the base functionality (e.g. by adding page versioning hints to the form).
 
 CMS templates are inherited based on their controllers, similar to subclasses of
@@ -142,13 +144,13 @@ which is in charge of rendering the main content area apart from the CMS menu.
 Depending on the complexity of your layout, you'll also need to override the
 "EditForm" template (e.g. `MyCMSController_EditForm.ss`), e.g. to implement
 a tabbed form which only scrolls the main tab areas, while keeping the buttons at the bottom of the frame.
-This requires manual assignment of the template to your form instance, see [CMSMain::getEditForm()](api:SilverStripe\CMS\Controllers\CMSMain::getEditForm()) for details.
+This requires manual assignment of the template to your form instance, see [`CMSMain::getEditForm()`](api:SilverStripe\CMS\Controllers\CMSMain::getEditForm()) for details.
 
 Often its useful to have a "tools" panel in between the menu and your content,
 usually occupied by a search form or navigational helper.
 In this case, you can either override the full base template as described above.
-To avoid duplicating all this template code, you can also use the special [LeftAndMain::Tools()](api:SilverStripe\Admin\LeftAndMain::Tools()) and
-[LeftAndMain::EditFormTools()](api:SilverStripe\Admin\LeftAndMain::EditFormTools()) methods available in `LeftAndMain`.
+To avoid duplicating all this template code, you can also use the special [`LeftAndMain::Tools()`](api:SilverStripe\Admin\LeftAndMain::Tools()) and
+[`LeftAndMain::EditFormTools()`](api:SilverStripe\Admin\LeftAndMain::EditFormTools()) methods available in `LeftAndMain`.
 These placeholders are populated by auto-detected templates,
 with the naming convention of `<controller classname>_Tools.ss` and `<controller classname>_EditFormTools.ss`.
 So to add or "subclass" a tools panel, simply create this file and it's automatically picked up.
@@ -341,7 +343,7 @@ class MyAdmin extends LeftAndMain
 {
     // ...
 
-    public function getClientConfig()
+    public function getClientConfig(): array
     {
         return array_merge(parent::getClientConfig(), [
             'reactRouter' => true,

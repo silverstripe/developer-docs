@@ -145,7 +145,7 @@ Refresh the CMS, open a page for editing and you should see the new checkbox.
 
 One piece in the puzzle is still missing: How do we get the list of bookmarked
 pages from the database into the template we've already created (with hardcoded
-links)? Again, we extend a core class: The main CMS controller called
+links)? Again, we extend a core class: The main CMS UI controller called
 `LeftAndMain`.
 
 Add the following code to a new file `app/src/BookmarkedLeftAndMainExtension.php`;
