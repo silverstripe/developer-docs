@@ -21,34 +21,27 @@ Because of this you should generally avoid updating large parts of a DataObject 
 
 ## Creating a controller
 
-Create a subclass of [`LeftAndMain`](api:SilverStripe\Admin\LeftAndMain). This ensures that users must be logged in to the admin interface to access the endpoint. Additionally, it provides access to the methods [`LeftAndMain::jsonSuccess()`](api:SilverStripe\Admin\LeftAndMain::jsonSuccess()) and [`LeftAndMain::jsonError()`](api:SilverStripe\Admin\LeftAndMain::jsonError()).
+Create a subclass of [`AdminController`](api:SilverStripe\Admin\AdminController). This ensures that users must be logged in to the admin interface to access the endpoint. Additionally, it provides access to the methods [`jsonSuccess()`](api:SilverStripe\Admin\AdminController::jsonSuccess()) and [`jsonError()`](api:SilverStripe\Admin\AdminController::jsonError()).
 
 > [!WARNING]
-> To enhance security, do not create a direct subclass of [`Controller`](api:SilverStripe\Control\Controller) routed using YAML on the `/admin` route. This practice is strongly discouraged as it circumvents the requirement to log in to the CMS to access the endpoints. At best you'd be re-implementing logic that already exists.
+> To enhance security, do not create a direct subclass of [`Controller`](api:SilverStripe\Control\Controller) routed using YAML on the `/admin/*` route. This practice is strongly discouraged as it circumvents the requirement to log in to the CMS to access the endpoints. At best you'd be re-implementing logic that already exists.
 
 When naming this class, it's best practice to add a "Controller" suffix to this class, for instance name it `MySomethingController`.
 
-Define the URL segment of your controller using the [`url_segment`](api:SilverStripe\Admin\LeftAndMain->url_segment) configuration property. For example `private static string $url_segment = 'my-segment';`. For small optional modules, this may typically be the composer name of the module, for instance "linkfield".
+Define the URL segment of your controller using the [`url_segment`](api:SilverStripe\Admin\AdminController->url_segment) configuration property. For example `private static string $url_segment = 'my-segment';`. For small optional modules, this may typically be the composer name of the module, for instance "linkfield".
 
-Use the [`required_permission_codes`](api:SilverStripe\Admin\LeftAndMain->required_permission_codes) configuration property to declare what permissions are required to access endpoints on the controller. For example `private static string $required_permission_codes = 'CMS_ACCESS_CMSMain';`.
+Use the [`required_permission_codes`](api:SilverStripe\Admin\AdminController->required_permission_codes) configuration property to declare what permissions are required to access endpoints on the controller. For example `private static string $required_permission_codes = 'CMS_ACCESS_CMSMain';`.
 
 See [user permissions](/developer_guides/security/permissions/) for more information about declaring permissions.
 
-As this is a subclass of `LeftAndMain`, it automatically gets added to the CMS menu. To remove it from the CMS menu, create a `_config.php` in the module (if it doesn't already exist) and remove the controller from the menu like so:
-
-```php
-use App\Controllers\MySomethingController;
-use SilverStripe\Admin\CMSMenu;
-
-CMSMenu::remove_menu_class(MySomethingController::class);
-```
+If you need form schema functionality, you will need to create a subclass of [`LeftAndMain`](api:SilverStripe\Admin\LeftAndMain) instead. All of the above still applies, but by default a menu item will be created for your new controller. To remove it from the CMS menu, set the [`ignore_menuitem`](api:SilverStripe\Admin\LeftAndMain->ignore_menuitem) configuration property to true for your class, i.e `private static $ignore_menuitem = true;`.
 
 ## Handling requests with `$url_handlers`
 
 Utilise the [`url_handlers`](api:SilverStripe\Control\Controller->url_handlers) configuration property to get the following benefits:
 
 - Ensure the HTTP request method aligns with the intended use for each method, for instance, restricting it to GET or POST.
-- Prevent potential conflicts with existing methods, such as [`LeftAndMain::sort()`](api:SilverStripe\Admin\LeftAndMain::sort()), by structuring the endpoint URL segment as `sort` and associating it with a method like `MySomethingController::apiSort()`.
+- If subclassing `LeftAndMain`, avoid potential conflicts with existing methods on the superclass, such as [`LeftAndMain::sort()`](api:SilverStripe\Admin\LeftAndMain::sort()), by structuring the endpoint URL segment as `sort` and associating it with a method like `MySomethingController::apiSort()`.
 
 Use the request param `$ItemID` if you need a record ID into a URL so that you have an endpoint for a specific record. Use `$ItemID` because it's consistent with the request param used in Form Schema requests. For example, to use `$ItemID` in a GET request to view a single record:
 
@@ -56,10 +49,10 @@ Use the request param `$ItemID` if you need a record ID into a URL so that you h
 // app/src/Controllers/MySomethingController.php
 namespace App\Controllers;
 
-use SilverStripe\Admin\LeftAndMain;
+use SilverStripe\Admin\AdminController;
 use SilverStripe\Control\HTTPResponse;
 
-class MySomethingController extends LeftAndMain
+class MySomethingController extends AdminController
 {
     // ...
     private static array $url_handlers = [
@@ -87,7 +80,9 @@ See [URL handlers](/developer_guides/controllers/routing/#url-handlers) for more
 
 ## Permission checks
 
-Incorporate essential permission checks, such as `canEdit()`, into all relevant endpoints to ensure secure access control.
+As mentioned in [creating a controller](#creating-a-controller) above, any permissions you add to the `required_permission_codes` configuration property for your controller will be checked before initialising the controller.
+
+You should also incorporate additional permission checks, such as calling `canEdit()` on a `DataObject` record, into all relevant endpoints to ensure secure access control.
 
 When returning `DataObject` records as JSON, remember to invoke `canView()` on each record. In a CMS context where the number of records is typically limited (e.g. by pagination), the performance impact of these checks should not be a significant concern. If the permission check fails then call `$this->jsonError(403);` to return a 403 status code.
 
@@ -146,7 +141,7 @@ if (!SecurityToken::inst()->checkRequest($this->getRequest())) {
 
 ## Passing values from PHP to global JavaScript
 
-To transmit values from PHP to global JavaScript, which is used for component configuration as opposed to data, override `LeftAndMain::getClientConfig()` within your controller. Begin your method with `$clientConfig = parent::getClientConfig();` to ensure proper inheritance.
+To transmit values from PHP to global JavaScript, which is used for component configuration as opposed to data, override [`getClientConfig()`](api:SilverStripe\Admin\AdminController::getClientConfig()) within your controller. Begin your method with `$clientConfig = parent::getClientConfig();` to ensure proper inheritance, or better yet, use [`beforeExtending()`](api:SilverStripe\Core\Extensible::beforeExtending()) so that extensions implementing the `updateClientConfig()` extension hook can update your config.
 
 Include any relevant links to endpoints in the client configuration. For example, add `'myEndpointUrl' => $this->Link('my-endpoint')`, where `my-endpoint` is specified in `private static array $url_handlers`.
 
@@ -154,22 +149,23 @@ Include any relevant links to endpoints in the client configuration. For example
 // app/src/Controllers/MySomethingController.php
 namespace App\Controllers;
 
-use SilverStripe\Admin\LeftAndMain;
+use SilverStripe\Admin\AdminController;
 
-class MySomethingController extends LeftAndMain
+class MySomethingController extends AdminController
 {
     // ...
     private static array $url_handlers = [
         'my-endpoint' => 'apiEndpoint',
     ];
 
-    public function getClientConfig()
+    public function getClientConfig(): array
     {
-        $clientConfig = parent::getClientConfig();
-        $clientConfig['myForm'] = [
-            'myEndpointUrl' => $this->Link('my-endpoint'),
-        ];
-        return $clientConfig;
+        $this->beforeExtending('updateClientConfig', function (array &$clientConfig): void {
+            $clientConfig['myForm'] = [
+                'myEndpointUrl' => $this->Link('my-endpoint'),
+            ];
+        });
+        return parent::getClientConfig();
     }
 }
 ```

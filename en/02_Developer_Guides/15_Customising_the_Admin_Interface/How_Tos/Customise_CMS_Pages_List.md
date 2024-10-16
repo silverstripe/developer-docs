@@ -49,7 +49,7 @@ class NewsPage extends Page
 }
 ```
 
-We'll now add an `Extension` subclass to `LeftAndMain`, which is the main CMS controller.
+We'll now add an `Extension` subclass to `LeftAndMain`, which is the main CMS UI controller.
 This allows us to intercept the list building logic, and alter the `GridField`
 before its rendered. In this case, we limit our logic to the desired page type,
 although it's just as easy to implement changes which apply to all page types,

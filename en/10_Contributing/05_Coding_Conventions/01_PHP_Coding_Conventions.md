@@ -35,7 +35,7 @@ These coding conventions are for new code, and for situations where you are inte
 
 Use an appropriate suffix or prefix for classnames when making a subclass or implementing an interface. Usually the suffix will be the name of the parent class or the interface. Sometimes the suffix/prefix is a shortened version of the name of the parent because it reads better while retaining easy comprehension. Here are some common examples with the parent class or interface in brackets:
 
-- `Admin` ([`ModelAdmin`](api:SilverStripe\Admin\ModelAdmin), [`LeftAndMain`]((api:SilverStripe\Admin\LeftAndAdmin)) if included in the CMS Menu)
+- `Admin` ([`ModelAdmin`](api:SilverStripe\Admin\ModelAdmin), [`LeftAndMain`](api:SilverStripe\Admin\LeftAndAdmin) if included in the CMS Menu)
 - `Block` ([`BaseElement`](api:DNADesign\Elemental\Models\BaseElement))
 - `DB` ([`DBField`](api:SilverStripe\ORM\FieldType\DBField)) - use as a prefix, e.g. `DBString`
 - `Controller` ([`Controller`](api:SilverStripe\Control\Controller))

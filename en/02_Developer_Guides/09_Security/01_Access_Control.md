@@ -41,10 +41,9 @@ privileges from its parent group.
 
 ## Permission checking is at class level
 
-Silverstripe CMS provides a security mechanism via the *Permission::check* method (see [LeftAndMain](api:SilverStripe\Admin\LeftAndMain) for examples on how
-the admin screens work).
+Silverstripe CMS provides a security mechanism via the `Permission::check()` method (see [`AdminController::init()`](api:SilverStripe\Admin\AdminController::init()) for an example of how permission checks can be used).
 
-(next step -- go from *Permission::checkMember*...)
+(next step -- go from `Permission::checkMember()`...)
 
 ### Nuts and bolts -- figuring it out
 
@@ -53,13 +52,13 @@ works.
 
 ### Loading the admin page: looking at security
 
-If you go to [your site]/admin `Director.php` maps the 'admin' URL request through a [Director](api:SilverStripe\Control\Director) rule to the
-[CMSMain](api:SilverStripe\CMS\Controllers\CMSMain) controller (see [CMSMain](api:SilverStripe\CMS\Controllers\CMSMain), with no arguments).
+If you go to [your site]/admin `Director.php` maps the 'admin' URL request through a [`Director`](api:SilverStripe\Control\Director) rule to the
+[`CMSMain`](api:SilverStripe\CMS\Controllers\CMSMain) controller (see [`CMSMain`](api:SilverStripe\CMS\Controllers\CMSMain), with no arguments).
 
-*CMSMain.init()* calls its parent which, of all things is called [LeftAndMain](api:SilverStripe\Admin\LeftAndMain). It's in [LeftAndMain](api:SilverStripe\Admin\LeftAndMain) that the
-important security checks are made by calling *Permission::check*.
+`CMSMain::init()` calls its parent which, of all things is called [`AdminController`](api:SilverStripe\Admin\AdminController). It's in `AdminController` that the
+important security checks are made by calling `Permission::check()`.
 
-[Security::permissionFailure()](api:SilverStripe\Security\Security::permissionFailure()) is the next utility function you can use to redirect to the login form.
+[`Security::permissionFailure()`](api:SilverStripe\Security\Security::permissionFailure()) is the next utility function you can use to redirect to the login form.
 
 ### Customizing access checks in CMS classes
 
