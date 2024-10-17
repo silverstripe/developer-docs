@@ -13,7 +13,7 @@ by the [jstree](https://jstree.com) library. It is configured through
 `client/src/legacy/LeftAndMain.Tree.js` in the `silverstripe/admin` module, as well as some
 HTML5 metadata generated on its container (see the `data-hints` attribute).
 
-The tree is rendered through [LeftAndMain::getSiteTreeFor()](api:SilverStripe\Admin\LeftAndMain::getSiteTreeFor()),
+The tree is rendered through [LeftAndMain::getTreeFor()](api:SilverStripe\Admin\LeftAndMain::getTreeFor()),
 which recursively collects all nodes based on various filtering criteria.
 The node strictly just has to implement the [Hierarchy](api:SilverStripe\ORM\Hierarchy\Hierarchy) extension,
 but in the CMS usually is a [SiteTree](api:SilverStripe\CMS\Model\SiteTree) object.
@@ -36,7 +36,7 @@ code like this:
             <ins class="jstree-checkbox">&nbsp;</ins>
             <ins class="jstree-icon">&nbsp;</ins>
             <span class="text">
-                <span class="jstree-pageicon"></span>
+                <span class="jstree-recordicon"></span>
                 <span class="item" title="Deleted">New Page</span>
                 <span class="badge deletedonlive">Deleted</span>
             </span>
@@ -57,8 +57,8 @@ Each flag has a unique identifier, which is also used as a CSS class for easier 
 Developers can easily add a new flag, delete or alter an existing flag on how it is looked
 or changing the flag label. The customization of these lozenges could be done either through
 inherited subclass or [Extension](api:SilverStripe\Core\Extension). It is just really about how we change the return
-value of function `SiteTree->getTreeTitle()` by two easily extendable methods
-`SiteTree->getStatusClass()` and `SiteTree->getStatusFlags()`.
+value of function `CMSMain::getRecordTreeMarkup()` by two easily extendable methods
+`Hierarchy::getTreeTitle()` and `ModelData::getStatusFlags()`.
 
 Note: Though the flag is not necessarily tie to its status of **publication** and it could
 be used for flagging anything you like, we should keep this lozenge to show version-related
@@ -109,7 +109,7 @@ use Page;
 
 class HomePage extends Page
 {
-    private static $icon_class = 'font-icon-p-home';
+    private static $cms_icon_class = 'font-icon-p-home';
 
     // ...
 }
