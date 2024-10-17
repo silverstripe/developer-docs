@@ -13,7 +13,7 @@ by the [jstree](https://jstree.com) library. It is configured through
 `client/src/legacy/LeftAndMain.Tree.js` in the `silverstripe/admin` module, as well as some
 HTML5 metadata generated on its container (see the `data-hints` attribute).
 
-The tree is rendered through [LeftAndMain::getSiteTreeFor()](api:SilverStripe\Admin\LeftAndMain::getSiteTreeFor()),
+The tree is rendered through [LeftAndMain::getTreeFor()](api:SilverStripe\Admin\LeftAndMain::getTreeFor()),
 which recursively collects all nodes based on various filtering criteria.
 The node strictly just has to implement the [Hierarchy](api:SilverStripe\ORM\Hierarchy\Hierarchy) extension,
 but in the CMS usually is a [SiteTree](api:SilverStripe\CMS\Model\SiteTree) object.
