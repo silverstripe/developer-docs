@@ -91,7 +91,7 @@ Access to the CMS has a couple of special cases where permission codes can imply
 
 #### 1. Granting access to all CMS permissions
 
-The `CMS_ACCESS_LeftAndMain` grants access to every single area of the CMS, without exception. Internally, this works by
+The `CMS_ACCESS_LeftAndMain` permission grants access to every single area of the CMS, without exception. Internally, this works by
 adding the `CMS_ACCESS_LeftAndMain` code to the set of accepted codes when a `CMS_ACCESS_*` permission is required.
 This works much like ADMIN permissions (see above)
 
