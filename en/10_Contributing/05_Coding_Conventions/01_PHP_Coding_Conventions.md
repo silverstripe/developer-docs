@@ -144,7 +144,7 @@ Order code in classes in the following order:
 ### Unit testing
 
 - Unit test method names should match the method that they're testing with the first letter of the method uppercased and the word `test` prefixed (for example for the method `myMethodName()` the unit test method should be called `testMyMethodName()`).
-- Use the `@dataProvider` annotation to provide test case data when you are testing the same method in multiple scenarios. It makes code much cleaner and it makes it very easy to add further test cases.
+- Use the `#[DataProvider('provideSomething')]` annotation to provide test case data when you are testing the same method in multiple scenarios. It makes code much cleaner and it makes it very easy to add further test cases. You will need the import `use PHPUnit\Framework\Attributes\DataProvider;`.
 - Data provider method names should be same as the test case method name they're providing for with the leading work `test` substituted for `provide` (for example for `testSomething()` the DataProvider is `provideSomething()`).
 - Data provider array keys should describe the scenario they're testing.
 - Unless you need to explicitly create dynamic fixtures, fixtures should be added via YAML fixture files.
