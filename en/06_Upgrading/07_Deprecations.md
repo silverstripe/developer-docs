@@ -33,12 +33,18 @@ Deprecation::enable();
 
 Once you have resolved all of the deprecation warnings you can, it is recommended to turn off deprecation warnings again.
 
-Not all API that gets deprecated will have an equivalent replacement API in that same major version; some of the API is only available from the next major release. A good example of this is the upgrade for what powers the `SilverStripe\Control\Email\Email` class from `swiftmailer` in CMS 4 to `symfony/mailer` in CMS 5. In these cases, you'll need to upgrade to the new major version before you can access the replacement API.
+Not all API that gets deprecated will have an equivalent replacement API in that same major version; some of the API is only available from the next major release. A good example of this is the upgrade for what powered the `SilverStripe\Control\Email\Email` class from `swiftmailer` in CMS 4 to `symfony/mailer` in CMS 5. In these cases, you'll need to upgrade to the new major version before you can access the replacement API.
 
-Some code that has been deprecated with no immediate replacement will not emit deprecation notices by default. If you wish to also see notices for deprecated code with no immediate replacement, add the following line to you project's `app/_config.php` file. Note that this will also emit deprecation notices for usages of the deprecated code inside core modules.
+Some code that has been deprecated with no immediate replacement will not emit deprecation notices by default. If you wish to also see notices for deprecated code with no immediate replacement, add the following line to you project's `app/_config.php` file:
 
 ```php
 Deprecation::enable(true);
+```
+
+By default, deprecation warnings will not be emitted if the deprecated code was called by code in [supported modules](/project_governance/supported_modules/). This is because these warnings are simply not relevant for most developers. If you wish to see deprecation warnings for code called by core code, add the following line to your project's `app/_config.php` file:
+
+```php
+Deprecation::setShowNoticesCalledFromSupportedCode(true);
 ```
 
 ## How to view deprecation warnings
