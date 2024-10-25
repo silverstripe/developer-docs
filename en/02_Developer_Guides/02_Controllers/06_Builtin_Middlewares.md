@@ -17,7 +17,6 @@ Many of them are in the [`SilverStripe\Control\Middleware`](api:SilverStripe\Con
 | [`ConfirmationMiddleware`](api:SilverStripe\Control\Middleware\ConfirmationMiddleware) | Checks whether user manual confirmation is required for HTTPRequest |
 | [`DevelopmentAdminConfirmationMiddleware`](api:SilverStripe\Control\Middleware\DevelopmentAdminConfirmationMiddleware) | A specific subclass of `ConfirmationMiddleware` which handles the `/dev/*` routes. |
 | [`ExecMetricMiddleware`](api:SilverStripe\Control\Middleware\ExecMetricMiddleware) | Display execution metrics in DEV mode |
-| [`FlushMiddleware`](api:SilverStripe\Control\Middleware\FlushMiddleware) | Triggers a call to flush() on all [Flushable](api:SilverStripe\Core\Flushable) implementors |
 | [`HTTPCacheControlMiddleware`](api:SilverStripe\Control\Middleware\HTTPCacheControlMiddleware) | Controls HTTP response cache headers |
 | [`PasswordExpirationMiddleware`](api:SilverStripe\Security\PasswordExpirationMiddleware) | Check if authenticated user has password expired |
 | [`RateLimitMiddleware`](api:SilverStripe\Control\Middleware\RateLimitMiddleware) | Access throttling, controls HTTP Retry-After header |
