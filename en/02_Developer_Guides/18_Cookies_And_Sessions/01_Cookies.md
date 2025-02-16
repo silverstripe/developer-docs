@@ -7,7 +7,7 @@ icon: cookie-bite
 # Cookies
 
 Note that cookies can have security implications - before setting your own cookies, make sure to read through the
-[secure coding](/developer_guides/security/secure_coding#secure-sessions-cookies-and-tls-https) documentation.
+[secure coding](/developer_guides/security/secure_coding#secure-sessions-and-cookies) documentation.
 
 ## Accessing and manipulating cookies
 
