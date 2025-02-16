@@ -769,31 +769,34 @@ SilverStripe\Control\TrustedProxyMiddleware:
     ProxyIPHeaders: X-Forwarded-Ip
 ```
 
-## Secure sessions, cookies and TLS (HTTPS)
+## TLS (aka SSL aka HTTPS)
 
-Silverstripe CMS recommends the use of TLS (HTTPS) for your application, and you can easily force the use through the
-director function `forceSSL()`
+Silverstripe CMS recommends the use of TLS (HTTPS) for your application. You can configure this by setting the `ForceSSL` property on the [`CanonicalURLMiddleware`](api:SilverStripe\Control\Middleware\CanonicalURLMiddleware) singleton.
 
-```php
-use SilverStripe\Control\Director;
-
-if (!Director::isDev()) {
-    Director::forceSSL();
-}
+```yml
+---
+After: '#canonicalurls'
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Control\Middleware\CanonicalURLMiddleware:
+    properties:
+      ForceSSL: true
 ```
 
-`forceSSL()` will only take effect in environment types that `CanonicalURLMiddleware` is configured to apply to (by
+will only take effect in environment types that `CanonicalURLMiddleware` is configured to apply to (by
 default, only `LIVE`). To apply this behaviour in all environment types, you'll need to update that configuration:
 
-```php
-use SilverStripe\Control\Director;
-use SilverStripe\Control\Middleware\CanonicalURLMiddleware;
-
-if (!Director::isDev()) {
-    // You can also specify individual environment types
-    CanonicalURLMiddleware::singleton()->setEnabledEnvs(true);
-    Director::forceSSL();
-}
+```yml
+---
+After: '#canonicalurls'
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Control\Middleware\CanonicalURLMiddleware:
+    properties:
+      # ...
+      EnabledEnvs:
+        - test
+        - dev
 ```
 
 Forcing HTTPS so requires a certificate to be purchased or obtained through a vendor such as
@@ -801,8 +804,21 @@ Forcing HTTPS so requires a certificate to be purchased or obtained through a ve
 
 Note that by default enabling SSL will also enable `CanonicalURLMiddleware::forceBasicAuthToSSL` which will detect
 and automatically redirect any requests with basic authentication headers to first be served over HTTPS. You can
-disable this behaviour using `CanonicalURLMiddleware::singleton()->setForceBasicAuthToSSL(false)`, or via Injector
-configuration in YAML.
+disable this behaviour setting the `ForceBasicAuthToSSL` property to `false` in the YAML configuration.
+
+### Using SSL in database connections
+
+In some circumstances, like connecting to a database on a remote host for example, you may wish to enable SSL encryption to ensure the protection of sensitive information and database access credentials.
+You can configure that by setting the following environment variables:
+
+| Name  | Description |
+| ----  | ----------- |
+| `SS_DATABASE_SSL_KEY` | Absolute path to SSL key file (optional - but if set, `SS_DATABASE_SSL_CERT` must also be set) |
+| `SS_DATABASE_SSL_CERT` | Absolute path to SSL certificate file (optional - but if set, `SS_DATABASE_SSL_KEY` must also be set) |
+| `SS_DATABASE_SSL_CA` | Absolute path to SSL Certificate Authority bundle file (optional) |
+| `SS_DATABASE_SSL_CIPHER` | Custom SSL cipher for database connections (optional) |
+
+## Secure sessions and cookies
 
 We also want to ensure cookies are not shared between secure and non-secure sessions, so we must tell Silverstripe CMS to
 use a [secure session](/developer_guides/cookies_and_sessions/sessions/#secure-session-cookie).
@@ -859,18 +875,6 @@ Cookie::set(
     $httpOnly = false
 );
 ```
-
-### Using SSL in database connections
-
-In some circumstances, like connecting to a database on a remote host for example, you may wish to enable SSL encryption to ensure the protection of sensitive information and database access credentials.
-You can configure that by setting the following environment variables:
-
-| Name  | Description |
-| ----  | ----------- |
-| `SS_DATABASE_SSL_KEY` | Absolute path to SSL key file (optional - but if set, `SS_DATABASE_SSL_CERT` must also be set) |
-| `SS_DATABASE_SSL_CERT` | Absolute path to SSL certificate file (optional - but if set, `SS_DATABASE_SSL_KEY` must also be set) |
-| `SS_DATABASE_SSL_CA` | Absolute path to SSL Certificate Authority bundle file (optional) |
-| `SS_DATABASE_SSL_CIPHER` | Custom SSL cipher for database connections (optional) |
 
 ## Security headers
 
