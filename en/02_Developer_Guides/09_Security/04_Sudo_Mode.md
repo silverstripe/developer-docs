@@ -6,11 +6,11 @@ icon: key
 
 # Sudo mode
 
-Sudo mode represents a heightened level of permission in that you are more certain that the current user is actually the person whose account is logged in. This is performed by re-validating that the account's password is correct, and will then last for a certain amount of time (configurable) until it will be checked again.
+Sudo mode represents a heightened level of permission in that you are more certain that the current CMS user is actually the person whose account is logged in. This is performed by re-validating that the account's password is correct, and will then last for a certain amount of time (configurable) until it will be checked again.
 
-Sudo mode will automatically be enabled for the configured lifetime when a user logs into the CMS. Note that if the PHP session lifetime expires before the sudo mode lifetime, that sudo mode will also be cleared (and re-enabled when the user logs in again). If the user leaves their CMS open, or continues to use it, for an extended period of time with automatic refreshing in the background, sudo mode will eventually deactivate once the max lifetime is reached.
+Sudo mode is not active when a user logs in to the CMS. If the PHP session lifetime expires before the sudo mode lifetime, that sudo mode will also be cleared. If the user leaves their CMS open, or continues to use it, for an extended period of time with automatic refreshing in the background, sudo mode will eventually deactivate once the max lifetime is reached.
 
-## Configuring the lifetime
+## Configuring the sudo mode lifetime
 
 The default [`SudoModeServiceInterface`](api:SilverStripe\Security\SudoMode\SudoModeServiceInterface) implementation is [`SudoModeService`](api:SilverStripe\Security\SudoMode\SudoModeService), and its lifetime can be configured with YAML. You should read the lifetime value using `SudoModeServiceInterface::getLifetime()`.
 
@@ -19,31 +19,52 @@ SilverStripe\Security\SudoMode\SudoModeService:
   lifetime_minutes: 25
 ```
 
-## Enabling sudo mode for controllers
+## Sudo mode for models
 
-You can add the `SudoModeServiceInterface` singleton as a dependency to a controller that requires sudo mode for one of its actions:
+Models which are protected by sudo mode (usually a [`DataObject`](api:SilverStripe\ORM\DataObject) subclass) are still viewable without entering the password. Any actions that modify data, e.g. POSTing an edit form submission, will require the user to enter their password. This is done to balance usability with security.
+
+The following `DataObject` subclasses are protected by sudo mode out of the box:
+
+- [`Member`](api:SilverStripe\Security\Member)
+- [`Group`](api:SilverStripe\Security\Group)
+- [`PermissionRole`](api:SilverStripe\Security\PermissionRole)
+- [`PermissionRoleCode`](api:SilverStripe\Security\PermissionRoleCode)
+
+### Configuring sudo mode for your models
+
+To add sudo mode for a particular model, including your `DataObject` subclasses, simply set the [`require_sudo_mode`](api:SilverStripe\View\ViewableData->require_sudo_mode) configuration property to `true`, either directly on the class or via yml.
+
+> [!NOTE]
+> This will only add sudo mode to edit forms within the CMS interface. It will have no effect on forms outside of the CMS, such as custom forms in the frontend.
 
 ```php
-namespace App\Control;
+namespace App\Model;
 
-class MyController extends Controller
+use SilverStripe\ORM\DataObject;
+
+class Product extends DataObject
 {
-    private ?SudoModeServiceInterface $sudoModeService = null;
-
-    private static array $dependencies = ['SudoModeService' => '%$' . SudoModeServiceInterface::class];
-
-    public function setSudoModeService(SudoModeServiceInterface $sudoModeService): static
-    {
-        $this->sudoModeService = $sudoModeService;
-        return $this;
-    }
+    // ...
+    private static bool $require_sudo_mode = true;
 }
 ```
 
-Performing a sudo mode verification check in a controller action is simply using the service to validate the request:
+```yml
+SomeModule\Model\Player:
+  require_sudo_mode: true
+```
+
+> [!WARNING] If you add new fields to form that is protected by sudo mode, such as in an overridden [`LeftAndMain::getEditForm()`](api:SilverStripe\Admin\LeftAndMain::getEditForm()) method, it may mean having to call [`Form::requireSudoMode()`](api:SilverStripe\Forms\Form::requireSudoMode()) on the form to ensure the newly added fields are set to read-only while sudo mode is inactive.
+
+## Sudo mode for controller endpoints
+
+Performing a sudo mode verification check in a controller endpoint by using the sudo mode service to validate the request:
 
 ```php
 namespace App\Control;
+
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Security\SudoMode\SudoModeServiceInterface;
 
 class MyController extends Controller
 {
@@ -51,7 +72,8 @@ class MyController extends Controller
 
     public function myAction(HTTPRequest $request): HTTPResponse
     {
-        if (!$this->sudoModeService->check($request->getSession())) {
+        $service = Injector::inst()->get(SudoModeServiceInterface::class);
+        if (!$service->check($request->getSession())) {
             return $this->httpError(403, 'Sudo mode is required for this action');
         }
         // ... continue with sensitive operations
@@ -59,14 +81,20 @@ class MyController extends Controller
 }
 ```
 
-## Using sudo mode in a react component
+## Sudo mode for react components
 
 The `silverstripe/admin` module defines a [React Higher-Order-Component](https://reactjs.org/docs/higher-order-components.html) (aka HOC) which can
 be applied to React components in your module or code to intercept component rendering and show a "sudo mode required"
 information and log in screen, which will validate, activate sudo mode, and re-render the wrapped component afterwards
 on success.
 
+This sudo mode differs from sudo mode for `DataObject`s in that it is not tied to a specific model, but rather to a
+specific react component.
+
 > [!WARNING]
+> Sudo mode for react components does not protect the data the component manages, or any endpoints the component uses, it simply requires the user to re-enter their password before the component is rendered.
+
+> [!IMPORTANT]
 > The `WithSudoMode` HOC is exposed via [Webpack's expose-loader plugin](https://webpack.js.org/loaders/expose-loader/). You will need to add it as a [webpack external](https://webpack.js.org/configuration/externals/) to use it. The recommended way to do this is via the [@silverstripe/webpack-config npm package](https://www.npmjs.com/package/@silverstripe/webpack-config) which handles all the external configuration for you.
 
 You can get the injector to apply the HOC to your component automatically using [injector transformations](/developer_guides/customising_the_admin_interface/reactjs_and_redux/#transforming-services-using-middleware):
