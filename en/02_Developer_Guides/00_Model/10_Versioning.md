@@ -604,6 +604,15 @@ $stageRecord = Versioned::get_by_stage(MyRecord::class, Versioned::DRAFT)->byID(
 $liveRecord = Versioned::get_by_stage(MyRecord::class, Versioned::LIVE)->byID(99);
 ```
 
+If you already have a list and want to filter it to only include records in a given stage, you can use [`updateListToAlsoIncludeStage()`](api:SilverStripe\Versioned\Versioned::updateListToAlsoIncludeStage()) instead.
+
+```php
+use SilverStripe\Versioned\Versioned;
+
+$myList = MyRecord::get()->filter(['Name' => 'Example']);
+$stageRecords = Versioned::updateListToAlsoIncludeStage($myList, Versioned::DRAFT);
+```
+
 You can also use [`Versioned::withVersionedMode()`](api:SilverStripe\Versioned\Versioned::withVersionedMode()) in conjunction with [`Versioned::set_stage()`](api:SilverStripe\Versioned\Versioned::set_stage()) to temporarily change what stage is being used for queries.
 
 ```php
@@ -663,6 +672,30 @@ $record = MyRecord::get()->byID(99);
 $versions = $record->allVersions();
 // instance of Versioned_Version
 $version = $versions->First()->Version;
+```
+
+### Reading archived versions
+
+Similarly to using `Versioned::get_by_stage()` and `Versioned::updateListToAlsoIncludeStage()` to get versions of records in a particular stage, you can also fetch records that have been archived.
+
+There are a few different methods for this, depending on exactly what information you're after:
+
+- [`getRemovedFromDraft()`](api:SilverStripe\Versioned\Versioned::getRemovedFromDraft()) - Returns a new list of records (both published and archived) which have been removed from draft.
+- [`updateListToOnlyIncludeRemovedFromDraft()`](api:SilverStripe\Versioned\Versioned::updateListToOnlyIncludeRemovedFromDraft()) - Gives the same results as `getRemovedFromDraft()`, but you can pass it a list to modify instead of it giving you a new list.
+- [`getArchivedOnly()`](api:SilverStripe\Versioned\Versioned::getArchivedOnly()) - Returns a new list of only records which have been archived. This excludes records which are published but removed from draft.
+- [`updateListToOnlyIncludeArchived()`](api:SilverStripe\Versioned\Versioned::updateListToOnlyIncludeArchived()) - Gives the same results as `getArchivedOnly()`, but you can pass it a list to modify instead of it giving you a new list.
+
+```php
+use SilverStripe\Versioned\Versioned;
+
+// Fetching a new list
+$archivedAndOnlyLive = Versioned::getRemovedFromDraft(MyRecord::class);
+$ArchivedOnly = Versioned::getArchivedOnly(MyRecord::class);
+
+// Using an existing list
+$myList = MyRecord::get()->filter(['Name' => 'Example']);
+$archivedAndOnlyLive = Versioned::updateListToOnlyIncludeRemovedFromDraft($myList);
+$ArchivedOnly = Versioned::updateListToOnlyIncludeArchived($myList);
 ```
 
 ### Writing changes to a versioned `DataObject`
