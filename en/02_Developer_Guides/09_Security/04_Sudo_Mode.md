@@ -94,9 +94,6 @@ specific react component.
 > [!WARNING]
 > Sudo mode for react components does not protect the data the component manages, or any endpoints the component uses, it simply requires the user to re-enter their password before the component is rendered.
 
-> [!IMPORTANT]
-> The `WithSudoMode` HOC is exposed via [Webpack's expose-loader plugin](https://webpack.js.org/loaders/expose-loader/). You will need to add it as a [webpack external](https://webpack.js.org/configuration/externals/) to use it. The recommended way to do this is via the [@silverstripe/webpack-config npm package](https://www.npmjs.com/package/@silverstripe/webpack-config) which handles all the external configuration for you.
-
 You can get the injector to apply the HOC to your component automatically using [injector transformations](/developer_guides/customising_the_admin_interface/reactjs_redux_and_graphql/#transforming-services-using-middleware):
 
 ```js
@@ -106,6 +103,9 @@ Injector.transform('MyComponentWithSudoMode', (updater) => {
   updater.component('MyComponent', WithSudoMode);
 });
 ```
+
+> [!IMPORTANT]
+> The `WithSudoMode` HOC is exposed via [Webpack's expose-loader plugin](https://webpack.js.org/loaders/expose-loader/). You will need to add it as a [webpack external](https://webpack.js.org/configuration/externals/) to use it. The recommended way to do this is via the [@silverstripe/webpack-config npm package](https://www.npmjs.com/package/@silverstripe/webpack-config) which handles all the external configuration for you.
 
 If the user has already activated sudo mode and it has not expired, they can interact with your component automatically. Otherwise, they will need to verify their identity by re-entering their password.
 
