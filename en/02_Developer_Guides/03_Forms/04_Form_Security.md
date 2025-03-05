@@ -88,6 +88,12 @@ forms that have validators or security tokens (all of them by default) applied t
 (and browsers) will not cache these pages.
 See [Performance: HTTP Cache Headers](/developer_guides/performance/http_cache_headers/).
 
+## Data disclosure through template caching
+
+Forms can also be cached by the Silverstripe template caching system when the rendered `<form>` HTML tag is contained within a `<% cached %>` block. This can lead to the same data disclosure issues as HTTP caching if a form response containing user data is cached and served to another user.
+
+Templates can include other templates, as well as call methods on objects. This means it's not always obvious when using a `<% cached %>` block that a `<form>` further down in the hierarchy is being cached. Because of this you need to be mindful when using a `<% cached %>` block in your templates about the potential content that is being cached.
+
 ## Related documentation
 
 - [Security](../security)
