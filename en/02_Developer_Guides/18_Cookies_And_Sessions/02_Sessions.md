@@ -104,24 +104,25 @@ $session->clearAll();
 
 ### Samesite attribute
 
-The session cookie is handled slightly differently than most cookies on the site, which provides the opportunity to handle the samesite attribute separately from other cookies.
-You can change the `samesite` attribute for session cookies like so:
+The session cookie is handled slightly differently than most cookies on the site, which provides the opportunity to handle the samesite attribute separately from other cookies. By default, it is set to `Strict` to prevent cross-site attacks.
+
+While it's generally not recommended, if you need to change this value for a particular reason then it can be changed via YAML:
 
 ```yml
 SilverStripe\Control\Session:
-  cookie_samesite: 'Strict'
+  cookie_samesite: 'Lax'
 ```
 
 ### Secure session cookie
 
-In certain circumstances, you may want to use a different `session_name` cookie when using the `https` protocol for security purposes. To do this, you may set the `cookie_secure` parameter to `true` on your `config.yml`
+A different `session_name` cookie is used when using the `https` protocol for security purposes. This uses the session_name `SECSESSID` for `https` connections instead of the default `PHPSESSID`. Doing so adds an extra layer of security to your session cookie since you no longer share `http` and `https` sessions.
+
+Like the samesite attribute, while it's not generally recommended a secure session cookie can be disabled via YAML:
 
 ```yml
 SilverStripe\Control\Session:
-  cookie_secure: true
+  cookie_secure: false
 ```
-
-This uses the session_name `SECSESSID` for `https` connections instead of the default `PHPSESSID`. Doing so adds an extra layer of security to your session cookie since you no longer share `http` and `https` sessions.
 
 Note that if you set `cookie_samesite` to `None` (which is *strongly* discouraged), the `cookie_secure` value will *always* be `true`.
 
