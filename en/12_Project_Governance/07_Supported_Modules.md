@@ -30,6 +30,7 @@ Core Module | Supported major release line
 [silverstripe/assets](https://packagist.org/packages/silverstripe/assets) | 3
 [silverstripe/cms](https://packagist.org/packages/silverstripe/cms) | 6
 [silverstripe/config](https://packagist.org/packages/silverstripe/config) | 3
+[silverstripe/campaign-admin](https://packagist.org/packages/silverstripe/campaign-admin) | 3
 [silverstripe/errorpage](https://packagist.org/packages/silverstripe/errorpage) | 3
 [silverstripe/framework](https://packagist.org/packages/silverstripe/framework) | 6
 [silverstripe/graphql](https://packagist.org/packages/silverstripe/graphql) | 6
