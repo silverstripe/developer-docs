@@ -131,6 +131,7 @@ Order code in classes in the following order:
 - Static properties
 - Member properties
 - Static methods
+- Constructor
 - Controller action methods
 - Commonly used methods like `getCMSFields()`
 - Accessor methods (`getMyField()` and `setMyField()`)
