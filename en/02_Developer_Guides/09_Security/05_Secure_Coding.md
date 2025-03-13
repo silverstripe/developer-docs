@@ -229,11 +229,10 @@ You can also use the [`XssSanitiser`](api:SilverStripe\Core\XssSanitiser) to rem
 
 ### What if I need to allow script or style tags?
 
-The default configuration of Silverstripe CMS uses a santiser to enforce TinyMCE whitelist rules on the server side,
-and is sufficient to eliminate the most common XSS vectors. Notably, this will remove script and style tags.
+The default configuration of Silverstripe CMS uses a santiser to enforce the element and attribute rules on the server side,
+and is sufficient to eliminate the most common XSS vectors. Notably, this will remove script and style tags unless those are explicitly allowed in your configuration.
 
-If your site requires script or style tags to be added via TinyMCE, Silverstripe CMS can be configured to disable the
-server side santisation. You will also need to update the TinyMCE whitelist [settings](/developer_guides/forms/field_types/htmleditorfield/#setting-options) to remove the frontend sanitisation.
+If your site requires script or style tags to be added via the HTML editor, you will also need to update the element rules to remove the frontend sanitisation. See [defining HTML editor configurations](/developer_guides/forms/field_types/htmleditorfield/#defining-html-editor-configurations) for details.
 
 However, it's strongly discouraged as it opens up the possibility of malicious code being added to your site through the CMS.
 
