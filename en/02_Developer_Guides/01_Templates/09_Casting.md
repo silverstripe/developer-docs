@@ -62,7 +62,7 @@ Values can be cast as any `DBField` instance, but these tend to be the most comm
 - `HTMLFragment` is a block of raw HTML, which should not be escaped. Take care to sanitise any HTML
  value saved into the database.
 - `HTMLText` is a `HTMLFragment`, but has shortcodes enabled. This should only be used for content
- that is modified via a TinyMCE editor, which will insert shortcodes.
+ that is modified via an HTML editor, which can insert shortcodes.
 - `Int` for integers.
 - `Decimal` for floating point values.
 - `Boolean` For boolean values.
