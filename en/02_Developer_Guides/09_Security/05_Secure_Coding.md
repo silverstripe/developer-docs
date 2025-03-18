@@ -229,11 +229,10 @@ You can also use the [`XssSanitiser`](api:SilverStripe\Core\XssSanitiser) to rem
 
 ### What if I need to allow script or style tags?
 
-The default configuration of Silverstripe CMS uses a santiser to enforce TinyMCE whitelist rules on the server side,
-and is sufficient to eliminate the most common XSS vectors. Notably, this will remove script and style tags.
+The default configuration of Silverstripe CMS uses a santiser to enforce the element and attribute rules on the server side,
+and is sufficient to eliminate the most common XSS vectors. Notably, this will remove script and style tags unless those are explicitly allowed in your configuration.
 
-If your site requires script or style tags to be added via TinyMCE, Silverstripe CMS can be configured to disable the
-server side santisation. You will also need to update the TinyMCE whitelist [settings](/developer_guides/forms/field_types/htmleditorfield/#setting-options) to remove the frontend sanitisation.
+If your site requires script or style tags to be added via the HTML editor, you will also need to update the element rules to remove the frontend sanitisation. See [defining HTML editor configurations](/developer_guides/forms/field_types/htmleditorfield/#defining-html-editor-configurations) for details.
 
 However, it's strongly discouraged as it opens up the possibility of malicious code being added to your site through the CMS.
 
@@ -471,6 +470,8 @@ through [Form::setStrictFormMethodCheck()](api:SilverStripe\Forms\Form::setStric
 Sometimes you need to handle state-changing HTTP submissions which aren't handled through
 Silverstripe CMS's form system. In this case, you can also check the current HTTP request
 for a valid token through [SecurityToken::checkRequest()](api:SilverStripe\Security\SecurityToken::checkRequest()).
+
+Setting the appropriate value for cookies also helps protect against CSRF attacks. See [Secure sessions and cookies](#secure-sessions-and-cookies).
 
 See the [OWASP article about CSRF](https://owasp.org/www-community/attacks/csrf) for more information.
 
@@ -846,39 +847,10 @@ You can configure that by setting the following environment variables:
 
 ## Secure sessions and cookies
 
-We also want to ensure cookies are not shared between secure and non-secure sessions, so we must tell Silverstripe CMS to
-use a [secure session](/developer_guides/cookies_and_sessions/sessions/#secure-session-cookie).
-To do this, you may set the `cookie_secure` parameter to `true` in your `config.yml` for `Session`.
-
-It is also a good idea to set the `samesite` attribute for the session cookie to `Strict` unless you have a specific use case for
-sharing the session cookie across domains.
-
-```yml
-SilverStripe\Control\Session:
-  cookie_samesite: 'Strict'
-  cookie_secure: true
-```
-
-The same treatment should be applied to the cookie responsible for remembering logins across sessions:
-
-```yml
----
-Name: secure-alc
-Except:
-  environment: dev
----
-SilverStripe\Core\Injector\Injector:
-  SilverStripe\Security\MemberAuthenticator\CookieAuthenticationHandler:
-    properties:
-      TokenCookieSecure: true
-```
-
-> [!NOTE]
-> There is not currently an easy way to pass a `samesite` attribute value for setting this cookie - but you can set the
-> default value for the attribute for all cookies. See [the main cookies documentation](/developer_guides/cookies_and_sessions/cookies#samesite-attribute) for more information.
+Session cookies and authentication cookies are not shared between secure and non-secure sessions by default. This is because by default Silverstripe CMS uses a [secure session](/developer_guides/cookies_and_sessions/sessions/#secure-session-cookie), as well as [setting the "samesite" attribute](/developer_guides/cookies_and_sessions/sessions/#samesite-attribute) to "Strict" by default.
 
 For other cookies set by your application we should also ensure the users are provided with secure cookies by setting
-the "Secure" and "HTTPOnly" flags. These flags prevent them from being stolen by an attacker through JavaScript.
+the "Secure", "HTTPOnly", and "SameSite" flags. These flags prevent them from being stolen by an attacker through JavaScript or being shared with an external domain.
 
 - The `Secure` cookie flag instructs the browser not to send the cookie over an insecure HTTP connection. If this
 flag is not present, the browser will send the cookie even if HTTPS is not in use, which means it is transmitted in
@@ -888,17 +860,20 @@ clear text and can be intercepted and stolen by an attacker who is listening on 
 code. It is best practice to set this flag unless the application is known to use JavaScript to access these cookies
 as this prevents an attacker who achieves cross-site scripting from accessing these cookies.
 
+- The `SameSite` flag tells the browser whether the cookie is allowed to be used when navigating to your website from another site. Setting this appropriately can help protect your users from Cross-Site Request Forgery (CSRF) attacks.
+
 ```php
 use SilverStripe\Control\Cookie;
 
 Cookie::set(
     'cookie-name',
     'chocolate-chip',
-    $expiry = 30,
-    $path = null,
-    $domain = null,
-    $secure = true,
-    $httpOnly = false
+    expiry: 30,
+    path: null,
+    domain: null,
+    secure: true,
+    httpOnly: false,
+    sameSite: Cookie::SAMESITE_STRICT
 );
 ```
 

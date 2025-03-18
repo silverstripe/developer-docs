@@ -113,6 +113,15 @@ SilverStripe\Control\Session:
   cookie_samesite: 'Lax'
 ```
 
+You may also need to update the cookie responsible for remembering logins across sessions:
+
+```yml
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Security\MemberAuthenticator\CookieAuthenticationHandler:
+    properties:
+      TokenCookieSameSite: 'Lax'
+```
+
 ### Secure session cookie
 
 A different `session_name` cookie is used when using the `https` protocol for security purposes. This uses the session_name `SECSESSID` for `https` connections instead of the default `PHPSESSID`. Doing so adds an extra layer of security to your session cookie since you no longer share `http` and `https` sessions.
@@ -122,6 +131,15 @@ Like the samesite attribute, while it's not generally recommended a secure sessi
 ```yml
 SilverStripe\Control\Session:
   cookie_secure: false
+```
+
+You may also need to update the cookie responsible for remembering logins across sessions:
+
+```yml
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Security\MemberAuthenticator\CookieAuthenticationHandler:
+    properties:
+      TokenCookieSecure: false
 ```
 
 Note that if you set `cookie_samesite` to `None` (which is *strongly* discouraged), the `cookie_secure` value will *always* be `true`.

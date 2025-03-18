@@ -21,7 +21,7 @@ SilverStripe\Forms\TreeDropdownField:
 ```
 
 > [!TIP]
-> A very common use of `TreeDropdownField` is the "Insert Link" feature in the TinyMCE WYSIWYG. Setting this configuration to use another filter and adding an index on `Title` and `MenuTitle` for [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) can significantly improve performance.
+> A very common use of `TreeDropdownField` is the "Insert Link" feature used by supported HTML editors. Setting this configuration to use another filter and adding an index on `Title` and `MenuTitle` for [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) can significantly improve performance.
 
 See [SearchFilter Modifiers](/developer_guides/model/searchfilters/) for more information about search filters.
 
