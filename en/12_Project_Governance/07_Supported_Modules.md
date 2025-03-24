@@ -59,6 +59,7 @@ Supported PHP Module | Supported versions
 [silverstripe/startup-theme](https://packagist.org/packages/silverstripe/startup-theme) | 1
 [silverstripe/campaign-admin](https://packagist.org/packages/silverstripe/campaign-admin) | 3
 [silverstripe/dynamodb](https://packagist.org/packages/silverstripe/dynamodb) | 6
+[silverstripe/environmentcheck](https://packagist.org/packages/silverstripe/environmentcheck) | 4
 [silverstripe/graphql](https://packagist.org/packages/silverstripe/graphql) | 6
 [silverstripe/gridfieldqueuedexport](https://packagist.org/packages/silverstripe/gridfieldqueuedexport) | 4
 [silverstripe/hybridsessions](https://packagist.org/packages/silverstripe/hybridsessions) | 4
