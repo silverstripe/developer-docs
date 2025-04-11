@@ -30,10 +30,8 @@ Core Module | Supported major release line
 [silverstripe/assets](https://packagist.org/packages/silverstripe/assets) | 3
 [silverstripe/cms](https://packagist.org/packages/silverstripe/cms) | 6
 [silverstripe/config](https://packagist.org/packages/silverstripe/config) | 3
-[silverstripe/campaign-admin](https://packagist.org/packages/silverstripe/campaign-admin) | 3
 [silverstripe/errorpage](https://packagist.org/packages/silverstripe/errorpage) | 3
 [silverstripe/framework](https://packagist.org/packages/silverstripe/framework) | 6
-[silverstripe/graphql](https://packagist.org/packages/silverstripe/graphql) | 6
 [silverstripe/htmleditor-tinymce](https://packagist.org/packages/silverstripe/htmleditor-tinymce) | 1
 [silverstripe/installer](https://packagist.org/packages/silverstripe/installer) | 6
 [silverstripe/login-forms](https://packagist.org/packages/silverstripe/login-forms) | 6
@@ -59,7 +57,10 @@ Supported PHP Module | Supported versions
 [dnadesign/silverstripe-elemental](https://packagist.org/packages/dnadesign/silverstripe-elemental) | 6
 [dnadesign/silverstripe-elemental-userforms](https://packagist.org/packages/dnadesign/silverstripe-elemental-userforms) | 5
 [silverstripe/startup-theme](https://packagist.org/packages/silverstripe/startup-theme) | 1
+[silverstripe/campaign-admin](https://packagist.org/packages/silverstripe/campaign-admin) | 3
 [silverstripe/dynamodb](https://packagist.org/packages/silverstripe/dynamodb) | 6
+[silverstripe/environmentcheck](https://packagist.org/packages/silverstripe/environmentcheck) | 4
+[silverstripe/graphql](https://packagist.org/packages/silverstripe/graphql) | 6
 [silverstripe/gridfieldqueuedexport](https://packagist.org/packages/silverstripe/gridfieldqueuedexport) | 4
 [silverstripe/hybridsessions](https://packagist.org/packages/silverstripe/hybridsessions) | 4
 [silverstripe/linkfield](https://packagist.org/packages/silverstripe/linkfield) | 5
