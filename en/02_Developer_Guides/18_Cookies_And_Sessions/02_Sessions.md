@@ -124,7 +124,7 @@ SilverStripe\Core\Injector\Injector:
 
 ### Secure session cookie
 
-A different `session_name` cookie is used when using the `https` protocol for security purposes. This uses the session_name `SECSESSID` for `https` connections instead of the default `PHPSESSID`. Doing so adds an extra layer of security to your session cookie since you no longer share `http` and `https` sessions.
+The session cookie settings vary slightly between `HTTP` and `HTTPS` connections. `HTTPS` connections automatically include the `Secure` attribute. This ensures that secure session cookie data is only transmitted over encrypted `HTTPS` connections, preventing it from being exposed during plain-text `HTTP` requests and enhancing overall security. This means that if you are serving your site over both `HTTPS` and `HTTP`, some functionality such as authentication may not work as expected.
 
 Like the samesite attribute, while it's not generally recommended a secure session cookie can be disabled via YAML:
 
