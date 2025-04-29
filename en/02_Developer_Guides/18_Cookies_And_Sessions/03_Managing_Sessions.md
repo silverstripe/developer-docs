@@ -147,14 +147,14 @@ Read [Saved User Logins](/developer_guides/security/member/#saved-user-logins) t
 
 ### Session timeout
 
-Non-persisted login sessions (those where the member hasn’t ticked "Keep me signed in") should expire after a period of inactivity, so that they’re removed from the list of active sessions even if the member closes their browser without completing the “log out” action. The length of time before expiry matches the `SilverStripe\Control\Session.timeout` value if one is set, otherwise falling back to a default of one hour. This default can be changed via the following config setting:
+Non-persisted login sessions (those where the member hasn’t ticked "Keep me signed in") should expire after a period of inactivity, so that they’re removed from the list of active sessions even if the member closes their browser without completing the “log out” action. The length of time before expiry matches the [`Session.timeout`](api:SilverStripe\Control\Session->timeout) value if one is set, otherwise falling back to a default of one hour. This default can be changed via the following config setting:
 
 ```yml
 SilverStripe\SessionManager\Models\LoginSession:
   default_session_lifetime: 3600 # Default value: 1 hour in seconds
 ```
 
-Note that if the member’s session expires before this timeout (e.g. a short `session.gc_maxlifetime` PHP ini setting), they **will** still be logged out. There will just be an extra session shown in the list of active sessions, even though no one can access it.
+Note that if the member’s session expires before this timeout (e.g. a short `session.gc_maxlifetime` PHP ini setting if `Session.timeout` is set to `0`), they **will** still be logged out. There will just be an extra session shown in the list of active sessions, even though no one can access it.
 
 ### Garbage collection
 
