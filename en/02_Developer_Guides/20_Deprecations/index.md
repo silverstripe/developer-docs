@@ -17,14 +17,14 @@ going to be removed and how they need to update their code.
 ## Deprecating API best practice
 
 - Add a `@deprecated` item to the docblock tag, with the version when the code was deprecated and a message indicating what to use instead.
-- Update the deprecated code to throw a [Deprecation::notice()](api:SilverStripe\Dev\Deprecation::notice()) warning.
+- Update the deprecated code to throw a [`Deprecation::notice()`](api:SilverStripe\Dev\Deprecation::notice()) warning.
 - Both the docblock and error message should contain the **version** where the functionality is deprecated from.
   So, if you're committing the change to a *4.12* minor release, the version will be *4.12.0*.
 - Make sure that the old deprecated method works by calling the new function where possible - avoid duplicated code.
 - Deprecated APIs can be removed only after developers have had sufficient time to react to the changes. Hence, deprecated APIs should be removed in major releases only. Between major releases, leave the code in place with a deprecation warning.
 
 > [!NOTE]
-> If there is no immediate replacement for deprecated code that is being called, either because the replacement is not available until the next major version, or because there is not a plan for there to be a replacement, the message should be "Will be removed without equivalent functionality to replace it."
+> If there is no immediate replacement for deprecated code that is being called, either because the replacement is not available until the next major version, or because there is not a plan for there to be a replacement, the message should be "Will be removed without equivalent functionality to replace it in a future major release."
 
 When deprecating a method:
 
@@ -42,7 +42,7 @@ When deprecating a class:
     namespace App;
 
     /**
-     * @deprecated 4.12.0 Will be removed without equivalent functionality
+     * @deprecated 4.12.0 Will be removed without equivalent functionality in a future major release
      */
     class MyDeprecatedClass extends AnotherClass
     {
@@ -51,7 +51,7 @@ When deprecating a class:
             Deprecation::withSuppressedNotice(function () {
                 Deprecation::notice(
                     '4.12.0',
-                    'Will be removed without equivalent functionality',
+                    'Will be removed without equivalent functionality in a future major release',
                     Deprecation::SCOPE_CLASS
                 );
             });
