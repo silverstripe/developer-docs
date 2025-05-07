@@ -100,9 +100,52 @@ including form and page comment information. None of this is vital but `clear_al
 $session->clearAll();
 ```
 
-## Cookies
+## Configuration
 
-### Samesite attribute
+### Session lifetime
+
+By default, the client-side session cookie will only last until the user closes their browser, and the session on the server-side will live for the number of seconds set in the [`session.gc_maxlifetime`](https://www.php.net/manual/en/session.configuration.php#ini.session.gc-maxlifetime) ini configuration since it was last touched.
+
+You can configure the session lifetime by setting the [`Session.timeout`](SilverStripe\Control\Session->timeout) configuration property to the number of seconds the session should be valid for since the last modified time. If one of the session handlers included with `silverstripe/framework` is used, this will be used for both setting the "expires" attribute on the client-side cookie, as well as for determining when the server-side record for storing the session is deleted.
+
+```yml
+SilverStripe\Control\Session:
+  timeout: 86400
+```
+
+> [!WARNING]
+> If you use a save handler which isn't included in `silverstripe/framework`, it may treat the session lifetime differently. You should check its documentation or implementation to understand how it works.
+
+### Save handler
+
+You can choose how session are handled by setting the [`Session.save_handler`](api:SilverStripe\Control\Session->save_handler) configuration property. By default this is set to [`FileSessionHandler`](api:SilverStripe\Control\SessionHandler\FileSessionHandler).
+
+If you want to use the default PHP file session handler instead, you can set the `Session.save_handler` configuration to `null`.
+
+```yml
+SilverStripe\Control\Session:
+  save_handler: null
+```
+
+You can also set it to the FQCN or injector service name of any session handler that implements [`SessionHandlerInterface`](https://www.php.net/manual/en/class.sessionhandlerinterface.php).
+
+#### `FileSessionHandler`
+
+The default file-based session handler for PHP holds a lock on the session file while the session is open. This means that multiple concurrent requests from the same user have to wait for one another to finish processing after a session has been started. This includes AJAX requests.
+
+To resolve this problem, Silverstripe CMS comes with [`FileSessionHandler`](api:SilverStripe\Control\SessionHandler\FileSessionHandler).
+
+Note that in edge case scenarios, for example if your application wants to modify a session value *based on the value that is already set* and must do so for each request, non-blocking sessions may cause unexpected results.
+
+`FileSessionHandler` differs from the default PHP file session handler in the following ways:
+
+1. It doesn't lock the session file, and therefore doesn't block concurrent requests.
+1. The [`Session.timeout`](api:SilverStripe\Control\Session->timeout) configuration property is used as the source of truth for the lifetime of session files (see [session lifetime](#session-lifetime) above).
+1. If there are problems reading or writing to session files, the [default logging service](/developer_guides/debugging/error_handling/) is used to log them.
+
+### Cookies
+
+#### Samesite attribute
 
 The session cookie is handled slightly differently than most cookies on the site, which provides the opportunity to handle the samesite attribute separately from other cookies. By default, it is set to `Strict` to prevent cross-site attacks.
 
@@ -122,7 +165,7 @@ SilverStripe\Core\Injector\Injector:
       TokenCookieSameSite: 'Lax'
 ```
 
-### Secure session cookie
+#### Secure session cookie
 
 The session cookie settings vary slightly between `HTTP` and `HTTPS` connections. `HTTPS` connections automatically include the `Secure` attribute. This ensures that secure session cookie data is only transmitted over encrypted `HTTPS` connections, preventing it from being exposed during plain-text `HTTP` requests and enhancing overall security. This means that if you are serving your site over both `HTTPS` and `HTTP`, some functionality such as authentication may not work as expected.
 
@@ -144,7 +187,7 @@ SilverStripe\Core\Injector\Injector:
 
 Note that if you set `cookie_samesite` to `None` (which is *strongly* discouraged), the `cookie_secure` value will *always* be `true`.
 
-## Relaxing checks around user agent strings
+### Relaxing checks around user agent strings
 
 Out of the box, Silverstripe CMS will invalidate a user's session if the `User-Agent` header changes. This provides some supplemental protection against session high-jacking attacks.
 
