@@ -43,7 +43,7 @@ These records are composite fields which contain sufficient information useful t
 to store, manage, and  publish files. By default this composite field behind this field stores the following details:
 
 | Field name     | Description |
-| ----------     | -----------
+| ----------     | ----------- |
 | `Hash`         | The sha1 of the file content, useful for versioning (if supported by the backend) |
 | `Filename`     | The internal identifier for this file, which may contain a directory path (not including assets). Multiple versions of the same file will have the same filename. |
 | `Variant`      | The variant for this file. If a file has multiple derived versions (such as resized files or reformatted documents) then you can point to one of the variants here. |
@@ -53,6 +53,15 @@ storage backend to determine how variants are managed.
 
 Note that the storage backend used will not be automatically synchronised with the database. Only files which
 are loaded into the backend through the asset API will be available for use within a site.
+
+## Flysystem adapters
+
+The [Flysystem](https://flysystem.thephpleague.com/docs/) backend includes several optional adapters for storing files in different ways. By default the local filesystem adapter is used, which stores files in your local filesystem in the path that the `ASSETS_PATH` constant resolves to (usually `public/assets/` relative to your project root).
+
+If you chose to use a different adapter for your project, note that there may be performance implications for doing so:
+
+- We use glob pattern matching where possible to look for image variants. If the adapter you've chosen can support glob pattern matching, consider subclassing it and implementing the [`GlobContentLister`](api:SilverStripe\Assets\Flysystem\GlobContentLister) interface. This dramatically improves performance. The alternative behaviour is to iterate through all files in a folder to check if they're a variant file or not.
+- Flysystem doesn't implement a way to check if a folder is empty. [`Filesystem::isEmpty()`](api:SilverStripe\Assets\Flysystem\Filesystem::isEmpty()) tries to get around this by only checking the first item in a generator returned by the adapter, but some adapters will still fetch data about many more files than is necessary e.g. from a networked service.
 
 ## Public file paths
 
@@ -87,7 +96,9 @@ assets/
         my-public-file__FitWzYwLDYwXQ.jpg
 ```
 
-The URL for this file will match the physical location on disk:
+The variant suffix is usually comprised of the name of the method that created it followed by a base64 encoding of settings arguments to that method. It's separated from the original file name with [`FileIDHelper::VARIANT_SEPARATOR`](api:SilverStripe\Assets\FilenameParsing\FileIDHelper::VARIANT_SEPARATOR) unless a custom [`FileIDHelper`](api:SilverStripe\Assets\FilenameParsing\FileIDHelper) implementation is used.
+
+The URL for the variant file will match the physical location on disk:
 `https://www.example.com/assets/my-public-folder/my-public-file__FitWzYwLDYwXQ.jpg`.
 
 ## Protected file paths {#protected-file-paths}
