@@ -61,7 +61,7 @@ class ProductAdmin extends ModelAdmin
 ```
 
 In order to localize the menu title in different languages, use the
-`<classname>.MENUTITLE` entity name, which is automatically created when running
+`<classname>.MENUTITLE_CMS6` entity name, which is automatically created when running
 the i18n text collection.
 
 For more information on language and translations, please refer to the
