@@ -231,7 +231,7 @@ class NewsAdmin extends ModelAdmin
 }
 ```
 
-A complete list of supported font icons is available to view in the [Silverstripe CMS Design System Manager](https://projects.invisionapp.com/dsm/silver-stripe/silver-stripe/section/icons/5a8b972d656c91001150f8b6)
+A complete list of supported font icons is available to view in the [Silverstripe pattern library](https://silverstripe.github.io/silverstripe-pattern-lib/?path=/story/admin-icons--icon-reference).
 
 ## Searching records
 
