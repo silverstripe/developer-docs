@@ -73,10 +73,13 @@ SilverStripe\Core\Injector\Injector:
 > ```bash
 > SS_ERROR_LOG="./silverstripe.log"
 > ```
->
-> You don't need any of the YAML configuration above if you are using the `SS_ERROR_LOG` environment variable - but you can use a combination of the environment variable and YAML configuration if you want to configure multiple error log files.
->
-> You will also need to make sure the user running the PHP process has write access to the log file, wherever you choose to put it.
+
+You don't need any of the YAML configuration above if you are using the `SS_ERROR_LOG` environment variable - but you can use a combination of the environment variable and YAML configuration if you want to configure multiple error log files.
+
+You will also need to make sure the user running the PHP process has write access to the log file, wherever you choose to put it.
+
+> [!NOTE]
+> When deprecation notices are logged with monolog there will be additional context added by monolog about the origin of the `user_error()` called in `Deprecation.php` which is unrelated the actual deprecated code, for example `{"code":16384,"message":"...","file":"/var/www/vendor/silverstripe/framework/src/Dev/Deprecation.php","line":355}`. This additional context should simply be ignored.
 
 See [Configuring error logging](/developer_guides/debugging/error_handling/#configuring-error-logging) to learn about other ways you can handle error logs.
 
