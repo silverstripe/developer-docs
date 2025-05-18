@@ -84,6 +84,34 @@ class MyTestObject extends DataObject
     ];
 }
 ```
+## Adding indexes to many-many relationships
+
+You can create indexes on `many-many extraFields` like this: 
+
+```php
+// app/src/SchoolClass.php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+
+class SchoolClass extends DataObject
+{
+
+    private static $many_many = [
+        'Students' => Student::class,
+    ];
+
+    private static $many_many_extraFields = [
+        'EcommerceAlsoBoughtProducts' => [
+            'YearsInThisClass' => 'Int',
+        ],
+    ];
+
+    private static $indexes = [
+        'Students.YearsInThisClass' => true,
+    ];
+}
+```
 
 ## Complex/Composite indexes
 
