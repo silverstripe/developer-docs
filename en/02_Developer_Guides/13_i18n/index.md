@@ -374,7 +374,7 @@ de:
 ```
 
 Note that translations are cached across requests.
-The cache can be cleared through the `?flush=1` query parameter.
+The cache can be cleared through the `?flush=1` query parameter or the `--flush` CLI flag.
 
 ## JavaScript usage
 
