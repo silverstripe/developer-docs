@@ -59,7 +59,7 @@ SilverStripe\Control\Director:
 ```
 
 > [!CAUTION]
-> Make sure that after modifying the `routes.yml` file you clear your Silverstripe CMS caches using `?flush=1`.
+> Make sure that after modifying the `routes.yml` file you clear your Silverstripe CMS caches using `?flush=1` or the `--flush` CLI flag.
 
 For more information about creating custom routes, see the [Routing](routing) documentation.
 

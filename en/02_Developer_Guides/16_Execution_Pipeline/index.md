@@ -80,7 +80,7 @@ The ["Request Filters" documentation](../controllers/requestfilters) shows you h
 
 ## Flushing manifests
 
-If a `?flush=1` query parameter is added to a URL, a call to `flush()` will be triggered
+If a `?flush=1` query parameter is added to a URL or the `--flush` CLI flag is used, a call to `flush()` will be triggered
 on any classes that implement the [Flushable](flushable) interface.
 This enables developers to clear [manifest caches](manifests),
 for example when adding new templates or PHP classes.

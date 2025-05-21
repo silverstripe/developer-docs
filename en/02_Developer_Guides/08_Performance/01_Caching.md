@@ -18,14 +18,14 @@ The most common caches are manifests of various resources:
 - Language files ([i18n](api:SilverStripe\i18n\i18n))
 
 Flushing the various manifests is performed through a GET
-parameter (`flush=1`). Since this action requires more server resources than normal requests,
+parameter (`flush=1`) or CLI flag (`--flush`). Since this action requires more server resources than normal requests,
 executing the action is limited to the following cases when performed via a web request:
 
 - The [environment](/getting_started/environment_management) is in "dev mode"
 - A user is logged in with ADMIN permissions
 - An error occurs during startup
 
-Caution: Not all caches are cleared through `flush=1`.
+Caution: Not all caches are cleared through `?flush=1` or `--flush`.
 While cache objects can expire, when using filesystem caching the files are not actively pruned.
 For long-lived server instances, this can become a capacity issue over time - see
 [workaround](https://github.com/silverstripe/silverstripe-framework/issues/6678).
@@ -174,7 +174,7 @@ $cacheKey = implode(['groupNames', $member->ID, Group::get()->max('LastEdited')]
 $cache->set($cacheKey, $member->Groups()->column('Title'));
 ```
 
-If `?flush=1` is requested in the URL, this will trigger a call to `flush()` on
+If `?flush=1` is requested in the URL or `--flush` is used with sake, this will trigger a call to `flush()` on
 any classes that implement the [Flushable](/developer_guides/execution_pipeline/flushable/)
 interface. Use this interface to trigger `clear()` on your caches.
 
@@ -244,7 +244,7 @@ APCu is "an in-memory key-value store for PHP". This runs locally on the same co
 >
 > The filesystem cache will still be used as a backup, which *is* shared with CLI, so flushing the cache with a web request will always flush the cache CLI uses.
 
-We include this option because it requires very little effort to set up, so it may be appropriate for smaller projects. Just remember to always flush the cache with an HTTP request using `?flush=1`.
+We include this option because it requires very little effort to set up, so it may be appropriate for smaller projects. Just remember to always flush the cache with an HTTP request using `?flush=1` or the `--flush` CLI flag.
 
 ```bash
 SS_IN_MEMORY_CACHE_FACTORY="SilverStripe\Core\Cache\ApcuCacheFactory"
