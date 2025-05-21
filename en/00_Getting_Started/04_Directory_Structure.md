@@ -108,7 +108,7 @@ Example Blog Documentation:
 Silverstripe recursively detects classes in PHP files by building up a manifest used for autoloading, as well as
 respecting Composer's built-in autoloading for libraries. This means in most cases, you don't need to worry about
 include paths or `require()` calls in your own code - after adding a new class, simply regenerate the manifest by using
-a `flush=1` query parameter. See the ["Manifests" documentation](/developer_guides/execution_pipeline/manifests) for
+a `flush=1` query parameter or the `--flush` CLI flag. See the ["Manifests" documentation](/developer_guides/execution_pipeline/manifests) for
 details.
 
 ## Best practices
