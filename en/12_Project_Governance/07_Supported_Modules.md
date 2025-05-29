@@ -62,7 +62,6 @@ Supported PHP Module | Supported versions
 [silverstripe/environmentcheck](https://packagist.org/packages/silverstripe/environmentcheck) | 4
 [silverstripe/graphql](https://packagist.org/packages/silverstripe/graphql) | 6
 [silverstripe/gridfieldqueuedexport](https://packagist.org/packages/silverstripe/gridfieldqueuedexport) | 4
-[silverstripe/hybridsessions](https://packagist.org/packages/silverstripe/hybridsessions) | 4
 [silverstripe/linkfield](https://packagist.org/packages/silverstripe/linkfield) | 5
 [silverstripe/lumberjack](https://packagist.org/packages/silverstripe/lumberjack) | 4
 [silverstripe/mfa](https://packagist.org/packages/silverstripe/mfa) | 6
