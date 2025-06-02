@@ -85,7 +85,7 @@ class MyTestObject extends DataObject
 }
 ```
 
-## Complex/Composite indexes
+### Complex/Composite indexes
 
 For complex queries it may be necessary to define a complex or composite index on the supporting object. To create a
 composite index, define the fields in the index order as a comma separated list.
@@ -101,8 +101,26 @@ other columns. If this is indexed, smaller and reasonably unique it might be fas
 
 ## Index creation/destruction
 
-Indexes are generated and removed automatically when building the database. Caution if you're working with large tables and
+Indexes are generated and removed automatically when building the database based on your configuration. Caution if you're working with large tables and
 modify an index as the next time the database is built it will `DROP` the index, and then `ADD` it.
+
+Note that the ORM won't automatically drop indexes if you remove them from the `indexes` configuration array. Instead, you need to set the value to `false` like so:
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+
+class MyTestObject extends DataObject
+{
+    // ...
+    private static $indexes = [
+        'MyIndexName' => false,
+    ];
+}
+```
+
+Setting an index to `false` tells the ORM to not generate it (e.g. for automatically generated indexes for relation joins) and to drop it if it already exists.
 
 ## API documentation
 
