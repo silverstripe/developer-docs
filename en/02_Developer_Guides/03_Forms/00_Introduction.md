@@ -399,7 +399,7 @@ class MyFormPageController extends PageController
 }
 ```
 
-See [how_tos/handle_nested_data](How to: Handle nested form data) for more advanced use cases.
+See [How to: Handle nested form data](how_tos/handle_nested_data) for more advanced use cases.
 
 ## Validation
 
