@@ -52,7 +52,7 @@ class MyPolyCommand extends PolyCommand
 > [!NOTE]
 > You can also optionally implement the static [`getHelp()`](api:SilverStripe\PolyExecution\PolyCommand::getHelp()) method to provide additional context about the command. This helps to keep the description short.
 
-Once you've set up your command in PHP, you can add an HTTP route to is using the regular [`Director` routing rules](/developer_guides/controllers/routing/), and add it to Sake with the [`Sake.commands`](api:SilverStripe\Cli\Sake->commands) configuration property. Note that this isn't necessary for the special subclasses mentioned in the sections below.
+Once you've set up your command in PHP, you can add an HTTP route to it using the regular [`Director` routing rules](/developer_guides/controllers/routing/), and add it to Sake with the [`Sake.commands`](api:SilverStripe\Cli\Sake->commands) configuration property. Note that this isn't necessary for the special subclasses mentioned in the sections below.
 
 ```yml
 ---

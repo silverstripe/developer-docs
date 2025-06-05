@@ -25,7 +25,9 @@ SS_DATABASE_USERNAME_REPLICA_01="my-replica-user"
 SS_DATABASE_PASSWORD_REPLICA_01="my-replica-password"
 ```
 
-Replicas cannot define different configuration values for `SS_DATABASE_CLASS`, `SS_DATABASE_NAME`, or `SS_DATABASE_CHOOSE_NAME`. They are restricted to prevent strange issues that could arise from having inconsistent database configurations across replicas.
+Replicas cannot define different configuration values for `SS_DATABASE_CLASS`, `SS_DATABASE_NAME`, or `SS_DATABASE_CHOOSE_NAME`. Those are restricted to prevent strange issues that could arise from having inconsistent database configurations across replicas.
+
+The `SS_DATABASE_SERVER`, `SS_DATABASE_USERNAME`, and `SS_DATABASE_PASSWORD` must be defined for each replica. If a port other than the default should be used, `SS_DATABASE_PORT` must also be defined for each replica.
 
 If one or more read-only replicas have been configured, then for each request one of the read-only replicas will be randomly selected from the pool of available replicas to handle queries for the rest of the request cycle. However the primary database will be used instead if one of the follow criteria has been met:
 
