@@ -95,7 +95,7 @@ sake <command> --help # e.g. `sake db:build --help`
 ```
 
 > [!CAUTION]
-> You should run `sake` with the same system user that runs your web server. Otherwise you will have a separate filesystem cache for CLI and you won't be able to flush or warm your webserver cache using Sake.
+> You should run `sake` with the same system user and PHP version that runs your web server. Otherwise you will have a separate filesystem cache for CLI and you won't be able to flush or warm your webserver cache using Sake. Other unexpected behaviour could also occur e.g. as a result of different permissions.
 
 Sake doesn't use your project's routing and controllers for normal execution. However if you do specifically need to access an HTTP route in your application from the CLI, you can use the `sake navigate` command.
 
