@@ -233,7 +233,7 @@ SilverStripe\Core\Injector\Injector:
     calls:
       pushMyDisplayErrorHandler: [ pushHandler, [ '%$DisplayErrorHandler' ]]
   DisplayErrorHandler:
-    class: SilverStripe\Logging\HTTPOutputHandler
+    class: SilverStripe\Logging\ErrorOutputHandler
     constructor:
       - "notice"
     properties:
@@ -271,7 +271,7 @@ SilverStripe\Core\Injector\Injector:
 
   # Handler for displaying errors in the browser or CLI
   DisplayErrorHandler:
-    class: SilverStripe\Logging\HTTPOutputHandler
+    class: SilverStripe\Logging\ErrorOutputHandler
     constructor:
       - "error"
     properties:

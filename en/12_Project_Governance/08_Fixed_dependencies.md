@@ -25,7 +25,7 @@ Dependency | Fixed major release line
 
 ## Symfony dependencies
 
-Silverstripe CMS relies on many Symfony packages. Silverstripe CMS 6 tracks the Symfony 7 release. If your Silverstripe CMS project uses Symfony packages, install packages version compatible with Symfony 6 or you may encounter dependency conflicts.
+Silverstripe CMS relies on many Symfony packages. Silverstripe CMS 6 tracks the Symfony 7 release. If your Silverstripe CMS project uses Symfony packages, install packages version compatible with Symfony 7 or you may encounter dependency conflicts.
 
 ## Related information
 
