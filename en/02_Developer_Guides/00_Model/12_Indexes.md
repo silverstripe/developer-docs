@@ -65,7 +65,7 @@ support the following:
 > [!NOTE]
 > Violating a unique index will throw a [`DuplicateEntryException`](api:SilverStripe\ORM\Connect\DuplicateEntryException) exception which you can catch and handle to produce appropriate validation messages.
 >
-> If the violation happens when calling [`DataObject::write()`](api:SilverStripe\ORM\DataObject::write()), the exception will be caught and a [`ValidationException`](api:SilverStripe\ORM\ValidationException) will be thrown instead. The CMS catches any `ValidationException` and displays them as user friendly validation errors in edit forms.
+> If the violation happens when calling [`DataObject::write()`](api:SilverStripe\ORM\DataObject::write()), the exception will be caught and a [`ValidationException`](api:SilverStripe\Core\Validation\ValidationException) will be thrown instead. The CMS catches any `ValidationException` and displays them as user friendly validation errors in edit forms.
 
 ```php
 // app/src/MyTestObject.php

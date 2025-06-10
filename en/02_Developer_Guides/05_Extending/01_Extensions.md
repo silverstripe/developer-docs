@@ -369,7 +369,7 @@ class MyModel extends DataObject
 
     public function __construct()
     {
-        $this->beforeExtending('populateDefaults', function () {
+        $this->beforeExtending('onAfterPopulateDefaults', function () {
             if (empty($this->MyField)) {
                 $this->MyField = 'Value we want as a default if not specified in $defaults, but set before extensions';
             }
