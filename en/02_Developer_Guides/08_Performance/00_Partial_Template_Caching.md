@@ -1,17 +1,21 @@
 ---
-title: Partial Caching
+title: Partial template caching
 summary: Cache Silverstripe CMS templates to reduce database queries.
 icon: tachometer-alt
 ---
 
-# Partial caching
+# Partial template caching
 
-[Partial template caching](../templates/partial_template_caching) is a feature that allows caching of rendered portions a template.
+Partial template caching is a feature that allows caching of rendered portions of a template so that it does not need to be recomputed on each request.
+
+The [Partial template caching](../templates/partial_template_caching) page in the templates section talks in-depth about how to use partial template caching.
+
+This page will discuss some of the performance considerations.
 
 ## Cache block conditionals
 
 Use conditions whenever possible. The cache tag supports defining conditions via either `if` or `unless` keyword.
-Those are optional, however is highly recommended.
+Those are optional, however are highly recommended.
 
 > [!WARNING]
 > Avoid performing heavy computations in conditionals, as they are evaluated for every template rendering.
@@ -34,7 +38,9 @@ To cache the contents of a page for all anonymous users, but dynamically calcula
 <% cached unless $CurrentUser %>
 ```
 
-## Aggregates
+## Cache invalidation strategies
+
+### Aggregates based invalidation {#aggregates}
 
 Sometimes you may want to invalidate cache when any object in a set changes, or when objects in a relationship
 change. To do this, you may use [DataList](api:SilverStripe\ORM\DataList) aggregate methods (which we call Aggregates).
@@ -72,7 +78,7 @@ The cache for this will update whenever a page is added, removed or edited.
 > [!WARNING]
 > Be careful using aggregates. Remember that the database is usually one of the performance bottlenecks.
 > Keep in mind that every key of every cached block is recalculated for every template render, regardless of caching
-> result. Aggregating SQL queries are usually produce more load on the database than simple select queries,
+> result. Aggregating SQL queries usually produce more load on the database than simple select queries,
 > especially if you query records by Primary Key or join tables using database indices properly.
 >
 > Sometimes it may be cheaper to not cache altogether, rather than cache a block using a bunch of heavy aggregating SQL
@@ -106,7 +112,7 @@ The cache for this will update whenever a page is added, removed or edited.
 > [controller method](../templates/partial_template_caching/#cache-key-calculated-in-controller).
 > [Object Caching](../templates/caching/#object-caching) only works for single variables and not for chained expressions.
 
-## Purposely stale data
+### Time based invalidation
 
 In some situations it's more important to be fast than to always be showing the latest data. By constructing the cache
 key to invalidate less often than the data updates you can ensure rendering time is constant no matter how often the
@@ -119,7 +125,7 @@ For instance, if we show some blog statistics, but are happy having them be slig
 ```
 
 which will invalidate after the cache lifetime expires. If you need more control than that (cache lifetime is
-configurable only on a site-wide basis), you could add a special function to your controller:
+[configurable only on a site-wide basis](/developer_guides/templates/partial_template_caching/#cache-storage)), you could add a special function to your controller:
 
 ```php
 namespace App\Model;
@@ -149,7 +155,7 @@ and then use it in the cache key
 The template engine uses [Injector](../extending/injector) service `Psr\SimpleCache\CacheInterface.cacheblock` as
 caching backend. The default definition of that service is very conservative and relies on the server filesystem.
 This is the most common denominator for most of the applications out there. However,
-this is not the most robust neither performant cache implementation. If you have a better solution
+this is not the most robust nor performant cache implementation. If you have a better solution
 available on your platform, you should consider tuning that setting for your application.
 All you need to do to swap the cache backend for partial template cache blocks is to redefine this service for the Injector.
 
@@ -171,5 +177,5 @@ SilverStripe\Core\Injector\Injector:
 
 > [!WARNING]
 > The default filesystem cache backend does not support auto cleanup of the residual files with expired cache records.
-> If your project relies on Template Caching heavily (e.g. thousands of cache records daily), you may want to keep en eye on the
+> If your project relies on Template Caching heavily (e.g. thousands of cache records daily), you may want to keep an eye on the
 > filesystem storage. Sooner or later its capacity may be exhausted.

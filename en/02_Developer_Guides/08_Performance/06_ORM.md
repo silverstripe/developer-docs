@@ -48,6 +48,9 @@ SilverStripe\ORM\Connect\DBSchemaManager:
   check_and_repair_on_build: false
 ```
 
+> [!WARNING]
+> Excluding models from database checks can lead to undetected data corruption or other issues. Only exclude models if you are certain of what you are doing.
+
 You can always manually trigger a check and repair (e.g. in a [`BuildTask`](api:SilverStripe/Dev/BuildTask)) by calling [`DB::check_and_repair_table()`](api:SilverStripe\ORM\DB::check_and_repair_table()). This ignores the above configuration.
 
 ## Changing `ClassName` column from enum to varchar {#classname-varchar}
@@ -72,3 +75,12 @@ SilverStripe\ORM\FieldType\DBPolymorphicForeignKey:
   composite_db:
     Class: "DBClassNameVarchar('SilverStripe\\ORM\\DataObject', ['index' => false])"
 ```
+
+## Making raw SQL queries {#raw-sql}
+
+If find the ORM is making needlessly inefficient SQL queries for a particular use case, then you can use raw SQL.
+
+> [!WARNING]
+> Using raw SQL queries can make your code less more difficult to maintain. Only use raw SQL when the ORM is a clear bottleneck.
+
+Refer to the [raw SQL](/developer_guides/model/data_model_and_orm/#raw-sql) section for details about how to make raw SQL queries.

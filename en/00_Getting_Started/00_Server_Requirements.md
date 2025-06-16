@@ -22,7 +22,9 @@ Use [phpinfo()](https://php.net/manual/en/function.phpinfo.php) to inspect your 
 
 Silverstripe CMS tracks the official [PHP release support timeline](https://www.php.net/supported-versions.php). When a PHP version reaches end-of-life, Silverstripe CMS drops support for it in the next minor release.
 
-You also need to install [Composer 2](https://getcomposer.org/).
+You need to install [Composer 2](https://getcomposer.org/).
+
+See the [performance section](/developer_guides/performance/) for suggestions that will help improve performance of your project.
 
 ## Database
 
