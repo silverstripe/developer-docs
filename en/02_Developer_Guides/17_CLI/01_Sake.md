@@ -102,3 +102,20 @@ Sake doesn't use your project's routing and controllers for normal execution. Ho
 ```bash
 sake navigate about-us/teams
 ```
+
+## Accessing sake from outside a command {#sake-injector}
+
+When executing commands via the Sake CLI application, both the [`Sake`](api:SilverStripe\Cli\Sake) instance and the `Symfony\Component\Console\Command\Command` instance are added to the dependency injector.
+
+This allows you to access both the application itself and the current command from anywhere in your code execution chain:
+
+```php
+use SilverStripe\Cli\Sake;
+use SilverStripe\Core\Injector\Injector;
+use Symfony\Component\Console\Command\Command;
+
+$sake = Injector::inst()->get(Sake::class);
+$command = Injector::inst()->get(Command::class);
+```
+
+This mirrors the way that the [`HTTPRequest`](api:SilverStripe\Control\HTTPRequest) is added to the injector whenever an HTTP request is being processed.
