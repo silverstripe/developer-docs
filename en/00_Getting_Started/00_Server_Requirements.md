@@ -79,7 +79,7 @@ also needs write access for the webserver user to the following locations:
 
 - `public/assets/`: Used by the CMS and other logic to [store uploads](/developer_guides/files/file_storage)
 - `TEMP_PATH`: Temporary file storage used for the default filesystem-based cache adapters in
-  [Manifests](/developer_guides/execution_pipeline/manifests), [Object Caching](/developer_guides/performance/caching)
+  [Manifests](/developer_guides/execution_pipeline/manifests), [Object Caching](/developer_guides/performance/object_caching)
   and [Partial Template Caching](/developer_guides/templates/partial_template_caching).
   See [Environment Management](/getting_started/environment_management).
 
@@ -209,11 +209,11 @@ See [silverstripe/vendor-plugin](https://github.com/silverstripe/vendor-plugin) 
 
 ### Caches
 
-Silverstripe CMS relies on various [caches](/developer_guides/performance/caching/)
+Silverstripe CMS relies on various [caches](/developer_guides/performance/object_caching/)
 to achieve performant responses. By default, those caches are stored in a temporary filesystem folder, and are not
 shared between multiple server instances.
 
-No in-memory cache is used by default. To improve performance, we recommend [configuring an in-memory cache](/developer_guides/performance/caching/#adapters) such as Redis or Memcached.
+No in-memory cache is used by default. To improve performance, we recommend [configuring an in-memory cache](/developer_guides/performance/object_caching/#adapters) such as Redis or Memcached.
 
 While cache objects can expire, when using filesystem caching the files are not actively pruned. For long-lived server
 instances, this can become a capacity issue over time - see
