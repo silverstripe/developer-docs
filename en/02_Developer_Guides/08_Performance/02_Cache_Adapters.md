@@ -6,20 +6,30 @@ icon: tachometer-alt
 
 # Cache adapters
 
-We use the `smyfony/cache` library which supports various [cache adapters](https://github.com/symfony/cache/tree/6.1/Adapter).
+Cache adapters determine how cached data is stored and retrieved. Choosing the right adapter can significantly impact your application's performance.
+
+We use the `symfony/cache` library which supports various [cache adapters](https://github.com/symfony/cache/tree/6.1/Adapter).
 
 Silverstripe CMS tries to provide a sensible default cache implementation for your system
 through the [`DefaultCacheFactory`](api:SilverStripe\Core\Cache\DefaultCacheFactory) implementation.
 
+The `DefaultCacheFactory` chooses:
+
 - `PhpFilesAdapter` (PHP with [opcache](https://php.net/manual/en/book.opcache.php) enabled).
-    This cache has relatively low [memory defaults](https://php.net/manual/en/opcache.configuration.php#ini.opcache.memory-consumption).
-    We recommend increasing it for large applications, or enabling the
-    [`file_cache` fallback](https://php.net/manual/en/opcache.configuration.php#ini.opcache.file-cache).
-    You must have [`opcache.enable_cli`](https://www.php.net/manual/en/opcache.configuration.php#ini.opcache.enable-cli) set to `true`
-    to use this cache adapter. This is so that your cache is shared between CLI and the webserver.
+  This cache has relatively low [memory defaults](https://php.net/manual/en/opcache.configuration.php#ini.opcache.memory-consumption).
+  We recommend increasing it for large applications, or enabling the
+  [`file_cache` fallback](https://php.net/manual/en/opcache.configuration.php#ini.opcache.file-cache).
+  You must have [`opcache.enable_cli`](https://www.php.net/manual/en/opcache.configuration.php#ini.opcache.enable-cli) set to `true`
+  to use this cache adapter. This is so that your cache is shared between CLI and the webserver.
 - `FilesystemAdapter` if the above isn't available
 
 ## Adding an in-memory cache adapter
+
+The in-memory cache adapters provided by default are:
+
+- Memcached
+- Redis
+- APCu
 
 The cache adapter needs to be available before configuration has been loaded, so we use an environment variable to determine which class will be used to instantiate the in-memory cache adapter. The class must be referenced using its Fully Qualified Class Name (including namespace), and must be an instance of [`InMemoryCacheFactory`](api:SilverStripe\Core\Cache\InMemoryCacheFactory).
 

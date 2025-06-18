@@ -7,9 +7,12 @@ icon: tachometer-alt
 
 ## Overview
 
-The framework uses caches to store infrequently changing values.
-By default, the storage mechanism chooses the most performant adapter available
-(PHP opcache, APC, or filesystem). Other cache backends can be configured.
+Object caching stores infrequently changing values to improve performance.
+
+By default, the storage mechanism chooses the most performant filesystem adapter available
+(PHP opcache, or filesystem) but does not use in-memory cache unless you configure it. Other cache backends can be configured.
+
+Object caching is useful for situations where fetching or generating data can take a long time, such as expensive database queries or API calls to external services.
 
 The most common caches are manifests of various resources:
 
@@ -32,11 +35,10 @@ For long-lived server instances, this can become a capacity issue over time - se
 
 ## Configuration
 
-We are using the [PSR-16](https://www.php-fig.org/psr/psr-16/) standard ("SimpleCache")
+We use the [PSR-16](https://www.php-fig.org/psr/psr-16/) standard ("SimpleCache")
 for caching, through the [symfony/cache](https://symfony.com/doc/current/components/cache.html) library.
 
-Note that this library describes usage of [PSR-6](https://www.php-fig.org/psr/psr-6/) by default,
-though Silverstripe wraps these in a PSR-16 interface using the [Psr16Cache](https://github.com/symfony/cache/blob/6.1/Psr16Cache.php) class.
+Silverstripe provides a PSR-16 interface via the [`Psr16Cache`](https://github.com/symfony/cache/blob/6.1/Psr16Cache.php) class which wraps `symfony/cache`'s [PSR-6](https://www.php-fig.org/psr/psr-6/) compliant adapters.
 
 Cache objects are configured via YAML
 and Silverstripe CMS's [dependency injection](/developer_guides/extending/injector) system.
@@ -56,7 +58,7 @@ SilverStripe\Core\Injector\Injector:
 > Please read the [versioned cache segmentation](#versioned-cache-segmentation) section for more information.
 
 Cache objects are instantiated through a [CacheFactory](api:SilverStripe\Core\Cache\CacheFactory),
-which determines which cache adapter is used (see [cache adapters](cache-adapters) for details).
+which determines which cache adapter is used (see [cache adapters](cache_adapters) for details).
 This factory allows us you to globally define an adapter for all cache instances.
 
 ```php
