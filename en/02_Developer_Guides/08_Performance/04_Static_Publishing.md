@@ -7,13 +7,14 @@ summary: Export web pages as static HTML
 
 Static publishing is the process of exporting website pages as static HTML files which are then served directly. This means that page content does not need to be recomputed on each request. This can have the following benefits:
 
-- Static HTML files load much faster than dynamically generated pages as they don't require any server-side processing.
-- Static publishing reduces the load on the server, as it doesn't need to connect to the database or render templates for each request.
-- Static publishing can lower hosting costs because there is less need for server resources.
+- Faster load times: Static HTML files load much faster than dynamically generated pages.
+- Reduced server load: No database connection or template rendering is required for each request.
+- Lower hosting costs: Less server resources are needed to serve statically cached content.
 
 By publishing the page as HTML it's possible to run Silverstripe CMS from behind a corporate firewall, on a low performance server and a large amount of traffic without expensive hardware.
 
-On the flip side, static publishing is more complex than simply dynamically regenerating page content on every request because it requires a separate process to generate and manage the static files. Also, if static publishing happens on demand (i.e. on page save/publish) rather than on a queue, then speed of CMS operations may degrade.
+> [!WARNING]
+> Static publishing is more complex than regenerating page content every request because it requires a separate process to generate and manage the static files. Also, if static publishing happens on demand (i.e. on page save/publish) rather than on a queue, then speed of CMS operations may degrade.
 
 Static publishing is available through the [silverstripe/staticpublishqueue](https://github.com/silverstripe/silverstripe-staticpublishqueue) module.
 

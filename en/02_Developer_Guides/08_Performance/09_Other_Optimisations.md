@@ -47,6 +47,58 @@ Here are some strategies for cache warming:
 - Use a cron job to periodically regenerate cache entries.
 - Warm the cache whenever data is changed or added, such as by implementing the `onAfterWrite()` extension hook on your `DataObject`.
 
+For example, to use a [`BuildTask`](api:SilverStripe\Dev\BuildTask) to warm the cache for popular pages:
+
+```php
+namespace App\BuildTasks;
+
+use GuzzleHttp\Client;
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\BuildTask;
+use SilverStripe\PolyExecution\PolyOutput;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+
+/**
+ * Make HTTP requests to popular pages on the website to warm any caches
+ * This would need to be run after a deployment has fully completed to ensure that
+ * any new assets such as JavaScript bundles are cached in intermediatory caches such as CDNs.
+ */
+class CacheWarmerTask extends BuildTask
+{
+    protected static string $commandName = 'page-cache-warmer';
+
+    protected string $title = 'Cache warmer';
+
+    protected static string $description = 'Warms the cache for the most popular pages.';
+
+    private const POPULAR_PAGES = [
+        'home',
+        'about-us',
+        'contact-us',
+    ];
+
+    protected function execute(InputInterface $input, PolyOutput $output): int
+    {
+        $pages = SiteTree::get()->filter([
+            'URLSegment' => CacheWarmerTask::POPULAR_PAGES,
+        ]);
+        foreach ($pages as $page) {
+            $guzzle = Injector::inst()->get(Client::class);
+            $url = $page->AbsoluteLink();
+            $response = $guzzle->get($url);
+            if ($response->getStatusCode() == 200) {
+                $output->writeln("Warmed caches for $url");
+            } else {
+                $output->writeln("<error>Error when trying to warm cache for $url</error>");
+            }
+        }
+        return Command::SUCCESS;
+    }
+}
+```
+
 ## Enable opcode cache
 
 Enable an [opcode](https://en.wikipedia.org/wiki/Opcode) cache such as [OPcache for PHP]([OPcache](https://www.php.net/manual/en/book.opcache.php)) to increase the performance of PHP code.
@@ -61,7 +113,7 @@ You can use a third-party Content Delivery Network (CDN) to cache and serve stat
 - Decreases traffic to your main server, improving its performance.
 - Can provide additional security features like DDoS protection
 
-CDNs will typically respect existing [HTTP cache headers](http-cache-headers) which you can configure within your application.
+CDNs will typically respect existing [HTTP cache headers](http_cache_headers) which you can configure within your application.
 
 ## Use a reverse proxy
 

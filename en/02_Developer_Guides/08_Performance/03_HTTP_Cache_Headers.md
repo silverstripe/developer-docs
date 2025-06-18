@@ -6,10 +6,9 @@ icon: tachometer-alt
 
 # HTTP cache headers
 
-By default, Silverstripe CMS sends headers which signal to HTTP caches
-that the response should be not considered cacheable.
-HTTP caches can either be intermediary caches (e.g. CDNs and proxies), or clients (e.g. browsers).
-The cache headers sent are `Cache-Control: no-cache, must-revalidate`;
+HTTP cache headers instruct HTTP caches (e.g. browsers, CDNs, and proxies) how to store and serve responses. Proper configuration can significantly improve website performance.
+
+By default, Silverstripe CMS sends headers that prevent caching: `Cache-Control: no-cache, must-revalidate`.
 
 > [!WARNING]
 > HTTP caching can be a great way to speed up your website, but needs to be properly applied.
@@ -19,10 +18,7 @@ The cache headers sent are `Cache-Control: no-cache, must-revalidate`;
 
 ### Overview
 
-In order to support developers in making safe choices around HTTP caching,
-we're using a `HTTPCacheControlMiddleware` class to control if a response
-should be considered public or private. This is an abstraction on the
-`HTTPResponse->addHeader()` low-level API.
+Silverstripe CMS provides `HTTPCacheControlMiddleware` to help developers manage HTTP cache headers safely. This class helps prevent accidental caching of private content such as draft content or member specific content. It's an abstraction on top of the `HTTPResponse->addHeader()` low-level API.
 
 The `HTTPCacheControlMiddleware` API makes it easier to express your caching preferences
 without running the risk of overriding essential core safety measures.
@@ -42,44 +38,37 @@ The [`HTTPCacheControlMiddleware`](api:SilverStripe\Control\Middleware\HTTPCache
 (deprecated) caching methods in the `HTTP` helper class.
 It comes with methods which let developers safely interact with the `Cache-Control` header.
 
-### DisableCache()
+### `publicCache()`
 
-Simple way to set cache control header to a non-cacheable state.
-Use this method over `privateCache()` if you are unsure about caching details.
-Takes precedence over unforced `enableCache()`, `privateCache()` or `publicCache()` calls.
+Sets cache control headers to a cacheable state. Will use the `public` directive and remove the `private` if present as that is a contradictory directive.
 
-Removes all state and replaces it with `no-cache, no-store, must-revalidate`. Although `no-store` is sufficient
-the others are added under [recommendation from Mozilla](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#Examples)
+### `privateCache()`
 
-Does not set `private` directive, use `privateCache()` if this is explicitly required
-([details](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#public_vs_private))
+Sets cache control headers to a mostly non-cacheable state and uses the `private` directive.
 
-### EnableCache()
-
-Simple way to set cache control header to a cacheable state.
-Use this method over `publicCache()` if you are unsure about caching details.
-
-Removes the `no-store` directive unless a `max-age` is set; other directives will remain in place.
-Use alongside `setMaxAge()` to activate caching.
-
-Does not set `public` directive. Usually, `setMaxAge()` is sufficient. Use `publicCache()` if this is explicitly required
-([details](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#public_vs_private))
-
-### PrivateCache()
-
-Advanced way to set cache control header to a non-cacheable state.
 Indicates that the response is intended for a single user and must not be stored by a shared cache.
+
 A private cache (e.g. Web Browser) may store the response. Also removes `public` as this is a contradictory directive.
 
 > [!WARNING]
 > Private caching will cache at the client level, not at the a user level. While it stops shared servers (like CDNs) from caching your personalized data, it doesn't stop other people using the same browser from seeing each others cached content.
 > For example, if multiple family members share a computer and browser, one person might accidentally see cached information meant for another family member.
 
-### PublicCache()
+Use `disableCache()` instead if you are unsure about caching details. Takes precedence over unforced `enableCache()`, `privateCache()` or `publicCache()` calls.
 
-Advanced way to set cache control header to a cacheable state.
-Indicates that the response may be cached by any cache (e.g. CDNs, Proxies, Web browsers).
-Also removes `private` as this is a contradictory directive
+### `enableCache()`
+
+Sets cache control headers to a cacheable state, though without the `public` directive that `publicCache()` will set.
+
+Removes the `no-store` directive unless a `max-age` is set; other directives will remain in place. Use alongside `setMaxAge()` to activate caching.
+
+Unlike `publicCache()`, does not set `public` directive. Usually, `setMaxAge()` is sufficient. Use `publicCache()` if this is explicitly required.
+
+### `disableCache()`
+
+Sets cache control headers to a non-cacheable state.
+
+Removes all state and replaces it with `no-cache, no-store, must-revalidate`.
 
 ### Priority
 
@@ -253,3 +242,15 @@ SilverStripe\Control\Middleware\HTTPCacheControlMiddleware:
   defaultState: 'enabled'
   defaultForcingLevel: 0
 ```
+
+## Debugging HTTP cache headers
+
+You can use browser developer tools or command-line tools like `curl` to inspect HTTP cache headers and verify that they are configured correctly.
+
+For example, using `curl`:
+
+```bash
+curl -I https://example.com/mypage
+```
+
+The output will show the HTTP headers, including `Cache-Control`, `Vary`, and `Age`.
