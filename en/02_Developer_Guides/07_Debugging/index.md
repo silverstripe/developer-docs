@@ -11,11 +11,6 @@ built-in helpers for dealing with application errors.
 
 [CHILDREN]
 
-## Performance
-
-See the [Profiling](../performance/profiling) documentation for more information on profiling Silverstripe CMS to track down
-bottle-necks and identify slow moving parts of your application chain.
-
 ## Debugging utilities
 
 The [Debug](api:SilverStripe\Dev\Debug) class contains a number of static utility methods for more advanced debugging.

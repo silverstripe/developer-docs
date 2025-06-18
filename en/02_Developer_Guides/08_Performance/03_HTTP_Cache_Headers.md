@@ -11,10 +11,9 @@ that the response should be not considered cacheable.
 HTTP caches can either be intermediary caches (e.g. CDNs and proxies), or clients (e.g. browsers).
 The cache headers sent are `Cache-Control: no-cache, must-revalidate`;
 
-HTTP caching can be a great way to speed up your website, but needs to be properly applied.
-Getting it wrong can accidentally expose draft pages or other protected content.
-The [Google Web Fundamentals](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#public_vs_private)
-are a great way to learn about HTTP caching.
+> [!WARNING]
+> HTTP caching can be a great way to speed up your website, but needs to be properly applied.
+> Getting it wrong can accidentally expose draft pages or other protected content.
 
 ## Cache control headers
 
@@ -23,7 +22,7 @@ are a great way to learn about HTTP caching.
 In order to support developers in making safe choices around HTTP caching,
 we're using a `HTTPCacheControlMiddleware` class to control if a response
 should be considered public or private. This is an abstraction on the
-`HTTPResponse->addHeader()` lowlevel API.
+`HTTPResponse->addHeader()` low-level API.
 
 The `HTTPCacheControlMiddleware` API makes it easier to express your caching preferences
 without running the risk of overriding essential core safety measures.
@@ -72,6 +71,10 @@ Advanced way to set cache control header to a non-cacheable state.
 Indicates that the response is intended for a single user and must not be stored by a shared cache.
 A private cache (e.g. Web Browser) may store the response. Also removes `public` as this is a contradictory directive.
 
+> [!WARNING]
+> Private caching will cache at the client level, not at the a user level. While it stops shared servers (like CDNs) from caching your personalized data, it doesn't stop other people using the same browser from seeing each others cached content.
+> For example, if multiple family members share a computer and browser, one person might accidentally see cached information meant for another family member.
+
 ### PublicCache()
 
 Advanced way to set cache control header to a cacheable state.
@@ -102,7 +105,6 @@ Enable caching for all page content (through `PageController`).
 
 ```php
 namespace {
-
     use SilverStripe\CMS\Controllers\ContentController;
     use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
 
@@ -111,9 +113,9 @@ namespace {
         public function init()
         {
             HTTPCacheControlMiddleware::singleton()
-            ->enableCache()
-            // 1 minute
-            ->setMaxAge(60);
+                ->enableCache()
+                // 1 minute
+                ->setMaxAge(60);
 
             parent::init();
         }
@@ -134,7 +136,6 @@ you can disable caching either on a controller level
 
 ```php
 namespace {
-
     use SilverStripe\CMS\Controllers\ContentController;
     use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
 
@@ -143,7 +144,7 @@ namespace {
         public function myprivateaction($request)
         {
             HTTPCacheControlMiddleware::singleton()
-            ->disableCache();
+                ->disableCache();
 
             return $this->myPrivateResponse();
         }
@@ -171,7 +172,6 @@ when they're redisplayed after a validation error.
 
 ```php
 namespace {
-
     use SilverStripe\CMS\Controllers\ContentController;
     use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
 
@@ -180,10 +180,10 @@ namespace {
         public function init()
         {
             HTTPCacheControlMiddleware::singleton()
-            // DANGER ZONE
-            ->enableCache($force = true)
-            // 1 minute
-            ->setMaxAge(60);
+                // DANGER ZONE
+                ->enableCache($force = true)
+                // 1 minute
+                ->setMaxAge(60);
 
             parent::init();
         }
