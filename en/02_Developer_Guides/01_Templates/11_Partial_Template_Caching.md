@@ -7,7 +7,7 @@ icon: tags
 # Partial template caching
 
 Partial template caching is a feature that allows caching of rendered portions of templates. Cached content
-is fetched from a [cache backend](../performance/caching), instead of being regenerated for every request.
+is fetched from a [cache backend](../performance/object_caching), instead of being regenerated for every request.
 
 > [!WARNING]
 > Accidental caching of sensitive data can lead to security vulnerabilities. Notable examples include user-specific data, CSRF tokens, and form submissions.
