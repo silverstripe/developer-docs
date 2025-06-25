@@ -5,7 +5,11 @@ summary: Using read-only database replicas to improve performance
 
 # Read-only database replicas
 
-Read-only replicas are additional databases that are used to offload read queries from the primary database, which can improve performance by reducing the load on the primary database.
+Read-only replicas are additional databases that are used to offload read queries from the primary database, which can improve performance by reducing the load on the primary database. This is particularly useful for high-traffic websites with a large number of read operations.
+
+Read-only replicas allow you to scale your database infrastructure horizontally to handle increased traffic. Also, if the primary database fails, read-only replicas can continue to serve read requests, ensuring that your website remains available.
+
+## Configuration
 
 Read-only replicas are configured by adding environment variables that match the primary environment variable and suffixing `_REPLICA_<replica-number>` to the variable name, where `<replica_number>` is the replica number padding by a zero if it's less than 10, for example `SS_DATABASE_SERVER` becomes `SS_DATABASE_SERVER_REPLICA_01` for the first replica, or `SS_DATABASE_SERVER_REPLICA_12` for the 12th replica. Replias must be numbered sequentially starting from `01`.
 
@@ -63,3 +67,9 @@ DB::withPrimary(function () {
 
 // Code here can use a replica
 ```
+
+## Monitoring replica lag
+
+Replica lag is the delay between changes on the primary database being copied to the replicas. It's important to monitor replica lag to ensure data consistency.
+
+Specific tools to monitor replica lag will depend on the database system being used and your hosting service.

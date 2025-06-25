@@ -5,9 +5,20 @@ summary: Configuration and tips for improving ORM performance
 
 # ORM performance
 
+## Identifying ORM performance bottlenecks
+
+ORM performance issues can arise from various factors, including:
+
+- Inefficient database queries
+- Lack of proper indexes
+- Large datasets
+- Complex relationships
+
+You can use the [`showqueries` variable tool](/developer_guides/debugging/url_variable_tools/#database) on a dev environment to identify slow running database queries.
+
 ## Indexes
 
-You can define indexes for your ORM queries using the `$indexes` configuration property in your `DataObject` subclasses. See the [Indexes](/developer_guides/model/indexes) section for more information.
+Adding indexes to frequently queried fields can significantly improve performance. You can define indexes for your ORM queries using the `$indexes` configuration property in your `DataObject` subclasses. See the [Indexes](/developer_guides/model/indexes) section for more information.
 
 ### `TreeDropdownField` `SearchFilter` configuration {#treedropdownfield}
 
@@ -21,7 +32,7 @@ SilverStripe\Forms\TreeDropdownField:
 ```
 
 > [!TIP]
-> A very common use of `TreeDropdownField` is the "Insert Link" feature used by supported HTML editors. Setting this configuration to use another filter and adding an index on `Title` and `MenuTitle` for [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) can significantly improve performance.
+> A common use of `TreeDropdownField` is the "Insert Link" feature used by supported HTML editors. Setting this configuration to use another filter and adding an index on `Title` and `MenuTitle` for [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) can significantly improve performance.
 
 See [SearchFilter Modifiers](/developer_guides/model/searchfilters/) for more information about search filters.
 
@@ -81,6 +92,6 @@ SilverStripe\ORM\FieldType\DBPolymorphicForeignKey:
 If find the ORM is making needlessly inefficient SQL queries for a particular use case, then you can use raw SQL.
 
 > [!WARNING]
-> Using raw SQL queries can make your code less more difficult to maintain. Only use raw SQL when the ORM is a clear bottleneck.
+> Using raw SQL queries can make your code less more difficult to maintain. Only use raw SQL when the ORM is a clear bottleneck. Consider carefully if this approach is needed.
 
 Refer to the [raw SQL](/developer_guides/model/data_model_and_orm/#raw-sql) section for details about how to make raw SQL queries.

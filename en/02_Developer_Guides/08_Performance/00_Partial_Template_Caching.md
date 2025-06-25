@@ -6,33 +6,31 @@ icon: tachometer-alt
 
 # Partial template caching
 
-Partial template caching is a feature that allows caching of rendered portions of a template so that it does not need to be recomputed on each request.
+Partial template caching allows you to cache rendered portions of a template, so that it does not need to be recomputed on each request.
 
-The [Partial template caching](../templates/partial_template_caching) page in the templates section talks in-depth about how to use partial template caching.
+See [Partial template caching](../templates/partial_template_caching) in the templates section for detailed usage instructions.
 
-This page will discuss some of the performance considerations.
+This page discusses some of the performance considerations.
 
 ## Cache block conditionals
 
-Use conditions whenever possible. The cache tag supports defining conditions via either `if` or `unless` keyword.
-Those are optional, however are highly recommended.
+Use conditions whenever possible. The cache tag supports optional `if` or `unless` conditions, which are highly recommended.
 
 > [!WARNING]
-> Avoid performing heavy computations in conditionals, as they are evaluated for every template rendering.
+> Avoid heavy computations in conditionals, as they are evaluated every time the template needs to be rendered.
 
 If you cache without conditions:
 
-- your cache backend will always be queried for the cache block (on every template render)
-- your cache may be cluttered with heaps of redundant and useless data (especially the default filesystem backend)
+- The cache backend will be queried for the cache block on every template render even if it's not needed.
+- Your cache may be cluttered with redundant data, especially with the default filesystem backend.
 
-As an example, if you use `$DataObject->ID` as a key for the block, consider adding a condition that ID is greater than zero:
+For example, if you use `$DataObject->ID` as a key for the block, consider adding a condition that the ID is greater than zero:
 
 ```ss
 <% cached $MenuItem.ID if $MenuItem.ID > 0 %>
 ```
 
-To cache the contents of a page for all anonymous users, but dynamically calculate the contents for logged in members,
- use something like:
+To cache content for anonymous users, but dynamically calculate it for logged-in members, use:
 
 ```ss
 <% cached unless $CurrentUser %>
@@ -40,24 +38,23 @@ To cache the contents of a page for all anonymous users, but dynamically calcula
 
 ## Cache invalidation strategies
 
-### Aggregates based invalidation {#aggregates}
+### Aggregates-based invalidation {#aggregates}
 
 Sometimes you may want to invalidate cache when any object in a set changes, or when objects in a relationship
 change. To do this, you may use [DataList](api:SilverStripe\ORM\DataList) aggregate methods (which we call Aggregates).
 These perform SQL aggregate queries on sets of [DataObject](api:SilverStripe\ORM\DataObject)s.
 
-Here are some useful methods of the [DataList](api:SilverStripe\ORM\DataList) class:
+Some useful methods of the [`DataList`](api:SilverStripe\ORM\DataList) class for this purpose include:
 
-- `int count()` : Return the number of items in this DataList
-- `mixed max(string $fieldName)` : Return the maximum value of the given field in this DataList
-- `mixed min(string $fieldName)` : Return the minimum value of the given field in this DataList
-- `mixed avg(string $fieldName)` : Return the average value of the given field in this DataList
-- `mixed sum(string $fieldName)` : Return the sum of the values of the given field in this DataList
+- `int count()`: Returns the number of items in this DataList.
+- `mixed max(string $fieldName)`: Returns the maximum value of the given field in this DataList.
+- `mixed min(string $fieldName)`: Returns the minimum value of the given field in this DataList.
+- `mixed avg(string $fieldName)`: Returns the average value of the given field in this DataList.
+- `mixed sum(string $fieldName)`: Returns the sum of the values of the given field in this DataList.
 
-To construct a `DataList` over a `DataObject`, we have a global template variable called `$List`.
+To construct a `DataList` over a `DataObject`, you can use the global template variable `$List`.
 
-For example, if we have a menu, we may want that menu to update whenever *any* page is edited, but would like to cache it
-otherwise. By using aggregates, we do that like this:
+For example, to cache a menu but invalidate that cache whenever any page is edited:
 
 ```ss
 <% cached
@@ -70,21 +67,16 @@ otherwise. By using aggregates, we do that like this:
 > [!NOTE]
 > The use of the fully qualified classname is necessary.
 >
-> The use of both `.max('LastEdited')` and `.count()` makes sure we check for any object
-> edited or deleted since the cache was last built.
+> Using both `.max('LastEdited')` and `.count()` ensures we check for any object edited or deleted since the cache was last built.
 
-The cache for this will update whenever a page is added, removed or edited.
+In this example, the cache will update whenever a page is added, removed or edited.
 
 > [!WARNING]
-> Be careful using aggregates. Remember that the database is usually one of the performance bottlenecks.
-> Keep in mind that every key of every cached block is recalculated for every template render, regardless of caching
-> result. Aggregating SQL queries usually produce more load on the database than simple select queries,
-> especially if you query records by Primary Key or join tables using database indices properly.
+> Be careful when using aggregates. The database is often a performance bottleneck. Keep in mind that every key of every cached block is recalculated for every template render, regardless of caching result. Aggregating SQL queries can put more load on the database than simple select queries, especially if you query records by Primary Key or join tables using database indices properly.
 >
-> Sometimes it may be cheaper to not cache altogether, rather than cache a block using a bunch of heavy aggregating SQL
-> queries.
+> Consider whether not caching at all is cheaper than caching a block using heavy aggregating SQL queries.
 >
-> Let us consider two versions:
+> Consider the following two versions:
 >
 > ```ss
 > # Version 1 (bad)
@@ -112,20 +104,17 @@ The cache for this will update whenever a page is added, removed or edited.
 > [controller method](../templates/partial_template_caching/#cache-key-calculated-in-controller).
 > [Object Caching](../templates/caching/#object-caching) only works for single variables and not for chained expressions.
 
-### Time based invalidation
+### Time-based invalidation
 
-In some situations it's more important to be fast than to always be showing the latest data. By constructing the cache
-key to invalidate less often than the data updates you can ensure rendering time is constant no matter how often the
-data updates.
+In some situations it's more important to be fast than to always be showing the latest data. One way to achieve this is to construct the cache key to invalidate less often than the data updates. This ensures constant rendering time, regardless of how often the data updates.
 
-For instance, if we show some blog statistics, but are happy having them be slightly stale, we could do
+For instance, if you show blog statistics, but are happy with slightly stale data:
 
 ```ss
 <% cached 'blogstatistics', $Blog.ID %>
 ```
 
-which will invalidate after the cache lifetime expires. If you need more control than that (cache lifetime is
-[configurable only on a site-wide basis](/developer_guides/templates/partial_template_caching/#cache-storage)), you could add a special function to your controller:
+This doesn't require any additional SQL queries and will invalidate after the cache lifetime expires. Cache lifetime is [configurable only on a site-wide basis](/developer_guides/templates/partial_template_caching/#cache-storage). For more control, add a function to your controller:
 
 ```php
 namespace App\Model;
@@ -144,7 +133,7 @@ class MyObject extends DataObject
 }
 ```
 
-and then use it in the cache key
+Then use it in the cache key:
 
 ```ss
 <% cached 'blogstatistics', $Blog.ID, $BlogStatisticsCount %>
@@ -152,14 +141,9 @@ and then use it in the cache key
 
 ## Cache backend
 
-The template engine uses [Injector](../extending/injector) service `Psr\SimpleCache\CacheInterface.cacheblock` as
-caching backend. The default definition of that service is very conservative and relies on the server filesystem.
-This is the most common denominator for most of the applications out there. However,
-this is not the most robust nor performant cache implementation. If you have a better solution
-available on your platform, you should consider tuning that setting for your application.
-All you need to do to swap the cache backend for partial template cache blocks is to redefine this service for the Injector.
+The template engine uses [Injector](../extending/injector) service `Psr\SimpleCache\CacheInterface.cacheblock` as its caching backend. The default definition of that service is conservative, and relies on the server filesystem. While this is the most common denominator, it's not the most robust or performant implementation. If you have a better solution available on your platform, you should consider tuning this setting. To swap the cache backend for partial template cache blocks, redefine this service for the Injector.
 
-Here's an example of how it could be done:
+For example:
 
 > [!NOTE]
 > For the below example to work it is necessary to have the Injector service `App\Cache\Service.memcached` defined somewhere in the configs.
@@ -176,6 +160,4 @@ SilverStripe\Core\Injector\Injector:
 ```
 
 > [!WARNING]
-> The default filesystem cache backend does not support auto cleanup of the residual files with expired cache records.
-> If your project relies on Template Caching heavily (e.g. thousands of cache records daily), you may want to keep an eye on the
-> filesystem storage. Sooner or later its capacity may be exhausted.
+> The default filesystem cache backend does not support auto cleanup of the residual files with expired cache records. If your project relies on Template Caching heavily (e.g. thousands of cache records daily), you may want to monitor the filesystem storage. If you don't, its capacity may eventually be exhausted.

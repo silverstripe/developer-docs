@@ -13,7 +13,7 @@ Others store aggregate information like nested configuration graphs.
 
 Manifests are immutable for a given revision of the codebase,
 and hence should be [packaged](/server_requirements#building-packaging-deployment) during deployment.
-[Object Caching](/developer_guides/performance/caching)
+[Object Caching](/developer_guides/performance/object_caching)
 and [Partial Template Caching](/developer_guides/templates/partial_template_caching)
 are examples of mutable caches outside of manifests,
 which need to be generated and expired during runtime.
@@ -25,7 +25,7 @@ This can be customised via `SS_MANIFESTCACHE` environment variable to point to e
 [`CacheFactory`](api:SilverStripe\Core\Cache\CacheFactory) or a class that implements the `CacheInterface`
 interface provided by [php-fig/cache](https://github.com/php-fig/cache).
 
-See [caching](/developer_guides/performance/caching/) for more information about caching, including setting up in-memory cache adapters.
+See [caching](/developer_guides/performance/object_caching/) for more information about caching, including setting up in-memory cache adapters.
 
 ## Traversing the filesystem
 
