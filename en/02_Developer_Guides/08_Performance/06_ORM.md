@@ -5,6 +5,64 @@ summary: Configuration and tips for improving ORM performance
 
 # ORM performance
 
+## Caching database queries
+
+Database queries made using [`DataList`](api:SilverStripe\ORM\DataList) or [`SQLSelect`](api:SilverStripe\ORM\Queries\SQLSelect) can be cached. The cached query result lasts until the end of the request, unless invalidated during that request.
+
+This is useful if you make the same query multiple times in the same request.
+
+> [!WARNING]
+> Caching always comes with an increase in memory usage. Make sure you are aware of the trade offs, and only cache queries which are repeated multiple times in the same request, and are not already cached in other ways.
+
+To enable caching on a `DataList`, call the [`DataList::setUseCache`](api:SilverStripe\ORM\DataList::setUseCache()) method.
+
+```php
+use App\Model\MyDataObject;
+
+$cachedList = MyDataObject::get()->setUseCache(true);
+```
+
+To enable caching on a `SQLSelect`, call the [`SQLSelect::setUseCache`](api:SilverStripe\ORM\Queries\SQLSelect) method.
+
+```php
+use SilverStripe\ORM\Queries\SQLSelect;
+
+$cachedQuery = SQLSelect::create(/*...*/)->setUseCache(true, 'some-namespace');
+```
+
+This is very similar to caching on a `DataList`, except that, because `SQLSelect` doesn't have a specific `DataObject` class it pertains to, you can pass a namespace into the `SQLSelect::setUseCache()` method. This allows you to invalidate the cache for that query and any other queries in the same namespace without affecting any other cached queries.
+
+> [!HINT]
+> When using `SQLSelect` to get data for a specific `DataObject` class, it is good practice to set the namespace for `SQLSelect` cache to be the FQCN of that `DataObject` class.
+> That allows the ORM to invalidate the cache in the same scenarios that similar cache from a `DataList` would be invalidated.
+
+`DataList` caching implicitly uses `SQLSelect` caching under the hood, with the namespace for the cache being the FQCN of the `DataObject` class that list pertains to.
+
+Note that all database queries for a cached `DataList` or `SQLSelect` will be cached. This includes aggregate queries (e.g. `max()` or `avg()`), calling `count()`, paginated queries, etc. The cache key is derived from the SQL of the query that will be sent to the database, so each of these will safely cache their own result separately.
+
+### Invalidating query cache
+
+Queries cached through `DataList` or `SQLSelect` are automatically invalidated in the following scenarios:
+
+- One of the following methods is called on a record of that class or one of its subclasses:
+  - [`write()`](api:SilverStripe\ORM\DataObject::write())
+  - [`delete()`](api:SilverStripe\ORM\DataObject::delete())
+  - [`destroy()`](api:SilverStripe\ORM\DataObject::destroy())
+  - [`flushCache()`](api:SilverStripe\ORM\DataObject::flushCache())
+- One of the following methods is called on a `DataList` that manages that class or one of its subclasses:
+  - [`add()`](api:SilverStripe\ORM\DataList::add())
+  - [`remove()`](api:SilverStripe\ORM\DataList::remove())
+- One of the following static methods is called:
+  - [`DataObject::reset()`](api:SilverStripe\ORM\DataObject::reset())
+  - [`DataObject::flush_and_destroy_cache()`](api:SilverStripe\ORM\DataObject::flush_and_destroy_cache())
+  - [`DataList::reset()`](api:SilverStripe\ORM\DataList::reset())
+  - [`DataList::resetAndDestroyCache()`](api:SilverStripe\ORM\DataList::resetAndDestroyCache())
+
+Queries cached explicitly through `SQLSelect` (i.e. no `DataList` was involved at all) can be invalidated by calling [`SQLSelect::reset()`](api:SilverStripe\ORM\Queries\SQLSelect::reset()).
+
+> [!TIP]
+> You can pass in a class name when calling [`DataObject::reset()`](api:SilverStripe\ORM\DataObject::reset()) or a cache namespace when calling [`SQLSelect::reset()`](api:SilverStripe\ORM\Queries\SQLSelect::reset()) to only invalidate the cache relevant to that class or namespace.
+
 ## Identifying ORM performance bottlenecks
 
 ORM performance issues can arise from various factors, including:

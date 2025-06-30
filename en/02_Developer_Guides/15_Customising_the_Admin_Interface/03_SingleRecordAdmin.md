@@ -25,7 +25,7 @@ class MySettingsAdmin extends SingleRecordAdmin
 }
 ```
 
-This admin section will fetch a record of the `MySettingsModel` class using the [`get_one()`](api:SilverStripe\ORM\DataObject::get_one()) method.
+This admin section will fetch a record of the `MySettingsModel` class using a cached query.
 
 If you don't want the admin section to fetch your record in this way, you can set the [`restrict_to_single_record`](api:SilverStripe\Admin\SingleRecordAdmin->restrict_to_single_record) configuration property to false. In this case you must provide another way for the admin section to know which record to edit. This could be in the form of a separate action on the controller (e.g. `edit/$ID`), or by calling [`setCurrentRecordID()`](api:SilverStripe\Admin\LeftAndMain::setCurrentRecordID()) in the [`init()`](api:SilverStripe\Admin\LeftAndMain::init()) method of the controller.
 
@@ -52,7 +52,7 @@ class MySettingsModel extends DataObject
      */
     public static function currentRecord(): MySettingsModel
     {
-        $record = MySettingsModel::get_one();
+        $record = MySettingsModel::get()->setUseCache(true)->first();
         if (!$record) {
             $record = MySettingsModel::create();
             $record->write(skipValidation: true);
