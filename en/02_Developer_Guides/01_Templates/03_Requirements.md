@@ -173,7 +173,7 @@ Requirements::javascript('<my-module-dir>/javascript/dist/bundle.js', ['provides
 Requirements::javascript('<my-module-dir>/javascript/jquery.js');
 ```
 
-#### JavaScript Options
+#### JavaScript options
 
 You can also use the second argument to add the 'async' and/or 'defer attributes to the script tag generated:
 
