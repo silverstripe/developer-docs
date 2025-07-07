@@ -144,7 +144,7 @@ public function requireDefaultRecords()
     parent::requireDefaultRecords();
 
     // Make some record only if we're in dev mode and we don't have any of the current class yet.
-    if (Director::isDev() && !DataObject::get_one(static::class)) {
+    if (Director::isDev() && !DataObject::get(static::class)->first()) {
         $record = static::create(['Date' => date('Y-m-d')]);
         $record->write();
     }

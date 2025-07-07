@@ -164,11 +164,7 @@ $lastPlayer = $players->last();
 
 // returns a single `Player` record that has the ID of 2.
 $player = Player::get()->byID(2);
-$player = Player::get_by_id(2);
 ```
-
-> [!NOTE]
-> `DataObject::get()->byID()` and `DataObject::get_by_id()` achieve similar results, though the object returned by `DataObject::get_by_id()` is cached against a `static` property within `DataObject`.
 
 The ORM uses a "fluent" syntax, where you specify a query by chaining together different methods.  Two common methods
 are `filter()` and `sort()`:

@@ -316,7 +316,7 @@ class MyAdmin extends ModelAdmin
     public function cmsPreview()
     {
         $id = $this->urlParams['ID'];
-        $obj = $this->modelClass::get_by_id($id);
+        $obj = $this->modelClass::get()->setUseCache(true)->byID($id);
         if (!$obj || !$obj->exists()) {
             return $this->httpError(404);
         }

@@ -33,15 +33,13 @@ come from user input.
 Example:
 
 ```php
+use App\Model\MyClass;
 use SilverStripe\ORM\DB;
-use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLSelect;
 
 $records = DB::prepared_query('SELECT * FROM "MyClass" WHERE "ID" = ?', [3]);
 $records = MyClass::get()->where(['"ID" = ?' => 3]);
 $records = MyClass::get()->where(['"ID"' => 3]);
-$records = DataObject::get_by_id('MyClass', 3);
-$records = DataObject::get_one('MyClass', ['"ID" = ?' => 3]);
 $records = MyClass::get()->byID(3);
 $records = SQLSelect::create()->addWhere(['"ID"' => 3])->execute();
 ```
@@ -76,7 +74,6 @@ If necessary Silverstripe performs any required escaping through database-specif
 For [`MySQLDatabase`](api:SilverStripe\ORM\Connect\MySQLDatabase), this will be [`mysqli::real_escape_string()`](https://www.php.net/manual/en/mysqli.real-escape-string.php).
 
 - Most [`DataList`](api:SilverStripe\ORM\DataList) accessors (see escaping note in method documentation)
-- [`DataObject::get_by_id()`](api:SilverStripe\ORM\DataObject::get_by_id())
 - [`DataObject::update()`](api:SilverStripe\ORM\DataObject::update())
 - [`DataObject::castedUpdate()`](api:SilverStripe\ORM\DataObject::castedUpdate())
 - `$dataObject->SomeField = 'val'`, [`DataObject::setField()`](api:SilverStripe\ORM\DataObject::setField())
