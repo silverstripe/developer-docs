@@ -134,20 +134,18 @@ partial cache block) will not whitelist those files automatically. You can manua
 file via PHP for the current user instead, by using the following code to grant access.
 
 ```php
-namespace {
-    use SilverStripe\CMS\Controllers\ContentController;
+use SilverStripe\CMS\Controllers\ContentController;
 
-    class PageController extends ContentController
+class PageController extends ContentController
+{
+    public function init()
     {
-        public function init()
-        {
-            parent::init();
+        parent::init();
 
-            // Whitelist the protected files on this page for the current user
-            $file = $this->File();
-            if ($file->canView()) {
-                $file->grantFile();
-            }
+        // Whitelist the protected files on this page for the current user
+        $file = $this->File();
+        if ($file->canView()) {
+            $file->grantFile();
         }
     }
 }
@@ -170,23 +168,21 @@ Alternatively, if a user has already been granted access, you can explicitly rev
 the `revokeFile` method.
 
 ```php
-namespace {
-    use SilverStripe\CMS\Controllers\ContentController;
+use SilverStripe\CMS\Controllers\ContentController;
 
-    class PageController extends ContentController
+class PageController extends ContentController
+{
+    public function init()
     {
-        public function init()
-        {
-            parent::init();
+        parent::init();
 
-            // Whitelist the protected files on this page for the current user
-            $file = $this->File();
-            if ($file->canView()) {
-                $file->grantFile();
-            } else {
-                // Will revoke any historical grants
-                $file->revokeFile();
-            }
+        // Whitelist the protected files on this page for the current user
+        $file = $this->File();
+        if ($file->canView()) {
+            $file->grantFile();
+        } else {
+            // Will revoke any historical grants
+            $file->revokeFile();
         }
     }
 }

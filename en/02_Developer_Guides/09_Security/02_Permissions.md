@@ -26,27 +26,25 @@ See the API docs for more options.
 This method should return a map of permission code names with a human readable explanation of its purpose.
 
 ```php
-namespace {
-    use SilverStripe\Security\Permission;
-    use SilverStripe\Security\PermissionProvider;
-    use SilverStripe\Security\Security;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\PermissionProvider;
+use SilverStripe\Security\Security;
 
-    class PageController implements PermissionProvider
+class PageController implements PermissionProvider
+{
+    public function init()
     {
-        public function init()
-        {
-            parent::init();
-            if (!Permission::check('VIEW_SITE')) {
-                Security::permissionFailure();
-            }
+        parent::init();
+        if (!Permission::check('VIEW_SITE')) {
+            Security::permissionFailure();
         }
+    }
 
-        public function providePermissions()
-        {
-            return [
-                'VIEW_SITE' => 'Access the site',
-            ];
-        }
+    public function providePermissions()
+    {
+        return [
+            'VIEW_SITE' => 'Access the site',
+        ];
     }
 }
 ```

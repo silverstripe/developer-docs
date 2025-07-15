@@ -553,29 +553,26 @@ App\Model\MyBanner:
 This can also be manually enabled for a single `GridField` by passing the `VersionedGridFieldItemRequest` class name to the [`setItemRequestClass()`](api:SilverStripe\Forms\GridField\GridFieldConfig::setItemRequestClass()) method on a [`GridFieldConfig`](api:SilverStripe\Forms\GridField\GridFieldConfig) instance.
 
 ```php
-namespace {
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Versioned\VersionedGridFieldItemRequest;
 
-    use SilverStripe\CMS\Model\SiteTree;
-    use SilverStripe\Forms\FieldList;
-    use SilverStripe\Forms\GridField\GridField;
-    use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
-    use SilverStripe\Forms\GridField\GridFieldDetailForm;
-    use SilverStripe\Versioned\VersionedGridFieldItemRequest;
-
-    class Page extends SiteTree
+class Page extends SiteTree
+{
+    public function getCMSFields()
     {
-        public function getCMSFields()
-        {
-            $this->beforeUpdateCMSFields(function (FieldList $fields) {
-                $config = GridFieldConfig_RelationEditor::create();
-                $config
-                    ->getComponentByType(GridFieldDetailForm::class)
-                    ->setItemRequestClass(VersionedGridFieldItemRequest::class);
-                $gridField = GridField::create('Items', 'Items', $this->Items(), $config);
-                $fields->addFieldToTab('Root.Items', $gridField);
-            });
-            return parent::getCMSFields();
-        }
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $config = GridFieldConfig_RelationEditor::create();
+            $config
+                ->getComponentByType(GridFieldDetailForm::class)
+                ->setItemRequestClass(VersionedGridFieldItemRequest::class);
+            $gridField = GridField::create('Items', 'Items', $this->Items(), $config);
+            $fields->addFieldToTab('Root.Items', $gridField);
+        });
+        return parent::getCMSFields();
     }
 }
 ```

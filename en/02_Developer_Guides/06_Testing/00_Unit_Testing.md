@@ -10,15 +10,13 @@ to ensure that it works as it should. A simple example would be to test the resu
 
 ```php
 // app/src/Page.php
-namespace {
-    use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\CMS\Model\SiteTree;
 
-    class Page extends SiteTree
+class Page extends SiteTree
+{
+    public static function myMethod()
     {
-        public static function myMethod()
-        {
-            return (1 + 1);
-        }
+        return (1 + 1);
     }
 }
 ```

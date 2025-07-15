@@ -93,21 +93,19 @@ The priority order is as followed, sorted in descending order
 Enable caching for all page content (through `PageController`).
 
 ```php
-namespace {
-    use SilverStripe\CMS\Controllers\ContentController;
-    use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
+use SilverStripe\CMS\Controllers\ContentController;
+use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
 
-    class PageController extends ContentController
+class PageController extends ContentController
+{
+    public function init()
     {
-        public function init()
-        {
-            HTTPCacheControlMiddleware::singleton()
-                ->enableCache()
-                // 1 minute
-                ->setMaxAge(60);
+        HTTPCacheControlMiddleware::singleton()
+            ->enableCache()
+            // 1 minute
+            ->setMaxAge(60);
 
-            parent::init();
-        }
+        parent::init();
     }
 }
 ```
@@ -124,19 +122,17 @@ you can disable caching either on a controller level
 (through `init()`) or for a particular action.
 
 ```php
-namespace {
-    use SilverStripe\CMS\Controllers\ContentController;
-    use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
+use SilverStripe\CMS\Controllers\ContentController;
+use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
 
-    class PageController extends ContentController
+class PageController extends ContentController
+{
+    public function myprivateaction($request)
     {
-        public function myprivateaction($request)
-        {
-            HTTPCacheControlMiddleware::singleton()
-                ->disableCache();
+        HTTPCacheControlMiddleware::singleton()
+            ->disableCache();
 
-            return $this->myPrivateResponse();
-        }
+        return $this->myPrivateResponse();
     }
 }
 ```
@@ -160,22 +156,20 @@ and does not vary for this particular visitor. Forms can also contain submission
 when they're redisplayed after a validation error.
 
 ```php
-namespace {
-    use SilverStripe\CMS\Controllers\ContentController;
-    use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
+use SilverStripe\CMS\Controllers\ContentController;
+use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
 
-    class PageController extends ContentController
+class PageController extends ContentController
+{
+    public function init()
     {
-        public function init()
-        {
-            HTTPCacheControlMiddleware::singleton()
-                // DANGER ZONE
-                ->enableCache($force = true)
-                // 1 minute
-                ->setMaxAge(60);
+        HTTPCacheControlMiddleware::singleton()
+            // DANGER ZONE
+            ->enableCache($force = true)
+            // 1 minute
+            ->setMaxAge(60);
 
-            parent::init();
-        }
+        parent::init();
     }
 }
 ```
