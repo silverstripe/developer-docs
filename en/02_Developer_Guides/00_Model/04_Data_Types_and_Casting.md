@@ -22,6 +22,7 @@ use SilverStripe\ORM\DataObject;
 
 class Player extends DataObject
 {
+    // ...
     private static $db = [
         'PlayerNumber' => 'Int',
         'FirstName' => 'Varchar(255)',
@@ -93,6 +94,7 @@ use SilverStripe\ORM\DataObject;
 
 class Car extends DataObject
 {
+    // ...
     private static $db = [
         'Wheels' => 'Int(4)',
         'Condition' => 'Enum("New,Fair,Junk", "Fair")',
@@ -137,6 +139,7 @@ use SilverStripe\ORM\DataObject;
 
 class Car extends DataObject
 {
+    // ...
     private static $db = [
         'Condition' => 'Enum("New,Fair,Junk", "Fair")',
         'Price' => 'Currency',
@@ -180,6 +183,7 @@ use SilverStripe\ORM\FieldType\DBField;
 
 class Player extends DataObject
 {
+    // ...
     public function getName()
     {
         return DBField::create_field('Varchar', $this->FirstName . ' ' . $this->LastName);
@@ -266,6 +270,7 @@ use SilverStripe\ORM\DataObject;
 
 class Player extends DataObject
 {
+    // ...
     private static $casting = [
         'Name' => 'Varchar',
     ];
@@ -345,6 +350,7 @@ use SilverStripe\ORM\DataObject;
  */
 class Product extends DataObject
 {
+    // ...
     private static $db = [
         'Title' => 'Varchar(255)',
         //cost in pennies/cents
