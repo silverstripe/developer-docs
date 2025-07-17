@@ -75,6 +75,10 @@ Use an appropriate suffix or prefix for classnames when making a subclass or imp
 - Prefer `private` over `protected` for non-public constants, unless they are intended to be used in subclasses.
 - If someone requests a `private` method, property, or constant be made `protected` so that they can use it in their project or module code, that change should be made unless there's a really good reason not to.
 
+## Parameter naming
+
+- When adding new paramaters to a method which are then used to set properties on the class, which is very common for constructors, the parameter names should match the properties that are being set e.g. use a `string $myValue` parameter if it's going to set a `private string $myValue` property.
+
 ## Interfaces
 
 - Create an interface for type hinting if there are (or are likely to be in the future) multiple classes implementing a specific feature. Use the interface for type hints (for example for parameters, properties, and return types), and as the service key for injector.
