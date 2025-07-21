@@ -118,7 +118,7 @@ SilverStripe\Control\Session:
 
 ### Save handler
 
-You can choose how session are handled by setting the [`Session.save_handler`](api:SilverStripe\Control\Session->save_handler) configuration property. By default this is set to [`FileSessionHandler`](api:SilverStripe\Control\SessionHandler\FileSessionHandler).
+You can choose how sessions are handled by setting the [`Session.save_handler`](api:SilverStripe\Control\Session->save_handler) configuration property or the `SS_SESSION_SAVE_HANDLER_CLASS` environment variable to the FQCN of your preferred save handler. By default this is set to [`FileSessionHandler`](api:SilverStripe\Control\SessionHandler\FileSessionHandler).
 
 If you want to use the default PHP file session handler instead, you can set the `Session.save_handler` configuration to `null`.
 
@@ -127,7 +127,10 @@ SilverStripe\Control\Session:
   save_handler: null
 ```
 
-You can also set it to the FQCN or injector service name of any session handler that implements [`SessionHandlerInterface`](https://www.php.net/manual/en/class.sessionhandlerinterface.php).
+You can also set it to the FQCN or injector service name of any session handler that implements [`SessionHandlerInterface`](https://www.php.net/manual/en/class.sessionhandlerinterface.php). `silverstripe/framework` comes with several non-blocking session save handlers you can use.
+
+> [!WARNING]
+> In edge case scenarios, for example if your application wants to modify a session value *based on the value that is already set* and must do so for each request, non-blocking sessions may cause unexpected results.
 
 #### `FileSessionHandler`
 
@@ -135,13 +138,42 @@ The default file-based session handler for PHP holds a lock on the session file 
 
 To resolve this problem, Silverstripe CMS comes with [`FileSessionHandler`](api:SilverStripe\Control\SessionHandler\FileSessionHandler).
 
-Note that in edge case scenarios, for example if your application wants to modify a session value *based on the value that is already set* and must do so for each request, non-blocking sessions may cause unexpected results.
-
 `FileSessionHandler` differs from the default PHP file session handler in the following ways:
 
 1. It doesn't lock the session file, and therefore doesn't block concurrent requests.
 1. The [`Session.timeout`](api:SilverStripe\Control\Session->timeout) configuration property is used as the source of truth for the lifetime of session files (see [session lifetime](#session-lifetime) above).
 1. If there are problems reading or writing to session files, the [default logging service](/developer_guides/debugging/error_handling/) is used to log them.
+
+#### `CacheSessionHandler`
+
+If you want a more performant session save handler, you can use the [`CacheSessionHandler`](api:SilverStripe\Control\SessionHandler\CacheSessionHandler). This session save handler can use any cache that implements [the PSR-16 `Psr\SimpleCache\CacheInterface`](https://www.php-fig.org/psr/psr-16/#21-cacheinterface), though we recommend specifically using an in-memory cache adapter that gets instantiated from a factory implementing [`InMemoryCacheFactory`](api:SilverStripe\Core\Cache\InMemoryCacheFactory), such as [`MemcachedCacheFactory`](api:SilverStripe\Core\Cache\MemcachedCacheFactory) or [`RedisCacheFactory`](api:SilverStripe\Core\Cache\RedisCacheFactory).
+
+> [!NOTE]
+> Although this is using a cache, sessions won't be cleared when flushing the site.
+
+You can define the factory which is used to instantiate the cache by setting the `SS_SESSION_CACHE_FACTORY` environment variable, or by setting the following YAML configuration:
+
+```yml
+---
+After: '#session-handlers'
+---
+SilverStripe\Core\Injector\Injector:
+  Psr\SimpleCache\CacheInterface.session-handler:
+    factory: 'App\Session\MyCacheFactory'
+```
+
+See [cache adapters](/developer_guides/performance/cache_adapters/) for any additional details required to use those cache factories.
+
+#### `DatabaseSessionHandler`
+
+The [`DatabaseSessionHandler`](api:SilverStripe\Control\SessionHandler\DatabaseSessionHandler) class lets you store session data in the database.
+
+This provides a low barrier to sharing your sessions across multiple servers, e.g. in a horizontally-scaled hosting scenario.
+
+You can change the name of the table used by setting [`DatabaseSessionHandler.table_name`](api:SilverStripe\Control\SessionHandler\DatabaseSessionHandler->table_name) to the new table name.
+
+> [!WARNING]
+> Changing the table name after sessions have already been stored in the old table will result in those sessions being invalidated, unless you manually migrate them to the new table.
 
 ### Cookies
 
