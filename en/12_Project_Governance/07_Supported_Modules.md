@@ -51,6 +51,7 @@ Core Module | Supported major release line
 
 These modules extend the core Silverstripe CMS functionality. Silverstripe CMS projects can pick and choose which of these modules to install based on their needs.
 
+<!-- markdownlint-disable enhanced-proper-names -->
 Supported PHP Module | Supported versions
 -- | --
 [colymba/gridfield-bulk-editing-tools](https://packagist.org/packages/colymba/gridfield-bulk-editing-tools) | 5
@@ -79,6 +80,7 @@ Supported PHP Module | Supported versions
 [symbiote/silverstripe-gridfieldextensions](https://packagist.org/packages/symbiote/silverstripe-gridfieldextensions) | 5
 [symbiote/silverstripe-queuedjobs](https://packagist.org/packages/symbiote/silverstripe-queuedjobs) | 6
 [tractorcow/silverstripe-fluent](https://packagist.org/packages/tractorcow/silverstripe-fluent) | 8
+<!-- markdownlint-enable enhanced-proper-names -->
 
 ## Supported NPM packages
 
