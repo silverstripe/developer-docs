@@ -192,11 +192,17 @@ Code for an Alert box:
 
 ### Links to documentation
 
-Links to other pages in the documentation uses the URL slug, *not* the file name.
+When updating documentation for [`silverstripe/developer-docs`](https://github.com/silverstripe/developer-docs/), which is the content repository for [`docs.silverstripe.org`](https://docs.silverstripe.org), links to other pages in the documentation should use the URL slug (e.g. `/contributing/documentation/`), not the file name.
 
 Relative documentation links are prefixed with `./` for pages in the same directory, or `../` for pages in parent directories. For example `[contributing code](./code)` becomes [contributing code](./code) and `[getting started](../getting_started)` becomes [getting started](../getting_started).
 
 Absolute documentation links are preferred for pages which aren't in the same directory or one level up. The language and version number are ommitted. For example `[managing lists](/developer_guides/model/lists/)` becomes [managing lists](/developer_guides/model/lists/).
+
+When updating docs that are in a module's `docs/en/` folder, and will be shown in the "Optional features" section of `docs.silverstripe.org`, and are also intended to be readable on GitHub, then links to other pages within that module should use a relative path to the file name, not the URL slug. Links to documentation outside that module should use a full URL without the version number (e.g. `https://docs.silverstripe.org/en/contributing/documentation/`). API doc links should still be used in the format described below.
+
+### Images
+
+Add images, such as screenshots, to an `_images/` directory which should usually be located at `docs/en/_images/`. Use relative links these files and use the markdown syntax `![Some alt text](_images/some-file.jpg)`. You must include alt text. Adding images this way will work correctly on both markdown added to `silverstripe/developer-docs`, and also to `docs/en/` folder for a module that dispays on both `docs.silverstripe.org` and GitHub.
 
 ### Links to API documentation
 
