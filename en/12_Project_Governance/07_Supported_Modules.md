@@ -51,6 +51,7 @@ Core Module | Supported major release line
 
 These modules extend the core Silverstripe CMS functionality. Silverstripe CMS projects can pick and choose which of these modules to install based on their needs.
 
+<!-- markdownlint-disable enhanced-proper-names -->
 Supported PHP Module | Supported versions
 -- | --
 [bringyourownideas/silverstripe-composer-update-checker](https://packagist.org/packages/bringyourownideas/silverstripe-composer-update-checker)   | 4
@@ -108,6 +109,7 @@ Supported PHP Module | Supported versions
 [symbiote/silverstripe-multivaluefield](https://packagist.org/packages/symbiote/silverstripe-multivaluefield) | 6
 [symbiote/silverstripe-queuedjobs](https://packagist.org/packages/symbiote/silverstripe-queuedjobs) | 5
 [tractorcow/silverstripe-fluent](https://packagist.org/packages/tractorcow/silverstripe-fluent) | 7
+<!-- markdownlint-enable enhanced-proper-names -->
 
 ## Supported NPM packages
 
