@@ -175,7 +175,7 @@ Requirements::javascript('<my-module-dir>/javascript/jquery.js');
 
 #### JavaScript options
 
-You can also use the second argument to add the 'async' and/or 'defer attributes to the script tag generated:
+You can use the second argument to add the 'async' and/or 'defer attributes to the script tag generated:
 
 ```php
 use SilverStripe\View\Requirements;
@@ -189,7 +189,9 @@ Requirements::javascript(
 );
 ```
 
-You can also add security attributes 'integrity' and `crossorigin` to the generated script tag:
+You can also add `integrity` and `crossorigin` to the generated script tag. Those can be useful for [subresource integrity checks](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) and [CORS](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin).
+
+Adding these should be standard practice for all JavaScript which is being pulled from CDNs or third-party providers.
 
 ```php
 use SilverStripe\View\Requirements;
