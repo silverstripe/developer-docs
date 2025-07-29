@@ -136,6 +136,8 @@ use SilverStripe\View\Requirements;
 Requirements::javascript($path, $options);
 ```
 
+#### Templated JavaScript
+
 A variant on the inclusion of custom JavaScript is the inclusion of *templated* JavaScript.  Here, you keep your
 JavaScript in a separate file and instead load, via search and replace, several PHP generated variables into that code.
 
@@ -151,6 +153,8 @@ Requirements::javascriptTemplate('<my-module-dir>/javascript/some_file.js', $var
 ```
 
 In this example, `some_file.js` is expected to contain a replaceable variable expressed as `$MemberID`.
+
+#### Provisioned JavaScript
 
 If you are using front-end script combination mechanisms, you can optionally declare
 that your included files provide these scripts. This will ensure that subsequent
@@ -169,7 +173,9 @@ Requirements::javascript('<my-module-dir>/javascript/dist/bundle.js', ['provides
 Requirements::javascript('<my-module-dir>/javascript/jquery.js');
 ```
 
-You can also use the second argument to add the 'async' and/or 'defer attributes to the script tag generated:
+#### JavaScript options
+
+You can use the second argument to add the 'async' and/or 'defer attributes to the script tag generated:
 
 ```php
 use SilverStripe\View\Requirements;
@@ -179,6 +185,22 @@ Requirements::javascript(
     [
         'async' => true,
         'defer' => true,
+    ]
+);
+```
+
+You can also add `integrity` and `crossorigin` to the generated script tag. Those can be useful for [subresource integrity checks](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) and [CORS](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin).
+
+Adding these should be standard practice for all JavaScript which is being pulled from CDNs or third-party providers.
+
+```php
+use SilverStripe\View\Requirements;
+
+Requirements::javascript(
+    'https://cdn.provider/library-v1.0.0/script.js',
+    [
+        'integrity' => '<sha384-hash>',
+        'crossorigin' => 'anonymous',
     ]
 );
 ```
