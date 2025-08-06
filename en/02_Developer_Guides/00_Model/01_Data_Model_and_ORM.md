@@ -358,7 +358,7 @@ $players = Player::get()->filter([
 ]);
 ```
 
-### `filterAny`
+### `filterAny()`
 
 Use the `filterAny()` method to match multiple criteria non-exclusively (with an "OR" disjunctive),
 
@@ -446,7 +446,7 @@ $teams = Team::get()->filter('Players.Sum(PointsScored):LessThan', 300);
 > [!TIP]
 > The above examples are using "dot notation" to get the aggregations of the `Players` relation on the `Teams` model. See [Relations between Records](relations) to learn more.
 
-### `filterByCallback`
+### `filterByCallback()`
 
 It is possible to filter by a PHP callback using the [`filterByCallback()`](api:SilverStripe\ORM\DataList::filterByCallback()) method. This will force the data model to fetch all records and loop them in
 PHP which will be much worse for performance, thus `filter()` or `filterAny()` are to be preferred over `filterByCallback()`.
@@ -467,7 +467,7 @@ $players = Player::get()->filterByCallback(function ($record, $list) {
 });
 ```
 
-### `exclude`
+### `exclude()`
 
 The [`exclude()`](api:SilverStripe\ORM\DataList::exclude()) method is the opposite to `filter()` in that it determines which entries to *exclude* from a list, where `filter()` determines which to *include*.
 
@@ -524,13 +524,14 @@ $players = Player::get()->exclude([
 ]);
 ```
 
-### `subtract`
+### `filterByList()` and `excludeByList()`
 
-You can subtract entries from a [DataList](api:SilverStripe\ORM\DataList) by passing in another DataList to `subtract()`
+You can exclude entries or include only entries in a [`DataList`](api:SilverStripe\ORM\DataList) based on the results of another list a by passing the other list to `excludeByList()` or `filterByList()` respectively.
 
 ```php
 $sam = Player::get()->filter('FirstName', 'Sam');
-$noSams = Player::get()->subtract($sam);
+$noSams = Player::get()->excludeByList($sam);
+$onlySams = Player::get()->filterByList($sam);
 ```
 
 Though for the above example it would probably be easier to use `filter()` and `exclude()` directly on the final list. A better use case could be
@@ -540,10 +541,21 @@ when you want to find all the members that do not exist in a Group.
 // ... Finding all members that do not belong to $group.
 use SilverStripe\Security\Member;
 // Assuming we have some `Group` $group:
-$otherMembers = Member::get()->subtract($group->Members());
+$otherMembers = Member::get()->excludeByList($group->Members());
 ```
 
-### `limit`
+Both of these methods allow you to pass filter by specific fields as well, rather than just the default ID field.
+
+```php
+use SilverStripe\Security\Member;
+
+// Find Member records that have the same "Surname" value as players "LastName" values.
+Member::get()->filterByList(Player::get(), 'Surname', 'LastName');
+// Only get Member records where there is no match with player last names
+Member::get()->excludeByList(Player::get(), 'Surname', 'LastName');
+```
+
+### `limit()`
 
 You can limit the amount of records returned in a DataList by using the `limit()` method.
 
