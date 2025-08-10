@@ -20,7 +20,7 @@ Refer to our [definition of public API](/project_governance/public_api/) for det
 
 - **Silverstripe CMS version**: The version number corresponding to a Silverstripe CMS release, e.g. "6.1"
 - **Silverstripe CMS release**: A combined release of commercially supported modules which together make up Silverstripe CMS. Also known as a "stable release"
-- **Silverstripe CMS major version series**: All Silverstripe CMS versions that start with the same whole number, e.g. "6.0", "6.1", and "6.2" are all in the same "CMS 6" major release series
+- **Silverstripe CMS major version series**: All Silverstripe CMS versions that start with the same whole number, e.g. "6.0", "6.1", and "6.2" are all in the same "CMS 6" major version series
 
 ### Pre-release definitions
 
