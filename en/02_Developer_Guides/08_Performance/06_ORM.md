@@ -36,7 +36,17 @@ SilverStripe\Forms\TreeDropdownField:
 
 See [SearchFilter Modifiers](/developer_guides/model/searchfilters/) for more information about search filters.
 
-## Skipping check and repair when the database is built {#skip-check-and-repair}
+### `searchable_fields` general search field
+
+Search functionality in the CMS by default allows you to search across *all* fields in your `searchable_fields` configuration with the main search field. If you don't have a composite index that covers all of these and you have a large dataset - especially if some of the fields are on relation tables - you might find this to be slow.
+
+You can disable that functionality by setting the [`general_search_field_name`](api:SilverStripe\ORM\DataObject->general_search_field_name) configuration property to any empty string for large models.
+
+See [customise the general search field name](/developer_guides/model/scaffolding/#customise-the-general-search-field-name) for more details about this configuration.
+
+## Speeding up database builds
+
+### Skipping check and repair when the database is built {#skip-check-and-repair}
 
 When you run `sake db:build`, there is a step that checks the integrity of the database tables (via `CHECK TABLE`) and repairs issues (via `REPAIR TABLE`) if possible.
 
@@ -64,7 +74,18 @@ SilverStripe\ORM\Connect\DBSchemaManager:
 
 You can always manually trigger a check and repair (e.g. in a [`BuildTask`](api:SilverStripe/Dev/BuildTask)) by calling [`DB::check_and_repair_table()`](api:SilverStripe\ORM\DB::check_and_repair_table()). This ignores the above configuration.
 
-## Changing `ClassName` column from enum to varchar {#classname-varchar}
+### Skipping record counts
+
+When you run `sake db:build`, by default the ORM will output how many records are in each table.
+
+For models with extremely large datasets (in the many hundreds of thousands or more) even a count query can become slow. In those cases you may want to disable this count.
+
+```yml
+SilverStripe\Dev\Command\DbBuild:
+  show_record_counts: false
+```
+
+### Changing `ClassName` column from enum to varchar {#classname-varchar}
 
 On websites with very large database tables it can take a long time to run `dev/build`, which can be a problem when deploying changes to production. This is because the `ClassName` column is an `enum` type which requires an a `ALTER TABLE` query to be run affecting every row whenever there is a new valid value for the column.
 
@@ -85,6 +106,30 @@ SilverStripe\ORM\DataObject:
 SilverStripe\ORM\FieldType\DBPolymorphicForeignKey:
   composite_db:
     Class: "DBClassNameVarchar('SilverStripe\\ORM\\DataObject', ['index' => false])"
+```
+
+### Skip legacy `UserForm` upgrade steps
+
+For legacy reasons, when you run `sake db:build` and you have `silverstripe/userforms` installed, your user forms will be iterated over to check they have a valid [`UserForm`](api:SilverStripe\UserForms\UserForm) parent.
+
+If you have lots of user forms (especially complex ones), this can slow down the build process. You can disable this check with the [`UserDefinedForm.upgrade_on_build`](api:SilverStripe\UserForms\Model\UserDefinedForm->upgrade_on_build) YAML configuration:
+
+```yml
+SilverStripe\UserForms\Model\UserDefinedForm:
+  upgrade_on_build: false
+```
+
+## Conditions vs joins for `Versioned`
+
+By default, the [`Versioned`](api:SilverStripe\Versioned\Versioned) extension uses a lot of joins. Many of these can be swapped out for `WHERE` conditional statements instead.
+
+Performance of the join scales on the size of versions tables where as the `WHERE` condition scales on the number of records being returned from the base query.
+
+If you find you have a lot of historical version data but not a lot of active records, you might want to swap to using `WHERE` conditional statements. That can be done by setting [`Versioned.use_conditions_over_inner_joins`](api:SilverStripe\Versioned\Versioned->use_conditions_over_inner_joins) to `true`.
+
+```yml
+SilverStripe\Versioned\Versioned:
+  use_conditions_over_inner_joins: true
 ```
 
 ## Making raw SQL queries {#raw-sql}
