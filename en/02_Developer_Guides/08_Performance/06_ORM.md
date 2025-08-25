@@ -32,7 +32,7 @@ $cachedQuery = SQLSelect::create(/*...*/)->setUseCache(true, 'some-namespace');
 
 This is very similar to caching on a `DataList`, except that, because `SQLSelect` doesn't have a specific `DataObject` class it pertains to, you can pass a namespace into the `SQLSelect::setUseCache()` method. This allows you to invalidate the cache for that query and any other queries in the same namespace without affecting any other cached queries.
 
-> [!HINT]
+> [!TIP]
 > When using `SQLSelect` to get data for a specific `DataObject` class, it is good practice to set the namespace for `SQLSelect` cache to be the FQCN of that `DataObject` class.
 > That allows the ORM to invalidate the cache in the same scenarios that similar cache from a `DataList` would be invalidated.
 
