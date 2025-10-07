@@ -47,7 +47,7 @@ When using CGI/FastCGI with Apache, you will have to add the `RewriteRule .* - [
 
 ## Live mode
 
-All error messages are suppressed from the user and the application is in it's most *secure* state.
+All error messages are suppressed from the user and the application is in its most *secure* state.
 
 > [!CAUTION]
 > Live sites should always run in live mode. You should not run production websites in dev mode.
