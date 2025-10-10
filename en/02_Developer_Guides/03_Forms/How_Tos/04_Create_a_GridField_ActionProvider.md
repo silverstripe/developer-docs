@@ -210,7 +210,8 @@ class GridFieldCustomAction extends AbstractGridFieldComponent implements
         $field = $this->getCustomAction($gridField, $record);
         if ($field) {
             return array_merge($field->getAttributes(), [
-                'classNames' => 'font-icon-circle-star action-detail',
+                'classNames' => 'action-detail',
+                'icon' => 'circle-star',
             ]);
         }
 

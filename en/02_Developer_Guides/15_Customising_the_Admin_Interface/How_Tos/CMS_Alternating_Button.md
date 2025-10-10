@@ -7,191 +7,64 @@ summary: Add an "active" and "neutral" state to the CMS buttons
 
 ## Introduction
 
-*Save* and *Save & publish* buttons alternate their appearance to reflect the state of the underlying `SiteTree` object.
-This is based on a `ssui.button` extension available in `ssui.core.js`.
+The *Save* and *Publish* buttons alternate their appearance to reflect the state of the underlying record.
 
-The button can be configured via the data attributes in the backend, or through jQuery UI initialisation options. The
-state can be toggled from the backend (again through data attributes), and can also be easily toggled or set on the
-frontend.
+The button's text, CSS classes, and icon for two different states can be configured via data attributes. The
+state is toggled on the frontend based on the dirty state of the form.
 
-This how-to will walk you through creation of a "Clean-up" button with two appearances:
+This how-to will walk you through setting the text, CSS classes, and icon for two states:
 
-- active: "Clean-up now" green constructive button if the actions can be performed
-- neutral: "Cleaned" default button if the action does not need to be done
+- active: "Save" green constructive button if the actions can be performed
+- neutral: "Saved" default button if the action does not need to be done
 
-The controller code that goes with this example is listed in [Extend CMS Interface](extend_cms_interface).
+The same functionality is available for the *Publish* button in the CMS for versioned records.
 
-## Backend support
+## Setting the data attributes
 
-First create and configure the action button with alternate state on a page type. The button comes with the default
-state already, so you just need to add the alternate state using two data additional attributes:
+For this example we'll update the attributes on the *Save* button on the [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) class. Note that the same principle applies for other buttons that use these attributes, such as the *Publish* button, and for buttons added through [`GridFieldDetailForm_ItemRequest`](api:SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest).
 
-- `data-icon-alternate`: icon to be shown when the button is in the alternate state
-- `data-text-alternate`: likewise for text.
+The title, icon, and CSS classes of the button define its default state. The following data attributes are used to define the alternate state:
 
-Here is the configuration code for the button:
+- `data-icon-alternate`: icon to be shown when the button is in the alternate state (replaces any icon set with [`setIcon()`](api:SilverStripe\Forms\FormAction::setIcon()))
+- `data-text-alternate`: text to be shown when the button is in the alternate state (replaces any text set with [`setTitle()`](api:SilverStripe\Forms\FormField::setTitle()))
+- `data-btn-alternate-add`: space-separated list of CSS classes to add when the button is in the alternate state. These will be removed when toggling back to the default state.
+- `data-btn-alternate-remove`: space-separated list of CSS classes to remove when the button is in the alternate state. These will be added when toggling back to the default state.
+
+Here is the code for the button:
 
 ```php
-namespace App\Model;
+namespace App\Extension;
 
+use SilverStripe\Core\Extension;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
-use SilverStripe\ORM\DataObject;
 
-class MyObject extends DataObject
+class MySiteTreeActionExtension extends Extension
 {
     // ...
 
-    public function getCMSActions()
+    protected function updateCMSActions(FieldList $actions)
     {
-        $fields = parent::getCMSActions();
-
-        $fields->fieldByName('MajorActions')->push(
-            $cleanupAction = FormAction::create('cleanup', 'Cleaned')
-                // Set up an icon for the neutral state that will use the default text.
-                ->setAttribute('data-icon', 'accept')
-                // Initialise the alternate constructive state.
-                ->setAttribute('data-icon-alternate', 'addpage')
-                ->setAttribute('data-text-alternate', 'Clean-up now')
-        );
-
-        return $fields;
+        /** @var FormAction $saveButton */
+        $saveButton = $actions->dataFieldByName('action_save');
+        // Set the text for the default and alternate states
+        $saveButton->setTitle('Saved already');
+        $saveButton->setAttribute('data-text-alternate', 'Save me');
+        // Set the icon for the default and alternate states
+        $saveButton->setIcon('happy');
+        $saveButton->setAttribute('data-icon-alternate', 'sad');
+        // Set any CSS class names that you want to alternate between
+        // Note that any classes that apply to the default state must be added with addExtraClass()
+        // and any which were already applied that you don't want must be removed with removeExtraClass()
+        $saveButton->addExtraClass('my-default-btn-class');
+        $saveButton->setAttribute('data-btn-alternate-remove', 'btn-outline-primary my-default-btn-class');
+        $saveButton->setAttribute('data-btn-alternate-add', 'btn-primary my-alternate-btn-class');
     }
 }
 ```
-
-You can control the state of the button from the backend by applying `ss-ui-alternate` class to the `FormAction`. To
-simplify our example, let's assume the button state is controlled on the backend only, but you'd usually be better off
-adjusting the state in the frontend to give the user the benefit of immediate feedback. This technique might still be
-used for initialisation though.
-
-Here we initialise the button based on the backend check, and assume that the button will only update after page reload
-(or on CMS action).
-
-```php
-namespace App\Model;
-
-use SilverStripe\ORM\DataObject;
-
-class MyObject extends DataObject
-{
-    // ...
-
-    public function getCMSActions()
-    {
-        // ...
-        if ($this->needsCleaning()) {
-            // Will initialise the button into alternate state.
-            $cleanupAction->addExtraClass('ss-ui-alternate');
-        }
-        // ...
-    }
-}
-```
-
-## Frontend support
-
-> [!WARNING]
-> The following documentation regarding jQuery, jQueryUI and Entwine does not apply to React components or sections powered by React.
-> If you're developing new functionality in React powered sections please refer to
-> [React and Redux](/developer_guides/customising_the_admin_interface/reactjs_and_redux/).
-
-As with the *Save* and *Save & publish* buttons, you might want to add some scripted reactions to user actions on the
-frontend. You can affect the state of the button through the jQuery UI calls.
-
-First of all, you can toggle the state of the button - execute this code in the browser's console to see how it works.
-
-```js
-jQuery('.cms-edit-form .btn-toolbar #Form_EditForm_action_cleanup').button('toggleAlternate');
-```
-
-Another, more useful, scenario is to check the current state.
-
-```js
-jQuery('.cms-edit-form .btn-toolbar #Form_EditForm_action_cleanup').button('option', 'showingAlternate');
-```
-
-You can also force the button into a specific state by using UI options.
-
-```js
-jQuery('.cms-edit-form .btn-toolbar #Form_EditForm_action_cleanup').button({ showingAlternate: true });
-```
-
-This will allow you to react to user actions in the CMS and give immediate feedback. Here is an example taken from the
-CMS core that tracks the changes to the input fields and reacts by enabling the *Save* and *Save & publish* buttons
-(changetracker will automatically add `changed` class to the form if a modification is detected).
-
-```js
-/**
- * Enable save buttons upon detecting changes to content.
- * "changed" class is added by jQuery.changetracker.
- */
-$('.cms-edit-form .changed').entwine({
-  // This will execute when the class is added to the element.
-  onmatch(e) {
-    const form = this.closest('.cms-edit-form');
-    form.find('#Form_EditForm_action_save').button({ showingAlternate: true });
-    form.find('#Form_EditForm_action_publish').button({ showingAlternate: true });
-    this._super(e);
-  },
-  // Entwine requires us to define this, even if we don't use it.
-  onunmatch(e) {
-    this._super(e);
-  }
-});
-```
-
-## Frontend hooks
-
-`ssui.button` defines several additional events so that you can extend the code with your own behaviours. For example
-this is used in the CMS to style the buttons. Three events are available:
-
-- `ontogglealternate`: invoked when the `toggleAlternate` is called. Return `false` to prevent the toggling.
-- `beforerefreshalternate`: invoked before the alternate-specific rendering takes place, including the button
-initialisation.
-- `afterrefreshalternate`: invoked after the rendering has been done, including on init. Good place to add styling
-extras.
-
-Continuing our example let's add a "constructive" style to our *Clean-up* button. First you need to be able to add
-custom JS code into the CMS. You can do this by adding a new source file, here
-`app/javascript/CMSMain.CustomActionsExtension.js`, and requiring it
-through a YAML configuration value:
 
 ```yml
-SilverStripe\Admin\LeftAndMain:
-  extra_requirements_javascript:
-    - app/javascript/CMSMain.CustomActionsExtension.js
+SilverStripe\CMS\Model\SiteTree:
+  extensions:
+    - 'App\Extension\MySiteTreeActionExtension'
 ```
-
-You can now add the styling in response to `afterrefreshalternate` event. Let's use entwine to avoid accidental memory
-leaks. The only complex part here is how the entwine handle is constructed. `onbuttonafterrefreshalternate` can be
-disassembled into:
-
-- `on` signifies the entiwne event handler
-- `button` is jQuery UI widget name
-- `afterrefreshalternate`: the event from ssui.button to react to.
-
-Here is the entire handler put together. You don't need to add any separate initialisation code, this will handle all
-cases.
-
-```js
-jQuery.entwine('mysite', ($) => {
-  $('.cms-edit-form .btn-toolbar #Form_EditForm_action_cleanup').entwine({
-    /**
-             * onafterrefreshalternate is SS-specific jQuery UI hook that is executed
-             * every time the button is rendered (including on initialisation).
-             */
-    onbuttonafterrefreshalternate() {
-      if (this.button('option', 'showingAlternate')) {
-        this.addClass('ss-ui-action-constructive');
-      } else {
-        this.removeClass('ss-ui-action-constructive');
-      }
-    }
-  });
-});
-```
-
-## Summary
-
-The code presented gives you a fully functioning alternating button, similar to the defaults that come with the the CMS.
-These alternating buttons can be used to give user the advantage of visual feedback upon their actions.
