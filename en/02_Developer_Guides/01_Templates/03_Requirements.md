@@ -118,7 +118,7 @@ class MyCustomController extends Controller
 ```php
 use SilverStripe\View\Requirements;
 
-Requirements::css($path, $media);
+Requirements::css($path, $media, $options);
 ```
 
 If you're using the CSS method a second argument can be used. This argument defines the 'media' attribute of the
@@ -128,6 +128,12 @@ If you're using the CSS method a second argument can be used. This argument defi
 Requirements::css('<my-module-dir>/css/some_file.css', 'screen,projection');
 ```
 
+You can also pass arbitrary attributes (including the media attribute itself) in an associative array to the `$options` argument. For example:
+
+```php
+Requirements::css('<my-module-dir>/css/some_file.css', options: ['media' => 'screen', 'disabled' => true]);
+```
+
 ### JavaScript files
 
 ```php
@@ -135,6 +141,28 @@ use SilverStripe\View\Requirements;
 
 Requirements::javascript($path, $options);
 ```
+
+#### JavaScript options
+
+You can use the second argument to add any arbitrary attributes to the script tag. For example:
+
+```php
+use SilverStripe\View\Requirements;
+
+Requirements::javascript(
+    '<my-module-dir>/javascript/some_file.js',
+    [
+        'async' => true,
+        'defer' => true,
+        'type' => 'module',
+    ]
+);
+```
+
+> [!TIP]
+> The `integrity` and `crossorigin` in particular can be useful for [subresource integrity checks](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) and [CORS](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin).
+>
+> Adding these should be standard practice for all JavaScript which is being pulled from CDNs or third-party providers.
 
 #### Templated JavaScript
 
@@ -173,37 +201,8 @@ Requirements::javascript('<my-module-dir>/javascript/dist/bundle.js', ['provides
 Requirements::javascript('<my-module-dir>/javascript/jquery.js');
 ```
 
-#### JavaScript options
-
-You can use the second argument to add the 'async' and/or 'defer attributes to the script tag generated:
-
-```php
-use SilverStripe\View\Requirements;
-
-Requirements::javascript(
-    '<my-module-dir>/javascript/some_file.js',
-    [
-        'async' => true,
-        'defer' => true,
-    ]
-);
-```
-
-You can also add `integrity` and `crossorigin` to the generated script tag. Those can be useful for [subresource integrity checks](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) and [CORS](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin).
-
-Adding these should be standard practice for all JavaScript which is being pulled from CDNs or third-party providers.
-
-```php
-use SilverStripe\View\Requirements;
-
-Requirements::javascript(
-    'https://cdn.provider/library-v1.0.0/script.js',
-    [
-        'integrity' => '<sha384-hash>',
-        'crossorigin' => 'anonymous',
-    ]
-);
-```
+> [!NOTE]
+> The `provides` key in the `$options` array is special, and won't be used as an attribute in the `<script>` tag.
 
 ### Custom inline CSS or JavaScript
 
@@ -228,6 +227,8 @@ Requirements::customCSS(<<<CSS
 );
 ```
 
+You can also use the [`Requirements::customScriptWithAttributes()`](api:SilverStripe\View\Requirements::customScriptWithAttributes()) method if you want to add arbitrary attributes to the `<script>` tag. It has an `$options` argument [just like the `javascript()` method](#javascript-options).
+
 ## Combining files
 
 You can concatenate several CSS or JavaScript files into a single dynamically generated file. This increases performance
@@ -248,6 +249,16 @@ Requirements::combine_files(
 > [!CAUTION]
 > To make debugging easier in your local environment, combined files is disabled when running your application in `dev`
 > mode. You can re-enable dev combination by setting `Requirements_Backend.combine_in_dev` to true.
+
+The [`Requirements::combine_files()`](api:SilverStripe\View\Requirements::combine_files()) method has an `$options` argument [just like the `javascript()` method](#javascript-options) and [like the `css()` method](#css-files).
+
+By default, all requirements files are flushed (deleted) when manifests are flushed (see [Flushing](/developer_guides/execution_pipeline/manifests/#flushing)).
+This can be disabled by setting the `Requirements.disable_flush_combined` config to `true`.
+
+> [!CAUTION]
+> When combining CSS files, take care of relative urls, as these will not be re-written to match
+> the destination location of the resulting combined CSS unless you have set the
+> `Requirements_Backend.resolve_relative_css_refs` configuration property to `true`.
 
 ### Configuring combined file storage
 
@@ -333,56 +344,6 @@ mirrored filesystems.
 
 In any case, care should be taken to determine the mechanism appropriate for your development
 and production environments.
-
-### Combined CSS files
-
-You can also combine CSS files into a media-specific stylesheets as you would with the `Requirements::css()` call - use
-the third parameter of the `combine_files` function:
-
-```php
-use SilverStripe\View\Requirements;
-use SilverStripe\View\SSViewer;
-use SilverStripe\View\ThemeResourceLoader;
-
-$loader = ThemeResourceLoader::inst();
-$themes = SSViewer::get_themes();
-
-$printStylesheets = [
-    $loader->findThemedCSS('print_HomePage.css', $themes),
-    $loader->findThemedCSS('print_Page.css', $themes),
-];
-
-Requirements::combine_files('print.css', $printStylesheets, 'print');
-```
-
-By default, all requirements files are flushed (deleted) when manifests are flushed (see [Flushing](/developer_guides/execution_pipeline/manifests/#flushing)).
-This can be disabled by setting the `Requirements.disable_flush_combined` config to `true`.
-
-> [!CAUTION]
-> When combining CSS files, take care of relative urls, as these will not be re-written to match
-> the destination location of the resulting combined CSS unless you have set the
-> `Requirements_Backend.resolve_relative_css_refs` configuration property to `true`.
-
-### Combined JS files
-
-You can also add the 'async' and/or 'defer' attributes to combined JavaScript files as you would with the
-`Requirements::javascript()` call - use the third parameter of the `combine_files` function:
-
-```php
-use SilverStripe\View\Requirements;
-use SilverStripe\View\SSViewer;
-use SilverStripe\View\ThemeResourceLoader;
-
-$loader = ThemeResourceLoader::inst();
-$themes = SSViewer::get_themes();
-
-$scripts = [
-    $loader->findThemedJavascript('some_script.js', $themes),
-    $loader->findThemedJavascript('some_other_script.js', $themes),
-];
-
-Requirements::combine_files('scripts.js', $scripts, ['async' => true, 'defer' => true]);
-```
 
 ## Clearing resources
 
