@@ -67,6 +67,8 @@ Environment::setEnv('API_KEY', 'AABBCCDDEEFF012345');
 ```
 
 > [!WARNING]
+> Environment variables set using `Environment::setEnv()` in `_config.php` files are not available to YAML configuration (including conditions like `envvarset` in `Only`/`Except`). This is because YAML config is loaded during the manifest boot phase, which occurs before `_config.php` files are executed. To use environment variables in YAML config, define them in your `.env` file or as actual system environment variables.
+>
 > `Environment::getEnv()` will return `false` whether the variable was explicitly set as `false` or simply wasn't set at all. You can use [`Environment::hasEnv()`](api:SilverStripe\Core\Environment::hasEnv()) to check whether an environment variable was set or not.
 
 ### Using environment variables in config
