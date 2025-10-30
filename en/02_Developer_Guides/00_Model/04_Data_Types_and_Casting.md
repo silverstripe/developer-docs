@@ -81,9 +81,12 @@ to be applied to all existing and new records when the column is added in the da
 for the first time. You do this by passing an argument for the default value in your
 `$db` items.
 
-For integer values, the default is the first parameter in the field specification.
+For integer and floating point values, the default is the first parameter in the field specification.
 For string values, you will need to declare this default using the options array.
 For enum values, it's the second parameter.
+
+> [!WARNING]
+> MySQL doesn't support default values for `TEXT` columns, so you should not try to set a default value using the options array for `Text` or `HTMLText` fields when using MySQL.
 
 For example:
 
@@ -98,7 +101,8 @@ class Car extends DataObject
     private static $db = [
         'Wheels' => 'Int(4)',
         'Condition' => 'Enum("New,Fair,Junk", "Fair")',
-        'Make' => 'Varchar(["default" => "Honda"])',
+        // For Varchar, the size must be passed before the options array.
+        'Make' => 'Varchar(255, ["default" => "Honda"])',
     ];
 }
 ```
