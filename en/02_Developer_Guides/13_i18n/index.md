@@ -333,14 +333,12 @@ To create a custom module order, you need to specify a config fragment that inse
 Name: customi18n
 Before: '#defaulti18n'
 ---
-SilverStripe\i18n\i18n:
+SilverStripe\Core\Manifest\ModuleManifest:
   module_priority:
     - module1
     - module2
     - module3
 ```
-
-The config option being set is `i18n.module_priority`, and it is a list of module names.
 
 There are a few special cases:
 
