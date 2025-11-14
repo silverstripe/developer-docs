@@ -25,6 +25,29 @@ class MySettingsAdmin extends SingleRecordAdmin
 }
 ```
 
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+
+class MySettingsModel extends DataObject
+{
+    // ...
+
+    public function getCMSFields(): FieldList
+    {
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            // This is required for SingleRecordAdmin to function correctly
+            $fields->push(HiddenField::create('ID'));
+
+            // Any other field changes
+        });
+
+        return parent::getCMSFields();
+    }
+}
+```
+
 This admin section will fetch a record of the `MySettingsModel` class using a cached query.
 
 If you don't want the admin section to fetch your record in this way, you can set the [`restrict_to_single_record`](api:SilverStripe\Admin\SingleRecordAdmin->restrict_to_single_record) configuration property to false. In this case you must provide another way for the admin section to know which record to edit. This could be in the form of a separate action on the controller (e.g. `edit/$ID`), or by calling [`setCurrentRecordID()`](api:SilverStripe\Admin\LeftAndMain::setCurrentRecordID()) in the [`init()`](api:SilverStripe\Admin\LeftAndMain::init()) method of the controller.
