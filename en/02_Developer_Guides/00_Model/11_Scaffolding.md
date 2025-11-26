@@ -15,8 +15,6 @@ customise those fields as required.
 
 An example is `DataObject`, Silverstripe CMS will automatically create your CMS interface so you can modify what you need, without having to define all of your form fields from scratch.
 
-Note that the [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) edit form does not use scaffolded fields.
-
 ```php
 namespace App\Model;
 
