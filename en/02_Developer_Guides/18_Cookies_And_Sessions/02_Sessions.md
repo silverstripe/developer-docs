@@ -118,9 +118,11 @@ SilverStripe\Control\Session:
 
 ### Save handler
 
-You can choose how sessions are handled by setting the [`Session.save_handler`](api:SilverStripe\Control\Session->save_handler) configuration property or the `SS_SESSION_SAVE_HANDLER_CLASS` environment variable to the FQCN of your preferred save handler. By default this is set to [`FileSessionHandler`](api:SilverStripe\Control\SessionHandler\FileSessionHandler).
+You can choose how sessions are handled by setting the [`Session.save_handler`](api:SilverStripe\Control\Session->save_handler) configuration property or the `SS_SESSION_SAVE_HANDLER_CLASS` environment variable to the FQCN of your preferred save handler. Setting the environment variable takes precedence over the YAML configuration.
 
-If you want to use the default PHP file session handler instead, you can set the `Session.save_handler` configuration to `null`.
+The default session save handler is [`FileSessionHandler`](api:SilverStripe\Control\SessionHandler\FileSessionHandler).
+
+If you want to use the session handler defined in your `php.ini` file instead (which is usually the built-in file session handler), you can set the `Session.save_handler` configuration to `null`.
 
 ```yml
 SilverStripe\Control\Session:
@@ -148,6 +150,13 @@ To resolve this problem, Silverstripe CMS comes with [`FileSessionHandler`](api:
 
 If you want a more performant session save handler, you can use the [`CacheSessionHandler`](api:SilverStripe\Control\SessionHandler\CacheSessionHandler). This session save handler can use any cache that implements [the PSR-16 `Psr\SimpleCache\CacheInterface`](https://www.php-fig.org/psr/psr-16/#21-cacheinterface), though we recommend specifically using an in-memory cache adapter that gets instantiated from a factory implementing [`InMemoryCacheFactory`](api:SilverStripe\Core\Cache\InMemoryCacheFactory), such as [`MemcachedCacheFactory`](api:SilverStripe\Core\Cache\MemcachedCacheFactory) or [`RedisCacheFactory`](api:SilverStripe\Core\Cache\RedisCacheFactory).
 
+Set this save handler with the following YAML configuration, or by setting the `SS_SESSION_SAVE_HANDLER_CLASS` environment variable to `SilverStripe\Control\SessionHandler\CacheSessionHandler`
+
+```yml
+SilverStripe\Control\Session:
+  save_handler: 'SilverStripe\Control\SessionHandler\CacheSessionHandler'
+```
+
 > [!NOTE]
 > Although this is using a cache, sessions won't be cleared when flushing the site.
 
@@ -162,13 +171,22 @@ SilverStripe\Core\Injector\Injector:
     factory: 'App\Session\MyCacheFactory'
 ```
 
-See [cache adapters](/developer_guides/performance/cache_adapters/) for any additional details required to use those cache factories.
+For example to use Memcached, you can use the [`MemcachedCacheFactory`](api:SilverStripe\Core\Cache\MemcachedCacheFactory) cache factory.
+
+See [cache adapters](/developer_guides/performance/cache_adapters/) for any additional details required to use those cache factories, though note that you do not need to set `SS_IN_MEMORY_CACHE_FACTORY` to set up the session save handler.
 
 #### `DatabaseSessionHandler`
 
 The [`DatabaseSessionHandler`](api:SilverStripe\Control\SessionHandler\DatabaseSessionHandler) class lets you store session data in the database.
 
 This provides a low barrier to sharing your sessions across multiple servers, e.g. in a horizontally-scaled hosting scenario.
+
+Set this save handler with the following YAML configuration, or by setting the `SS_SESSION_SAVE_HANDLER_CLASS` environment variable to `SilverStripe\Control\SessionHandler\DatabaseSessionHandler`
+
+```yml
+SilverStripe\Control\Session:
+  save_handler: 'SilverStripe\Control\SessionHandler\DatabaseSessionHandler'
+```
 
 You can change the name of the table used by setting [`DatabaseSessionHandler.table_name`](api:SilverStripe\Control\SessionHandler\DatabaseSessionHandler->table_name) to the new table name.
 
