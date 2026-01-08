@@ -9,18 +9,6 @@ Silverstripe only commercially supports version 4.x of [tractorcow/silverstripe-
 
 This documents some of the breaking and functional changes across these three major release lines of the fluent module, as well as some key things to look out for and general guidelines on how to adapt your code to be compatible with the latest version.
 
-- [Breaking API changes](#breaking-api-changes)
-- [Localisation settings](#localisation-settings)
-  - [Locale fallback](#locale-fallback)
-  - [User permissions](#user-permissions)
-  - [Enhanced CMS UI](#enhanced-cms-ui)
-- [Localised versioned history](#localised-version-history)
-  - [Standard Versioned methods](#standard-versioned-methods)
-- [Localised relations](#localised-relations)
-- [Quality of life changes](#quality-of-life-changes)
-- [Unit tests](#unit-tests)
-- [Further reading](#further-reading)
-
 ## Breaking API changes
 
 Fluent v5 and v6 both introduced some breaking API changes.
