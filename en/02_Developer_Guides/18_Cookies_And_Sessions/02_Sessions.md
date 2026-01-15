@@ -146,6 +146,16 @@ To resolve this problem, Silverstripe CMS comes with [`FileSessionHandler`](api:
 1. The [`Session.timeout`](api:SilverStripe\Control\Session->timeout) configuration property is used as the source of truth for the lifetime of session files (see [session lifetime](#session-lifetime) above).
 1. If there are problems reading or writing to session files, the [default logging service](/developer_guides/debugging/error_handling/) is used to log them.
 
+##### Considerations with the `open_basedir` PHP configuration {#filesessionhandler-open-basedir}
+
+When using the `FileSessionHandler` save handler the [`open_basedir`](https://www.php.net/manual/en/ini.core.php#ini.open-basedir) PHP configuration option can cause problems. If that option has a value set, the location where session files are saved (defined by [`session.save_path`](https://www.php.net/manual/en/session.configuration.php#ini.session.save-path)) must be within a directory declared in `open_basedir`. Otherwise session functionality won't work.
+
+Note that including the sessions directory in `open_basedir` will allow any PHP code to interact with files in that location. If you don't want that to be the case, you can do one of the following:
+
+1. Revert back to the built-in PHP file session save handler by setting `SilverStripe\Control\Session.save_handler` to `null`. Note that this means your sessions will be blocking.
+1. Use an alternative session save handler.
+1. Set `session.save_path` to a location that you are happy for PHP code to interact with.
+
 #### `CacheSessionHandler`
 
 If you want a more performant session save handler, you can use the [`CacheSessionHandler`](api:SilverStripe\Control\SessionHandler\CacheSessionHandler). This session save handler can use any cache that implements [the PSR-16 `Psr\SimpleCache\CacheInterface`](https://www.php-fig.org/psr/psr-16/#21-cacheinterface), though we recommend specifically using an in-memory cache adapter that gets instantiated from a factory implementing [`InMemoryCacheFactory`](api:SilverStripe\Core\Cache\InMemoryCacheFactory), such as [`MemcachedCacheFactory`](api:SilverStripe\Core\Cache\MemcachedCacheFactory) or [`RedisCacheFactory`](api:SilverStripe\Core\Cache\RedisCacheFactory).
