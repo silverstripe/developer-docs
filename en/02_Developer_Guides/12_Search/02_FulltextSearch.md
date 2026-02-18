@@ -10,28 +10,6 @@ Fulltext search allows advanced search criteria for searching words within a tex
 Fulltext search can be achieved using the built-in [MySQLDatabase](api:SilverStripe\ORM\Connect\MySQLDatabase) class a more powerful wrapper for Fulltext
 search is provided through a module.
 
-## Adding fulltext support to `MySQLDatabase`
-
-The [MySQLDatabase](api:SilverStripe\ORM\Connect\MySQLDatabase) class defaults to creating tables using the InnoDB storage engine. As Fulltext search in MySQL
-requires the MyISAM storage engine, any DataObject you wish to use with Fulltext search must be changed to use MyISAM
-storage engine.
-
-You can do so by adding this static variable to your class definition:
-
-```php
-namespace App\Model;
-
-use SilverStripe\ORM\Connect\MySQLSchemaManager;
-use SilverStripe\ORM\DataObject;
-
-class MyDataObject extends DataObject
-{
-    private static $create_table_options = [
-        MySQLSchemaManager::ID => 'ENGINE=MyISAM',
-    ];
-}
-```
-
 The [FulltextSearchable](api:SilverStripe\ORM\Search\FulltextSearchable) extension will add the correct `Fulltext` indexes to the data model.
 
 > [!CAUTION]
@@ -39,7 +17,7 @@ The [FulltextSearchable](api:SilverStripe\ORM\Search\FulltextSearchable) extensi
 > records and cannot easily be adapted to include custom `DataObject` instances. To include your custom objects in the
 > default site search, have a look at those extensions and modify as required.
 
-### Fulltext filter
+## Fulltext filter
 
 Silverstripe CMS provides a [FulltextFilter](api:SilverStripe\ORM\Filters\FulltextFilter) which you can use to perform custom fulltext searches on
 [DataList](api:SilverStripe\ORM\DataList)s.
@@ -49,7 +27,6 @@ Example DataObject:
 ```php
 namespace App\Model;
 
-use SilverStripe\ORM\Connect\MySQLSchemaManager;
 use SilverStripe\ORM\DataObject;
 
 class SearchableDataObject extends DataObject
@@ -65,17 +42,13 @@ class SearchableDataObject extends DataObject
             'columns' => ['Title', 'Content'],
         ],
     ];
-
-    private static $create_table_options = [
-        MySQLSchemaManager::ID => 'ENGINE=MyISAM',
-    ];
 }
 ```
 
 Performing the search:
 
 ```php
-use App\Model\SearchableDataOBject;
+use App\Model\SearchableDataObject;
 
 SearchableDataObject::get()->filter('SearchFields:Fulltext', 'search term');
 ```
