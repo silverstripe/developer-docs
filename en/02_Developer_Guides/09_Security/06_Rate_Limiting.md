@@ -70,6 +70,29 @@ SilverStripe\Core\Injector\Injector:
         SiteWideRateLimitMiddleware: '%$SiteWideRateLimitMiddleware'
 ```
 
+## Excluding specific URLs from rate limiting
+
+You can exclude specific endpoints from rate limiting by providing URL regex patterns. This is useful for low-risk endpoints
+that should not be subject to rate limiting restrictions.
+
+Configure excluded patterns by adding `ExcludedURLPatterns` to your middleware configuration:
+
+```yml
+SilverStripe\Core\Injector\Injector:
+  MyRateLimitMiddleware:
+    class: SilverStripe\Control\Middleware\RateLimitMiddleware
+    properties:
+      # ...
+      ExcludedURLPatterns:
+        # Assuming $MyController is handling the 'my-controller' route,
+        # the following patterns would exclude specific endpoints from rate limiting:
+        - '#^my-controller/path/to/endpoint$#'
+        - '#^my-controller/another/endpoint.*#'
+```
+
+Patterns are matched as regex against the request URL path allowing you to exclude endpoints that provide information
+without performing sensitive operations or exposing vulnerabilities (e.g: password strength checks, status endpoints, etc).
+
 ## Disabling the rate limiter
 
 You may already solve the rate limiting problem on a server level and the built in rate limiting may well be redundant.
