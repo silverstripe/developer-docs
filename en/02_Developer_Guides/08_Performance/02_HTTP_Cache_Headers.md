@@ -222,21 +222,37 @@ HTTP::register_modification_date('2014-10-10');
 
 A `Vary` header tells caches which aspects of the response should be considered
 when calculating a cache key, usually in addition to the full URL.
-By default, Silverstripe CMS will output a `Vary` header with the following content:
+By default, Silverstripe CMS sets the `Vary` header to `X-Forwarded-Proto`. This ensures that caches
+(such as CDNs and reverse proxies) create separate cache entries for HTTP and HTTPS requests,
+preventing HTTPS users from being served a response originally cached for HTTP (or vice versa).
 
-```text
-Vary: X-Forwarded-Protocol
-```
+> [!NOTE]
+> Prior to Silverstripe CMS 5.4, the default `Vary` header was set to the non-standard
+> `X-Forwarded-Protocol`. This has been updated to the standard `X-Forwarded-Proto` header, which is
+> used by all major reverse proxies including Nginx, Apache, AWS ALB, and Cloudflare.
 
-To change the value of the `Vary` header, you can change this value by specifying the header in configuration.
+If your site is HTTPS-only (as recommended), varying by protocol is harmless but
+unnecessary since all requests will have the same protocol value. You can disable it:
 
 ```yml
-SilverStripe\Control\HTTP:
-  vary: ""
+SilverStripe\Control\Middleware\HTTPCacheControlMiddleware:
+  defaultVary: null
 ```
 
-Note that if you use `Director::is_ajax()` on cached pages
-then you should add `X-Requested-With` to the vary header.
+If you serve both HTTP and HTTPS with different content, the default `X-Forwarded-Proto` variance
+is important and should be left in place. Note that this only has an effect when your reverse proxy
+sets the `X-Forwarded-Proto` header and the application is configured to trust it via
+[`TrustedProxyMiddleware`](api:SilverStripe\Control\Middleware\TrustedProxyMiddleware).
+
+You can also add additional headers to vary on. For example, if you use `Director::is_ajax()` on
+cached pages then you should add `X-Requested-With`:
+
+```yml
+SilverStripe\Control\Middleware\HTTPCacheControlMiddleware:
+  defaultVary:
+    X-Forwarded-Proto: true
+    X-Requested-With: true
+```
 
 ## Testing
 

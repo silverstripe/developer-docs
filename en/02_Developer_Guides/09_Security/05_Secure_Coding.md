@@ -756,18 +756,28 @@ If there is no proxy server, 'none' can be used to explicitly distrust all clien
 If only trusted servers will make requests then you can use '*' to trust all clients.
 Otherwise a comma separated list of individual IP addresses (or subnets in CIDR notation) should be declared.
 
-At the same time, you'll also need to define which headers you trust from these proxy IPs. Since there are multiple ways through which proxies can pass through HTTP information on the original hostname, IP and protocol, these values need to be adjusted for your specific proxy. The header names match their equivalent `$_SERVER` values.
+At the same time, you'll also need to define which headers you trust from these proxy IPs. This is only relevant when
+`TrustedProxyMiddleware` is enabled with trusted proxy IPs configured - never trust forwarded headers from arbitrary
+clients. Since there are multiple ways through which proxies can pass through HTTP information on the original
+hostname, IP and protocol, these values need to be adjusted for your specific proxy. The header names match their
+equivalent `$_SERVER` values.
 
 If you wish to change the headers that are used to find the proxy information, you should reconfigure the
 `TrustedProxyMiddleware` service:
 
 ```yml
-SilverStripe\Control\TrustedProxyMiddleware:
-  properties:
-    ProxyHostHeaders: X-Forwarded-Host
-    ProxySchemeHeaders: X-Forwarded-Protocol
-    ProxyIPHeaders: X-Forwarded-Ip
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Control\Middleware\TrustedProxyMiddleware:
+    properties:
+      ProxyHostHeaders: X-Forwarded-Host
+      ProxySchemeHeaders:
+        - X-Forwarded-Proto
+        - X-Forwarded-Protocol
+      ProxyIPHeaders: X-Forwarded-Ip
 ```
+
+Scheme headers are checked in order, so `X-Forwarded-Proto` is preferred with `X-Forwarded-Protocol` as a legacy
+fallback. If neither header is present, Silverstripe CMS falls back to the standard HTTPS and SSL server variables.
 
 ## TLS (aka SSL aka HTTPS)
 
