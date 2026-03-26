@@ -228,11 +228,24 @@ By default, Silverstripe CMS will output a `Vary` header with the following cont
 Vary: X-Forwarded-Protocol
 ```
 
-To change the value of the `Vary` header, you can change this value by specifying the header in configuration.
+> [!IMPORTANT]
+> For historical reasons the default vary header is `X-Forwarded-Protocol` instead of the standard `X-Forwarded-Proto`.
+> If you are using a CDN or proxy which relies on `X-Forwarded-Proto` to determine the protocol of the request, you should change the default vary header to `X-Forwarded-Proto` to ensure that cached content is correctly served over both HTTP and HTTPS.
+
+To change the value of the `Vary` header, you can change this value by disabling the old header and specifying the new header in configuration:
 
 ```yml
-SilverStripe\Control\HTTP:
-  vary: ""
+SilverStripe\Control\Middleware\HTTPCacheControlMiddleware:
+  defaultVary:
+    X-Forwarded-Protocol: false
+    X-Forwarded-Proto: true
+```
+
+You can also remove the default `Vary` header value by setting it to `null`:
+
+```yml
+SilverStripe\Control\Middleware\HTTPCacheControlMiddleware:
+  defaultVary: null
 ```
 
 Note that if you use `Director::is_ajax()` on cached pages
