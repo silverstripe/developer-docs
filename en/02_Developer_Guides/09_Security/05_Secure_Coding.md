@@ -773,12 +773,20 @@ If you wish to change the headers that are used to find the proxy information, y
 `TrustedProxyMiddleware` service:
 
 ```yml
-SilverStripe\Control\TrustedProxyMiddleware:
-  properties:
-    ProxyHostHeaders: X-Forwarded-Host
-    ProxySchemeHeaders: X-Forwarded-Protocol
-    ProxyIPHeaders: X-Forwarded-Ip
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Control\Middleware\TrustedProxyMiddleware:
+    properties:
+      ProxyHostHeaders:
+        - X-Forwarded-Host
+      ProxySchemeHeaders:
+        - X-Forwarded-Proto
+        - X-Forwarded-Protocol
+      ProxyIPHeaders:
+        - X-Forwarded-Ip
 ```
+
+Scheme headers are checked in order, so `X-Forwarded-Proto` is preferred with `X-Forwarded-Protocol` as a legacy
+fallback. If neither header is present, Silverstripe CMS falls back to the standard HTTPS and SSL server variables.
 
 ## TLS (aka SSL aka HTTPS)
 
