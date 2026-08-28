@@ -6,7 +6,7 @@ on:
       - '3'
       - '4.13'
       - '5.4'
-      - '6.2'
+      - '6.3'
 jobs:
   build:
     name: build-docs
