@@ -14,7 +14,7 @@ This page outlines those who are part of the Core Committer team and outlines th
 
 - [Aaron Carlino](https://github.com/unclecheese/)
 - [Garion Herman](https://github.com/cheddam)
-- [Guy Sartorelli](https://github.com/GuySartorelli)
+- [Chloe Sartorelli](https://github.com/ChloeSartorelli)
 - [Ingo Schommer](https://github.com/chillu)
 - [Loz Calver](https://github.com/kinglozzer)
 - [Matt Peel](https://github.com/madmatt)
