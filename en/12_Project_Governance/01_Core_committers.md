@@ -13,6 +13,7 @@ This page outlines those who are part of the Core Committer team and outlines th
 ## Core committer team
 
 - [Aaron Carlino](https://github.com/unclecheese/)
+- [Andrew Paxley](https://github.com/andrewandante)
 - [Garion Herman](https://github.com/cheddam)
 - [Chloe Sartorelli](https://github.com/ChloeSartorelli)
 - [Ingo Schommer](https://github.com/chillu)
