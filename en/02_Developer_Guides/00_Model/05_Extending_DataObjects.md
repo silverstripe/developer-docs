@@ -37,7 +37,7 @@ class Player extends DataObject
         'Team' => Team::class,
     ];
 
-    public function onBeforeWrite()
+    protected function onBeforeWrite()
     {
         // Use $this->isInDb() to check if the record is being written to the database for the first time
         if (!$this->isInDb() && $this->Team()->exists()) {
@@ -73,7 +73,7 @@ class Player extends DataObject
 {
     // ...
 
-    public function onBeforeDelete()
+    protected function onBeforeDelete()
     {
         /* Do some cleanup here relevant to your project before deleting the actual database record */
 
@@ -87,7 +87,3 @@ class Player extends DataObject
 > [!WARNING]
 > Note: There are no separate methods for `onBeforeCreate()` and `onBeforeUpdate()`. Please check `$this->isInDb()` to toggle
 > these two modes, as shown in the example above.
-
-## Related lessons
-
-- [Working with data relationships - $has_many](https://www.silverstripe.org/learn/lessons/v4/working-with-data-relationships-has-many-1)

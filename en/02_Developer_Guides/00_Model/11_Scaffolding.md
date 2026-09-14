@@ -15,15 +15,15 @@ customise those fields as required.
 
 An example is `DataObject`, Silverstripe CMS will automatically create your CMS interface so you can modify what you need, without having to define all of your form fields from scratch.
 
-Note that the [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) edit form does not use scaffolded fields.
-
 ```php
 namespace App\Model;
 
+use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static $db = [
         'IsActive' => 'Boolean',
         'Title' => 'Varchar',
@@ -32,17 +32,18 @@ class MyDataObject extends DataObject
 
     public function getCMSFields()
     {
-        // parent::getCMSFields() does all the hard work and creates the fields for Title, IsActive and Content.
-        $fields = parent::getCMSFields();
-        $fields->dataFieldByName('IsActive')->setTitle('Is active?');
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->dataFieldByName('IsActive')->setTitle('Is active?');
+        });
 
-        return $fields;
+        // parent::getCMSFields() does all the hard work and creates the fields for Title, IsActive and Content.
+        return parent::getCMSFields();
     }
 }
 ```
 
 > [!TIP]
-> It is typically considered a good practice to wrap your modifications in a call to [`beforeUpdateCMSFields()`](api:SilverStripe\ORM\DataObject::beforeUpdateCMSFields()) - the `updateCMSFields()` extension hook is already triggered by `parent::getCMSFields()`, so this is how you ensure any new fields are added before extensions update your fieldlist.
+> It is typically considered a good practice to wrap your modifications in a call to [`beforeUpdateCMSFields()`](api:SilverStripe\ORM\DataObject::beforeUpdateCMSFields()) - the `updateCMSFields()` extension hook is triggered by `parent::getCMSFields()`, so this is how you ensure any new fields are added before extensions update your fieldlist.
 
 To define the form fields yourself without using scaffolding, use the `mainTabOnly` option in [`DataObject.scaffold_cms_fields_settings`](api:SilverStripe\ORM\DataObject->scaffold_cms_fields_settings). See [scaffolding options](#scaffolding-options) for details.
 
@@ -224,9 +225,10 @@ use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static $searchable_fields = [
-      'Name',
-      'ProductCode',
+        'Name',
+        'ProductCode',
     ];
 }
 ```
@@ -249,6 +251,7 @@ use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static $searchable_fields = [
         'Name',
         'BirthDate' => [
@@ -281,6 +284,7 @@ use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static string $general_search_field_name = 'my_general_field_name';
 }
 ```
@@ -315,6 +319,7 @@ use SilverStripe\ORM\Filters\EndsWithFilter;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static string $general_search_field_filter = EndsWithFilter::class;
 }
 ```
@@ -348,6 +353,7 @@ use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static bool $general_search_split_terms = false;
 }
 ```
@@ -366,6 +372,7 @@ use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static $searchable_fields = [
         'Name',
         'JobTitle',
@@ -386,6 +393,7 @@ use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static $searchable_fields = [
         'Price',
         'Description',
@@ -403,6 +411,7 @@ use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static $general_search_field = 'Title';
 }
 ```
@@ -431,15 +440,18 @@ use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static $searchable_fields = [
         'Name' => 'PartialMatchFilter',
-        'ProductCode' => NumericField::class,
+        'ProductCode' => [
+            'field' => NumericField::class,
+        ],
     ];
 }
 ```
 
-If you assign a single string value, you can set it to be either a [FormField](api:SilverStripe\Forms\FormField) or [SearchFilter](api:SilverStripe\ORM\Filters\SearchFilter). To specify
-both or to combine this with other configuration, you can assign an array:
+If you assign a single string value, you can set it to be a [`SearchFilter`](api:SilverStripe\ORM\Filters\SearchFilter) class. To specify a specific [`FormField`](api:SilverStripe\Forms\FormField) to use or
+specify both a form field *and* a filter - or to combine this with other configuration - you can assign an array:
 
 ```php
 namespace App\Model;
@@ -450,6 +462,7 @@ use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static $searchable_fields = [
        'Name' => [
           'field' => TextField::class,
@@ -460,6 +473,62 @@ class MyDataObject extends DataObject
            'field' => NumericField::class,
            'filter' => 'PartialMatchFilter',
        ],
+    ];
+}
+```
+
+#### Using `WithinRangeFilter` {#searchable-fields-withinrangefilter}
+
+If you want users to be able to filter by a field using a range, specify the [`WithinRangeFilter`](api:SilverStripe\ORM\Filters\WithinRangeFilter). This works out of the box with the numeric, date, datetime, and time fields that come in Silverstripe framework.
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+SilverStripe\ORM\Filters\WithinRangeFilter
+
+class MyDataObject extends DataObject
+{
+    // ...
+    private static array $db = [
+        'Price' => 'Currency',
+    ];
+
+    private static array $searchable_fields = [
+        'Price' => [
+            'filter' => WithinRangeFilter::class,
+        ],
+    ];
+}
+```
+
+This configuration will duplicate the form field, providing one form field for the "from" value, and another for the "to" value. Users can then filter within a range using the filters in the CMS.
+
+![filter by price within a range](../../_images/withinrangefilter.png)
+
+If a user fills in only the "from" or "to" field, the other will be populated with the minimum or maximum value defined by the relevant `DBField` class in [`getMinValue()`](api:SilverStripe\ORM\FieldType\DBField::getMinValue()) or [`getMaxValue()`](api:SilverStripe\ORM\FieldType\DBField::getMaxValue())
+
+This can also be used with other field types, but you need to define what the default "from" and "to" values should be. You can do this with the `rangeFromDefault` and `rangeToDefault` keys as shown below.
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+SilverStripe\ORM\Filters\WithinRangeFilter
+
+class MyDataObject extends DataObject
+{
+    // ...
+    private static array $db = [
+        'Title' => 'Varchar',
+    ];
+
+    private static array $searchable_fields = [
+        'Title' => [
+            'filter' => WithinRangeFilter::class,
+            'rangeFromDefault' => 'a',
+            'rangeToDefault' => 'z',
+        ],
     ];
 }
 ```
@@ -475,6 +544,7 @@ use SilverStripe\ORM\DataObject;
 
 class Team extends DataObject
 {
+    // ...
     private static $db = [
         'Title' => 'Varchar',
     ];
@@ -497,6 +567,7 @@ use SilverStripe\ORM\DataObject;
 
 class Player extends DataObject
 {
+    // ...
     private static $db = [
         'Name' => 'Varchar',
         'Birthday' => 'Date',
@@ -513,7 +584,7 @@ class Player extends DataObject
 Use a single search field that matches on multiple database fields with `'match_any'`. This also supports specifying a `FormField` and a filter, though it is not necessary to do so.
 
 > [!CAUTION]
-> If you don't specify a `FormField`, you must use the name of a real database field as the array key instead of a custom name so that a default field class can be determined.
+> If you don't specify `field` or `dataType`, you must use the name of a real database field as the array key instead of a custom name so that a default field class can be determined.
 
 ```php
 namespace App\Model;
@@ -522,6 +593,7 @@ use SilverStripe\Forms\TextField;
 
 class Order extends DataObject
 {
+    // ...
     private static $db = [
         'Name' => 'Varchar',
     ];
@@ -535,6 +607,8 @@ class Order extends DataObject
         'CustomName' => [
             'title' => 'First Name',
             'field' => TextField::class,
+            // Instead of defining "field" above, you could set "dataType" to a DBField instance like so:
+            // 'dataType' => DBVarchar::class,
             'match_any' => [
                 // Searching with the "First Name" field will show Orders matching either
                 // Name, Customer.FirstName, or ShippingAddress.FirstName
@@ -546,6 +620,8 @@ class Order extends DataObject
     ];
 }
 ```
+
+You can also allow users to filter `match_any` with a range, using the configuration specified in [using `WithinRangeFilter`](#searchable-fields-withinrangefilter).
 
 ## Summary fields
 
@@ -559,6 +635,7 @@ use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static $db = [
         'Name' => 'Text',
         'OtherProperty' => 'Text',
@@ -583,6 +660,7 @@ use SilverStripe\ORM\DataObject;
 
 class OtherObject extends DataObject
 {
+    // ...
     private static $db = [
         'Title' => 'Varchar',
     ];
@@ -596,6 +674,7 @@ use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static $db = [
         'Name' => 'Text',
         'Description' => 'HTMLText',
@@ -624,6 +703,7 @@ use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static $db = [
         'Name' => 'Text',
     ];
@@ -650,6 +730,7 @@ use SilverStripe\ORM\DataObject;
 
 class MyDataObject extends DataObject
 {
+    // ...
     private static $db = [
         'Name' => 'Text',
     ];

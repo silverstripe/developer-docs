@@ -583,10 +583,6 @@ The following PHP types are used to return database content:
 - strings returned as strings
 - dates / datetimes returned as strings
 
-## Related lessons
-
-- [Building custom SQL](https://www.silverstripe.org/learn/lessons/v4/beyond-the-orm-building-custom-sql-1)
-
 ## Related documentation
 
 - [Introduction to the Data Model and ORM](data_model_and_orm)

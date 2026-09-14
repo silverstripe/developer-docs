@@ -8,7 +8,7 @@ summary: Add versioning to your database content through the Versioned extension
 Database content in Silverstripe CMS can be "staged" before its publication, as well as track all changes through the
 lifetime of a database record.
 
-Versioning in Silverstripe CMS is handled through the [`Versioned`](api:SilverStripe\Versioned\Versioned) extension class. As an [`DataExtension`](api:SilverStripe/ORM/DataExtension) it is possible to be applied to any [`DataObject`](api:SilverStripe\ORM\DataObject) subclass. The extension class will automatically update read and write operations performed via the ORM because it implements the [`augmentSQL()`](api:SilverStripe/ORM/DataExtension::augmentSql()) extension hook method.
+Versioning in Silverstripe CMS is handled through the [`Versioned`](api:SilverStripe\Versioned\Versioned) extension class. As an [`Extension`](api:SilverStripe\Core\Extension) it is possible to be applied to any [`DataObject`](api:SilverStripe\ORM\DataObject) subclass. The extension class will automatically update read and write operations performed via the ORM because it implements the `augmentSQL` extension hooks defined in [`DataQuery::getFinalisedQuery()`](api:SilverStripe\ORM\DataQuery::getFinalisedQuery()).
 
 The `Versioned` extension is applied to pages in the CMS (the [`SiteTree`](api:SilverStripe\CMS\Model\SiteTree) class) - along with some other core `DataObject` models such as files - by default. Draft content edited in the CMS can be different
 from published content shown to your website visitors.
@@ -98,7 +98,7 @@ For example, your editors may be about to launch a new contest through their web
 Changes to many objects can be grouped together using the [`ChangeSet`](api:SilverStripe\Versioning\ChangeSet) object. In the CMS, editors can manage `ChangeSet`s through the "Campaign" section (if the `silverstripe/campaign-admin` module is installed). By grouping a series of content changes together as a cohesive unit, content editors can bulk publish an entire body of content all at once, which affords them much more power and control over interdependent content types.
 
 Records can be added to a changeset in the CMS by using the "Add to campaign" button
-that is available on the edit forms of all pages and files. Programmatically, this is done by creating a `ChangeSet` object and invoking its [`addObject(DataObject $record)`](api:SilverStripe\Versioning\ChangeSet::addObject()) method.
+that is available on the edit forms of all pages and files (if the `silverstripe/campaign-admin` module is installed). Programmatically, this is done by creating a `ChangeSet` object and invoking its [`addObject(DataObject $record)`](api:SilverStripe\Versioning\ChangeSet::addObject()) method.
 
 > [!NOTE]
 > DataObjects can be added to more than one ChangeSet.
@@ -240,9 +240,10 @@ Versioned DataObjects get additional permission check methods to verify what ope
 
 - [`canPublish()`](api:SilverStripe\Versioned\Versioned::canPublish()): Determines if a given `Member` is allowed to publish the record
 - [`canUnpublish()`](api:SilverStripe\Versioned\Versioned::canUnpublish()) Determines if a given `Member` is allowed to unpublish the record
-- [`canArchive()`](api:SilverStripe\Versioned\Versioned::canArchive()) Determines if a given `Member` is allowed to archive the record
 - [`canViewStage()`](api:SilverStripe\Versioned\Versioned::canViewStage()) Determines if a given `Member` can view the latest version of this record on a specific stage. Beware that this is *not* invoked when calling `canView()`. If you want to affect the result of regular `canView()` checks, implement `canViewVersioned()` instead.
 - [`canViewVersioned()`](api:SilverStripe\Versioned\Versioned::canViewVersioned()) Provides additional can view checks for versioned records. This is called by `canView()` and should not be called directly.
+
+The existing [`canDelete()`](api:SilverStripe\Versioned\Versioned::canDelete()) method is used to check if a given `Member` is allowed to archive the record. The `Versioned` extension enhances this permission check for published content to ensure members that cannot unpublish content also cannot archive it.
 
 These methods accept an optional `Member` argument. If not provided, they will assume you want to check the permission against the current `Member`. When performing a version operation on behalf of a `Member`, you'll probably want to use these methods to confirm they are authorised.
 
@@ -326,12 +327,12 @@ E.g.
 ```php
 namespace App\Extension;
 
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 use SilverStripe\Security\Permission;
 
-class MyObjectExtension extends DataExtension
+class MyObjectExtension extends Extension
 {
-    public function canViewNonLive($member = null)
+    protected function canViewNonLive($member = null)
     {
         if (!Permission::check($member, 'DRAFT_STATUS')) {
             return false;
@@ -555,6 +556,7 @@ This can also be manually enabled for a single `GridField` by passing the `Versi
 namespace {
 
     use SilverStripe\CMS\Model\SiteTree;
+    use SilverStripe\Forms\FieldList;
     use SilverStripe\Forms\GridField\GridField;
     use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
     use SilverStripe\Forms\GridField\GridFieldDetailForm;
@@ -564,16 +566,15 @@ namespace {
     {
         public function getCMSFields()
         {
-            $fields = parent::getCMSFields();
-
-            $config = GridFieldConfig_RelationEditor::create();
-            $config
-                ->getComponentByType(GridFieldDetailForm::class)
-                ->setItemRequestClass(VersionedGridFieldItemRequest::class);
-            $gridField = GridField::create('Items', 'Items', $this->Items(), $config);
-            $fields->addFieldToTab('Root.Items', $gridField);
-
-            return $fields;
+            $this->beforeUpdateCMSFields(function (FieldList $fields) {
+                $config = GridFieldConfig_RelationEditor::create();
+                $config
+                    ->getComponentByType(GridFieldDetailForm::class)
+                    ->setItemRequestClass(VersionedGridFieldItemRequest::class);
+                $gridField = GridField::create('Items', 'Items', $this->Items(), $config);
+                $fields->addFieldToTab('Root.Items', $gridField);
+            });
+            return parent::getCMSFields();
         }
     }
 }
@@ -602,6 +603,15 @@ $liveRecords = Versioned::get_by_stage(MyRecord::class, Versioned::LIVE);
 // Fetching a single record
 $stageRecord = Versioned::get_by_stage(MyRecord::class, Versioned::DRAFT)->byID(99);
 $liveRecord = Versioned::get_by_stage(MyRecord::class, Versioned::LIVE)->byID(99);
+```
+
+If you already have a list and want to filter it to only include records in a given stage, you can use [`updateListToAlsoIncludeStage()`](api:SilverStripe\Versioned\Versioned::updateListToAlsoIncludeStage()) instead.
+
+```php
+use SilverStripe\Versioned\Versioned;
+
+$myList = MyRecord::get()->filter(['Name' => 'Example']);
+$stageRecords = Versioned::updateListToAlsoIncludeStage($myList, Versioned::DRAFT);
 ```
 
 You can also use [`Versioned::withVersionedMode()`](api:SilverStripe\Versioned\Versioned::withVersionedMode()) in conjunction with [`Versioned::set_stage()`](api:SilverStripe\Versioned\Versioned::set_stage()) to temporarily change what stage is being used for queries.
@@ -663,6 +673,30 @@ $record = MyRecord::get()->byID(99);
 $versions = $record->allVersions();
 // instance of Versioned_Version
 $version = $versions->First()->Version;
+```
+
+### Reading archived versions
+
+Similarly to using `Versioned::get_by_stage()` and `Versioned::updateListToAlsoIncludeStage()` to get versions of records in a particular stage, you can also fetch records that have been archived.
+
+There are a few different methods for this, depending on exactly what information you're after:
+
+- [`getRemovedFromDraft()`](api:SilverStripe\Versioned\Versioned::getRemovedFromDraft()) - Returns a new list of records (both published and archived) which have been removed from draft.
+- [`updateListToOnlyIncludeRemovedFromDraft()`](api:SilverStripe\Versioned\Versioned::updateListToOnlyIncludeRemovedFromDraft()) - Gives the same results as `getRemovedFromDraft()`, but you can pass it a list to modify instead of it giving you a new list.
+- [`getArchivedOnly()`](api:SilverStripe\Versioned\Versioned::getArchivedOnly()) - Returns a new list of only records which have been archived. This excludes records which are published but removed from draft.
+- [`updateListToOnlyIncludeArchived()`](api:SilverStripe\Versioned\Versioned::updateListToOnlyIncludeArchived()) - Gives the same results as `getArchivedOnly()`, but you can pass it a list to modify instead of it giving you a new list.
+
+```php
+use SilverStripe\Versioned\Versioned;
+
+// Fetching a new list
+$archivedAndOnlyLive = Versioned::getRemovedFromDraft(MyRecord::class);
+$ArchivedOnly = Versioned::getArchivedOnly(MyRecord::class);
+
+// Using an existing list
+$myList = MyRecord::get()->filter(['Name' => 'Example']);
+$archivedAndOnlyLive = Versioned::updateListToOnlyIncludeRemovedFromDraft($myList);
+$ArchivedOnly = Versioned::updateListToOnlyIncludeArchived($myList);
 ```
 
 ### Writing changes to a versioned `DataObject`
@@ -1019,407 +1053,35 @@ See [Reading versions by stage](#reading-versions-by-stage) for more about using
 
 ## Using the history viewer
 
-You can use the React and GraphQL driven history viewer UI to display historic changes and
-comparisons for a versioned DataObject. This is automatically enabled for SiteTree objects and content blocks in
-[dnadesign/silverstripe-elemental](https://github.com/dnadesign/silverstripe-elemental).
-
-> [!WARNING]
-> Because of the lack of specificity in the `HistoryViewer.Form_ItemEditForm` scope used when injecting the history viewer to the DOM, only one model can have a working history panel at a time, with exception to `SiteTree` which has its own history viewer scope. For example, if you already have `dnadesign/silverstripe-elemental` installed, the custom history viewer instance injected as a part of this documentation will *break* the one provided by the elemental module.
->
-> There are ways you can get around this limitation. You may wish to put some conditional logic in `app/client/src/boot/index.js` below to only perform the transformations if the current location is within a specific model admin, for example.
-
-If you want to enable the history viewer for a custom versioned DataObject, you will need to:
-
-- Expose GraphQL scaffolding
-- Add the necessary GraphQL queries and mutations to your module
-- Register your GraphQL queries and mutations with Injector
-- Add a HistoryViewerField to the DataObject's `getCMSFields`
-
-> [!WARNING]
-> **Please note:** these examples are given in the context of project-level customisation. You may need to adjust
-> the webpack configuration slightly for use in a module.
-
-### Setup {#history-viewer-setup}
-
-This example assumes you have some `DataObject` model and somewhere to view that model (e.g. in a `ModelAdmin`). We'll walk you through the steps required to add some JavaScript to tell the history viewer how to handle requests for your model.
-
-For this example we'll start with this simple `DataObject`:
+You can add the [`HistoryViewerField`](api:SilverStripe\VersionedAdmin\Forms\HistoryViewerField) to the edit form of any [`DataObject`](api:SilverStripe\ORM\DataObject) with the [`Versioned`](api:SilverStripe\Versioned\Versioned) extension. This will allow CMS users revert to a previous version of the record.
 
 ```php
-namespace App\Model;
+// app/src/Models/MyDataObject.php
+namespace App\Models;
 
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
+use SilverStripe\VersionedAdmin\Forms\HistoryViewerField;
 
-class MyVersionedObject extends DataObject
+class MyDataObject extends DataObject
 {
-    private static $table_name = 'App_MyVersionedObject';
-
-    private static $db = [
-        'Title' => 'Varchar',
-    ];
+    // ...
 
     private static $extensions = [
         Versioned::class,
     ];
-    // ...
-}
-```
 
-#### Configure frontend asset building {#history-viewer-js}
-
-If you haven't already configured frontend asset (JavaScript/CSS) building for your project, you will need to configure some basic
-packages to be built in order to enable history viewer functionality. This section includes a very basic webpack configuration which uses [@silverstripe/webpack-config](https://www.npmjs.com/package/@silverstripe/webpack-config).
-
-> [!TIP]
-> If you have this configured for your project already, ensure you have the `@apollo/client` and `graphql-tag` libraries in your `package.json`
-> requirements (with the appropriate version constraints from below), and skip this section.
-
-You can configure your directory structure like so:
-
-```json
-// package.json
-{
-  "name": "my-project",
-  "scripts": {
-    "build": "yarn && NODE_ENV=production webpack --mode production --bail --progress",
-    "watch": "yarn && NODE_ENV=development webpack --watch --progress"
-  },
-  "dependencies": {
-    "@apollo/client": "^3.7.1",
-    "graphql-tag": "^2.12.6"
-  },
-  "devDependencies": {
-    "@silverstripe/webpack-config": "^2.0.0",
-    "webpack": "^5.74.0",
-    "webpack-cli": "^5.0.0"
-  },
-  "engines": {
-    "node": "^18.x"
-  }
-}
-```
-
-> [!WARNING]
-> Using `@silverstripe/webpack-config` will keep your transpiled bundle size smaller and ensure you are using the correct versions of `@apollo/client` and `graphql-tag`, as these will automatically be added as [webpack externals](https://webpack.js.org/configuration/externals/). If you are not using that npm package, it is very important you use the correct versions of those dependencies.
-
-```js
-// webpack.config.js
-const Path = require('path');
-const { JavascriptWebpackConfig } = require('@silverstripe/webpack-config');
-
-const PATHS = {
-  ROOT: Path.resolve(),
-  SRC: Path.resolve('app/client/src'),
-  DIST: Path.resolve('app/client/dist'),
-};
-
-module.exports = [
-  new JavascriptWebpackConfig('cms-js', PATHS)
-    .setEntry({
-      bundle: `${PATHS.SRC}/boot/index.js`,
-    })
-    .getConfig(),
-];
-```
-
-```js
-// app/client/src/boot/index.js
-
-// We'll populate this file later - for now we just need it to be sure our build setup works.
-```
-
-At this stage, running `yarn build` should correctly build `app/client/dist/js/bundle.js`.
-
-> [!WARNING]
-> Don't forget to [configure your project's "exposed" folders](/developer_guides/templates/requirements/#configuring-your-project-exposed-folders) and run `composer vendor-expose` on the command line so that the browser has access to your new dist JS file.
-
-### Create and use GraphQL schema {#history-viewer-gql}
-
-The history viewer uses GraphQL queries and mutations to function. There's instructions for setting up a basic schema below.
-
-#### Define GraphQL schema {#define-graphql-schema}
-
-Only a minimal amount of data is required to be exposed via GraphQL scaffolding, and only to the "admin" GraphQL schema.
-
-For more information, see [Working with DataObjects - Adding DataObjects to the schema](/developer_guides/graphql/working_with_dataobjects/adding_dataobjects_to_the_schema/).
-
-```yml
-# app/_config/graphql.yml
-SilverStripe\GraphQL\Schema\Schema:
-  schemas:
-    admin:
-      src:
-        - app/_graphql
-```
-
-```yml
-# app/_graphql/models.yml
-App\Model\MyVersionedObject:
-  fields: '*'
-  operations:
-    readOne: true
-    rollback: true
-```
-
-Once configured, flush your cache and run `dev/graphql/build` either in your browser or via sake, and explore the new GraphQL schema to ensure it loads correctly.
-You can use a GraphQL application such as GraphiQL, or [`silverstripe/graphql-devtools`](https://github.com/silverstripe/silverstripe-graphql-devtools)
-to view the schema and run queries from your browser:
-
-```bash
-composer require --dev silverstripe/graphql-devtools dev-master
-```
-
-#### Use the GraphQL query and mutation in JavaScript
-
-The history viewer interface uses two main operations:
-
-- Read a list of versions for a DataObject
-- Revert (aka rollback) to an older version of a DataObject
-
-`silverstripe/versioned` provides some GraphQL plugins we're taking advantage of here. See [Working with DataObjects - Versioned content](/developer_guides/graphql/working_with_dataobjects/versioning/) for more information.
-
-For this we need one query and one mutation:
-
-```js
-// app/client/src/state/readOneMyVersionedObjectQuery.js
-import { graphql } from '@apollo/client/react/hoc';
-import gql from 'graphql-tag';
-
-// Note that "readOneMyVersionedObject" is the query name in the schema, while
-// "ReadHistoryViewerMyVersionedObject" is an arbitrary name we're using for this invocation
-// of the query
-const query = gql`
-query ReadHistoryViewerMyVersionedObject ($id: ID!, $limit: Int!, $offset: Int!) {
-    readOneMyVersionedObject(
-      versioning: {
-        mode: ALL_VERSIONS
-      },
-      filter: {
-        id: { eq: $id }
-      }
-    ) {
-      id
-      versions (limit: $limit, offset: $offset, sort: {
-        version: DESC
-      }) {
-        pageInfo {
-          totalCount
-        }
-        nodes {
-          version
-          author {
-            firstName
-            surname
-          }
-          publisher {
-            firstName
-            surname
-          }
-          deleted
-          draft
-          published
-          liveVersion
-          latestDraftVersion
-          lastEdited
-        }
-      }
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+        $fields->addFieldToTab(
+            'Root.History',
+            HistoryViewerField::create('HistoryViewer')
+        );
+        return $fields;
     }
-  }
-`;
-
-const config = {
-  options({ recordId, limit, page }) {
-    return {
-      variables: {
-        limit,
-        offset: ((page || 1) - 1) * limit,
-        id: recordId,
-        // Never read from the cache. Saved pages should stale the query, and these queries
-        // happen outside the scope of apollo's cache. This view is loaded asynchronously anyway,
-        // so caching doesn't make any sense until we're full React/GraphQL.
-        fetchPolicy: 'network-only',
-      }
-    };
-  },
-  props({
-    data: {
-      error,
-      refetch,
-      readOneMyVersionedObject,
-      loading: networkLoading,
-    },
-    ownProps: {
-      actions = {
-        versions: {}
-      },
-      limit,
-      recordId,
-    },
-  }) {
-    const versions = readOneMyVersionedObject || null;
-
-    const errors = error && error.graphQLErrors &&
-      error.graphQLErrors.map((graphQLError) => graphQLError.message);
-
-    return {
-      loading: networkLoading || !versions,
-      versions,
-      graphQLErrors: errors,
-      actions: {
-        ...actions,
-        versions: {
-          ...versions,
-          goToPage(page) {
-            refetch({
-              offset: ((page || 1) - 1) * limit,
-              limit,
-              id: recordId,
-            });
-          }
-        },
-      },
-    };
-  },
-};
-
-export { query, config };
-
-export default graphql(query, config);
-```
-
-```js
-// app/client/src/state/revertToMyVersionedObjectVersionMutation.js
-import { graphql } from '@apollo/client/react/hoc';
-import gql from 'graphql-tag';
-
-// Note that "rollbackMyVersionedObject" is the mutation name in the schema, while
-// "revertToMyVersionedObject" is an arbitrary name we're using for this invocation
-// of the mutation
-const mutation = gql`
-mutation revertToMyVersionedObject($id:ID!, $toVersion:Int!) {
-  rollbackMyVersionedObject(
-    id: $id
-    toVersion: $toVersion
-  ) {
-    id
-  }
-}
-`;
-
-const config = {
-  props: ({ mutate, ownProps: { actions } }) => {
-    const revertToVersion = (id, toVersion) => mutate({
-      variables: {
-        id,
-        toVersion,
-      },
-    });
-
-    return {
-      actions: {
-        ...actions,
-        revertToVersion,
-      },
-    };
-  },
-  options: {
-    // Refetch versions after mutation is completed
-    refetchQueries: ['ReadHistoryViewerMyVersionedObject']
-  }
-};
-
-export { mutation, config };
-
-export default graphql(mutation, config);
-```
-
-#### Register your GraphQL query and mutation with `Injector`
-
-Once your GraphQL query and mutation are created you will need to tell the JavaScript Injector about them.
-This does two things:
-
-- Allow them to be loaded by core components.
-- Allow Injector to provide them in certain contexts. They should be available for `MyVersionedObject` history viewer
-  instances, but not for CMS pages for example.
-
-```js
-// app/client/src/boot/index.js
-
-/* global window */
-import Injector from 'lib/Injector';
-import readOneMyVersionedObjectQuery from 'state/readOneMyVersionedObjectQuery';
-import revertToMyVersionedObjectVersionMutation from 'state/revertToMyVersionedObjectVersionMutation';
-
-window.document.addEventListener('DOMContentLoaded', () => {
-  // Register GraphQL operations with Injector as transformations
-  Injector.transform(
-    'myversionedobject-history', // this name is arbitrary
-    (updater) => {
-      // Add CMS page history GraphQL query to the HistoryViewer
-      updater.component(
-        'HistoryViewer.Form_ItemEditForm',
-        readOneMyVersionedObjectQuery,
-        'MyVersionedObjectHistoryViewer' // this name is arbitrary
-      );
-    }
-  );
-
-  Injector.transform(
-    'myversionedobject-history-revert', // this name is arbitrary
-    (updater) => {
-      // Add CMS page revert GraphQL mutation to the HistoryViewerToolbar
-      updater.component(
-        // NOTE: The "App_MyVersionedObject" portion here is taken from table_name of the model
-        'HistoryViewerToolbar.VersionedAdmin.HistoryViewer.App_MyVersionedObject.HistoryViewerVersionDetail',
-        revertToMyVersionedObjectVersionMutation,
-        'MyVersionedObjectRevertMutation' // this name is arbitrary
-      );
-    }
-  );
-});
-```
-
-For more information, see [Using Injector to customise GraphQL queries](/developer_guides/customising_the_admin_interface/react_redux_and_graphql#using-injector-to-customise-graphql-queries) and [Transforming services using middleware](/developer_guides/customising_the_admin_interface/reactjs_redux_and_graphql/#transforming-services-using-middleware).
-
-### Adding the `HistoryViewerField`
-
-Firstly, ensure your JavaScript bundle is included throughout the CMS:
-
-```yml
----
-Name: CustomAdmin
-After:
-  - 'versionedadmincmsconfig'
-  - 'versionededitform'
-  - 'cmsscripts'
-  - 'elemental' # Only needed if silverstripe-elemental is installed
----
-SilverStripe\Admin\LeftAndMain:
-  extra_requirements_javascript:
-    - app/client/dist/js/bundle.js
-```
-
-Then you can add the [HistoryViewerField](api:SilverStripe\VersionedAdmin\Forms\HistoryViewerField) to your model's CMS
-fields in the same way as any other form field:
-
-```php
-use SilverStripe\VersionedAdmin\Forms\HistoryViewerField;
-
-public function getCMSFields()
-{
-    $fields = parent::getCMSFields();
-    $fields->addFieldToTab('Root.History', HistoryViewerField::create('MyObjectHistory'));
-    return $fields;
 }
 ```
-
-### Previewable `DataObject` models
-
-The history viewer will automatically detect and render a side-by-side preview panel for DataObjects that implement
-[CMSPreviewable](api:SilverStripe\ORM\CMSPreviewable). Please note that if you are adding this functionality, you
-will also need to expose the `AbsoluteLink` field in your GraphQL read scaffolding, and add it to the fields in
-`readOneMyVersionedObjectQuery`.
 
 ## API documentation
 

@@ -74,7 +74,7 @@ class Dog extends DataObject
 > {
 >     // ...
 >
->     public function onBeforeWrite()
+>     protected function onBeforeWrite()
 >     {
 >         // Only do this if the record hasn't been written to the database yet (optional)
 >         if (!$this->isInDb()) {
@@ -104,7 +104,7 @@ class Dog extends DataObject
 
 ## Static default records
 
-The [DataObject::$default_records](api:SilverStripe\ORM\DataObject::$default_records) array allows you to specify default records created on dev/build.
+The [DataObject::$default_records](api:SilverStripe\ORM\DataObject::$default_records) array allows you to specify default records created when the database is built.
 
 A simple example of this is having a region model and wanting a list of regions created when the site is built:
 
@@ -144,7 +144,7 @@ public function requireDefaultRecords()
     parent::requireDefaultRecords();
 
     // Make some record only if we're in dev mode and we don't have any of the current class yet.
-    if (Director::isDev() && !DataObject::get_one(static::class)) {
+    if (Director::isDev() && !DataObject::get(static::class)->first()) {
         $record = static::create(['Date' => date('Y-m-d')]);
         $record->write();
     }

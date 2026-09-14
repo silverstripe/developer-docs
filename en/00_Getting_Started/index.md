@@ -8,7 +8,7 @@ icon: rocket
 
 ## Server requirements
 
-Silverstripe requires PHP 8.1 or newer. It runs on many webservers and databases, but is most commonly served using
+Silverstripe CMS requires PHP 8.3, PHP 8.4 or PHP 8.5. It runs on many webservers and databases, but is most commonly served using
 Apache and MySQL/MariaDB.
 
 If you are setting up your own environment, you'll need to consider a few configuration settings such as URL rewriting
@@ -48,19 +48,15 @@ SS_ENVIRONMENT_TYPE="<dev|test|live>"
 Now you should be able to build your database by running this command:
 
 ```bash
-vendor/bin/sake dev/build
+vendor/bin/sake db:build
 ```
+
+> [!TIP]
+> Check out [Sake](/developer_guides/cli/sake) for more details about using Sake on the command line
 
 Your website should be available on your domain now (e.g. `https://www.example.com`). The CMS login can be accessed at `/admin` (e.g. `http://www.example.com/admin`).
 
-For more information on how to maintain your installation or install projects, check
-out [Using Silverstripe with Composer](composer).
-
-## Guided installation
-
-If you are unsure on how this all works, please jump on our [lessons](https://www.silverstripe.org/learn/lessons/v4/).
-Webserver setup is covered in
-[Lesson 4: Setting up a local dev environment](https://www.silverstripe.org/learn/lessons/v4/up-and-running-setting-up-a-local-silverstripe-dev-environment-1).
+For more information on how to maintain your installation or install projects, check out [Using Silverstripe with Composer](composer).
 
 ## Keep learning
 

@@ -11,8 +11,11 @@ framework.
 
 A module is a collection of classes, templates, and other resources that is loaded into a directory.
 Modules are [Composer packages](https://getcomposer.org/), and are placed in the `vendor/` folder.
-These packages need to contain either a toplevel `_config` directory or `_config.php` file,
-as well as a special `type` in their `composer.json` file ([example](https://github.com/silverstripe/silverstripe-module/blob/5/composer.json)).
+These packages need to contain one of the following in its root directory to be recognised as a module by Silverstripe CMS:
+
+- a `_config` directory
+- a `_config.php` file
+- a `composer.json` file with a `type` of either `silverstripe-vendormodule` or `silverstripe-theme`([example](https://github.com/silverstripe/silverstripe-module/blob/5/composer.json)).
 
 Like with any Composer package, we recommend declaring your PHP classes through
 [PSR-4 autoloading](https://getcomposer.org/doc/01-basic-usage.md#autoloading).
@@ -31,12 +34,12 @@ enables you to install modules from specific versions, checking for compatibilit
 to track development branches of them. To install modules using this method, you will first need to setup Silverstripe CMS
 with [Composer](../../getting_started/composer).
 
-Each module has a unique identifier, consisting of a vendor prefix and name. For example, the "blog" module has the
-identifier `silverstripe/blog` as it is published by *Silverstripe*. To install, use the following command executed in
+Each module has a unique identifier, consisting of a vendor prefix and name. For example, the "linkfield" module has the
+identifier `silverstripe/linkfield` as it is published by *Silverstripe*. To install, use the following command executed in
 the project root folder:
 
 ```bash
-composer require silverstripe/blog
+composer require silverstripe/linkfield
 ```
 
 This will fetch the latest compatible stable version of the module.
@@ -49,7 +52,7 @@ To lock down to a specific version, branch or commit, read up on
 ["lock" files](https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control).
 
 > [!WARNING]
-> After you add or remove modules, make sure you rebuild the database, class and configuration manifests by going to `https://www.example.com/dev/build?flush=1`
+> After you add or remove modules, make sure you rebuild the database and flush the cache by running `sake db:build --flush`
 
 ## Creating a module {#create}
 
@@ -73,7 +76,7 @@ You can either edit the file directly in GitHub, or you can clone the repository
 using this directory to update the `composer.json` file. Once that's updated in the repository, you'll use Composer to include your module in
 a Silverstripe CMS project and do your development from there.
 
-Here is an example for a module that builds on the functionality provided by the `silverstripe/blog` module, so it has that module as a dependency:
+Here is an example for a module that builds on the functionality provided by the `silverstripe/linkfield` module, so it has that module as a dependency:
 
 ```json
 {
@@ -81,9 +84,9 @@ Here is an example for a module that builds on the functionality provided by the
     "description": "Short module description",
     "type": "silverstripe-vendormodule",
     "require": {
-        "silverstripe/framework": "^5.0",
-        "silverstripe/cms": "^5.0",
-        "silverstripe/blog": "^5.0"
+        "silverstripe/framework": "^6.0",
+        "silverstripe/cms": "^6.0",
+        "silverstripe/linkfield": "^5.0"
     }
 }
 ```
@@ -162,12 +165,12 @@ which the Silverstripe CMS project applies to the modules it creates and maintai
 ### Coding guidelines
 
 - Complies to a well defined module directory structure and coding standards:
-  - `templates/` (for `.ss` templates)
+  - `templates/` (for templates e.g. `*.ss` files)
   - `src/` (for `.php` files)
   - `tests/` (for `*Test.php` test files), and;
   - `_config/` (for `.yml` config files)
 - The module is a Composer package.
-- All Composer dependencies are bound to a single major release (e.g. `^5.0` not `>=5` or `*`) unless there are obvious reasons not to for some specific dependency.
+- All Composer dependencies are bound to a single major release (e.g. `^6.0` not `>=6`) unless there are obvious reasons not to for some specific dependency.
 - There is a level of test coverage.
 - Uses strong typing where appropriate.
 - A clear [public API](/project_governance/public_api/) documented in the docblock tags.

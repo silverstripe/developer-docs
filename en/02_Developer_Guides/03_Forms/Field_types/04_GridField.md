@@ -38,20 +38,23 @@ namespace App\PageType;
 
 use Page;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 
 class MyPage extends Page
 {
+    // ...
+
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->addFieldToTab(
+                'Root.Pages',
+                GridField::create('Pages', 'All pages', SiteTree::get())
+            );
+        });
 
-        $fields->addFieldToTab(
-            'Root.Pages',
-            GridField::create('Pages', 'All pages', SiteTree::get())
-        );
-
-        return $fields;
+        return parent::getCMSFields();
     }
 }
 ```
@@ -69,35 +72,38 @@ namespace App\PageType;
 
 use Page;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldDataColumns;
 
 class MyPage extends Page
 {
+    // ...
+
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->addFieldToTab(
+                'Root.Pages',
+                $grid = GridField::create('Pages', 'All pages', SiteTree::get())
+            );
 
-        $fields->addFieldToTab(
-            'Root.Pages',
-            $grid = GridField::create('Pages', 'All pages', SiteTree::get())
-        );
+            // GridField configuration
+            $config = $grid->getConfig();
 
-        // GridField configuration
-        $config = $grid->getConfig();
+            // Modification of existing components can be done by fetching that component.
+            // Consult the API documentation for each component to determine the configuration
+            // you can do.
+            $dataColumns = $config->getComponentByType(GridFieldDataColumns::class);
 
-        // Modification of existing components can be done by fetching that component.
-        // Consult the API documentation for each component to determine the configuration
-        // you can do.
-        $dataColumns = $config->getComponentByType(GridFieldDataColumns::class);
+            $dataColumns->setDisplayFields([
+                'Title' => 'Title',
+                'Link' => 'URL',
+                'LastEdited' => 'Changed',
+            ]);
+        });
 
-        $dataColumns->setDisplayFields([
-            'Title' => 'Title',
-            'Link' => 'URL',
-            'LastEdited' => 'Changed',
-        ]);
-
-        return $fields;
+        return parent::getCMSFields();
     }
 }
 ```
@@ -373,6 +379,7 @@ class Team extends DataObject
 ```php
 namespace App\Model;
 
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\Forms\GridField\GridFieldDataColumns;
@@ -398,31 +405,31 @@ class Player extends DataObject
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            if ($this->ID) {
+                $singletonTeam = singleton(Team::class);
+                $teamEditFields = $singletonTeam->getCMSFields();
+                $teamEditFields->addFieldToTab(
+                    'Root.Main',
+                    // The "ManyMany[<extradata-name>]" convention is necessary here, because this will be passed
+                    // into the GridFieldDetailForm
+                    TextField::create('ManyMany[Position]', 'Current Position')
+                );
 
-        if ($this->ID) {
-            $singletonTeam = singleton(Team::class);
-            $teamEditFields = $singletonTeam->getCMSFields();
-            $teamEditFields->addFieldToTab(
-                'Root.Main',
-                // The "ManyMany[<extradata-name>]" convention is necessary here, because this will be passed
-                // into the GridFieldDetailForm
-                TextField::create('ManyMany[Position]', 'Current Position')
-            );
+                // For summary fields, the "ManyMany[<extradata-name>]" convention won't work (and isn't necessary),
+                // since this isn't passed into the GridFieldDetailForm
+                $teamSummaryFields = array_merge($singletonTeam->summaryFields(), ['Position' => 'Current Position']);
 
-            // For summary fields, the "ManyMany[<extradata-name>]" convention won't work (and isn't necessary),
-            // since this isn't passed into the GridFieldDetailForm
-            $teamSummaryFields = array_merge($singletonTeam->summaryFields(), ['Position' => 'Current Position']);
+                $config = GridFieldConfig_RelationEditor::create();
+                $config->getComponentByType(GridFieldDetailForm::class)->setFields($teamEditFields);
+                $config->getComponentByType(GridFieldDataColumns::class)->setDisplayFields($teamSummaryFields);
 
-            $config = GridFieldConfig_RelationEditor::create();
-            $config->getComponentByType(GridFieldDetailForm::class)->setFields($teamEditFields);
-            $config->getComponentByType(GridFieldDataColumns::class)->setDisplayFields($teamSummaryFields);
+                $gridField = GridField::create('Teams', 'Teams', $this->Teams(), $config);
+                $fields->findOrMakeTab('Root.Teams')->replaceField('Teams', $gridField);
+            }
+        });
 
-            $gridField = GridField::create('Teams', 'Teams', $this->Teams(), $config);
-            $fields->findOrMakeTab('Root.Teams')->replaceField('Teams', $gridField);
-        }
-
-        return $fields;
+        return parent::getCMSFields();
     }
 }
 ```

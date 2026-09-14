@@ -33,15 +33,13 @@ come from user input.
 Example:
 
 ```php
+use App\Model\MyClass;
 use SilverStripe\ORM\DB;
-use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLSelect;
 
 $records = DB::prepared_query('SELECT * FROM "MyClass" WHERE "ID" = ?', [3]);
 $records = MyClass::get()->where(['"ID" = ?' => 3]);
 $records = MyClass::get()->where(['"ID"' => 3]);
-$records = DataObject::get_by_id('MyClass', 3);
-$records = DataObject::get_one('MyClass', ['"ID" = ?' => 3]);
 $records = MyClass::get()->byID(3);
 $records = SQLSelect::create()->addWhere(['"ID"' => 3])->execute();
 ```
@@ -76,7 +74,6 @@ If necessary Silverstripe performs any required escaping through database-specif
 For [`MySQLDatabase`](api:SilverStripe\ORM\Connect\MySQLDatabase), this will be [`mysqli::real_escape_string()`](https://www.php.net/manual/en/mysqli.real-escape-string.php).
 
 - Most [`DataList`](api:SilverStripe\ORM\DataList) accessors (see escaping note in method documentation)
-- [`DataObject::get_by_id()`](api:SilverStripe\ORM\DataObject::get_by_id())
 - [`DataObject::update()`](api:SilverStripe\ORM\DataObject::update())
 - [`DataObject::castedUpdate()`](api:SilverStripe\ORM\DataObject::castedUpdate())
 - `$dataObject->SomeField = 'val'`, [`DataObject::setField()`](api:SilverStripe\ORM\DataObject::setField())
@@ -144,7 +141,7 @@ class MyForm extends Form
 }
 ```
 
-- `FormField->Value()`
+- `FormField->getValue()`
 - URLParams passed to a Controller-method
 
 Example:
@@ -229,11 +226,10 @@ You can also use the [`XssSanitiser`](api:SilverStripe\Core\XssSanitiser) to rem
 
 ### What if I need to allow script or style tags?
 
-The default configuration of Silverstripe CMS uses a santiser to enforce TinyMCE whitelist rules on the server side,
-and is sufficient to eliminate the most common XSS vectors. Notably, this will remove script and style tags.
+The default configuration of Silverstripe CMS uses a santiser to enforce the element and attribute rules on the server side,
+and is sufficient to eliminate the most common XSS vectors. Notably, this will remove script and style tags unless those are explicitly allowed in your configuration.
 
-If your site requires script or style tags to be added via TinyMCE, Silverstripe CMS can be configured to disable the
-server side santisation. You will also need to update the TinyMCE whitelist [settings](/developer_guides/forms/field_types/htmleditorfield/#setting-options) to remove the frontend sanitisation.
+If your site requires script or style tags to be added via the HTML editor, you will also need to update the element rules to remove the frontend sanitisation. See [defining HTML editor configurations](/developer_guides/forms/field_types/htmleditorfield/#defining-html-editor-configurations) for details.
 
 However, it's strongly discouraged as it opens up the possibility of malicious code being added to your site through the CMS.
 
@@ -255,8 +251,8 @@ We recommend configuring [shortcodes](/developer_guides/extending/shortcodes) th
 
 ### Escaping model properties
 
-[SSViewer](api:SilverStripe\View\SSViewer) (the Silverstripe CMS template engine) automatically takes care of escaping HTML tags from specific
-object-properties by [casting](/developer_guides/model/data_types_and_casting) its string value into a [DBField](api:SilverStripe\ORM\FieldType\DBField) object.
+Before outputting values to the template layer, [`ViewLayerData`](api:SilverStripe\View\ViewLayerData) automatically takes care of escaping HTML tags from specific
+object-properties by [casting](/developer_guides/model/data_types_and_casting) its string value into a [`DBField`](api:SilverStripe\ORM\FieldType\DBField) object.
 
 PHP:
 
@@ -286,7 +282,7 @@ Template:
 ```
 
 The example below assumes that data wasn't properly filtered when saving to the database, but are escaped before
-outputting through SSViewer.
+outputting rendered template results through `SSViewer`.
 
 ### Overriding default escaping in templates
 
@@ -308,7 +304,7 @@ Template (see above):
 ### Escaping custom attributes and getters
 
 Every object attribute or getter method used for template purposes should have its escape type defined through the
-static *$casting* array. Caution: Casting only applies when using values in a template, not in PHP.
+`casting` configuration property (assuming you're using a `ModelData` subclass). Caution: Casting only applies when using values in a template, not in PHP.
 
 PHP:
 
@@ -472,6 +468,8 @@ Sometimes you need to handle state-changing HTTP submissions which aren't handle
 Silverstripe CMS's form system. In this case, you can also check the current HTTP request
 for a valid token through [SecurityToken::checkRequest()](api:SilverStripe\Security\SecurityToken::checkRequest()).
 
+Setting the appropriate value for cookies also helps protect against CSRF attacks. See [Secure sessions and cookies](#secure-sessions-and-cookies).
+
 See the [OWASP article about CSRF](https://owasp.org/www-community/attacks/csrf) for more information.
 
 ## Casting user input
@@ -579,13 +577,29 @@ salt values generated with the strongest entropy generators available on the pla
 (see [RandomGenerator](api:SilverStripe\Security\RandomGenerator)). This prevents brute force attacks with
 [Rainbow tables](https://en.wikipedia.org/wiki/Rainbow_table).
 
-Strong passwords are a crucial part of any system security. So in addition to storing the password in a secure fashion,
-you can also enforce specific password policies by configuring a
-[PasswordValidator](api:SilverStripe\Security\PasswordValidator). This can be done through a `_config.php` file
-at runtime, or via YAML configuration.
+Strong passwords are a crucial part of any system security.
 
-The default password validation rules are configured in the framework's `passwords.yml`
-file. You will need to ensure that your config file is processed after it.
+The default password validator uses the [`PasswordStrength` constraint](https://symfony.com/doc/current/reference/constraints/PasswordStrength.html) in `symfony/validator`, which determines a password's strength based on its level of entropy.
+
+You can change the required strength of valid passwords by setting the [`EntropyPasswordValidator.password_strength`](api:SilverStripe\Security\Validation\EntropyPasswordValidator->password_strength) configuration property to one of the valid [minScore values](https://symfony.com/doc/current/reference/constraints/PasswordStrength.html#minscore):
+
+```yml
+SilverStripe\Security\Validation\EntropyPasswordValidator:
+  password_strength: 4
+```
+
+You can also enforce that passwords are not repeated by setting the [`PasswordValidator.historic_count`](api:SilverStripe\Security\Validation\PasswordValidator->historic_count) configuration property:
+
+```yml
+SilverStripe\Security\Validation\PasswordValidator:
+  historic_count: 6
+```
+
+The above example will check that the password wasn't used within the previous 6 passwords set for the member.
+
+### Rule-based password validation
+
+If you want more finegrained control over exactly how a "strong" password is determined, you can use the [`RulesPasswordValidator`](api:SilverStripe\Security\Validation\RulesPasswordValidator) which uses an array of regular expressions to validate a password. You can swap to using that validator and configure its options with YAML configuration:
 
 ```yml
 ---
@@ -593,33 +607,30 @@ Name: mypasswords
 After: '#corepasswords'
 ---
 SilverStripe\Core\Injector\Injector:
-  SilverStripe\Security\PasswordValidator:
-    properties:
-      MinLength: 7
-      HistoricCount: 6
-      MinTestScore: 3
+  SilverStripe\Security\Validation\PasswordValidator:
+    class: 'SilverStripe\Security\Validation\RulesPasswordValidator'
 
-# In the case someone uses `new PasswordValidator` instead of Injector, provide some safe defaults through config.
-SilverStripe\Security\PasswordValidator:
+SilverStripe\Security\Validation\RulesPasswordValidator:
   min_length: 7
-  historic_count: 6
   min_test_score: 3
 ```
 
-### Configuring custom password validator tests
+> [!NOTE]
+> The [`PasswordValidator.historic_count`](api:SilverStripe\Security\Validation\PasswordValidator->historic_count) configuration property also applies to the `RulesPasswordValidator`.
 
-The default password validation character strength tests can be seen in the `PasswordValidator.character_strength_tests`
-configuration property. You can add your own with YAML config, by providing a name for it and a regex pattern to match:
+You can also add additional regular expression tests to the validator:
 
 ```yml
-SilverStripe\Security\PasswordValidator:
+SilverStripe\Security\Validation\RulesPasswordValidator:
   character_strength_tests:
-    contains_secret_word: '/1337pw/'
+    at-least-three-special-chars: '/[\(\)\&\^\%\$\#\@\!]{3,}/'
 ```
 
-This will ensure that a password contains `1337pw` somewhere in the string before validation will succeed.
+The above example requires at least 3 of the characters `()&^%$#@!` to be included in the password.
 
-### Other options
+Note that the [`RulesPasswordValidator.min_test_score`](api:SilverStripe\Security\Validation\RulesPasswordValidator->min_test_score) configuration property determines how many of the regular expression tests must pass for a password to be valid. If the test score is lower than the number of tests you have, the password *doesn't* have to match all of them to be valid.
+
+### More password security options
 
 In addition, you can tighten password security with the following configuration settings:
 
@@ -791,20 +802,33 @@ SilverStripe\Core\Injector\Injector:
       ForceSSL: true
 ```
 
-will only take effect in environment types that `CanonicalURLMiddleware` is configured to apply to (by
-default, only `LIVE`). To apply this behaviour in all environment types, you'll need to update that configuration:
+This will only take effect in environment types that `CanonicalURLMiddleware` is configured to apply to (by
+default all environments). To apply this behaviour to only specific environment types, you'll need to either change
+what environments this is enabled for, or tailor the configuration to the active environment.
+
+> [!WARNING]
+> Note that setting `EnabledEnvs` will affect more than just the "force SSL" behaviour.
+
+```php
+use SilverStripe\Control\Middleware\CanonicalURLMiddleware;
+use SilverStripe\Core\Kernel;
+
+CanonicalURLMiddleware::singleton()->setEnabledEnvs([
+    Kernel::TEST,
+    Kernel::LIVE,
+]);
+```
 
 ```yml
 ---
+Only:
+  environment: 'dev'
 After: '#canonicalurls'
 ---
 SilverStripe\Core\Injector\Injector:
   SilverStripe\Control\Middleware\CanonicalURLMiddleware:
     properties:
-      # ...
-      EnabledEnvs:
-        - test
-        - dev
+      ForceSSL: false
 ```
 
 Forcing HTTPS so requires a certificate to be purchased or obtained through a vendor such as
@@ -828,39 +852,10 @@ You can configure that by setting the following environment variables:
 
 ## Secure sessions and cookies
 
-We also want to ensure cookies are not shared between secure and non-secure sessions, so we must tell Silverstripe CMS to
-use a [secure session](/developer_guides/cookies_and_sessions/sessions/#secure-session-cookie).
-To do this, you may set the `cookie_secure` parameter to `true` in your `config.yml` for `Session`.
-
-It is also a good idea to set the `samesite` attribute for the session cookie to `Strict` unless you have a specific use case for
-sharing the session cookie across domains.
-
-```yml
-SilverStripe\Control\Session:
-  cookie_samesite: 'Strict'
-  cookie_secure: true
-```
-
-The same treatment should be applied to the cookie responsible for remembering logins across sessions:
-
-```yml
----
-Name: secure-alc
-Except:
-  environment: dev
----
-SilverStripe\Core\Injector\Injector:
-  SilverStripe\Security\MemberAuthenticator\CookieAuthenticationHandler:
-    properties:
-      TokenCookieSecure: true
-```
-
-> [!NOTE]
-> There is not currently an easy way to pass a `samesite` attribute value for setting this cookie - but you can set the
-> default value for the attribute for all cookies. See [the main cookies documentation](/developer_guides/cookies_and_sessions/cookies#samesite-attribute) for more information.
+Session cookies and authentication cookies are not shared between secure and non-secure sessions by default. This is because by default Silverstripe CMS uses a [secure session](/developer_guides/cookies_and_sessions/sessions/#secure-session-cookie), as well as [setting the "samesite" attribute](/developer_guides/cookies_and_sessions/sessions/#samesite-attribute) to "Strict" by default.
 
 For other cookies set by your application we should also ensure the users are provided with secure cookies by setting
-the "Secure" and "HTTPOnly" flags. These flags prevent them from being stolen by an attacker through JavaScript.
+the "Secure", "HTTPOnly", and "SameSite" flags. These flags prevent them from being stolen by an attacker through JavaScript or being shared with an external domain.
 
 - The `Secure` cookie flag instructs the browser not to send the cookie over an insecure HTTP connection. If this
 flag is not present, the browser will send the cookie even if HTTPS is not in use, which means it is transmitted in
@@ -870,17 +865,20 @@ clear text and can be intercepted and stolen by an attacker who is listening on 
 code. It is best practice to set this flag unless the application is known to use JavaScript to access these cookies
 as this prevents an attacker who achieves cross-site scripting from accessing these cookies.
 
+- The `SameSite` flag tells the browser whether the cookie is allowed to be used when navigating to your website from another site. Setting this appropriately can help protect your users from Cross-Site Request Forgery (CSRF) attacks.
+
 ```php
 use SilverStripe\Control\Cookie;
 
 Cookie::set(
     'cookie-name',
     'chocolate-chip',
-    $expiry = 30,
-    $path = null,
-    $domain = null,
-    $secure = true,
-    $httpOnly = false
+    expiry: 30,
+    path: null,
+    domain: null,
+    secure: true,
+    httpOnly: false,
+    sameSite: Cookie::SAMESITE_STRICT
 );
 ```
 
@@ -944,6 +942,6 @@ for details on how to apply caching safely, and read Google's
 ## Related
 
 - [Silverstripe CMS security vulnerability advisories](https://silverstripe.org/security-releases/)
-- [MySQL security documentation](https://dev.mysql.com/doc/refman/8.0/en/security.html)
+- [MySQL security documentation](https://dev.mysql.com/doc/refman/8.4/en/security.html)
 - [OWASP Top Ten](https://owasp.org/www-project-top-ten/)
 - [OWASP List of Attacks](https://owasp.org/www-community/attacks/)

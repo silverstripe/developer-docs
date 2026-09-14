@@ -12,7 +12,7 @@ the server to update templates, website logic, and perform upgrades or maintenan
 
 ## PHP
 
-- PHP >=8.1, <=8.3
+- PHP 8.3 - 8.5
 - PHP extensions: `ctype`, `dom`, `fileinfo`, `hash`, `intl`, `mbstring`, `session`, `simplexml`, `tokenizer`, `xml`
 - PHP configuration: `memory_limit` with at least `48M`
 - PHP extension for image manipulation: Either `gd` or `imagick`
@@ -22,13 +22,15 @@ Use [phpinfo()](https://php.net/manual/en/function.phpinfo.php) to inspect your 
 
 Silverstripe CMS tracks the official [PHP release support timeline](https://www.php.net/supported-versions.php). When a PHP version reaches end-of-life, Silverstripe CMS drops support for it in the next minor release.
 
-You also need to install [Composer 2](https://getcomposer.org/).
+You need to install [Composer 2](https://getcomposer.org/).
+
+See the [performance section](/developer_guides/performance/) for suggestions that will help improve performance of your project.
 
 ## Database
 
 We officially support and regression test against the latest LTS releases of MySQL and MariaDB, though we may choose to support additional versions on a case-by-case basis.
 
-- MySQL >=5.6 and MariaDB (built-in, [commercially supported](/project_governance/supported_modules/))
+- MySQL >=8.0 and MariaDB (built-in, [commercially supported](/project_governance/supported_modules/))
 - PostgreSQL ([third party module](https://github.com/silverstripe/silverstripe-postgresql), community
   supported)
 - SQL Server ([third party module](https://github.com/silverstripe/silverstripe-mssql), community supported)
@@ -37,23 +39,13 @@ We officially support and regression test against the latest LTS releases of MyS
 ### Default MySQL collation
 
 New projects default to the `utf8mb4_unicode_ci` collation when running
-against MySQL, which offers better support for multi-byte characters such as emoji. However, this may cause issues
-related to Varchar fields exceeding the maximum indexable size:
+against MySQL, which offers better support for multi-byte characters such as emoji.
 
-- MySQL 5.6 supports larger indexes (3072 bytes) if the `innodb_large_prefix` setting is enabled (but not by default)
-- MySQL 5.7 and newer have `innodb_large_prefix` enabled by default
-- MariaDB ~10.1 matches MySQL 5.6's behaviour, >10.2 matches 5.7's.
+### Connection mode (sql_mode) when using MySQL server >=8.0.0
 
-You can rectify this issue by upgrading MySQL, enabling the `innodb_large_prefix` setting if available, or reducing the
-size of affected fields. If none of these solutions are currently suitable, you can remove the collation
-configuration from `app/_config/mysite.yml` to default back to the legacy default collation.
-
-### Connection mode (sql_mode) when using MySQL server >=5.7.5
-
-In MySQL versions >=5.7.5, the `ANSI` sql_mode setting behaves differently and includes the `ONLY_FULL_GROUP_BY`
-setting. It is generally recommended to leave this setting as-is because it results in deterministic SQL. However, for
-some advanced cases, the sql_mode can be configured on the database connection via the configuration API (
-see `MySQLDatabase::$sql_mode` for more details.)
+In MySQL versions >=8.0.0, the `ANSI` sql_mode setting includes the `ONLY_FULL_GROUP_BY`
+setting. It is generally recommended to leave this setting as-is because it results in deterministic SQL.
+However, for some advanced cases, the sql_mode can be configured on the database connection via the configuration API (see `MySQLDatabase::$sql_mode` for more details.)
 
 ### MySQL/MariaDB int width in schema
 
@@ -87,16 +79,9 @@ also needs write access for the webserver user to the following locations:
 
 - `public/assets/`: Used by the CMS and other logic to [store uploads](/developer_guides/files/file_storage)
 - `TEMP_PATH`: Temporary file storage used for the default filesystem-based cache adapters in
-  [Manifests](/developer_guides/execution_pipeline/manifests), [Object Caching](/developer_guides/performance/caching)
+  [Manifests](/developer_guides/execution_pipeline/manifests), [Object Caching](/developer_guides/performance/object_caching)
   and [Partial Template Caching](/developer_guides/templates/partial_template_caching).
   See [Environment Management](/getting_started/environment_management).
-- `.graphql-generated`: silverstripe/graphql uses this directory. This is where your schema is
-  stored once it [has been built](/developer_guides/graphql/getting_started/building_the_schema). Best practice
-  is to create it ahead of time, but if the directory doesn't exist and your project root is writable, the GraphQL
-  module will create it for you.
-- `public/_graphql`: silverstripe/graphql uses this directory. It's used for
-  [schema introspection](/developer_guides/graphql/tips_and_tricks#schema-introspection). You should treat this folder
-  the same way you treat the `.graphql-generated` folder.
 
 If you aren't explicitly [packaging](#building-packaging-deployment)
 your Silverstripe CMS project during your deployment process, additional write access may be required to generate supporting
@@ -111,7 +96,7 @@ relevant i18n `lang` directories.
 
 Silverstripe CMS allows CMS authors to upload files into the `public/assets/` folder, which should be served by your
 webserver. **No PHP execution should be allowed in this folder**. This is configured for Apache by default
-via `public/assets/.htaccess`. The file is generated dynamically during the `dev/build` stage.
+via `public/assets/.htaccess`. The file is generated dynamically when building the database.
 
 Additionally, access is whitelisted by file extension through a dynamically generated whitelist based on
 the `File.allowed_extensions` setting
@@ -169,11 +154,6 @@ noisy, here's some pointers for auto-generated files to trigger and include in a
 - `public/_resources/`: Frontend resources copied from the (inaccessible) `vendor/` folder
   via [silverstripe/vendor-plugin](https://github.com/silverstripe/vendor-plugin).
   See [Templates: Requirements](/developer_guides/templates/requirements#exposing-resources-webroot).
-- `.graphql-generated/` and `public/_graphql/`: Schema and type definitions required by CMS and any GraphQL API endpoint.
-  Generated by
-  [silverstripe/graphql](https://github.com/silverstripe/silverstripe-graphql). See
-  [building the schema](/developer_guides/graphql/getting_started/building_the_schema) and
-  [deploying the schema](/developer_guides/graphql/getting_started/deploying_the_schema).
 - Various recipes create default files in `app/` and `public/` on `composer install`
   and `composer update` via
   [silverstripe/recipe-plugin](https://github.com/silverstripe/recipe-plugin).
@@ -229,10 +209,11 @@ See [silverstripe/vendor-plugin](https://github.com/silverstripe/vendor-plugin) 
 
 ### Caches
 
-Silverstripe CMS relies on various [caches](/developer_guides/performance/caching/)
+Silverstripe CMS relies on various [caches](/developer_guides/performance/object_caching/)
 to achieve performant responses. By default, those caches are stored in a temporary filesystem folder, and are not
-shared between multiple server instances. Alternative cache backends such as Redis can be
-[configured](/developer_guides/performance/caching/).
+shared between multiple server instances.
+
+No in-memory cache is used by default. To improve performance, we recommend [configuring an in-memory cache](/developer_guides/performance/object_caching/#adapters) such as Redis or Memcached.
 
 While cache objects can expire, when using filesystem caching the files are not actively pruned. For long-lived server
 instances, this can become a capacity issue over time - see
@@ -294,14 +275,12 @@ table may be of use:
 
 | Silverstripe CMS Version | PHP Version |
 | ------------------------ | ----------- |
+| 6.2 +                    | 8.3 - 8.5   |
+| 6.0 - 6.1                | 8.3 - 8.4   |
 | 5.2 +                    | 8.1 - 8.3   |
 | 5.0 - 5.1                | 8.1 - 8.2   |
-| 4.11 +                   | 7.4 - 8.1   |
-| 4.10                     | 7.3 - 8.0   |
-| 4.5 - 4.9                | 7.1 - 7.4   |
-| 4.0 - 4.4                | 5.6 - 7.4   |
 
-From Silverstripe CMS 5 onwards, the [Silverstripe CMS major release policy](/project_governance/major_release_policy#php-support-commitments) guides which PHP versions are supported by which Silverstripe CMS release.
+The [Silverstripe CMS major release policy](/project_governance/major_release_policy#php-support-commitments) guides which PHP versions are supported by which Silverstripe CMS release.
 
 ## CMS browser requirements
 

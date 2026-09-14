@@ -118,7 +118,7 @@ use SilverStripe\Security\Permission;
 
 class PermissionsExtension extends Extension
 {
-    public function canView()
+    protected function canView()
     {
         if (!Permission::check('CMS_ACCESS_CMSMain', 'any', $member)) {
             return false;
@@ -128,7 +128,7 @@ class PermissionsExtension extends Extension
 }
 ```
 
-See [Extensions and DataExtensions](/developer_guides/extending/extensions/) for more information about extensions.
+See [Extensions](/developer_guides/extending/extensions/) for more information about extensions.
 
 ## API documentation
 

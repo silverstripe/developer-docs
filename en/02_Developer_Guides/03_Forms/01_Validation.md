@@ -10,9 +10,10 @@ icon: check-square
 > Before you start implementing custom validation logic, check out [validation using `symfony/validator` constraints](/developer_guides/model/validation/#validation-and-constraints)
 > and see if there's an existing constraint that can do the heavy lifting for you.
 
-Silverstripe CMS provides server-side form validation out of the box through the [Validator](api:SilverStripe\Forms\Validator) abstract class and its' child classes
-(see [available validators](#available-validators) below). A single `Validator` instance is set on each `Form`. Validators are implemented as an argument to
-the [Form](api:SilverStripe\Forms\Form) constructor or through the function `setValidator`.
+Silverstripe CMS provides server-side form validation out of the box in a couple of ways:
+
+- Firstly, when a [`Form`](api:SilverStripe\Forms\Form) is submitted, the [`FormField::validate()`](api:SilverStripe\Forms\FormField::validate()) method is called on each [FormField](api:SilverStripe\Forms\FormField) instance within the form.
+- Secondly, an instance of [Validator](api:SilverStripe\Forms\Validation\Validator) sublass can be set on each `Form`. Validators are implemented as an argument to the [Form](api:SilverStripe\Forms\Form) constructor or through the function `setValidator`.
 
 ```php
 namespace App\PageType;
@@ -21,8 +22,8 @@ use PageController;
 use SilverStripe\Forms\EmailField;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator;
 
 class MyFormPageController extends PageController
 {
@@ -38,6 +39,7 @@ class MyFormPageController extends PageController
     {
         $fields = FieldList::create(
             TextField::create('Name'),
+            // EmailField::validate() will validate the submitted value is a valid email address
             EmailField::create('Email')
         );
 
@@ -45,8 +47,8 @@ class MyFormPageController extends PageController
             FormAction::create('doSubmitForm', 'Submit')
         );
 
-        // the fields 'Name' and 'Email' are required.
-        $required = RequiredFields::create([
+        // RequiredFieldsValidator marks the fields 'Name' and 'Email' as required.
+        $required = RequiredFieldsValidator::create([
             'Name', 'Email',
         ]);
 
@@ -71,82 +73,106 @@ In this example we will be required to input a value for `Name` and a valid emai
 
 > [!NOTE]
 > Each individual [FormField](api:SilverStripe\Forms\FormField) instance is responsible for validating the submitted content through the
-> [FormField::validate()](api:SilverStripe\Forms\FormField::validate()) method. By default, this just checks the value exists. Fields like `EmailField` override
-> `validate` to check for a specific format.
+> [FormField::validate()](api:SilverStripe\Forms\FormField::validate()) method. For example [`EmailField::validate()`](api:SilverStripe\Forms\EmailField::validate()) checks the field value is a valid email.
 
 ## Extensions
 
 Extensions applied to `FormField`, or subclasses, can hook into the validation logic and adjust the results by utilising
-the `updateValidationResult` method. For example, an extension applied to `EmailField` could look like this:
+the `updateValidate` method. For example, an extension applied to `EmailField` could look like this:
 
 ```php
 namespace App\Extension;
 
 use SilverStripe\Core\Extension;
-use SilverStripe\Forms\Validator;
+use SilverStripe\Core\Validation\ValidationResult;
 
 class FormFieldValidationExtension extends Extension
 {
-    public function updateValidationResult(bool &$result, Validator $validator)
+    protected function updateValidate(ValidationResult $result): void
     {
-        if (str_ends_with($this->owner->Value(), '@example.com')) {
-            $validator->validationError($this->owner->Name(), 'Please provide a valid email address');
-            $result = false;
+        if (str_ends_with($this->owner->getValue(), '@example.com')) {
+            $result->addFieldError(
+                $this->getOwner()->Name(),
+                'Please provide a valid email address which does not end with @example.com'
+            );
         }
     }
 }
 ```
 
-> [!WARNING]
-> This extension hook will not work without the ampersand (`&`) in the `&$result` argument. This is because the return
-> value of the function is ignored, so the validation result has to be updated by changing the value of the `$result`
-> variable. This is known as [passing by reference](https://www.php.net/manual/en/language.references.pass.php).
-
 ## Validation in `FormField` subclasses
 
-Subclasses of `FormField` can define their own version of `validate` to provide custom validation rules such as the
-above example with the `Email` validation. The `validate` method on `FormField` takes a single argument of the current
-`Validator` instance.
+Subclasses of `FormField` can define their own version of `validate()` to provide custom validation rules such as the
+above example with the `Email` validation.
 
 ```php
 namespace App\Form\Field;
 
+use SilverStripe\Core\Validation\ValidationResult;
 use SilverStripe\Forms\NumericField;
 
 class CustomNumberField extends NumericField
 {
     // ...
 
-    public function validate($validator)
+    public function validate(): ValidationResult
     {
-        if ((int) $this->Value() === 10) {
-            $validator->validationError($this->Name(), 'This value cannot be 10');
-            return $this->extendValidationResult(false, $validator);
-        }
-
-        return $this->extendValidationResult(true, $validator);
+        $this->beforeExtending('updateValidate', function (ValidationResult $result) {
+            if ((int) $this->getValue() === 20) {
+                $result->addFieldError($this->Name(), 'This value cannot be 20');
+            }
+        });
+        return parent::validate();
     }
 }
 ```
 
-The `validate` method should compute a boolean (`true` if the value passes validation and `false` if Silverstripe CMS
-should trigger a validation error on the page) and pass this to the `extendValidationResult` method to allow extensions
-to hook into the validation logic. In addition, in the event of failed validation, a useful error message must be set
-on the given validator.
+The `validate()` method returns a [`ValidationResult`](api:SilverStripe\Core\Validation\ValidationResult) object with any errors added to it, and should contain a useful error message. The `validate()` method should follow the example above and utilise the `$this->beforeExtending('updateValidate', ...)` method and be followed by `return parent::validate();` in order for code in the parent class to be executed in the correct order.
 
-> [!WARNING]
-> You can also override the entire `Form` validation by subclassing `Form` and defining a `validate` method on the form.
+## `FieldValidator` classes used for `FormField` validation
+
+Many of the built-in `FormField` classes use standardised [`FieldValidator`](api:SilverStripe\Core\Validation\FieldValidation\FieldValidator) to perform some or all of their validation. For example, the `EmailField` class uses the both the [`StringFieldValidator`](api:SilverStripe\Core\Validation\FieldValidation\StringFieldValidator) and the [`EmailFieldValidator`](api:SilverStripe\Core\Validation\FieldValidation\EmailFieldValidator) for validation.
+
+These are configured via the [`FormField.field_validators`](api:SilverStripe\Forms\FormField->field_validators) configuration, which you can configure on your own `FormField` subclasses.
+
+```php
+namespace App\Form\Field;
+
+use SilverStripe\Core\Validation\FieldValidation\EmailFieldValidator;
+use SilverStripe\Core\Validation\FieldValidation\OptionFieldValidator;
+use SilverStripe\Forms\EmailField;
+
+class CustomEmailField extends EmailField
+{
+    // ...
+
+    private static array $field_validators = [
+        // Disable the EmailFieldValidator defined in the parent EmailField by setting it to null
+        EmailFieldValidator::class => null,
+        // Add an OptionFieldValidator to validate the field value is in a list of allowable values
+        OptionFieldValidator::class => ['getAllowableEmails'],
+    ];
+
+    public function getAllowableEmails(): array
+    {
+        return [
+            'hello@example.com',
+            'welcome@example.com',
+        ];
+    }
+}
+```
 
 ## Form action validation
 
 ### `ValidationException`
 
 At times it's not possible for all validation or recoverable errors to be pre-determined in advance of form
-submission, such as those generated by the form [Validator](api:SilverStripe\Forms\Validator). Sometimes errors may occur within form
+submission, such as those generated by the form [Validator](api:SilverStripe\Forms\Validation\Validator). Sometimes errors may occur within form
 action methods, and it is necessary to display errors on the form after initial validation has been performed.
 
-In this case you may throw a [`ValidationException`](api:SilverStripe\ORM\ValidationException) within your handler, optionally passing it an
-error message, or a [`ValidationResult`](api:SilverStripe\ORM\ValidationResult) containing the list of errors you wish to display.
+In this case you may throw a [`ValidationException`](api:SilverStripe\Core\Validation\ValidationException) within your handler, optionally passing it an
+error message, or a [`ValidationResult`](api:SilverStripe\Core\Validation\ValidationResult) containing the list of errors you wish to display.
 
 E.g.
 
@@ -154,7 +180,7 @@ E.g.
 namespace App\Control;
 
 use SilverStripe\Control\Controller;
-use SilverStripe\ORM\ValidationException;
+use SilverStripe\Core\Validation\ValidationException;
 
 class MyController extends Controller
 {
@@ -183,12 +209,12 @@ custom `FormField` classes or extensions.
 namespace App\PageType;
 
 use PageController;
+use SilverStripe\Core\Validation\ValidationResult;
 use SilverStripe\Forms\EmailField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\TextField;
-use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Member;
 
 class MyFormPageController extends PageController
@@ -213,7 +239,7 @@ class MyFormPageController extends PageController
 
     public function doSubmitForm($data, $form)
     {
-        // At this point, RequiredFields->isValid() will have been called already,
+        // At this point, RequiredFieldsValidator->isValid() will have been called already,
         // so we can assume that the values exist. Say we want to make sure that email hasn't already been used.
 
         $check = Member::get()->filter('Email', $data['Email'])->first();
@@ -238,12 +264,10 @@ class MyFormPageController extends PageController
 
 The Silverstripe framework comes with the following built-in validators:
 
-- [`CompositeValidator`](api:SilverStripe\Forms\CompositeValidator)
+- [`CompositeValidator`](api:SilverStripe\Forms\Validation\CompositeValidator)
   A container for additional validators. You can implement discrete validation logic in multiple `Validator` subclasses and apply them *all* to a
   given form by putting them inside a `CompositeValidator`. The `CompositeValidator` doesn't have perform any validation by itself.
-- [`FieldsValidator`](api:SilverStripe\Forms\FieldsValidator)
-  Simply calls [`validate()`](api:SilverStripe\Forms\FormField::validate()) on all data fields in the form, to ensure fields have valid values.
-- [`RequiredFields`](api:SilverStripe\Forms\RequiredFields)
+- [`RequiredFieldsValidator`](api:SilverStripe\Forms\Validation\RequiredFieldsValidator)
   Validates that fields you declare as "required" have a value.
 
 There are additional validators available in community modules, and you can implement your own validators by subclassing the abstract `Validator` class.
@@ -359,9 +383,10 @@ respect the provided `Validator`/s and handle displaying error and success respo
 namespace App\PageType;
 
 use Page;
-use SilverStripe\Forms\CompositeValidator;
-use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\Validation\CompositeValidator;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator;
 
 class MyPage extends Page
 {
@@ -371,18 +396,19 @@ class MyPage extends Page
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
-
-        $fields->addFieldToTab(
-            'Root.Main',
-            TextField::create('MyRequiredField')->setCustomValidationMessage('You missed me.')
-        );
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->addFieldToTab(
+                'Root.Main',
+                TextField::create('MyRequiredField')->setCustomValidationMessage('You missed me.')
+            );
+        });
+        return parent::getCMSFields();
     }
 
     public function getCMSCompositeValidator(): CompositeValidator
     {
         $validator = parent::getCMSCompositeValidator();
-        $validator->addValidator(RequiredFields::create([
+        $validator->addValidator(RequiredFieldsValidator::create([
             'MyRequiredField',
         ]));
         return $validator;
@@ -394,13 +420,13 @@ class MyPage extends Page
 > You can also update the `CompositeValidator` by creating an `Extension` and implementing the
 > `updateCMSCompositeValidator()` method.
 
-### `RequiredFields` and whitespace
+### `RequiredFieldsValidator` and whitespace
 
-By default, `RequiredFields` will consider a field with only whitespace as a valid value. You an change this behavior with the [`allow_whitespace_only`](api:SilverStripe\Forms\RequiredFields->allow_whitespace_only) global configuration, or on a per-instance basis using [`setAllowWhitespaceOnly()`](api:SilverStripe\Forms\RequiredFields::setAllowWhitespaceOnly()).
+By default, `RequiredFieldsValidator` will consider a field with only whitespace as a valid value. You an change this behavior with the [`allow_whitespace_only`](api:SilverStripe\Forms\Validation\RequiredFieldsValidator->allow_whitespace_only) global configuration, or on a per-instance basis using [`setAllowWhitespaceOnly()`](api:SilverStripe\Forms\Validation\RequiredFieldsValidator::setAllowWhitespaceOnly()).
 
 ```yml
 # global configuration
-SilverStripe\Forms\RequiredFields:
+SilverStripe\Forms\Validation\RequiredFieldsValidator:
   allow_whitespace_only: false
 ```
 
@@ -408,8 +434,8 @@ SilverStripe\Forms\RequiredFields:
 namespace App\PageType;
 
 use Page;
-use SilverStripe\Forms\CompositeValidator;
-use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\Validation\CompositeValidator;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator;
 
 class MyPage extends Page
 {
@@ -418,7 +444,7 @@ class MyPage extends Page
     public function getCMSCompositeValidator(): CompositeValidator
     {
         $validator = parent::getCMSCompositeValidator();
-        $requiredFields = RequiredFields::create(['MyRequiredField']);
+        $requiredFields = RequiredFieldsValidator::create(['MyRequiredField']);
         // per instance configuration, will override global configuration
         $requiredFields->setAllowWhitespaceOnly(false);
         $validator->addValidator($requiredFields);
@@ -433,5 +459,5 @@ class MyPage extends Page
 
 ## API documentation
 
-- [RequiredFields](api:SilverStripe\Forms\RequiredFields)
-- [Validator](api:SilverStripe\Forms\Validator)
+- [RequiredFieldsValidator](api:SilverStripe\Forms\Validation\RequiredFieldsValidator)
+- [Validator](api:SilverStripe\Forms\Validation\Validator)

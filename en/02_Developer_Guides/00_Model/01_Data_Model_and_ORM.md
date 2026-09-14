@@ -54,10 +54,10 @@ so on. After writing this class, we need to regenerate the database schema.
 
 After adding, modifying or removing `DataObject` subclasses, make sure to rebuild your Silverstripe CMS database. The
 database schema is generated automatically by visiting `/dev/build` (e.g. `https://www.example.com/dev/build`) in your browser
-while authenticated as an administrator, or by running `sake dev/build` on the command line (see [Command Line Interface](/developer_guides/cli/) to learn more about `sake`).
+while authenticated as an administrator, or by running `sake db:build` on the command line (see [Sake](/developer_guides/cli/sake/) to learn more about using Sake).
 
 > [!NOTE]
-> In "dev" mode, you do not need to be authenticated to run `/dev/build`. See [Environment Types](/developer_guides/debugging/environment_types) for more information.
+> In "dev" mode, you do not need to be authenticated to visit `/dev/build`. See [Environment Types](/developer_guides/debugging/environment_types) for more information.
 
 This script will analyze the existing schema, compare it to what's required by your data classes, and alter the schema
 as required.
@@ -164,11 +164,7 @@ $lastPlayer = $players->last();
 
 // returns a single `Player` record that has the ID of 2.
 $player = Player::get()->byID(2);
-$player = Player::get_by_id(2);
 ```
-
-> [!NOTE]
-> `DataObject::get()->byID()` and `DataObject::get_by_id()` achieve similar results, though the object returned by `DataObject::get_by_id()` is cached against a `static` property within `DataObject`.
 
 The ORM uses a "fluent" syntax, where you specify a query by chaining together different methods.  Two common methods
 are `filter()` and `sort()`:
@@ -264,7 +260,7 @@ if ($players->exists()) {
 > [!TIP]
 > While you could use `if ($players->Count() > 0)` for this condition, the `exists()` method uses an `EXISTS` SQL query, which is more performant.
 
-See the [Lists](lists) documentation for more information on dealing with [SS_List](api:SilverStripe\ORM\SS_List) instances.
+See the [Lists](lists) documentation for more information on dealing with [SS_List](api:SilverStripe\Model\List\SS_List) instances.
 
 ## Sorting
 
@@ -362,7 +358,7 @@ $players = Player::get()->filter([
 ]);
 ```
 
-### `filterAny`
+### `filterAny()`
 
 Use the `filterAny()` method to match multiple criteria non-exclusively (with an "OR" disjunctive),
 
@@ -450,7 +446,7 @@ $teams = Team::get()->filter('Players.Sum(PointsScored):LessThan', 300);
 > [!TIP]
 > The above examples are using "dot notation" to get the aggregations of the `Players` relation on the `Teams` model. See [Relations between Records](relations) to learn more.
 
-### `filterByCallback`
+### `filterByCallback()`
 
 It is possible to filter by a PHP callback using the [`filterByCallback()`](api:SilverStripe\ORM\DataList::filterByCallback()) method. This will force the data model to fetch all records and loop them in
 PHP which will be much worse for performance, thus `filter()` or `filterAny()` are to be preferred over `filterByCallback()`.
@@ -471,7 +467,7 @@ $players = Player::get()->filterByCallback(function ($record, $list) {
 });
 ```
 
-### `exclude`
+### `exclude()`
 
 The [`exclude()`](api:SilverStripe\ORM\DataList::exclude()) method is the opposite to `filter()` in that it determines which entries to *exclude* from a list, where `filter()` determines which to *include*.
 
@@ -528,13 +524,14 @@ $players = Player::get()->exclude([
 ]);
 ```
 
-### `subtract`
+### `filterByList()` and `excludeByList()`
 
-You can subtract entries from a [DataList](api:SilverStripe\ORM\DataList) by passing in another DataList to `subtract()`
+You can exclude entries or include only entries in a [`DataList`](api:SilverStripe\ORM\DataList) based on the results of another list a by passing the other list to `excludeByList()` or `filterByList()` respectively.
 
 ```php
 $sam = Player::get()->filter('FirstName', 'Sam');
-$noSams = Player::get()->subtract($sam);
+$noSams = Player::get()->excludeByList($sam);
+$onlySams = Player::get()->filterByList($sam);
 ```
 
 Though for the above example it would probably be easier to use `filter()` and `exclude()` directly on the final list. A better use case could be
@@ -544,10 +541,21 @@ when you want to find all the members that do not exist in a Group.
 // ... Finding all members that do not belong to $group.
 use SilverStripe\Security\Member;
 // Assuming we have some `Group` $group:
-$otherMembers = Member::get()->subtract($group->Members());
+$otherMembers = Member::get()->excludeByList($group->Members());
 ```
 
-### `limit`
+Both of these methods allow you to pass filter by specific fields as well, rather than just the default ID field.
+
+```php
+use SilverStripe\Security\Member;
+
+// Find Member records that have the same "Surname" value as players "LastName" values.
+Member::get()->filterByList(Player::get(), 'Surname', 'LastName');
+// Only get Member records where there is no match with player last names
+Member::get()->excludeByList(Player::get(), 'Surname', 'LastName');
+```
+
+### `limit()`
 
 You can limit the amount of records returned in a DataList by using the `limit()` method.
 
@@ -858,11 +866,6 @@ The way the ORM stores the data is this:
    record #2 in the `Product` table refers to the same object as record #2 in the `Product_Digital_Computer` table.
 
 To retrieve a `Computer` record, Silverstripe CMS joins the `Product` and `Product_Digital_Computer` tables by their `ID` columns.
-
-## Related lessons
-
-- [Introduction to the ORM](https://www.silverstripe.org/learn/lessons/v4/introduction-to-the-orm-1)
-- [Adding custom fields to a page](https://www.silverstripe.org/learn/lessons/v4/adding-custom-fields-to-a-page-1)
 
 ## Related documentation
 

@@ -100,32 +100,154 @@ including form and page comment information. None of this is vital but `clear_al
 $session->clearAll();
 ```
 
-## Cookies
+## Configuration
 
-### Samesite attribute
+### Session lifetime
 
-The session cookie is handled slightly differently than most cookies on the site, which provides the opportunity to handle the samesite attribute separately from other cookies.
-You can change the `samesite` attribute for session cookies like so:
+By default, the client-side session cookie will only last until the user closes their browser, and the session on the server-side will live for the number of seconds set in the [`session.gc_maxlifetime`](https://www.php.net/manual/en/session.configuration.php#ini.session.gc-maxlifetime) ini configuration since it was last touched.
 
-```yml
-SilverStripe\Control\Session:
-  cookie_samesite: 'Strict'
-```
-
-### Secure session cookie
-
-In certain circumstances, you may want to use a different `session_name` cookie when using the `https` protocol for security purposes. To do this, you may set the `cookie_secure` parameter to `true` on your `config.yml`
+You can configure the session lifetime by setting the [`Session.timeout`](SilverStripe\Control\Session->timeout) configuration property to the number of seconds the session should be valid for since the last modified time. If one of the session handlers included with `silverstripe/framework` is used, this will be used for both setting the "expires" attribute on the client-side cookie, as well as for determining when the server-side record for storing the session is deleted.
 
 ```yml
 SilverStripe\Control\Session:
-  cookie_secure: true
+  timeout: 86400
 ```
 
-This uses the session_name `SECSESSID` for `https` connections instead of the default `PHPSESSID`. Doing so adds an extra layer of security to your session cookie since you no longer share `http` and `https` sessions.
+> [!WARNING]
+> If you use a save handler which isn't included in `silverstripe/framework`, it may treat the session lifetime differently. You should check its documentation or implementation to understand how it works.
+
+### Save handler
+
+You can choose how sessions are handled by setting the [`Session.save_handler`](api:SilverStripe\Control\Session->save_handler) configuration property or the `SS_SESSION_SAVE_HANDLER_CLASS` environment variable to the FQCN of your preferred save handler. Setting the environment variable takes precedence over the YAML configuration.
+
+The default session save handler is [`FileSessionHandler`](api:SilverStripe\Control\SessionHandler\FileSessionHandler).
+
+If you want to use the session handler defined in your `php.ini` file instead (which is usually the built-in file session handler), you can set the `Session.save_handler` configuration to `null`.
+
+```yml
+SilverStripe\Control\Session:
+  save_handler: null
+```
+
+You can also set it to the FQCN or injector service name of any session handler that implements [`SessionHandlerInterface`](https://www.php.net/manual/en/class.sessionhandlerinterface.php). `silverstripe/framework` comes with several non-blocking session save handlers you can use.
+
+> [!WARNING]
+> In edge case scenarios, for example if your application wants to modify a session value *based on the value that is already set* and must do so for each request, non-blocking sessions may cause unexpected results.
+
+#### `FileSessionHandler`
+
+The default file-based session handler for PHP holds a lock on the session file while the session is open. This means that multiple concurrent requests from the same user have to wait for one another to finish processing after a session has been started. This includes AJAX requests.
+
+To resolve this problem, Silverstripe CMS comes with [`FileSessionHandler`](api:SilverStripe\Control\SessionHandler\FileSessionHandler).
+
+`FileSessionHandler` differs from the default PHP file session handler in the following ways:
+
+1. It doesn't lock the session file, and therefore doesn't block concurrent requests.
+1. The [`Session.timeout`](api:SilverStripe\Control\Session->timeout) configuration property is used as the source of truth for the lifetime of session files (see [session lifetime](#session-lifetime) above).
+1. If there are problems reading or writing to session files, the [default logging service](/developer_guides/debugging/error_handling/) is used to log them.
+
+##### Considerations with the `open_basedir` PHP configuration {#filesessionhandler-open-basedir}
+
+When using the `FileSessionHandler` save handler the [`open_basedir`](https://www.php.net/manual/en/ini.core.php#ini.open-basedir) PHP configuration option can cause problems. If that option has a value set, the location where session files are saved (defined by [`session.save_path`](https://www.php.net/manual/en/session.configuration.php#ini.session.save-path)) must be within a directory declared in `open_basedir`. Otherwise session functionality won't work.
+
+Note that including the sessions directory in `open_basedir` will allow any PHP code to interact with files in that location. If you don't want that to be the case, you can do one of the following:
+
+1. Revert back to the built-in PHP file session save handler by setting `SilverStripe\Control\Session.save_handler` to `null`. Note that this means your sessions will be blocking.
+1. Use an alternative session save handler.
+1. Set `session.save_path` to a location that you are happy for PHP code to interact with.
+
+#### `CacheSessionHandler`
+
+If you want a more performant session save handler, you can use the [`CacheSessionHandler`](api:SilverStripe\Control\SessionHandler\CacheSessionHandler). This session save handler can use any cache that implements [the PSR-16 `Psr\SimpleCache\CacheInterface`](https://www.php-fig.org/psr/psr-16/#21-cacheinterface), though we recommend specifically using an in-memory cache adapter that gets instantiated from a factory implementing [`InMemoryCacheFactory`](api:SilverStripe\Core\Cache\InMemoryCacheFactory), such as [`MemcachedCacheFactory`](api:SilverStripe\Core\Cache\MemcachedCacheFactory) or [`RedisCacheFactory`](api:SilverStripe\Core\Cache\RedisCacheFactory).
+
+Set this save handler with the following YAML configuration, or by setting the `SS_SESSION_SAVE_HANDLER_CLASS` environment variable to `SilverStripe\Control\SessionHandler\CacheSessionHandler`
+
+```yml
+SilverStripe\Control\Session:
+  save_handler: 'SilverStripe\Control\SessionHandler\CacheSessionHandler'
+```
+
+> [!NOTE]
+> Although this is using a cache, sessions won't be cleared when flushing the site.
+
+You can define the factory which is used to instantiate the cache by setting the `SS_SESSION_CACHE_FACTORY` environment variable, or by setting the following YAML configuration:
+
+```yml
+---
+After: '#session-handlers'
+---
+SilverStripe\Core\Injector\Injector:
+  Psr\SimpleCache\CacheInterface.session-handler:
+    factory: 'App\Session\MyCacheFactory'
+```
+
+For example to use Memcached, you can use the [`MemcachedCacheFactory`](api:SilverStripe\Core\Cache\MemcachedCacheFactory) cache factory.
+
+See [cache adapters](/developer_guides/performance/cache_adapters/) for any additional details required to use those cache factories, though note that you do not need to set `SS_IN_MEMORY_CACHE_FACTORY` to set up the session save handler.
+
+#### `DatabaseSessionHandler`
+
+The [`DatabaseSessionHandler`](api:SilverStripe\Control\SessionHandler\DatabaseSessionHandler) class lets you store session data in the database.
+
+This provides a low barrier to sharing your sessions across multiple servers, e.g. in a horizontally-scaled hosting scenario.
+
+Set this save handler with the following YAML configuration, or by setting the `SS_SESSION_SAVE_HANDLER_CLASS` environment variable to `SilverStripe\Control\SessionHandler\DatabaseSessionHandler`
+
+```yml
+SilverStripe\Control\Session:
+  save_handler: 'SilverStripe\Control\SessionHandler\DatabaseSessionHandler'
+```
+
+You can change the name of the table used by setting [`DatabaseSessionHandler.table_name`](api:SilverStripe\Control\SessionHandler\DatabaseSessionHandler->table_name) to the new table name.
+
+> [!WARNING]
+> Changing the table name after sessions have already been stored in the old table will result in those sessions being invalidated, unless you manually migrate them to the new table.
+
+### Cookies
+
+#### Samesite attribute
+
+The session cookie is handled slightly differently than most cookies on the site, which provides the opportunity to handle the samesite attribute separately from other cookies. By default, it is set to `Strict` to prevent cross-site attacks.
+
+While it's generally not recommended, if you need to change this value for a particular reason then it can be changed via YAML:
+
+```yml
+SilverStripe\Control\Session:
+  cookie_samesite: 'Lax'
+```
+
+You may also need to update the cookie responsible for remembering logins across sessions:
+
+```yml
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Security\MemberAuthenticator\CookieAuthenticationHandler:
+    properties:
+      TokenCookieSameSite: 'Lax'
+```
+
+#### Secure session cookie
+
+The session cookie settings vary slightly between `HTTP` and `HTTPS` connections. `HTTPS` connections automatically include the `Secure` attribute. This ensures that secure session cookie data is only transmitted over encrypted `HTTPS` connections, preventing it from being exposed during plain-text `HTTP` requests and enhancing overall security. This means that if you are serving your site over both `HTTPS` and `HTTP`, some functionality such as authentication may not work as expected.
+
+Like the samesite attribute, while it's not generally recommended a secure session cookie can be disabled via YAML:
+
+```yml
+SilverStripe\Control\Session:
+  cookie_secure: false
+```
+
+You may also need to update the cookie responsible for remembering logins across sessions:
+
+```yml
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Security\MemberAuthenticator\CookieAuthenticationHandler:
+    properties:
+      TokenCookieSecure: false
+```
 
 Note that if you set `cookie_samesite` to `None` (which is *strongly* discouraged), the `cookie_secure` value will *always* be `true`.
 
-## Relaxing checks around user agent strings
+### Relaxing checks around user agent strings
 
 Out of the box, Silverstripe CMS will invalidate a user's session if the `User-Agent` header changes. This provides some supplemental protection against session high-jacking attacks.
 

@@ -40,8 +40,8 @@ use PageController;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator;
 
 class MyFormPageController extends PageController
 {
@@ -63,7 +63,7 @@ class MyFormPageController extends PageController
             FormAction::create('doSayHello')->setTitle('Say hello')
         );
 
-        $required = RequiredFields::create('Name');
+        $required = RequiredFieldsValidator::create('Name');
 
         $form = Form::create($this, 'HelloForm', $fields, $actions, $required);
 
@@ -388,7 +388,7 @@ class MyFormPageController extends PageController
         echo $data['Email'];
 
         // You can also fetch the value from the field.
-        echo $form->Fields()->dataFieldByName('Email')->Value();
+        echo $form->Fields()->dataFieldByName('Email')->getValue();
 
         // Using the Form instance you can get / set status such as error messages.
         $form->sessionMessage('Successful!', 'good');
@@ -403,7 +403,7 @@ See [How to: Handle nested form data](how_tos/handle_nested_data) for more advan
 
 ## Validation
 
-Form validation is handled by the [Validator](api:SilverStripe\Forms\Validator) class and the `validator` property on the `Form` object. The validator
+Form validation is handled by the [Validator](api:SilverStripe\Forms\Validation\Validator) class and the `validator` property on the `Form` object. The validator
 is provided with a name of each of the [FormField](api:SilverStripe\Forms\FormField)s to validate and each `FormField` instance is responsible for
 validating its' own data value.
 
@@ -414,7 +414,7 @@ namespace App\PageType;
 
 use PageController;
 use SilverStripe\Forms\Form;
-use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator;
 
 class MyFormPageController extends PageController
 {
@@ -424,7 +424,7 @@ class MyFormPageController extends PageController
     {
         // ...
 
-        $validator = RequiredFields::create([
+        $validator = RequiredFieldsValidator::create([
             'Name',
             'Email',
         ]);
@@ -435,10 +435,6 @@ class MyFormPageController extends PageController
     }
 }
 ```
-
-## Related lessons
-
-- [Introduction to frontend forms](https://www.silverstripe.org/learn/lessons/v4/introduction-to-frontend-forms-1)
 
 ## API documentation
 

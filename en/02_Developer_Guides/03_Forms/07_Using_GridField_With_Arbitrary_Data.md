@@ -13,10 +13,10 @@ icon: table
 
 Data which isn't represented by `DataObject` records can come in two forms:
 
-- truely arbitrary data wrapped in [`ArrayData`](api:SilverStripe\View\ArrayData)
+- truely arbitrary data wrapped in [`ArrayData`](api:SilverStripe\Model\ArrayData)
 - data which has some specific class to represent it.
 
-Both are supported by `GridField`, provided the class representing the data is some subclass of [`ViewableData`](api:SilverStripe\View\ViewableData).
+Both are supported by `GridField`, provided the class representing the data is some subclass of [`ModelData`](api:SilverStripe\Model\ModelData).
 
 Some grid field components may require specific information, such as which columns to display or how to represent the data in a form. Depending on how you're representing your data, you might need to call specific methods on those components to pass that information in, or you might instead choose to implement methods in your data representation class which the components can call to get that information.
 
@@ -30,8 +30,8 @@ Regardless of how you get your data, whether it's from a web API or some other s
 > See [viewing data in a form](#arraydata-view) for more information.
 
 ```php
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\View\ArrayData;
+use SilverStripe\Model\ArrayData;
+use SilverStripe\Model\List\ArrayList;
 
 $list = ArrayList::create([
     ArrayData::create([
@@ -137,7 +137,7 @@ $gridField->getConfig()->addComponents([
 
 ## Representing data in your own class
 
-As mentioned [in the preamble above](#using-gridfield-with-arbitrary-data), the class representing your data must be a subclass of `ViewableData` in order for it to be used in a `GridField`.
+As mentioned [in the preamble above](#using-gridfield-with-arbitrary-data), the class representing your data must be a subclass of `ModelData` in order for it to be used in a `GridField`.
 
 Representing data in your own class adds some complexity, but empowers content authors to create, update and delete entries via the `GridField`.
 
@@ -156,9 +156,9 @@ To represent your data as rows in a `GridField`, you can rely on the default `Gr
 ```php
 namespace App\Data;
 
-use SilverStripe\View\ViewableData;
+use SilverStripe\Model\ModelData;
 
-class DataRepresentation extends ViewableData
+class DataRepresentation extends ModelData
 {
     private int $id;
 
@@ -194,7 +194,7 @@ class DataRepresentation extends ViewableData
 ```php
 use App\Data\DataRepresentation;
 use SilverStripe\Forms\GridField\GridField;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Model\List\ArrayList;
 
 $list = ArrayList::create([
     DataRepresentation::create(1, 'This is an item'),
@@ -226,10 +226,10 @@ namespace App\Data;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Model\ModelData;
 use SilverStripe\ORM\Search\BasicSearchContext;
-use SilverStripe\View\ViewableData;
 
-class DataRepresentation extends ViewableData
+class DataRepresentation extends ModelData
 {
     // ...
 
@@ -285,9 +285,9 @@ namespace App\Data;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\TextField;
-use SilverStripe\View\ViewableData;
+use SilverStripe\Model\ModelData;
 
-class DataRepresentation extends ViewableData
+class DataRepresentation extends ModelData
 {
     // ...
 
@@ -332,10 +332,10 @@ Records with no `ID` field or which have a non-numeric value for their `ID` fiel
 namespace App\Data;
 
 use LogicException;
+use SilverStripe\Model\ModelData;
 use SilverStripe\ORM\DataObjectInterface;
-use SilverStripe\View\ViewableData;
 
-class DataRepresentation extends ViewableData implements DataObjectInterface
+class DataRepresentation extends ModelData implements DataObjectInterface
 {
     // ...
 

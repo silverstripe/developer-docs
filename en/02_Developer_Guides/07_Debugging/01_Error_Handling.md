@@ -233,7 +233,7 @@ SilverStripe\Core\Injector\Injector:
     calls:
       pushMyDisplayErrorHandler: [ pushHandler, [ '%$DisplayErrorHandler' ]]
   DisplayErrorHandler:
-    class: SilverStripe\Logging\HTTPOutputHandler
+    class: SilverStripe\Logging\ErrorOutputHandler
     constructor:
       - "notice"
     properties:
@@ -271,7 +271,7 @@ SilverStripe\Core\Injector\Injector:
 
   # Handler for displaying errors in the browser or CLI
   DisplayErrorHandler:
-    class: SilverStripe\Logging\HTTPOutputHandler
+    class: SilverStripe\Logging\ErrorOutputHandler
     constructor:
       - "error"
     properties:
@@ -357,7 +357,3 @@ SilverStripe\Dev\Backtrace:
 You should include any functions or methods here which have arguments that may be sensitive. If you are the author of a
 module that other developers may use, it is best practice to include this configuration in the module. Developers should
 not be expected to scan every Silverstripe module they use and add those declarations in their project configuration.
-
-## Related lessons
-
-- [Advanced environment configuration](https://www.silverstripe.org/learn/lessons/v4/advanced-environment-configuration-1)

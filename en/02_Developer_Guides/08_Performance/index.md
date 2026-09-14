@@ -7,12 +7,13 @@ icon: tachometer-alt
 
 # Performance
 
-The following guide describes the common ways to speed your Silverstripe CMS website up. The general rules for getting
-the best performance out of Silverstripe CMS include running the latest versions of PHP alongside a
-[opcode](https://en.wikipedia.org/wiki/Opcode) cache such as [OPcache](https://www.php.net/manual/en/book.opcache.php).
+Making your Silverstripe CMS applications fast and scalable is crucial for providing a great user experience and reducing server costs. This section provides guidance on various performance optimization techniques, ranging from caching strategies to database optimizations.
 
-If you're running shared hosting, make sure your host meets the minimum system requirements and has activated one of the
-PHP opcode caches to achieve the best results for your application. Once your hardware is performing it's best, dig
-into the guides below to see what you can do.
+## Where to start
+
+- Use profiling tools to identify the slowest parts of your application.
+- Implement caching strategies for frequently accessed data and static assets.
+- Focus on quick-wins first such as adding appropriate indexes.
+- Continuously monitor your application's performance and make adjustments as needed.
 
 [CHILDREN Exclude=How_Tos]

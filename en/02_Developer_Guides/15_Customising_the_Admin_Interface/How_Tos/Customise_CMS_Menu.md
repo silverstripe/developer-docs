@@ -73,20 +73,20 @@ On top of your administration windows, the menu can also have external links
 (e.g. to external reference). In this example, we're going to add a link to
 Google to the menu.
 
-First, we need to define a [LeftAndMainExtension](api:SilverStripe\Admin\LeftAndMainExtension) which will contain our
+First, we need to define an [Extension](api:SilverStripe\Core\Extension) which will contain our
 button configuration.
 
 ```php
 namespace App\Admin;
 
 use SilverStripe\Admin\CMSMenu;
-use SilverStripe\Admin\LeftAndMainExtension;
+use SilverStripe\Core\Extension;
 
-class CustomLeftAndMain extends LeftAndMainExtension
+class CustomLeftAndMain extends Extension
 {
     // ...
 
-    public function init()
+    protected function onInit()
     {
         // unique identifier for this item. Will have an ID of Menu-$ID
         $id = 'LinkToExample';

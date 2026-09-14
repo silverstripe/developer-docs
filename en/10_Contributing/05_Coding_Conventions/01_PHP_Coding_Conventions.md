@@ -35,7 +35,7 @@ These coding conventions are for new code, and for situations where you are inte
 
 Use an appropriate suffix or prefix for classnames when making a subclass or implementing an interface. Usually the suffix will be the name of the parent class or the interface. Sometimes the suffix/prefix is a shortened version of the name of the parent because it reads better while retaining easy comprehension. Here are some common examples with the parent class or interface in brackets:
 
-- `Admin` ([`ModelAdmin`](api:SilverStripe\Admin\ModelAdmin), [`LeftAndMain`]((api:SilverStripe\Admin\LeftAndAdmin)) if included in the CMS Menu)
+- `Admin` ([`ModelAdmin`](api:SilverStripe\Admin\ModelAdmin), [`LeftAndMain`](api:SilverStripe\Admin\LeftAndAdmin) if included in the CMS Menu)
 - `Block` ([`BaseElement`](api:DNADesign\Elemental\Models\BaseElement))
 - `DB` ([`DBField`](api:SilverStripe\ORM\FieldType\DBField)) - use as a prefix, e.g. `DBString`
 - `Controller` ([`Controller`](api:SilverStripe\Control\Controller))
@@ -75,6 +75,10 @@ Use an appropriate suffix or prefix for classnames when making a subclass or imp
 - Prefer `private` over `protected` for non-public constants, unless they are intended to be used in subclasses.
 - If someone requests a `private` method, property, or constant be made `protected` so that they can use it in their project or module code, that change should be made unless there's a really good reason not to.
 
+## Parameter naming
+
+- When adding new paramaters to a method which are then used to set properties on the class, which is very common for constructors, the parameter names should match the properties that are being set e.g. use a `string $myValue` parameter if it's going to set a `private string $myValue` property.
+
 ## Interfaces
 
 - Create an interface for type hinting if there are (or are likely to be in the future) multiple classes implementing a specific feature. Use the interface for type hints (for example for parameters, properties, and return types), and as the service key for injector.
@@ -101,7 +105,6 @@ Use an appropriate suffix or prefix for classnames when making a subclass or imp
 ## Extensions and traits
 
 - Use the [`Extension`](api:SilverStripe\Core\Extension) class for extending classes, including `DataObject` subclasses.
-- Do not use the `DataExtension` class, it will be deprecated in a future release.
 
 Use a trait instead of an [`Extension`](api:SilverStripe\Core\Extension) when the composable functionality:
 
@@ -146,7 +149,7 @@ Order code in classes in the following order:
 ### Unit testing
 
 - Unit test method names should match the method that they're testing with the first letter of the method uppercased and the word `test` prefixed (for example for the method `myMethodName()` the unit test method should be called `testMyMethodName()`).
-- Use the `@dataProvider` annotation to provide test case data when you are testing the same method in multiple scenarios. It makes code much cleaner and it makes it very easy to add further test cases.
+- Use the `#[DataProvider('provideSomething')]` annotation to provide test case data when you are testing the same method in multiple scenarios. It makes code much cleaner and it makes it very easy to add further test cases. You will need the import `use PHPUnit\Framework\Attributes\DataProvider;`.
 - Data provider method names should be same as the test case method name they're providing for with the leading work `test` substituted for `provide` (for example for `testSomething()` the DataProvider is `provideSomething()`).
 - Data provider array keys should describe the scenario they're testing.
 - Unless you need to explicitly create dynamic fixtures, fixtures should be added via YAML fixture files.

@@ -30,7 +30,7 @@ if ($member) {
 ## Subclassing
 
 > [!WARNING]
-> This is the least desirable way of extending the [Member](api:SilverStripe\Security\Member) class. It's better to use [DataExtension](api:SilverStripe\ORM\DataExtension)
+> This is the least desirable way of extending the [Member](api:SilverStripe\Security\Member) class. It's better to use [Extension](api:SilverStripe\Core\Extension)
 > (see below).
 
 You can define subclasses of [Member](api:SilverStripe\Security\Member) to add extra fields or functionality to the built-in membership system.
@@ -64,11 +64,12 @@ Note that if you want to look this class-name up, you can call `Injector::inst()
 
 If you override the built-in public function getCMSFields(), then you can change the form that is used to view & edit member
 details in the newsletter system.  This function returns a [FieldList](api:SilverStripe\Forms\FieldList) object.  You should generally start by calling
-parent::getCMSFields() and manipulate the [FieldList](api:SilverStripe\Forms\FieldList) from there.
+`$this->beforeUpdateCMSFields()` and manipulate the [FieldList](api:SilverStripe\Forms\FieldList) from there.
 
 ```php
 namespace App\Security;
 
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Security\Member;
 
@@ -78,11 +79,12 @@ class MyMember extends Member
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
-        $fields->insertBefore('HTMLEmail', TextField::create('Age'));
-        $fields->removeByName('JobTitle');
-        $fields->removeByName('Organisation');
-        return $fields;
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->insertBefore('HTMLEmail', TextField::create('Age'));
+            $fields->removeByName('JobTitle');
+            $fields->removeByName('Organisation');
+        });
+        return parent::getCMSFields();
     }
 }
 ```
@@ -107,18 +109,18 @@ SilverStripe\Security\Member:
     - App\Extension\MyMemberExtension
 ```
 
-A role extension is simply a subclass of [`DataExtension`](api:SilverStripe\ORM\DataExtension) that is designed to be used to add behaviour to [`Member`](api:SilverStripe\Security\Member).
+A role extension is simply a subclass of [`Extension`](api:SilverStripe\Core\Extension) that is designed to be used to add behaviour to [`Member`](api:SilverStripe\Security\Member).
 The roles affect the entire class - all members will get the additional behaviour.  However, if you want to restrict
 things, you should add appropriate [`Permission::checkMember()`](api:SilverStripe\Security\Permission::checkMember()) calls to the role's methods.
 
 ```php
 namespace App\Extension;
 
+use SilverStripe\Core\Extension;
 use SilverStripe\Form\FieldList;
-use SilverStripe\ORM\DataExtension;
 use SilverStripe\Security\Permission;
 
-class MyMemberExtension extends DataExtension
+class MyMemberExtension extends Extension
 {
     // define additional properties
     private static $db = [
@@ -128,7 +130,7 @@ class MyMemberExtension extends DataExtension
     /**
     * Modify the field set to be displayed in the CMS detail pop-up
     */
-    public function updateCMSFields(FieldList $currentFields)
+    protected function updateCMSFields(FieldList $currentFields)
     {
         // Only show the additional fields on an appropriate kind of use
         if (Permission::checkMember($this->owner->ID, 'VIEW_FORUM')) {
@@ -173,23 +175,24 @@ For example:
 namespace App\Task;
 
 use App\Model\DataRecord;
-use BadMethodCallException;
-use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
+use SilverStripe\PolyExecution\PolyOutput;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 
 class CleanRecordsTask extends BuildTask
 {
-    public function run($request)
+    private static bool $can_run_in_browser = false;
+
+    protected function execute(InputInterface $input, PolyOutput $output): int
     {
-        if (!Director::is_cli()) {
-            throw new BadMethodCallException('This task only runs on CLI');
-        }
         $admin = Security::findAnAdministrator();
         Member::actAs($admin, function () {
             DataRecord::get()->filter('Dirty', true)->removeAll();
         });
+        return Command::SUCCESS;
     }
 }
 ```

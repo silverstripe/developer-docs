@@ -67,7 +67,7 @@ use SilverStripe\View\Requirements;
 Requirements::javascript('app/client/dist/bundle.js');
 
 // When referencing theme files, use a path relative to the root of your project
-Requirements::javascript('themes/simple/javascript/script.js');
+Requirements::javascript('themes/my-theme/javascript/script.js');
 
 // When referencing files from a module, you need to prefix the path with the module name.
 Requirements::javascript('silverstripe/admin:client/dist/js/bundle.js');
@@ -94,7 +94,7 @@ Also see [Direct resource urls](#direct-resource-urls) below if you need to incl
 ## PHP requirements API
 
 It is common practice to include most Requirements either in the `init()` method of your [controller](../controllers/), or
-as close to rendering as possible (e.g. in [FormField](api:SilverStripe\Forms\FormField)).
+as close to rendering as possible (e.g. in [`FormField::Field()`](api:SilverStripe\Forms\FormField::Field())).
 
 ```php
 namespace App\Control;
@@ -118,7 +118,7 @@ class MyCustomController extends Controller
 ```php
 use SilverStripe\View\Requirements;
 
-Requirements::css($path, $media);
+Requirements::css($path, $media, $options);
 ```
 
 If you're using the CSS method a second argument can be used. This argument defines the 'media' attribute of the
@@ -128,6 +128,12 @@ If you're using the CSS method a second argument can be used. This argument defi
 Requirements::css('<my-module-dir>/css/some_file.css', 'screen,projection');
 ```
 
+You can also pass arbitrary attributes (including the media attribute itself) in an associative array to the `$options` argument. For example:
+
+```php
+Requirements::css('<my-module-dir>/css/some_file.css', options: ['media' => 'screen', 'disabled' => true]);
+```
+
 ### JavaScript files
 
 ```php
@@ -135,6 +141,30 @@ use SilverStripe\View\Requirements;
 
 Requirements::javascript($path, $options);
 ```
+
+#### JavaScript options
+
+You can use the second argument to add any arbitrary attributes to the script tag. For example:
+
+```php
+use SilverStripe\View\Requirements;
+
+Requirements::javascript(
+    '<my-module-dir>/javascript/some_file.js',
+    [
+        'async' => true,
+        'defer' => true,
+        'type' => 'module',
+    ]
+);
+```
+
+> [!TIP]
+> The `integrity` and `crossorigin` in particular can be useful for [subresource integrity checks](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) and [CORS](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin).
+>
+> Adding these should be standard practice for all JavaScript which is being pulled from CDNs or third-party providers.
+
+#### Templated JavaScript
 
 A variant on the inclusion of custom JavaScript is the inclusion of *templated* JavaScript.  Here, you keep your
 JavaScript in a separate file and instead load, via search and replace, several PHP generated variables into that code.
@@ -151,6 +181,8 @@ Requirements::javascriptTemplate('<my-module-dir>/javascript/some_file.js', $var
 ```
 
 In this example, `some_file.js` is expected to contain a replaceable variable expressed as `$MemberID`.
+
+#### Provisioned JavaScript
 
 If you are using front-end script combination mechanisms, you can optionally declare
 that your included files provide these scripts. This will ensure that subsequent
@@ -169,19 +201,8 @@ Requirements::javascript('<my-module-dir>/javascript/dist/bundle.js', ['provides
 Requirements::javascript('<my-module-dir>/javascript/jquery.js');
 ```
 
-You can also use the second argument to add the 'async' and/or 'defer attributes to the script tag generated:
-
-```php
-use SilverStripe\View\Requirements;
-
-Requirements::javascript(
-    '<my-module-dir>/javascript/some_file.js',
-    [
-        'async' => true,
-        'defer' => true,
-    ]
-);
-```
+> [!NOTE]
+> The `provides` key in the `$options` array is special, and won't be used as an attribute in the `<script>` tag.
 
 ### Custom inline CSS or JavaScript
 
@@ -206,6 +227,8 @@ Requirements::customCSS(<<<CSS
 );
 ```
 
+You can also use the [`Requirements::customScriptWithAttributes()`](api:SilverStripe\View\Requirements::customScriptWithAttributes()) method if you want to add arbitrary attributes to the `<script>` tag. It has an `$options` argument [just like the `javascript()` method](#javascript-options).
+
 ## Combining files
 
 You can concatenate several CSS or JavaScript files into a single dynamically generated file. This increases performance
@@ -226,6 +249,16 @@ Requirements::combine_files(
 > [!CAUTION]
 > To make debugging easier in your local environment, combined files is disabled when running your application in `dev`
 > mode. You can re-enable dev combination by setting `Requirements_Backend.combine_in_dev` to true.
+
+The [`Requirements::combine_files()`](api:SilverStripe\View\Requirements::combine_files()) method has an `$options` argument [just like the `javascript()` method](#javascript-options) and [like the `css()` method](#css-files).
+
+By default, all requirements files are flushed (deleted) when manifests are flushed (see [Flushing](/developer_guides/execution_pipeline/manifests/#flushing)).
+This can be disabled by setting the `Requirements.disable_flush_combined` config to `true`.
+
+> [!CAUTION]
+> When combining CSS files, take care of relative urls, as these will not be re-written to match
+> the destination location of the resulting combined CSS unless you have set the
+> `Requirements_Backend.resolve_relative_css_refs` configuration property to `true`.
 
 ### Configuring combined file storage
 
@@ -312,56 +345,6 @@ mirrored filesystems.
 In any case, care should be taken to determine the mechanism appropriate for your development
 and production environments.
 
-### Combined CSS files
-
-You can also combine CSS files into a media-specific stylesheets as you would with the `Requirements::css()` call - use
-the third parameter of the `combine_files` function:
-
-```php
-use SilverStripe\View\Requirements;
-use SilverStripe\View\SSViewer;
-use SilverStripe\View\ThemeResourceLoader;
-
-$loader = ThemeResourceLoader::inst();
-$themes = SSViewer::get_themes();
-
-$printStylesheets = [
-    $loader->findThemedCSS('print_HomePage.css', $themes),
-    $loader->findThemedCSS('print_Page.css', $themes),
-];
-
-Requirements::combine_files('print.css', $printStylesheets, 'print');
-```
-
-By default, all requirements files are flushed (deleted) when manifests are flushed (see [Flushing](/developer_guides/execution_pipeline/manifests/#flushing)).
-This can be disabled by setting the `Requirements.disable_flush_combined` config to `true`.
-
-> [!CAUTION]
-> When combining CSS files, take care of relative urls, as these will not be re-written to match
-> the destination location of the resulting combined CSS unless you have set the
-> `Requirements_Backend.resolve_relative_css_refs` configuration property to `true`.
-
-### Combined JS files
-
-You can also add the 'async' and/or 'defer' attributes to combined JavaScript files as you would with the
-`Requirements::javascript()` call - use the third parameter of the `combine_files` function:
-
-```php
-use SilverStripe\View\Requirements;
-use SilverStripe\View\SSViewer;
-use SilverStripe\View\ThemeResourceLoader;
-
-$loader = ThemeResourceLoader::inst();
-$themes = SSViewer::get_themes();
-
-$scripts = [
-    $loader->findThemedJavascript('some_script.js', $themes),
-    $loader->findThemedJavascript('some_other_script.js', $themes),
-];
-
-Requirements::combine_files('scripts.js', $scripts, ['async' => true, 'defer' => true]);
-```
-
 ## Clearing resources
 
 ```php
@@ -446,12 +429,12 @@ If you want to get a resource for a *specific* theme or from somewhere that is n
 ```ss
 <img src="$resourceURL('app/images/my-image.jpg')">
 <img src="$resourceURL('my/module:images/my-image.jpg')">
-<img src="$resourceURL('themes/simple/images/my-image.jpg')">
-<img src="$resourceURL('themes/simple/images')/$Image.jpg">
+<img src="$resourceURL('themes/my-theme/images/my-image.jpg')">
+<img src="$resourceURL('themes/my-theme/images')/$Image.jpg">
 ```
 
 > [!TIP]
-> Notice the `vendor/module:some/path/to/file.jpg` syntax (used to get a resource from a specific module) is only valid for the `$resourceURL()` helper method. It won't work for `themedResourceURL()`.
+> Notice the `vendor/module:some/path/to/file.jpg` syntax (used to get a resource from a specific module) is only valid for the `$resourceURL()` helper method. It won't work for `$themedResourceURL()`.
 
 ### Resource URLs or filepaths from a PHP context
 
@@ -471,11 +454,6 @@ $themeFilePath = ThemeResourceLoader::inst()->findThemedResource('images/spinner
 ```
 
 You can also get file paths specifically for JavaScript and CSS files using the [`findThemedJavascript()`](api:SilverStripe\Core\Manifest\ModuleResourceLoader::findThemedJavascript()) and [`findThemedCss()`](api:SilverStripe\Core\Manifest\ModuleResourceLoader::findThemedCss()) methods.
-
-## Related lessons
-
-- [Creating your first theme](https://www.silverstripe.org/learn/lessons/v4/creating-your-first-theme-1)
-- [AJAX behaviour and ViewableData](https://www.silverstripe.org/learn/lessons/v4/ajax-behaviour-and-viewabledata-1)
 
 ## API documentation
 

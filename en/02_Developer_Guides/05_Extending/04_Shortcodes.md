@@ -176,7 +176,7 @@ Many media formats can be embedded into websites through the `<object>` tag, but
 special markup and attributes. OEmbed is a standard to discover these formats based on a simple URL, for example a
 Youtube link pasted into the "Insert Media" form of the CMS.
 
-Some of these variations are likely to be explicitly not allowed in your TinyMCE configuration, so the embed plugin shows a placeholder instead, and the embed details such as the URL are stored with a
+Some of these variations are likely to be explicitly not allowed in your HTML editor configuration, so the embed plugin shows a placeholder instead, and the embed details such as the URL are stored with a
 custom `[embed]` shortcode.
 
 ```html

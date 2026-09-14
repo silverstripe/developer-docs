@@ -15,6 +15,13 @@ jobs:
       matrix:
         lint_lang: [ 'lint-md', 'lint-js', 'lint-php' ]
     name: ${{ matrix.lint_lang }}
+    env:
+      # Auto-approve corepack's yarn download
+      COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+      # Overrides any .yarnrc.yml so a forked pull-request cannot re-enable scripts
+      YARN_ENABLE_SCRIPTS: "false"
+      # Limit concurrent npm requests to avoid rate limiting in CI
+      YARN_NETWORK_CONCURRENCY: "1"
     steps:
 
       - name: Checkout code
@@ -41,10 +48,12 @@ jobs:
         with:
           node-version: ${{ steps.read-nvm.outputs.version }}
 
-      - name: Install yarn
+      - name: Enable corepack
         if: ${{ matrix.lint_lang == 'lint-md' || matrix.lint_lang == 'lint-js' }}
         run: |
-          npm install --global yarn
+          # corepack is bundled with node 18 and provisions the yarn version declared in packageManager.
+          # Node 25+ does not bundle corepack - if node is bumped past 24, add npm install -g corepack first.
+          corepack enable
 
       - name: Run lint
         run: |

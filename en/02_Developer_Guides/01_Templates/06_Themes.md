@@ -27,7 +27,7 @@ composer require my_vendor/my_theme [version]
 
 > [!CAUTION]
 > As you've added new files to your Silverstripe CMS installation, make sure you clear the Silverstripe CMS cache by appending
-> `?flush=1` to your website URL (e.g `https://www.example.com/?flush=1`).
+> `?flush=1` to your website URL (e.g `https://www.example.com/?flush=1`) or using the `--flush` CLI flag with sake.
 
 ### Configuring themes
 
@@ -111,8 +111,3 @@ The final step is to [submit your theme to Packagist](https://packagist.org/abou
 ## Links
 
 - [Silverstripe CMS themes on Packagist](https://packagist.org/search/?type=silverstripe-theme)
-
-## Related lessons
-
-- [Creating your first project](https://www.silverstripe.org/learn/lessons/v4/creating-your-first-project)
-- [Migrating static templates into your theme](https://www.silverstripe.org/learn/lessons/v4/migrating-static-templates-into-your-theme-1)

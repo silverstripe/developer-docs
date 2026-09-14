@@ -32,7 +32,7 @@ We use `app/` as the default folder.
 | `app/_config`    | YAML configuration specific to your application                    |
 | `app/src`        | PHP code specific to your application (subdirectories are optional)     |
 | `app/tests`      | PHP unit/functional/end-to-end tests                                                      |
-| `app/templates`  | HTML [templates](/developer_guides/templates) with `*.ss-extension` for the `$default` theme   |
+| `app/templates`  | [templates](/developer_guides/templates) for the `$default` theme   |
 | `app/client/src` | Conventional directory for source resources (images/CSS/JavaScript) for your CMS customisations |
 | `app/client/dist` | Conventional directory for transpiled resources (images/CSS/JavaScript) for your CMS customisations |
 | `app/client/lang` | Conventional directory for [JavaScript translation tables](/developer_guides/i18n/#translation-tables-in-javascript) |
@@ -58,7 +58,7 @@ Silverstripe core modules.
 
 | Directory                       | Description                                                     |
 | ------------------              | ---------------------------                                     |
-| `themes/simple/`                | Standard "simple" theme                                         |
+| `themes/startup-theme/`         | Default theme                                                   |
 | `themes/<yourtheme>/`           | Custom theme base directory                                     |
 | `themes/<yourtheme>/templates`  | Theme templates                                                 |
 | `themes/<yourtheme>/css`        | Theme CSS files                                                 |
@@ -108,7 +108,7 @@ Example Blog Documentation:
 Silverstripe recursively detects classes in PHP files by building up a manifest used for autoloading, as well as
 respecting Composer's built-in autoloading for libraries. This means in most cases, you don't need to worry about
 include paths or `require()` calls in your own code - after adding a new class, simply regenerate the manifest by using
-a `flush=1` query parameter. See the ["Manifests" documentation](/developer_guides/execution_pipeline/manifests) for
+a `flush=1` query parameter or the `--flush` CLI flag. See the ["Manifests" documentation](/developer_guides/execution_pipeline/manifests) for
 details.
 
 ## Best practices

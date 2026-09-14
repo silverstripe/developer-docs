@@ -1,11 +1,11 @@
 ---
-title: ModelAdmin
-summary: Create admin UI's for managing your data records.
+title: Managing Multiple Records
+summary: Create admin UI's for managing multiple records at once with ModelAdmin
 ---
 
-# ModelAdmin
+# Managing multiple records
 
-[ModelAdmin](api:SilverStripe\Admin\ModelAdmin) provides a simple way to utilize the Silverstripe CMS UI with your own data models. It can create
+[ModelAdmin](api:SilverStripe\Admin\ModelAdmin) provides a simple way to manage multiple records at once with your own data models. It can create
 searchables list and edit views of [DataObject](api:SilverStripe\ORM\DataObject) subclasses, and even provides import and export of your data.
 
 It uses the framework's knowledge about the model to provide sensible defaults, allowing you to get started in a couple
@@ -167,7 +167,7 @@ $tabLink = $admin->getLinkForModelTab('product-category');
 > [getModelTabForModelClass()](api:SilverStripe\Admin\ModelAdmin::getModelTabForModelClass()) method
 > for your `ModelAdmin` subclass.
 
-You can also use the new [CMSEditLinkExtension](api:SilverStripe\Admin\CMSEditLinkExtension) to provide a `CMSEditLink()` method on the record - see [Managing Records](../model/managing_records#getting-an-edit-link).
+You can also use the new [CMSEditLinkExtension](api:SilverStripe\Admin\CMSEditLinkExtension) to update the value of the `getCMSEditLink()` method on the record - see [Managing Records](../model/managing_records#getting-an-edit-link).
 
 ## Permissions
 
@@ -473,7 +473,7 @@ use SilverStripe\Forms\GridField\GridFieldFilterHeader;
  */
 class ModelAdminExtension extends Extension
 {
-    public function updateGridFieldConfig(GridFieldConfig &$config)
+    protected function updateGridFieldConfig(GridFieldConfig &$config)
     {
         $config->addComponent(GridFieldFilterHeader::create());
     }
@@ -561,10 +561,6 @@ class MyAdmin extends ModelAdmin
     }
 }
 ```
-
-## Related lessons
-
-- [Intoduction to ModelAdmin](https://www.silverstripe.org/learn/lessons/v4/introduction-to-modeladmin-1)
 
 ## Related documentation
 

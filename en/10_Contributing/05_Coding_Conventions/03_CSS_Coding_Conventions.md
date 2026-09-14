@@ -17,14 +17,14 @@ Check our [requirements](/getting_started/server_requirements) documentation.
 ## Tools and libraries
 
 Styles are written in the [SCSS language](https://sass-lang.com/).
-We use [Bootstrap 4](https://getbootstrap.com/) styles where possible.
+We use [Bootstrap 5](https://getbootstrap.com/) styles where possible.
 
 ## Conventions
 
 We follow the [AirBnB CSS Conventions](https://github.com/airbnb/css)
 and the [BEM](https://getbem.com/) methodology (block-element-modifier).
 
-Because we use [Bootstrap 4](https://getbootstrap.com/) which
+Because we use [Bootstrap 5](https://getbootstrap.com/) which
 does not follow [BEM](https://getbem.com/) naming convention there will be
 a lot of places where class names voilate BEM.
 However, please note that they are not a indicator of how to name classes.
@@ -49,7 +49,7 @@ via `yarn lint` (see [Build Tooling](/contributing/build_tooling)).
   (e.g. Button, Accordion). Presentation of these components should not rely on
   the markup context they're embedded in.
 - The `client/src/containers` folder should contain use-case dependent styles only
-  (e.g. CampaignAdmin). Styles in here should be kept at a minimum.
+  (e.g. AssetAdmin). Styles in here should be kept at a minimum.
 - The file name of styles nested within components and containers should inherit their
   respective folder name for easy reference.
   For example, a `components/FormAction` component has styles named `FormAction.scss`).

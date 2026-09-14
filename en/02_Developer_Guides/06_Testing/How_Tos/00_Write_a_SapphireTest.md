@@ -108,10 +108,10 @@ The example **phpunit.xml** file should be placed in the root folder of your pro
 
 ## Caching
 
-Just like on web requests, Silverstripe CMS caches metadata about the execution context. This cache can get stale, e.g. when you change YAML configuration or add certain types of PHP code. In order to flush the cache, the **first time** this test is run use the `flush=1` CLI parameter:
+Just like on web requests, Silverstripe CMS caches metadata about the execution context. This cache can get stale, e.g. when you change YAML configuration or add certain types of PHP code. In order to flush the cache, the **first time** this test is run use the `SS_PHPUNIT_FLUSH` environment variable:
 
 ```bash
-vendor/bin/phpunit app/tests/PageTest.php '' flush=1
+SS_PHPUNIT_FLUSH=1 vendor/bin/phpunit app/tests/PageTest.php
 ```
 
 > [!NOTE]

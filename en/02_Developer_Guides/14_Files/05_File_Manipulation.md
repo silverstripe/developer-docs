@@ -209,7 +209,7 @@ This can be very useful if you want to convert a file to a different format for 
 
 #### Making our own `FileConverter`
 
-Converting between image formats is the easiest example, because we can let [Intervention Image](https://image.intervention.io/v2) do the heavy lifting for us. Note that there is a built in [`InterventionImageFileConverter`](api:SilverStripe\Assets\Conversion\InterventionImageFileConverter) class which does this already, but we'll use this as an example for how to create our own `FileConverter`.
+Converting between image formats is the easiest example, because we can let [Intervention Image](https://image.intervention.io/v3) do the heavy lifting for us. Note that there is a built in [`InterventionImageFileConverter`](api:SilverStripe\Assets\Conversion\InterventionImageFileConverter) class which does this already, but we'll use this as an example for how to create our own `FileConverter`.
 
 The `FileConverter` interface requires us to implement two methods:
 
@@ -219,7 +219,7 @@ The `FileConverter` interface requires us to implement two methods:
 ```php
 namespace App\Conversion;
 
-use Intervention\Image\Exception\ImageException;
+use Intervention\Image\Exceptions\RuntimeException;
 use SilverStripe\Assets\Conversion\FileConverter;
 use SilverStripe\Assets\Conversion\FileConverterException;
 use SilverStripe\Assets\File;
@@ -248,7 +248,7 @@ class ImageFileConverter implements FileConverter
                     return [$tuple, $backend];
                 }
             );
-        } catch (ImageException $e) {
+        } catch (RuntimeException $e) {
             throw new FileConverterException('Failed to convert: ' . $e->getMessage(), $e->getCode(), $e);
         }
     }
@@ -320,7 +320,7 @@ Our callback returns both the information about the variant file and the `Image_
 ```php
 try {
     // ...
-} catch (ImageException $e) {
+} catch (RuntimeException $e) {
     throw new FileConverterException('Failed to convert: ' . $e->getMessage(), $e->getCode(), $e);
 }
 ```

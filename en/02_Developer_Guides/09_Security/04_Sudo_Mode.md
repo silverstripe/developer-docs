@@ -32,7 +32,7 @@ The following `DataObject` subclasses are protected by sudo mode out of the box:
 
 ### Configuring sudo mode for your models
 
-To add sudo mode for a particular model, including your `DataObject` subclasses, simply set the [`require_sudo_mode`](api:SilverStripe\View\ViewableData->require_sudo_mode) configuration property to `true`, either directly on the class or via yml.
+To add sudo mode for a particular model, including your `DataObject` subclasses, simply set the [`require_sudo_mode`](api:SilverStripe\Model\ModelData->require_sudo_mode) configuration property to `true`, either directly on the class or via yml.
 
 > [!NOTE]
 > This will only add sudo mode to edit forms within the CMS interface. It will have no effect on forms outside of the CMS, such as custom forms in the frontend.

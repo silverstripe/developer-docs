@@ -103,6 +103,61 @@ Please refer to the [`ImageManipulation`](api:SilverStripe\Assets\ImageManipulat
 
 See [file manipulation](./file_manipulation/) for more general ways that all files can be manipulated.
 
+### Animated images
+
+Manipulating animated images takes longer, and results in a larger filesize.
+
+Because of this, the [`ThumbnailGenerator`](api:SilverStripe\AssetAdmin\Model\ThumbnailGenerator) will provide still images as thumbnails for animated gifs by default. You can change that for a given instance of `ThumbnailGenerator` by passing `true` to the [`setAllowsAnimation()`](api:SilverStripe\AssetAdmin\Model\ThumbnailGenerator::setAllowsAnimation()) method. For example, to allow animated thumbnails for `UploadField`:
+
+```yml
+---
+After: '#assetadminthumbnails'
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\AssetAdmin\Model\ThumbnailGenerator.assetadmin:
+    properties:
+      AllowsAnimation: true
+```
+
+The [`Image::PreviewLink()`](api:SilverStripe\Assets\Image::PreviewLink()) method also doesn't allow an animated result by default. This is used in the "Files" admin section, and anywhere you can choose an existing image such as `UploadField` and the WYSIWYG file modals.
+
+You can allow animated previews by setting [`Image.allow_animated_preview`](api:SilverStripe\Assets\Image->allow_animated_preview) configuration property to `true`:
+
+```yml
+SilverStripe\Assets\Image:
+  allow_animated_preview: true
+```
+
+You can disable the ability to create animated variants globally by setting `decodeAnimation` to `false` in the `Intervention\Image\ImageManager`'s constructor:
+
+```yml
+SilverStripe\Core\Injector\Injector:
+  Intervention\Image\ImageManager:
+    constructor:
+      decodeAnimation: false
+```
+
+This affects *all* scenarios where variants are created, both on the front-end and in the backend.
+
+> [!TIP]
+> Disabling animation globally is more performant than using `RemoveAnimation()` as described below, because it tells `intervention/image` to always only look at the first frame of any animated image - it doesn't even decode the remaining frames.
+
+When manipulating images yourself in templates, you can use the new [`RemoveAnimation()`](api:SilverStripe\Assets\ImageManipulation::RemoveAnimation()) method before your resizing methods:
+
+```ss
+$MyImage.RemoveAnimation.FitMax(300, 200)
+```
+
+`RemoveAnimation()` takes an optional parameter which you can use to determine which frame of animation is used as the still image. You can either pass in an exact frame number (0-indexed), or a percentage as a string (e.g. `$MyImage.RemoveAnimation('50%')` will use a frame halfway through the animation).
+
+If the image isn't animated `RemoveAnimation()` will just return the original image without generating a variant, so it's safe to use without first checking if the image is animated.
+
+You can also use the [`setAllowsAnimationInManipulations()`](api:SilverStripe\Assets\Image_Backend::setAllowsAnimationInManipulations()) method to toggle the `decodeAnimation` configuration setting for a given image. This is useful if you intend to make many manipulations to an image, and you want some to include animation and others to not include animation - you can simply toggle animation usage on and off using this method.
+
+```php
+$myImage->getImageBackend()->setAllowsAnimationInManipulations(false);
+```
+
 ### Creating custom image functions
 
 You can also create your own functions by decorating the `Image` class.
@@ -252,6 +307,7 @@ use Page;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\Image;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldList;
 
 class HomePage extends Page
 {
@@ -269,22 +325,22 @@ class HomePage extends Page
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $loadingSource = [
+                true => 'Lazy (Default)',
+                false => 'Eager',
+            ];
 
-        $loadingSource = [
-            true => 'Lazy (Default)',
-            false => 'Eager',
-        ];
+            $fields->addFieldsToTab(
+                'Root.Main',
+                [
+                    UploadField::create('Logo'),
+                    DropdownField::create('LogoLoading', 'Loading', $loadingSource),
+                ]
+            );
+        });
 
-        $fields->addFieldsToTab(
-            'Root.Main',
-            [
-                UploadField::create('Logo'),
-                DropdownField::create('LogoLoading', 'Loading', $loadingSource),
-            ]
-        );
-
-        return $fields;
+        return parent::getCMSFields();
     }
 }
 ```
@@ -318,17 +374,31 @@ SilverStripe\Assets\Image:
   lazy_loading_enabled: false
 ```
 
-## Changing the manipulation driver to imagick
+## Changing the manipulation driver {#intervention-image-driver}
 
-If you want to change the image manipulation driver to use Imagick instead of GD, you'll need to change your config so
-that the `Intervention\Image\ImageManager` is instantiated with the `imagick` driver instead of GD:
+If you have the [imagick PHP extension](https://www.php.net/manual/en/book.imagick.php) installed, it will be used as the driver for `intervention/image` by default. If you don't, the assumption is that you have the [GD PHP extension](https://www.php.net/manual/en/book.image.php) installed, and it will be used instead.
+
+If you want to change the image manipulation driver to something else (either a third-party driver, or else use GD even when imagick is installed), you need to configure that via the injector:
+
+```yml
+---
+After: '#assetsimage-imagick'
+---
+SilverStripe\Core\Injector\Injector:
+  InterventionImageDriver:
+    class: 'Intervention\Image\Drivers\Gd\Driver'
+```
+
+You can also set various configuration options for the driver to use by setting them in the constructor for `Intervention\Image\ImageManager`, for example:
 
 ```yml
 SilverStripe\Core\Injector\Injector:
   Intervention\Image\ImageManager:
     constructor:
-      - { driver: imagick }
+      decodeAnimation: false
 ```
+
+The options available are detailed in the [intervention/image documentation](https://image.intervention.io/v3/basics/image-manager#configuration-options).
 
 ## Storage
 
@@ -336,16 +406,16 @@ Manipulated images are stored as "file variants" in the same folder structure as
 
 ## Controlling how images are rendered
 
-Developers can customise how `Image` instances are rendered on their website by overriding the `templates/SilverStripe/Assets/Storage/DBFile_Image.ss` template file.
+Developers can customise how `Image` instances are rendered on their website by overriding the `templates/SilverStripe/Assets/Storage/DBFile_Image` template.
 
 This will apply to images added to an `HTMLEditorField` and images invoked in templates.
 
 You can also choose to have different rendering logic for `HTMLEditorField` images and for images invoked in templates by overriding different templates.
 
-- Add a `SilverStripe/Assets/Shortcodes/ImageShortcodeProvider_Image.ss` to your theme to control images added to an HTMLEditorField.
-- Add a `DBFile_Image.ss` file to the root of your theme to control only images invoked in templates.
+- Add a `SilverStripe/Assets/Shortcodes/ImageShortcodeProvider_Image` template to your theme to control images added to an `HTMLEditorField`.
+- Add a `DBFile_Image` template to the root of your theme to control only images invoked in templates.
 
-Look at [Template inheritance](../templates/Template_Inheritance) for more information on how to override SS templates.
+Look at [Template inheritance](../templates/Template_Inheritance) for more information on how to override templates.
 
 ## API documentation
 
@@ -353,7 +423,3 @@ Look at [Template inheritance](../templates/Template_Inheritance) for more infor
 - [Image](api:SilverStripe\Assets\Image)
 - [DBFile](api:SilverStripe\Assets\Storage\DBFile)
 - [ImageManipulation](api:SilverStripe\Assets\ImageManipulation)
-
-## Related lessons
-
-- [Working with files and images](https://www.silverstripe.org/learn/lessons/v4/working-with-files-and-images-1)

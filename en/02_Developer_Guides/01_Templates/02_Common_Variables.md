@@ -36,11 +36,11 @@ have a read of the [Formatting, Modifying and Casting Variables](casting) docume
 </head>
 ```
 
-The `<% base_tag %>` placeholder is replaced with the HTML base element. Relative links within a document (such as
+The `<% base_tag %>` placeholder is replaced with the HTML `<base>` element. Relative links within a document (such as
 `<img src="someimage.jpg" alt="">`) will become relative to the URI specified in the base tag. This ensures the
 browser knows where to locate your site’s images and CSS files.
 
-It renders in the template as `<base href="https://www.example.com" /><!--[if lte IE 6]></base><![endif]-->`
+It renders in the template as `<base href="https://www.example.com/">`
 
 > [!CAUTION]
 > A `<% base_tag %>` is nearly always required or assumed by Silverstripe CMS to exist.
@@ -115,22 +115,22 @@ on a per-page basis.
 > [!WARNING]
 > If you don’t want to include the title tag use `$MetaTags(false)`.
 
-By default `$MetaTags` renders (assuming 5.1.0 is the current version of `silverstripe/framework`):
+By default `$MetaTags` renders (assuming 6.0.0 is the current version of `silverstripe/framework`):
 
-```ss
+```html
 <title>Title of the Page</title>
-<meta name="generator" content="Silverstripe CMS 5.1">
+<meta name="generator" content="Silverstripe CMS 6.0">
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 ```
 
 `$MetaTags(false)` will render
 
-```ss
-<meta name="generator" content="Silverstripe CMS 5.1">
+```html
+<meta name="generator" content="Silverstripe CMS 6.0">
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 ```
 
-If using `$MetaTags(false)` we can provide a more custom `title`.
+If using `$MetaTags(false)` we can provide a custom `<title> tag`.
 
 ```ss
 $MetaTags(false)
@@ -159,7 +159,7 @@ SilverStripe\CMS\Model\SiteTree:
 
 ### Modifying meta tags
 
-You can override the `MetaComponents()` method on your `SiteTree` sub-classes or make use of the `MetaComponents` extension point to manipulate the underlying data that is rendered by `$MetaTags`. Example (for `Page` class):
+You can override the `MetaComponents()` method on your `SiteTree` sub-classes or make use of the `updateMetaComponents` extension point to manipulate the underlying data that is rendered by `$MetaTags`. Example (for `Page` class):
 
 ```php
 namespace App\PageType;
@@ -418,10 +418,6 @@ Silverstripe CMS log-in form. If you are on such a page (and the form is impleme
 the `$Form` variable will contain the HTML content of the form.
 Placing it just below `$Content` is a good default.
 
-## Related lessons
-
-- [Adding dynamic content](https://www.silverstripe.org/learn/lessons/v4/adding-dynamic-content-1)
-
 ## Related documentation
 
 - [Casting and Formatting Variables](casting)
@@ -431,5 +427,5 @@ Placing it just below `$Content` is a good default.
 
 - [ContentController](api:SilverStripe\CMS\Controllers\ContentController): The main controller responsible for handling pages.
 - [Controller](api:SilverStripe\Control\Controller): Generic controller (not specific to pages.)
-- [DataObject](api:SilverStripe\ORM\DataObject): Underlying model class for page objects.
-- [ViewableData](api:SilverStripe\View\ViewableData): Underlying object class for pretty much anything displayable.
+- [DataObject](api:SilverStripe\ORM\DataObject): Underlying model class for models which store their data in the database.
+- [ModelData](api:SilverStripe\Model\ModelData): Underlying object class for pretty much anything which contains data.

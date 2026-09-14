@@ -31,6 +31,7 @@ namespace App\PageType;
 use Page;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\Image;
+use SilverStripe\Forms\FieldList;
 
 class LandingPage extends Page
 {
@@ -40,9 +41,10 @@ class LandingPage extends Page
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
-        $fields->addFieldToTab('Root.Main', UploadField::create('Banner', 'Page Banner'), 'Content');
-        return $fields;
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->addFieldToTab('Root.Main', UploadField::create('Banner', 'Page Banner'), 'Content');
+        });
+        return parent::getCMSFields();
     }
 }
 ```
@@ -157,9 +159,9 @@ SilverStripe\AssetAdmin\Forms\FileFormFactory:
 // app/src/Extension/MyFileExtension.php
 namespace App\Extension;
 
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class MyFileExtension extends DataExtension
+class MyFileExtension extends Extension
 {
     private static $db = [
         'Description' => 'Text',
@@ -177,7 +179,7 @@ use SilverStripe\Forms\TextareaField;
 
 class MyFormFactoryExtension extends Extension
 {
-    public function updateFormFields(FieldList $fields)
+    protected function updateFormFields(FieldList $fields)
     {
         $fields->insertAfter(
             'Title',
@@ -249,7 +251,3 @@ storage.
 SilverStripe\Assets\File:
   keep_archived_assets: true
 ```
-
-## Related lessons
-
-- [Working with files and images](https://www.silverstripe.org/learn/lessons/v4/working-with-files-and-images-1)

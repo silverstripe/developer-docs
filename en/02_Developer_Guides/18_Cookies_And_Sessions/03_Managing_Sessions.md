@@ -56,8 +56,8 @@ It does not use changes to this metadata to invalidate sessions.
 Logged in users have the ability to see their own active sessions across all devices
 and browsers where they have logged in, and can choose to log out any of those sessions.
 
-Administrators can revoke *all* active sessions for *all* users by triggering the `dev/tasks/InvalidateAllSessions`
-task either in the browser or via the CLI. Note that this will also revoke the session
+Administrators can revoke *all* active sessions for *all* users by visiting `/dev/tasks/InvalidateAllSessions`
+ or running `sake tasks:InvalidateAllSessions` via the CLI. Note that this will also revoke the session
 of the user activating the task, so if this is triggered via the browser, that user
 will need to log back in to perform further actions.
 
@@ -77,21 +77,21 @@ will need to log back in to perform further actions.
 
 #### Creating an extension for `LoginSession`
 
-The first step is to create a [`DataExtension`](api:SilverStripe\ORM\DataExtension) that grant some users the ability to hooks into [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession)'s `canView()` and `canDelete()` methods. This example aligns the permissions on the [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession) to the permission on the Member who owns the [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession).
+The first step is to create an [`Extension`](api:SilverStripe\Core\Extension) that grant some users the ability to hooks into [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession)'s `canView()` and `canDelete()` methods. This example aligns the permissions on the [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession) to the permission on the Member who owns the [`LoginSession`](api:SilverStripe\SessionManager\Models\LoginSession).
 
 Alternatively, you could call [`Permission::check()`](api:SilverStripe\Security\Permission::check()) to validate if the member has a predefined CMS permission. If you need even more granular permissions, you can implement a [`PermissionProvider`](/developer_guides/security/permissions/#permissionprovider) to define your own custom permissions.
 
 ```php
 namespace My\App;
 
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class LoginSessionExtension extends DataExtension
+class LoginSessionExtension extends Extension
 {
     /**
      * @param Member $member
      */
-    public function canView($member)
+    protected function canView($member)
     {
         if ($this->getOwner()->Member()->canView($member)) {
             // If you can view a Member, you can also view their sessions.
@@ -103,7 +103,7 @@ class LoginSessionExtension extends DataExtension
     /**
      * @param Member $member
      */
-    public function canDelete($member)
+    protected function canDelete($member)
     {
         if ($this->getOwner()->Member()->canEdit($member)) {
             // If you can edit a Member, you can also log them out of a session.
@@ -147,14 +147,14 @@ Read [Saved User Logins](/developer_guides/security/member/#saved-user-logins) t
 
 ### Session timeout
 
-Non-persisted login sessions (those where the member hasn’t ticked "Keep me signed in") should expire after a period of inactivity, so that they’re removed from the list of active sessions even if the member closes their browser without completing the “log out” action. The length of time before expiry matches the `SilverStripe\Control\Session.timeout` value if one is set, otherwise falling back to a default of one hour. This default can be changed via the following config setting:
+Non-persisted login sessions (those where the member hasn’t ticked "Keep me signed in") should expire after a period of inactivity, so that they’re removed from the list of active sessions even if the member closes their browser without completing the “log out” action. The length of time before expiry matches the [`Session.timeout`](api:SilverStripe\Control\Session->timeout) value if one is set, otherwise falling back to a default of one hour. This default can be changed via the following config setting:
 
 ```yml
 SilverStripe\SessionManager\Models\LoginSession:
   default_session_lifetime: 3600 # Default value: 1 hour in seconds
 ```
 
-Note that if the member’s session expires before this timeout (e.g. a short `session.gc_maxlifetime` PHP ini setting), they **will** still be logged out. There will just be an extra session shown in the list of active sessions, even though no one can access it.
+Note that if the member’s session expires before this timeout (e.g. a short `session.gc_maxlifetime` PHP ini setting if `Session.timeout` is set to `0`), they **will** still be logged out. There will just be an extra session shown in the list of active sessions, even though no one can access it.
 
 ### Garbage collection
 
@@ -171,14 +171,14 @@ SilverStripe\SessionManager\Services\GarbageCollectionService:
 
 #### Via `symbiote/silverstripe-queuedjobs` (recommended)
 
-If you have the `symbiote/silverstripe-queuedjobs` module installed and configured, garbage collection will run automatically every 1 day via `GarbageCollectionJob`, and no further action is required.  This job will be automatically created if it does not exist on dev/build.
+If you have the `symbiote/silverstripe-queuedjobs` module installed and configured, garbage collection will run automatically every 1 day via `GarbageCollectionJob`, and no further action is required.  This job will be automatically created if it does not exist when building the database.
 
 #### Via `LoginSessionGarbageCollectionTask`
 
 Alternatively, you can create a system cron entry to run the `LoginSessionGarbageCollectionTask` directly on a regular cadence:
 
 ```text
-`*/5 * * * * /path/to/webroot/vendor/bin/sake dev/tasks/LoginSessionGarbageCollectionTask
+`*/5 * * * * /path/to/webroot/vendor/bin/sake tasks:LoginSessionGarbageCollectionTask
 ```
 
 ### Anonymize IP

@@ -23,7 +23,16 @@ Sets the value of cookie with configuration.
 ```php
 use SilverStripe\Control\Cookie;
 
-Cookie::set($name, $value, $expiry = 90, $path = null, $domain = null, $secure = false, $httpOnly = false);
+Cookie::set(
+    $name,
+    $value,
+    $expiry = 90,
+    $path = null,
+    $domain = null,
+    $secure = false,
+    $httpOnly = false,
+    $sameSite = ''
+);
 
 // Cookie::set('MyApplicationPreference', 'Yes');
 ```
@@ -46,6 +55,8 @@ Cookie::get($name);
 
 Clears a given cookie.
 
+The same values used for `$path`, `$domain`, `$secure`, `$httpOnly`, and `$sameSite` when setting the cookie should be used here as well.
+
 ```php
 Cookie::force_expiry($name, $path = null, $domain = null);
 
@@ -64,6 +75,16 @@ SilverStripe\Control\Cookie:
 
 > [!NOTE]
 > Note that this *doesn't* apply for the session cookie, which is handled separately. See [Sessions](/developer_guides/cookies_and_sessions/sessions#samesite-attribute).
+
+When setting or expiring a cookie, you can set an explicit value for the `$sameSite` argument using one of the constants from the `Cookie` class:
+
+```php
+use SilverStripe\Control\Cookie;
+
+Cookie::set('my_cookie', 'value', sameSite: Cookie::SAMESITE_STRICT);
+Cookie::set('my_cookie', 'value', sameSite: Cookie::SAMESITE_LAX);
+Cookie::set('my_cookie', 'value', sameSite: Cookie::SAMESITE_NONE);
+```
 
 ## Cookie_Backend
 

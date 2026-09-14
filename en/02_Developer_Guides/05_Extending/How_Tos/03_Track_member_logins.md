@@ -17,15 +17,15 @@ explicitly logging in or by invoking the "remember me" functionality.
 ```php
 namespace App\Extension;
 
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\ORM\DB;
-use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
 
-class MyMemberExtension extends DataExtension
+class MyMemberExtension extends Extension
 {
     private static $db = [
         'LastVisited' => 'Datetime',
@@ -35,7 +35,7 @@ class MyMemberExtension extends DataExtension
     /**
      * This extension hook is called every time a member is logged in
      */
-    public function afterMemberLoggedIn()
+    protected function onAfterMemberLoggedIn()
     {
         $this->logVisit();
     }
@@ -43,12 +43,12 @@ class MyMemberExtension extends DataExtension
     /**
      * This extension hook is called when a member's session is restored from "remember me" cookies
      */
-    public function memberAutoLoggedIn()
+    protected function memberAutoLoggedIn()
     {
         $this->logVisit();
     }
 
-    public function updateCMSFields(FieldList $fields)
+    protected function updateCMSFields(FieldList $fields)
     {
         $fields->addFieldsToTab('Root.Main', [
             ReadonlyField::create('LastVisited', 'Last visited'),

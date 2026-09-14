@@ -6,7 +6,10 @@ icon: code
 
 # Rendering data to a template
 
-Templates do nothing on their own. Rather, they are used to generate markup - most typically they are used to generate HTML markup, using variables from some `ViewableData` object.
+> [!NOTE]
+> The template syntax, file extensions, and specifics about which templates are chosen from a set as described on this page are specific to the default [`SSTemplateEngine`](api:SilverStripe\TemplateEngine\SSTemplateEngine) - but many of the concepts here (especially the PHP code) should work with any template engine you choose to use.
+
+Templates do nothing on their own. Rather, they are used to generate markup - most typically they are used to generate HTML markup, using variables from some `ModelData` object.
 All of the `<% if %>`, `<% loop %>` and other variables are methods or parameters that are called on the current object in
 scope (see [scope](syntax#scope) in the syntax section).
 
@@ -17,13 +20,16 @@ The following will render the given data into a template. Given the template:
 <strong>$Name</strong> is the $Role on our team.
 ```
 
-Our application code can render into that view using the [`renderWith()`](api:SilverStripe\View\ViewableData) method provided by `ViewableData`. Call this method on any instance of `ViewableData` or its subclasses, passing in a template name or an array of templates to render.
+Our application code can render into that view using the [`renderWith()`](api:SilverStripe\Model\ModelData) method provided by `ModelData`. Call this method on any instance of `ModelData` or its subclasses, passing in a template name or an array of templates to render.
+
+> [!IMPORTANT]
+> Don't include the `.ss` file extension when referencing templates.
 
 ```php
 namespace App\Model;
 
+use SilverStripe\Model\ArrayData;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\View\ArrayData;
 
 class MyModel extends DataObject
 {
@@ -43,6 +49,11 @@ class MyModel extends DataObject
 ```
 
 If you want to render an arbitrary template into the `$Layout` section of a page, you need to render your layout template and pass that as the `Layout` parameter to the Page template.
+
+These examples assume you have moved the `templates/Coach_Message.ss` template file to `templates/Layout/Coach_Message.ss`
+
+> [!WARNING]
+> While a lot of the concepts on this page apply for any template engine, the `$Layout` functionality is specific to the default [`SSTemplateEngine`](api:SilverStripe\TemplateEngine\SSTemplateEngine).
 
 ```php
 namespace App\Model;
@@ -71,7 +82,6 @@ class MyModel extends DataObject
 In this case it may be better to use an *implicit* `Layout` type template, and rely on template inheritance to figure out which templates to use.
 
 ```php
-// This assumes you have moved the Coach_Message template to `templates/Layout/Coach_Message.ss`
 $this->customise($data)->renderWith(['Coach_Message', 'Page']);
 ```
 
@@ -96,7 +106,7 @@ This will look for a global `templates/Coach_Message.ss` template, and if it doe
 See [template types and locations](template_inheritance/#template-types-and-locations) for more information.
 
 > [!NOTE]
-> Most classes in Silverstripe CMS you want in your template extend `ViewableData` and allow you to call `renderWith`. This
+> Most classes in Silverstripe CMS you want in your template extend `ModelData` and allow you to call `renderWith`. This
 > includes [Controller](api:SilverStripe\Control\Controller), [FormField](api:SilverStripe\Forms\FormField) and [DataObject](api:SilverStripe\ORM\DataObject) instances.
 >
 > ```php
@@ -157,16 +167,15 @@ class MyPageController extends PageController
 
 ## Rendering arbitrary data in templates
 
-Any data you want to render into the template that does not extend `ViewableData` should be wrapped in an object that
-does, such as `ArrayData` or `ArrayList`.
+While `ModelData` has some methods on it you may find useful for reprensenting complex data, you should be able to use just about anything as a model in a template.
+
+To actually render the data, you can use the `customise()` method to add your arbitrary data on top of an existing model:
 
 ```php
 namespace App\PageType;
 
 use PageController;
 use SilverStripe\Control\Director;
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\View\ArrayData;
 
 class MyPageController extends PageController
 {
@@ -178,14 +187,14 @@ class MyPageController extends PageController
             return $this->customise([
                 'Name' => 'John',
                 'Role' => 'Head Coach',
-                'Experience' => ArrayList::create([
-                    ArrayData::create([
+                'Experience' => [
+                    [
                         'Title' => 'First Job',
-                    ])
-                    ArrayData::create([
+                    ],
+                    [
                         'Title' => 'Second Job',
-                    ]),
-                ]),
+                    ],
+                ],
             ])->renderWith('AjaxTemplate');
         } else {
             return $this->httpError(400);
@@ -194,12 +203,62 @@ class MyPageController extends PageController
 }
 ```
 
-> [!WARNING]
-> A common mistake is trying to loop over an array directly in a template - this won't work. You'll need to wrap the array in some `ViewableData` instance as mentioned above.
+Or wrap the data in a `ModelData` subclass such as `ArrayList`:
 
-## Related lessons
+```php
+namespace App\PageType;
 
-- [Controller actions/DataObjects as pages](https://www.silverstripe.org/learn/lessons/v4/controller-actions-dataobjects-as-pages-1)
-- [AJAX behaviour and ViewableData](https://www.silverstripe.org/learn/lessons/v4/ajax-behaviour-and-viewabledata-1)
-- [Dealing with arbitrary template data](https://www.silverstripe.org/learn/lessons/v4/dealing-with-arbitrary-template-data-1)
-- [Creating filtered views](https://www.silverstripe.org/learn/lessons/v4/creating-filtered-views-1)
+use PageController;
+use SilverStripe\Model\ArrayData;
+
+class MyPageController extends PageController
+{
+    // ...
+
+    public function getMyRenderedData()
+    {
+        return ArrayData::create([
+            'Name' => 'John',
+            'Role' => 'Head Coach',
+            'Experience' => [
+                [
+                    'Title' => 'First Job',
+                ],
+                [
+                    'Title' => 'Second Job',
+                ],
+            ],
+        ])->renderWith('MyTemplate');
+    }
+}
+```
+
+Or you can hand the data to `SSViewer` directly:
+
+```php
+namespace App\PageType;
+
+use PageController;
+use SilverStripe\View\SSViewer;
+
+class MyPageController extends PageController
+{
+    // ...
+
+    public function getMyRenderedData()
+    {
+        return SSViewer::create('MyTemplate')->process([
+            'Name' => 'John',
+            'Role' => 'Head Coach',
+            'Experience' => [
+                [
+                    'Title' => 'First Job',
+                ],
+                [
+                    'Title' => 'Second Job',
+                ],
+            ],
+        ]);
+    }
+}
+```

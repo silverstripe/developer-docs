@@ -26,14 +26,6 @@ Silverstripe has a wide range of options for getting support:
 - Discuss new features, API changes and the development [roadmap](https://www.silverstripe.org/software/roadmap/)
   on the ["feature ideas" category](https://forum.silverstripe.org/c/feature-ideas) in our forums
 
-## Building your first Silverstripe web application
-
-Once you have completed the [Getting Started](/getting_started) guide and have got Silverstripe installed and running,
-the following [Tutorials](https://silverstripe.org/learn/lessons) will lead through the basics and core concepts of
-Silverstripe.
-
-Make sure you know the basic concepts of PHP before attempting to follow the tutorials.
-
 ## Silverstripe concepts
 
 The [Developer Guides](/developer_guides) contain more detailed documentation on certain Silverstripe topics, 'how to'

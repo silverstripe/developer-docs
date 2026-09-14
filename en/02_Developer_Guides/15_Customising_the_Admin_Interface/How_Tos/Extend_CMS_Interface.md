@@ -25,13 +25,13 @@ directory (usually `app/templates/`), it'll take priority over the built-in
 one.
 
 CMS templates are inherited based on their controllers, similar to subclasses of
-the common `Page` object (a new PHP class `MyPage` will look for a `MyPage.ss` template).
-We can use this to create a different base template with `LeftAndMain.ss`
+the common `Page` object (a new PHP class `MyPage` will look for a template named `MyPage`).
+We can use this to create a different base template named `LeftAndMain`
 (which corresponds to the `LeftAndMain` PHP controller class).
 
-Copy the template markup of the base implementation at `templates/SilverStripe/Admin/Includes/LeftAndMain_MenuList.ss`
-from the `silverstripe/admin` module
-into `app/templates/SilverStripe/Admin/Includes/LeftAndMain_MenuList.ss`. It will automatically be picked up by
+Copy the template markup of the base implementation in the `templates/SilverStripe/Admin/Includes/LeftAndMain_MenuList`
+template from the `silverstripe/admin` module
+into a new `app/templates/SilverStripe/Admin/Includes/LeftAndMain_MenuList` template. It will automatically be picked up by
 the CMS logic. Add a new section into the `<ul class="cms-menu__list">`
 
 ```ss
@@ -88,29 +88,44 @@ Then run `composer vendor-expose`. This command will publish all the `css` files
 ## Create a "bookmark" flag on pages
 
 Now we'll define which pages are actually bookmarked, a flag that is stored in
-the database. For this we need to decorate the page record with a
-`DataExtension`. Create a new file called `app/src/BookmarkedPageExtension.php`
+the database. For this we need to decorate the page record with an
+`Extension`. Create a new file called `app/src/BookmarkedPageExtension.php`
 and insert the following code.
 
 ```php
 namespace App\Extension;
 
-use SilverStripe\Forms\CheckboxField;
-use SilverStripe\Forms\FieldList;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class BookmarkedPageExtension extends DataExtension
+class BookmarkedPageExtension extends Extension
 {
-    private static $db = [
+    private static array $db = [
         'IsBookmarked' => 'Boolean',
     ];
 
-    public function updateCMSFields(FieldList $fields)
+    private static array $field_labels = [
+        'IsBookmarked' => 'Show in CMS bookmarks?',
+    ];
+}
+```
+
+By default, form fields in extension classes are automatically scaffolded in CMS edit forms. See [scaffolding](/developer_guides/model/scaffolding/) for more details about how that works.
+
+If you need to update those form fields, you can implement the `updateCMSFields()` extension hook method.
+
+```php
+namespace App\Extension;
+
+use SilverStripe\Core\Extension;
+use SilverStripe\Forms\FieldList;
+
+class BookmarkedPageExtension extends Extension
+{
+    // ...
+
+    protected function updateCMSFields(FieldList $fields)
     {
-        $fields->addFieldToTab(
-            'Root.Main',
-            new CheckboxField('IsBookmarked', 'Show in CMS bookmarks?')
-        );
+        $fields->dataFieldByName('IsBookmarked')?->addExtraClass('special-css-class');
     }
 }
 ```
@@ -123,14 +138,14 @@ SilverStripe\CMS\Model\SiteTree:
     - App\Extension\BookmarkedPageExtension
 ```
 
-In order to add the field to the database, run a `dev/build/?flush=all`.
+In order to add the field to the database, run `sake db:build --flush`.
 Refresh the CMS, open a page for editing and you should see the new checkbox.
 
 ## Retrieve the list of bookmarks from the database
 
 One piece in the puzzle is still missing: How do we get the list of bookmarked
 pages from the database into the template we've already created (with hardcoded
-links)? Again, we extend a core class: The main CMS controller called
+links)? Again, we extend a core class: The main CMS UI controller called
 `LeftAndMain`.
 
 Add the following code to a new file `app/src/BookmarkedLeftAndMainExtension.php`;
@@ -138,9 +153,9 @@ Add the following code to a new file `app/src/BookmarkedLeftAndMainExtension.php
 ```php
 namespace App\Extension;
 
-use SilverStripe\Admin\LeftAndMainExtension;
+use SilverStripe\Core\Extension;
 
-class BookmarkedPagesLeftAndMainExtension extends LeftAndMainExtension
+class BookmarkedPagesLeftAndMainExtension extends Extension
 {
     public function getBookmarkedPages()
     {
@@ -158,7 +173,7 @@ SilverStripe\Admin\LeftAndMain:
 ```
 
 As the last step, replace the hardcoded links with our list from the database.
-Find the `<ul>` you created earlier in `app/templates/SilverStripe/Admin/Includes/LeftAndMain_MenuList.ss`
+Find the `<ul>` you created earlier in the `app/templates/SilverStripe/Admin/Includes/LeftAndMain_MenuList` template
 and replace it with the following:
 
 ```ss
@@ -236,8 +251,8 @@ how-to.
 
 ## React-rendered UI
 
-For sections of the admin that are rendered with React, Redux, and GraphQL, please refer
-to [the introduction on those concepts](../reactjs_redux_and_graphql/),
+For sections of the admin that are rendered with React and Redux, please refer
+to [the introduction on those concepts](../reactjs_and_redux/),
 as well as their respective How-To's in this section.
 
 ### Implementing handlers
@@ -249,9 +264,9 @@ applicable controller actions to it:
 ```php
 namespace App\Extension;
 
-use SilverStripe\Admin\LeftAndMainExtension;
+use SilverStripe\Core\Extension;
 
-class CustomActionsExtension extends LeftAndMainExtension
+class CustomActionsExtension extends Extension
 {
     private static $allowed_actions = [
         'sampleAction',

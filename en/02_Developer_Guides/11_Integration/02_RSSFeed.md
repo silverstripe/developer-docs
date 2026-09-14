@@ -6,7 +6,7 @@ icon: rss
 
 # RSS feed
 
-Generating RSS / Atom-feeds is a matter of rendering a [SS_List](api:SilverStripe\ORM\SS_List) instance through the [RSSFeed](api:SilverStripe\Control\RSS\RSSFeed) class.
+Generating RSS / Atom-feeds is a matter of rendering a [SS_List](api:SilverStripe\Model\List\SS_List) instance through the [RSSFeed](api:SilverStripe\Control\RSS\RSSFeed) class.
 
 The [RSSFeed](api:SilverStripe\Control\RSS\RSSFeed) class doesn't limit you to generating article based feeds, it is just as easy to create a feed of
 your current staff members, comments or any other custom [DataObject](api:SilverStripe\ORM\DataObject) subclasses you have defined. The only
@@ -164,13 +164,13 @@ class HomePageController extends PageController
 
 ### Customizing the RSS feed template
 
-The default template used for XML view is `vendor/silverstripe/framework/templates/RSSFeed.ss`. This template displays titles and links to
+The default template used for XML view is `vendor/silverstripe/framework/templates/RSSFeed`. This template displays titles and links to
 the object. To customise the XML produced use `setTemplate`.
 
 Say from that last example we want to include the Players Team in the XML feed we might create the following XML file.
 
-```xml
-<!-- app/templates/PlayersRss.ss -->
+```ss
+<%-- app/templates/PlayersRss.ss --%>
 <?xml version="1.0"?>
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
@@ -216,7 +216,7 @@ class HomePage extends Page
 ```
 
 > [!WARNING]
-> As we've added a new template (PlayersRss.ss) make sure you clear your Silverstripe CMS cache.
+> As we've added a new template (`PlayersRss`) make sure you clear your Silverstripe CMS cache.
 
 ## API documentation
 

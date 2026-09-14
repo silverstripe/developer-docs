@@ -27,11 +27,11 @@ If you find a problem related to how the documentation is displayed which can't 
 ## Branches and commit messages
 
 - All documentation commits must follow the [commit message guidelines](./code#commit-messages), and must be prefixed with the `DOC` prefix.
-- If you are fixing incorrect or incomplete information, you should create a PR that targets the most recent patch release branch branch for the relevant major release line (e.g. `5.1`).
-- If you are adding documentation for functionality that has not yet been released, you should target the most recent minor release branch branch (e.g. `5`).
+- If you are fixing incorrect or incomplete information, you should create a PR that targets the most recent patch release branch branch for the relevant major release line (e.g. `6.1`).
+- If you are adding documentation for functionality that has not yet been released, you should target the most recent minor release branch branch (e.g. `6`).
 
 > [!WARNING]
-> You should make your changes in the lowest major branch they apply to. For instance, if you fix a spelling issue that you found in the CMS 4 documentation, submit your fix to the `4.13` branch in GitHub and it'll be copied to the most recent major version of the documentation automatically. *Don't submit multiple pull requests for the same change*.
+> You should make your changes in the lowest major branch they apply to. For instance, if you fix a spelling issue that you found in the CMS 5 documentation, submit your fix to the `5.4` branch in GitHub and it'll be copied to the most recent major version of the documentation automatically. *Don't submit multiple pull requests for the same change*.
 
 ## Editing online
 
@@ -192,11 +192,17 @@ Code for an Alert box:
 
 ### Links to documentation
 
-Links to other pages in the documentation uses the URL slug, *not* the file name.
+When updating documentation for [`silverstripe/developer-docs`](https://github.com/silverstripe/developer-docs/), which is the content repository for [`docs.silverstripe.org`](https://docs.silverstripe.org), links to other pages in the documentation should use the URL slug (e.g. `/contributing/documentation/`), not the file name.
 
 Relative documentation links are prefixed with `./` for pages in the same directory, or `../` for pages in parent directories. For example `[contributing code](./code)` becomes [contributing code](./code) and `[getting started](../getting_started)` becomes [getting started](../getting_started).
 
 Absolute documentation links are preferred for pages which aren't in the same directory or one level up. The language and version number are ommitted. For example `[managing lists](/developer_guides/model/lists/)` becomes [managing lists](/developer_guides/model/lists/).
+
+When updating docs that are in a module's `docs/en/` folder, and will be shown in the "Optional features" section of `docs.silverstripe.org`, and are also intended to be readable on GitHub, then links to other pages within that module should use a relative path to the file name, not the URL slug. Links to documentation outside that module should use a full URL without the version number (e.g. `https://docs.silverstripe.org/en/contributing/documentation/`). API doc links should still be used in the format described below.
+
+### Images
+
+Add images, such as screenshots, to an `_images/` directory which should usually be located at `docs/en/_images/`. Use relative links these files and use the markdown syntax `![Some alt text](_images/some-file.jpg)`. You must include alt text. Adding images this way will work correctly on both markdown added to `silverstripe/developer-docs`, and also to `docs/en/` folder for a module that dispays on both `docs.silverstripe.org` and GitHub.
 
 ### Links to API documentation
 

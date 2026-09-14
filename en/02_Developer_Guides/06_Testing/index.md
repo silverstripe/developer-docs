@@ -15,7 +15,7 @@ process of creating and managing tests.
 If you're more familiar with unit testing, but want a refresher of some of the concepts and terminology, you can browse
 the [Testing Glossary](testing_glossary). To get started now, follow the installation instructions below.
 
-You should also read over the [PHPUnit manual](https://docs.phpunit.de/en/9.6/). It provides a lot of
+You should also read over the [PHPUnit manual](https://docs.phpunit.de/en/11.4/). It provides a lot of
 fundamental concepts that we build on in this documentation.
 
 ## Running tests
@@ -29,9 +29,8 @@ Tests are run from the commandline, in your webroot folder:
 - `vendor/bin/phpunit vendor/silverstripe/framework/tests/`: Run all tests of a specific module
 - `vendor/bin/phpunit vendor/silverstripe/framework/tests/filesystem`: Run specific tests within a specific module
 - `vendor/bin/phpunit vendor/silverstripe/framework/tests/filesystem/FolderTest.php`: Run a specific test
-- `vendor/bin/phpunit vendor/silverstripe/framework/tests '' flush=1`: Run tests with optional request parameters (note the empty second argument)
 
-Check the PHPUnit manual for all available [command line arguments](https://docs.phpunit.de/en/9.6/textui.html).
+Check the PHPUnit manual for all available [command line arguments](https://docs.phpunit.de/en/11.4/textui.html).
 
 On Linux or OSX, you can avoid typing the full path on every invocation by adding `vendor/bin`
 to your `$PATH` definition in the shell profile (usually `~/.profile`): `PATH=./vendor/bin:$PATH`
@@ -40,15 +39,15 @@ to your `$PATH` definition in the shell profile (usually `~/.profile`): `PATH=./
 
 Just like on web requests, Silverstripe CMS caches metadata about the execution context.
 This cache can get stale, e.g. when you change YAML configuration or add certain types of PHP code.
-In order to flush the cache, use the `flush=1` CLI parameter:
+In order to flush the cache, use the `SS_PHPUNIT_FLUSH` environment variable:
 
 ```bash
-vendor/bin/phpunit vendor/silverstripe/framework/tests '' flush=1
+SS_PHPUNIT_FLUSH=1 vendor/bin/phpunit vendor/silverstripe/framework/tests
 ```
 
 ## Generating a coverage report
 
-PHPUnit can generate a code coverage report ([docs](https://docs.phpunit.de/en/9.6/code-coverage-analysis.html))
+PHPUnit can generate a code coverage report ([docs](https://docs.phpunit.de/en/11.4/code-coverage-analysis.html))
 which shows you how much of your logic is executed by your tests. This is very useful to determine gaps in tests.
 
 ```bash
@@ -75,7 +74,7 @@ some `thirdparty/` directories add the following to the `phpunit.xml` configurat
 
 ## Configuration
 
-The `phpunit` executable can be configured by [command line arguments](https://docs.phpunit.de/en/9.6/textui.html)
+The `phpunit` executable can be configured by [command line arguments](https://docs.phpunit.de/en/11.4/textui.html)
 or through an XML file. File-based configuration has
 the advantage of enforcing certain rules across test executions (e.g. excluding files from code coverage reports), and
 of course this information can be version controlled and shared with other team members.
@@ -85,7 +84,7 @@ Silverstripe CMS comes with a default `phpunit.xml.dist` that you can use as a s
 file.
 
 There's nothing stopping you from creating multiple XML files (see the `--configuration` flag in
-[PHPUnit documentation](https://docs.phpunit.de/en/9.6/textui.html)). For example, you could have a
+[PHPUnit documentation](https://docs.phpunit.de/en/11.4/textui.html)). For example, you could have a
 `phpunit-unit-tests.xml` and `phpunit-functional-tests.xml` file (see below).
 
 ### Database permissions

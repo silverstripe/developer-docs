@@ -21,7 +21,7 @@
         }
     ],
     "require-dev": {
-        "silverstripe/documentation-lint": "^1"
+        "silverstripe/documentation-lint": "^2"
     },
     "config": {
         "allow-plugins": {

@@ -11,7 +11,7 @@ In this tutorial, we'll customise some form elements rendered with React to have
 Let's add a character count to the `TextField` component. `TextField` is a built-in component in the admin area. Because the `TextField` component is fetched
 through Injector, we can override it and augment it with our own functionality.
 
-First, let's create our [higher order component](../reactjs_redux_and_graphql#customising-react-components-with-injector).
+First, let's create our [higher order component](../reactjs_and_redux#customising-react-components-with-injector).
 
 ```js
 // my-module/js/components/CharacterCounter.js
@@ -27,7 +27,7 @@ const CharacterCounter = (TextField) => (props) => (
 export default CharacterCounter;
 ```
 
-Now let's add this higher order component to [Injector](../reactjs_redux_and_graphql#the-injector-api).
+Now let's add this higher order component to [Injector](../reactjs_and_redux#the-injector-api).
 
 ```js
 // my-module/js/main.js
