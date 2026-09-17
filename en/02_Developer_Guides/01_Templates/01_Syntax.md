@@ -212,10 +212,7 @@ For more nuanced conditions you can use the `!=` operator.
 
 ### Boolean logic
 
-Multiple checks can be done using `||`/`or`, or `&&`/`and`.
-
-> [!NOTE]
-> `or` is functionally equivalent to `||` in template conditions, and `and` is functionally equivalent to `&&`.
+Multiple checks can be done using `||` or `&&`.
 
 If *either* of the conditions is true.
 
