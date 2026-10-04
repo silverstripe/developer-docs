@@ -118,17 +118,20 @@ on a per-page basis.
 By default `$MetaTags` renders (assuming 6.0.0 is the current version of `silverstripe/framework`):
 
 ```html
+<meta charset="utf-8">
 <title>Title of the Page</title>
 <meta name="generator" content="Silverstripe CMS 6.0">
-<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 ```
 
 `$MetaTags(false)` will render
 
 ```html
+<meta charset="utf-8">
 <meta name="generator" content="Silverstripe CMS 6.0">
-<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 ```
+
+> [!NOTE]
+> The charset declaration is rendered first, because HTML5 requires it within the first 1024 bytes of the document. Place `$MetaTags` near the top of your `<head>`.
 
 If using `$MetaTags(false)` we can provide a custom `<title> tag`.
 
