@@ -481,23 +481,43 @@ RewriteRule .* ../index.php [QSA]
 You will need to ensure that your core apache configuration has the necessary `AllowOverride`
 settings to support the local `.htaccess` file.
 
-Although assets have a 404 handler which routes to a PHP handler, `.php` files within assets itself
-should not be allowed to be marked as executable.
+Although assets have a 404 handler which routes to a PHP handler, the webserver must never execute
+`.php` files within the assets directory. The `public/assets/.htaccess` file, which `silverstripe/assets`
+generates from the `PublicAssetAdapter_HTAccess` template on `?flush`, denies direct access to script
+files with the following section:
 
-When securing your server you should ensure that you protect against both files that can be uploaded as
-executable on the server, as well as protect against accidental upload of `.htaccess` which bypasses
-this file security.
+```text
+<FilesMatch "(?i)\.(?:php[0-9]*|phar|phtml|pht|inc)$">
+    Require all denied
+</FilesMatch>
+```
 
-For instance your server configuration should look similar to the below:
+Apache applies this denial before PHP runs, so it works with `mod_php`, php-fpm and CGI.
 
-```xml
-<Directory "/var/www/superarcade/public/assets">
-  php_admin_flag engine off
+An uploaded `.htaccess` file can override it. If `AllowOverride` includes `AuthConfig`, the uploaded file
+can declare its own `<FilesMatch>` block with `Require all granted`, and that block takes precedence over
+the one in the shipped `.htaccess`. The shipped `.htaccess` needs `AuthConfig` for its own
+`Require all denied` line, so you cannot remove it while that file is in use.
+
+We recommend that you repeat the denial in your core Apache configuration, so that it still applies if
+the generated `.htaccess` is missing or damaged, and turn the PHP engine off for the directory:
+
+```text
+<Directory "/var/www/example.com/public/assets">
+    <IfModule php_module>
+        php_admin_flag engine off
+    </IfModule>
+
+    <FilesMatch "(?i)\.(?:php[0-9]*|phar|phtml|pht|inc)$">
+        Require all denied
+    </FilesMatch>
 </Directory>
 ```
 
-The `php_admin_flag` will protect against uploaded `.htaccess` files accidentally re-enabling script
-execution within the assets directory.
+The `php_admin_flag engine off` line protects servers that run `mod_php`. Apache does not let a
+`.htaccess` file change an `admin` flag, so an uploaded file cannot turn the PHP engine back on. The
+`<IfModule>` wrapper makes sure Apache still starts when `mod_php` is not loaded. The line has no effect
+under php-fpm.
 
 #### Windows IIS 7.5+
 
@@ -526,12 +546,33 @@ to false, to allow these to take effect.
 If using a server configuration which must be configured outside of the web or asset root, you
 will need to make sure you manually configure these rules.
 
-For instance, this will allow your nginx site to serve files directly, while ensuring
-dynamic requests are processed via the Framework:
+For instance, this will allow your nginx site to serve existing files directly while routing other
+requests through the Framework. It also stops nginx from passing scripts in the assets directory to
+php-fpm, and stops it from serving protected files directly:
 
 ```text
 location ^~ /assets/ {
     sendfile on;
-    try_files $uri index.php?$query_string;
+    try_files $uri /index.php?$query_string;
+
+    # Do not pass scripts in the assets directory to PHP
+    location ~* \.(?:php[0-9]*|phar|phtml|pht|inc)$ {
+        return 403;
+    }
+}
+
+# Protected files are served only through the Framework, never directly
+location ^~ /assets/.protected/ {
+    return 403;
 }
 ```
+
+The `^~` modifier is important. It stops nginx from checking server-level regular expression locations,
+such as a `location ~ \.php$` block that passes requests to php-fpm, for any URL under `/assets/`. Without
+it, that block wins over the prefix location and nginx passes the uploaded script to php-fpm.
+
+This blocks the same script extensions as the generated Apache `.htaccess`. The Apache file goes further.
+Silverstripe CMS generates it from the `PublicAssetAdapter_HTAccess` template and inserts an allowlist of
+the extensions in `File.allowed_extensions`, plus `css`, `js` and the static error pages. Apache serves
+only files that match this allowlist. Silverstripe CMS does not generate nginx configuration, so this
+example has no allowlist. Add one if you need the same behaviour.
