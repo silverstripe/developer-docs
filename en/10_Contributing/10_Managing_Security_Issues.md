@@ -114,18 +114,6 @@ In those situations, the security team will assess how likely it was that the vu
 
 If it's likely that the issue was noticed publicly, it should be handle as a zero-day vulnerability and patched as soon as possible.
 
-### Handling issues on Huntr
-
-[Huntr.dev](https://huntr.dev/) is an open source vulnerability bounty platform. The security team occasionally receives vulnerability reports from Huntr. Reports from Huntr go through the same process as reports received through other methods unless otherwise mentioned in this section. The security team should take the following points into consideration when working on a Huntr issue:
-
-- Replying to a report from Huntr via email will record your response in Huntr, but it will not record who the response is from. To keep the discussion flowing more naturally, it is preferable to login into Huntr with your GitHub account and respond via the Huntr interface.
-- People reporting vulnerabilities via Huntr are not always familiar with Silverstripe CMS. Don't assume that they have much context on what Silverstripe CMS is used for.
-- Take some time to review the reporter's profile to see how serious and reliable they are.
-- Validate what CVSS score the reporter has suggested for the issue.
-- Once we "confirm" an issue in Huntr, it means that we agree the bug exists and that it's a vulnerability. Only confirm an issue if you have concluded that it is a valid security vulnerability that we will fix through the normal security process and have validated this conclusion with at least one other member of the security team. Security *enhancements* should not be marked as confirmed.
-- By default, Huntr will issue CVEs for issues reported through their platform. We've disabled this functionality - follow the process in [when receiving a report](#when-receiving-a-report) to request a CVE.
-- Mark the issue as "fixed" in hunter once a patched has been released.
-
 ### A vulnerability has been reported against a dependency of Silverstripe CMS
 
 Silverstripe CMS relies on many other dependencies which are outside of our control. Those dependencies will occasionally have vulnerabilities reported and patched against them.
