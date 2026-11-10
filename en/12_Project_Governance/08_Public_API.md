@@ -12,6 +12,8 @@ New public API will not be introduced in patches, but can be introduced in minor
 
 Existing public API will not be removed or altered in patches or minor releases, but can be removed or altered in major releases.
 
+The only exception is when a breaking change is required to fix a security vulnerability. See [breaking changes in security fixes](/project_governance/release_policy/#breaking-changes-in-security-fixes) for details.
+
 ## Explicitly included
 
 These are explicitly included in our definition of public API (unless excluded below):
