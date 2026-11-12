@@ -9,7 +9,7 @@ icon: bug
 ## Reporting bugs
 
 > [!CAUTION]
-> If you think you've found a security issue, please use [the specific process](#reporting-security-issues) for those. Do *not* raise a security issue in GitHub.
+> If you think you've found a security issue, you must report it privately using [the specific process](#reporting-security-issues) for those. Do *not* raise a security issue in GitHub or disclose it anywhere else in public.
 
 If you have discovered a bug in Silverstripe CMS, we'd be glad to hear about it -
 well written bug reports can be half of the solution already!
@@ -27,7 +27,7 @@ and log in.
 - Search for similar, existing issues.
    You can [list all issues across modules](https://elvis.silverstripe.org/),
    then add your search phrase at the start of the existing search filters.
-- Is this a security issue? Please follow our [security reporting guidelines](#reporting-security-issues) below.
+- Is this a security issue? Stop here and follow our [security reporting guidelines](#reporting-security-issues) below instead.
 - Try to reproduce your issue on a [clean installation](/getting_started/composer#create-a-new-site) to rule out bugs in your own code.
 
 ### If the issue does look like a new bug
@@ -64,21 +64,54 @@ present it to the community through the [community channels](https://www.silvers
 
 ## Reporting security issues
 
-> [!WARNING]
-> If you think a bug may have security implications, do not create a GitHub issue for it. This may lead to a zero-day vulnerability.
+> [!CAUTION]
+> Security issues must be reported privately. Do *not* disclose a potential vulnerability in public before we have published a security advisory for it.
+> This includes GitHub issues, pull requests, discussions, commit messages, forums, Slack, social media, blog posts, and conference talks.
+> Public disclosure before a patch is available puts every Silverstripe CMS project at risk of a zero-day attack.
 
-Report potential security issues to [security@silverstripe.org](mailto:security@silverstripe.org). Emails sent to that address are
-forwarded to a private mailing list and kick off a specific security process.
+Silverstripe CMS follows a *coordinated disclosure* model. Vulnerabilities are reported privately to the security team, fixed privately,
+and only disclosed publicly once a patched release is available.
+
+### How to report a vulnerability
+
+Report potential security issues by email to [security@silverstripe.org](mailto:security@silverstripe.org). Emails sent to that address are
+forwarded to a private mailing list and kick off a specific security process. This is the only channel we accept security reports through.
 
 If you have any doubts or are unsure whether the bug you've found has security implications or not, please err on the side of caution
-and email us about it.
+and email us about it. We would much rather receive a report that turns out not to be a vulnerability than have a real vulnerability disclosed in public.
+
+Your report should include enough detail for us to understand and reproduce the vulnerability, for example:
+
+- the affected module(s) and version(s)
+- a description of the vulnerability and its potential impact
+- clear steps to reproduce the issue, including any proof-of-concept code, HTTP requests, or screenshots
+- any suggested mitigations or fixes
+- whether, and how, you would like to be credited in the security advisory
+
+Do not open a public pull request containing a fix for a vulnerability, as the fix itself discloses the vulnerability. If you have a fix,
+include it in your report and the security team will apply it through our private process.
+
+### While we work on a fix
+
+Please keep the details of the vulnerability confidential until we publish a security advisory. In particular:
+
+- don't share the details of the vulnerability with anyone other than the Silverstripe CMS security team
+- don't publish a proof-of-concept or exploit code
+- don't request a CVE or publish an advisory yourself - we request the CVE and publish the advisory when the patch is released
+- let us know before discussing the vulnerability with any third party, such as another affected vendor
+
+Once the security advisory has been published, you are free to discuss and write about the vulnerability.
+
+When researching a vulnerability, only test against Silverstripe CMS installations you own or are explicitly authorised to test. This includes the project's own websites and infrastructure, such as `silverstripe.org`. Do not access, modify, or delete data that isn't yours, and do not use denial of service or social engineering attacks.
+
+### What happens next
 
 Review our [Managing Security Issues](managing_security_issues) process to understand what happens once a vulnerability is reported.
 
 Silverstripe CMS aims to ship security patches at pre-defined intervals when those issues are not actively exploited in the wild.
 Review the [Security patch windows](../Project_Governance/Minor_release_policy#security-patch-windows) section of our minor release policy for more details.
 
-Silverstripe CMS does not operate a *bug bounty* program.
+Silverstripe CMS does not operate a *bug bounty* program. Reports that are conditional on payment or rewards will not be accepted.
 
 ## GitHub labels {#labels}
 

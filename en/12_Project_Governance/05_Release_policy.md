@@ -12,7 +12,7 @@ This policy only applies to [commercially supported modules](/project_governance
 
 Other unsupported modules in the `silverstripe` GitHub organisation and community modules are not covered by this policy.
 
-Silverstripe CMS uses [semantic versioning](https://semver.org/).
+Silverstripe CMS uses [semantic versioning](https://semver.org/), with a narrow exception for [breaking changes required to fix security vulnerabilities](#breaking-changes-in-security-fixes).
 
 Refer to our [definition of public API](/project_governance/public_api/) for details on allowed changes within releases.
 
@@ -124,7 +124,7 @@ Once the *partial support* phase for a Silverstripe CMS version has ended, it go
 
 Patch releases are small code releases for individual modules such as `silverstripe/framework`. They can happen at any time and are not part of a broader Silverstripe CMS release. They are the delivery mechanism to fulfill the support commitments for Silverstripe CMS versions that are supported.
 
-Patch releases should not make any public API changes. Because of this restriction, typically only bug and security fixes will be shipped in them.
+Patch releases should not make any public API changes, except as described in [breaking changes in security fixes](#breaking-changes-in-security-fixes). Because of this restriction, typically only bug and security fixes will be shipped in them.
 
 ## Security patch windows
 
@@ -142,6 +142,14 @@ Security patch windows are scheduled to line up with our expected minor releases
 - October
 
 Any security fixes that are shipped at the same time as a new Silverstripe CMS release will be included in that release.
+
+## Breaking changes in security fixes
+
+We aim to fix security vulnerabilities without breaking [public API](/project_governance/public_api/). However, if it is not possible to fix the issue without making a breaking change, we may make that change in a patch or minor release rather than waiting for the next major release.
+
+We will consider the severity of the vulnerability and the impact of the breaking change on existing projects when deciding how to fix it.
+
+Any breaking change made this way will be documented in the security advisory and the release changelog.
 
 ## PHP support commitments
 
