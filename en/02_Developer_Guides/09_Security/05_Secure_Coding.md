@@ -638,6 +638,8 @@ In addition, you can tighten password security with the following configuration 
 - `Member.lock_out_after_incorrect_logins`: Number of incorrect logins after which
     the user is blocked from further attempts for the timespan defined in `$lock_out_delay_mins`
 - `Member.lock_out_delay_mins`: Minutes of enforced lockout after incorrect password attempts. Only applies if `lock_out_after_incorrect_logins` is greater than 0.
+- `LostPasswordHandler.lock_out_after_reset_requests`: Number of password reset requests from one IP address for one member, or for all addresses with no member, after which further such requests from that IP address are locked out. Set to `0` to disable the limit.
+- `LostPasswordHandler.lock_out_delay_mins`: Minutes of enforced lockout after the limit is reached. Only applies if `lock_out_after_reset_requests` is greater than 0.
 - `Security.remember_username`: Set to false to disable autocomplete on login form
 - `Session.timeout`: Set timeout to attenuate the risk of active sessions being exploited
 
