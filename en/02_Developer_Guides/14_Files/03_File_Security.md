@@ -224,6 +224,12 @@ $object->PublicFile->publishFile();
 > [!WARNING]
 > One thing to note is that all variants of a single file will be treated as
 > a single entity for access control, so specific variants cannot be individually controlled.
+<!-- markdownlint-disable-next-line MD028 -->
+
+> [!NOTE]
+> Draft status is not access control. A draft file can be published by anyone who can publish a record that owns it,
+> and the file URL works for anyone with a link to it. To keep the contents of a file back until a release date,
+> use view permissions on a separate restricted file, then swap it in at release.
 
 ## How file access is protected
 

@@ -71,9 +71,13 @@ Silverstripe CMS makes this possible by using the concept of *cascade publishing
 A non-recursive publish operation is also available if you want to publish a new version of a object without cascade publishing all its children.
 
 > [!CAUTION]
-> Declaring ownership implies publish permissions on owned objects.
-> Built-in controllers using cascading publish operations check `canPublish()`
-> on the owner, but not on the owned object.
+> [`publishRecursive()`](api:SilverStripe\Versioned\RecursivePublishable::publishRecursive()) never checks permissions.
+> CMS publish actions call [`canPublishRecursive()`](api:SilverStripe\Versioned\RecursivePublishable::canPublishRecursive()) first.
+> It checks `canPublish()` on the owner, and on each owned record that has unpublished changes.
+> An owned record passes only if the member can publish it, which is a `canPublish()` check on that record.
+> Custom controllers that call `publishRecursive()` must call `canPublishRecursive()` first.
+> To show the author why a publish is blocked, call [`validatePublishRecursive()`](api:SilverStripe\Versioned\RecursivePublishable::validatePublishRecursive()).
+> It returns a `ValidationResult` with an error message that names the blocking records.
 
 #### Ownership of unversioned object
 
